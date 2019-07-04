@@ -18,6 +18,7 @@ const ModalForm = Form.create({ name: 'dictionaryForm' })(props => {
   const isEdit = selected && selected.id;
 
   useEffect(() => {
+    // 👍 将条件判断放置在 effect 中
     if (Object.keys(selected).length > 0) {
       setFieldsValue(selected);
     }

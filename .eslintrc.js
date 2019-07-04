@@ -1,6 +1,7 @@
 module.exports = {
   parser: 'babel-eslint',
   extends: ['airbnb', 'prettier', 'plugin:compat/recommended'],
+  plugins: ['react-hooks'],
   env: {
     browser: true,
     node: true,
@@ -18,6 +19,8 @@ module.exports = {
     'react/prop-types': 0,
     'react/forbid-prop-types': 0,
     'react/jsx-one-expression-per-line': 0,
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
     'import/no-unresolved': [2, { ignore: ['^@/', '^umi/'] }],
     'import/no-extraneous-dependencies': [
       2,
