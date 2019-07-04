@@ -51,25 +51,13 @@ class BasicLayout extends React.Component {
     dispatch({
       type: 'user/fetchCurrent',
     });
-    dispatch({
-      type: 'setting/getSetting',
-    });
+    // bug https://github.com/ant-design/ant-design/issues/17387
+    // dispatch({
+    //   type: 'setting/getSetting',
+    // });
     dispatch({
       type: 'menu/getMenuData',
       payload: { routes, path, authority },
-    });
-    dispatch({
-      type: 'global/fetchAllTagList',
-      payload: [
-        'jobstatus',
-        'language',
-        'recordtime',
-        'area',
-        'sourcetype',
-        'charset',
-        'resptype',
-        'prioritys',
-      ],
     });
   }
 

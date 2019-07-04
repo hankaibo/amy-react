@@ -2,6 +2,10 @@ export default {
   'menu.home': '首页',
   'menu.login': '登录',
   'menu.register': '注册',
+  // system
+  'menu.system': '系统配置',
+  'menu.system.users': '用户管理',
+  'menu.system.dictionaries': '字典管理',
   // exception
   'menu.exception': '异常页',
   'menu.exception.not-permission': '403',

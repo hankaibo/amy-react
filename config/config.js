@@ -62,13 +62,13 @@ export default {
   theme: {
     'primary-color': primaryColor,
   },
-  // proxy: {
-  //   '/api/': {
-  //     target: 'http://your_api_address/',
-  //     changeOrigin: true,
-  //     pathRewrite: { '^/api/': '/api/v1/' },
-  //   },
-  // },
+  proxy: {
+    '/api/': {
+      target: 'http://localhost:8080/',
+      changeOrigin: true,
+      // pathRewrite: { '^/api/': '/api/v1/' },
+    },
+  },
   ignoreMomentLocale: true,
   lessLoaderOptions: {
     javascriptEnabled: true,

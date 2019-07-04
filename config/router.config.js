@@ -27,6 +27,44 @@ export default [
         icon: 'home',
         component: './Home/Home',
       },
+      // system
+      {
+        path: '/system',
+        icon: 'setting',
+        name: 'system',
+        authority: ['admin'],
+        routes: [
+          {
+            path: '/system/users',
+            name: 'users',
+            routes: [
+              {
+                path: '/system/users',
+                component: './System/User',
+              },
+              {
+                path: '/system/users/:id',
+                component: './System/User',
+              },
+            ],
+          },
+          {
+            path: '/system/dictionaries',
+            name: 'dictionaries',
+            routes: [
+              {
+                path: '/system/dictionaries',
+                component: './System/Dict',
+              },
+              {
+                path: '/system/dictionaries/:id',
+                hideInMenu: true,
+                component: './System/Dict',
+              },
+            ],
+          },
+        ],
+      },
       // exception
       {
         name: 'exception',
