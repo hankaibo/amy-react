@@ -22,7 +22,7 @@ const ModalForm = Form.create({ name: 'dictionaryForm' })(props => {
     if (Object.keys(selected).length > 0) {
       setFieldsValue(selected);
     }
-  }, [selected]);
+  }, [selected, setFieldsValue]);
 
   const handleAddOrUpdate = () => {
     validateFields((err, fieldsValue) => {

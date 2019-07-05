@@ -15,7 +15,7 @@ export async function queryDictList(params) {
  * @param id
  * @returns {Promise<void>}
  */
-export async function queryDictOneById(id) {
+export async function queryDictById(id) {
   return request(`/api/v1/dicts/${id}`);
 }
 

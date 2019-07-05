@@ -1,12 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
-import Link from 'umi/link';
-import router from 'umi/router';
-import moment from 'moment';
-import { Card, Button, Input, Divider, Modal, message, Icon, Switch, Table } from 'antd';
+import { Card, Button, Input, Switch, Divider, Modal, message, Icon, Table } from 'antd';
 import IconFont from '@/components/IconFont';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import DictionaryForm from './ModalForm';
+import UserForm from './UserForm';
 import styles from '../System.less';
 
 const getValue = obj =>
@@ -15,11 +12,11 @@ const getValue = obj =>
     .join(',');
 const status = ['禁用', '启用'];
 
-@connect(({ systemDictionary, loading }) => ({
-  systemDictionary,
-  loading: loading.models.systemDictionary,
+@connect(({ systemUser, loading }) => ({
+  systemUser,
+  loading: loading.models.systemUser,
 }))
-class Dictionary extends Component {
+class User extends Component {
   state = {
     current: 1,
     pageSize: 10,
@@ -29,26 +26,15 @@ class Dictionary extends Component {
 
   columns = [
     {
-      title: '字典类型',
-      dataIndex: 'name',
-      render: (text, record) =>
-        // 非子节点可以跳转
-        record.parentId === -1 ? (
-          <Link to={`/system/dictionaries/${record.id}?name=${text}`}>{text}</Link>
-        ) : (
-          <span>{text}</span>
-        ),
+      title: '用户名称',
+      dataIndex: 'username',
     },
     {
-      title: '字典编码',
-      dataIndex: 'code',
+      title: '用户昵称',
+      dataIndex: 'nickname',
     },
     {
-      title: '字典描述',
-      dataIndex: 'description',
-    },
-    {
-      title: '状态',
+      title: '用户状态',
       dataIndex: 'state',
       filters: [
         {
@@ -61,28 +47,12 @@ class Dictionary extends Component {
         },
       ],
       render: (text, record) => {
-        return <Switch checked={text} onClick={checked => this.toggleState(checked, record)} />;
+        return (
+          <Switch checked={Boolean(text)} onClick={checked => this.toggleState(checked, record)} />
+        );
       },
     },
-    {
-      title: '添加时间',
-      dataIndex: 'createTime',
-      render: text => <span>{text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : ''}</span>,
-    },
-    {
-      title: '创建人',
-      dataIndex: 'createUser',
-    },
-    {
-      title: '修改时间',
-      dataIndex: 'modifyTime',
-      sorter: true,
-      render: text => <span>{text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : ''}</span>,
-    },
-    {
-      title: '修改人',
-      dataIndex: 'modifyUser',
-    },
+
     {
       title: '操作',
       render: (text, record) => (
@@ -94,22 +64,25 @@ class Dictionary extends Component {
           <a onClick={() => this.handleDelete(record.id)}>
             <IconFont type="icon-delete" title="删除" />
           </a>
+          <Divider type="vertical" />
+          <a onClick={() => this.openModal(record)}>
+            <Icon type="play-circle" title="分配角色" />
+          </a>
+          <Divider type="vertical" />
+          <a onClick={() => this.openModal(record)}>
+            <IconFont type="icon-daochu" title="分配部门" />
+          </a>
         </Fragment>
       ),
     },
   ];
 
   componentDidMount() {
-    const { dispatch, match } = this.props;
+    const { dispatch } = this.props;
     const { pageSize, current } = this.state;
-    const {
-      params: { id },
-    } = match;
-
     dispatch({
-      type: 'systemDictionary/fetch',
+      type: 'systemUser/fetch',
       payload: {
-        parentId: id || -1,
         pageSize,
         current,
       },
@@ -120,7 +93,7 @@ class Dictionary extends Component {
     const { dispatch } = this.props;
     if (id) {
       dispatch({
-        type: 'systemDictionary/fetchById',
+        type: 'systemUser/fetchById',
         id,
         callback: () => {
           this.setState({
@@ -137,18 +110,17 @@ class Dictionary extends Component {
   closeModal = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemDictionary/clearSelected',
+      type: 'systemUser/clearSelected',
     });
     this.setState({
       visible: false,
     });
   };
 
-  // 【开启禁用字典状态】
   toggleState = (checked, record) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemDictionary/update',
+      type: 'systemUser/update',
       payload: { ...record, state: checked ? 1 : 0 },
     });
   };
@@ -163,7 +135,7 @@ class Dictionary extends Component {
   handleBatchDelete = () => {
     Modal.confirm({
       title: '批量删除',
-      content: '您确定批量删除这些列表数据吗？',
+      content: '您确定批量删除这些用户吗？',
       okText: '确认',
       cancelText: '取消',
       onOk: () => this.deleteBatchItem(),
@@ -171,25 +143,20 @@ class Dictionary extends Component {
   };
 
   deleteBatchItem = () => {
-    const { dispatch, match } = this.props;
+    const { dispatch } = this.props;
     const { selectedRows } = this.state;
-    const {
-      params: { id: parentId },
-    } = match;
 
     if (selectedRows.length === 0) return;
     dispatch({
-      type: 'systemDictionary/deleteBatch',
+      type: 'systemUser/deleteBatch',
       ids: selectedRows,
       callback: () => {
         this.setState({
           selectedRows: [],
         });
         dispatch({
-          type: 'systemDictionary/fetch',
-          payload: {
-            parentId,
-          },
+          type: 'systemUser/fetch',
+          payload: {},
         });
       },
     });
@@ -199,7 +166,7 @@ class Dictionary extends Component {
   handleDelete = id => {
     Modal.confirm({
       title: '删除',
-      content: '您确定要删除该列表吗？',
+      content: '您确定要删除该用户吗？',
       okText: '确认',
       cancelText: '取消',
       onOk: () => this.deleteItem(id),
@@ -207,31 +174,21 @@ class Dictionary extends Component {
   };
 
   deleteItem = id => {
-    const { dispatch, match } = this.props;
-    const {
-      params: { id: parentId },
-    } = match;
+    const { dispatch } = this.props;
     dispatch({
-      type: 'systemDictionary/delete',
+      type: 'systemUser/delete',
       id,
       callback: () => {
         this.setState({
           selectedRows: [],
         });
         dispatch({
-          type: 'systemDictionary/fetch',
-          payload: {
-            parentId,
-          },
+          type: 'systemUser/fetch',
+          payload: {},
         });
         message.success('删除成功');
       },
     });
-  };
-
-  // 【返回】
-  handleBack = () => {
-    router.goBack();
   };
 
   // 【选择表格行】
@@ -267,23 +224,22 @@ class Dictionary extends Component {
     }
 
     dispatch({
-      type: 'systemDictionary/fetch',
+      type: 'systemUser/fetch',
       payload: params,
     });
   };
 
   render() {
     const {
-      systemDictionary: { list, pagination },
+      systemUser: { list, pagination },
       loading,
-      match,
     } = this.props;
     const { selectedRows, visible } = this.state;
 
     const mainSearch = (
       <div style={{ textAlign: 'center' }}>
         <Input.Search
-          placeholder="请输入查询条件"
+          placeholder="请输入用户名称或者手机号码"
           enterButton
           size="large"
           onSearch={this.handleFormSubmit}
@@ -296,8 +252,6 @@ class Dictionary extends Component {
       selectedRows,
       onChange: this.handleSelectRows,
     };
-
-    const { params: id } = match;
 
     return (
       <PageHeaderWrapper content={mainSearch}>
@@ -315,11 +269,6 @@ class Dictionary extends Component {
               >
                 <IconFont type="icon-delete" />
               </Button>
-              {Object.keys(id).length > 0 && (
-                <Button title="返回" onClick={() => this.handleBack()}>
-                  <Icon type="rollback" />
-                </Button>
-              )}
             </div>
             <Table
               rowKey="id"
@@ -332,10 +281,10 @@ class Dictionary extends Component {
             />
           </div>
         </Card>
-        <DictionaryForm {...this.props} visible={visible} handleCancel={this.closeModal} />
+        <UserForm {...this.props} visible={visible} handleCancel={this.closeModal} />
       </PageHeaderWrapper>
     );
   }
 }
 
-export default Dictionary;
+export default User;

@@ -1,14 +1,14 @@
 import {
-  queryDictList,
-  queryDictById,
-  addDict,
-  deleteDict,
-  deleteBatchDict,
-  updateDict,
+  queryUserList,
+  queryUserById,
+  addUser,
+  deleteUser,
+  deleteBatchUser,
+  updateUser,
 } from '../service';
 
 export default {
-  namespace: 'systemDictionary',
+  namespace: 'systemUser',
 
   state: {
     list: [],
@@ -17,49 +17,52 @@ export default {
   },
 
   effects: {
-    *fetch({ payload, callback }, { call, put }) {
-      const response = yield call(queryDictList, payload);
+    *fetch({ payload }, { call, put }) {
+      const response = yield call(queryUserList, payload);
       const { list, pageNum: current, pageSize, total } = response.data;
       yield put({
         type: 'saveList',
         payload: {
-          list: list.map(item => ({ ...item, state: !!item.state })),
+          list,
           pagination: { current, pageSize, total },
         },
       });
-      if (callback) callback();
     },
     *fetchById({ id, callback }, { call, put }) {
-      const response = yield call(queryDictById, id);
+      const response = yield call(queryUserById, id);
       const { data } = response;
-      const dictionary = { ...data, state: !!data.state };
-      delete dictionary.createUser;
-      delete dictionary.createTime;
-      delete dictionary.modifyUser;
-      delete dictionary.modifyTime;
+      const user = { ...data, state: !!data.state };
+      delete user.createUser;
+      delete user.createTime;
+      delete user.modifyUser;
+      delete user.modifyTime;
+      delete user.salt;
+      delete user.resourceList;
+      delete user.roleList;
+      delete user.lastLoginTime;
       yield put({
         type: 'selected',
-        payload: dictionary,
+        payload: user,
       });
       if (callback) callback();
     },
     *add({ payload, callback }, { call }) {
       const data = { ...payload, state: Number(payload.state) };
-      yield call(addDict, data);
+      yield call(addUser, data);
       if (callback) callback();
     },
     *delete({ id, callback }, { call }) {
-      yield call(deleteDict, id);
+      yield call(deleteUser, id);
       if (callback) callback();
     },
     *deleteBatch({ ids, callback }, { call }) {
-      yield call(deleteBatchDict, ids);
+      yield call(deleteBatchUser, ids);
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
       const data = { ...payload, state: Number(payload.state) };
-      yield call(updateDict, data);
-      const response = yield call(queryDictById, data.id);
+      yield call(updateUser, data);
+      const response = yield call(queryUserById, payload.id);
       yield put({
         type: 'updateList',
         payload: response.data,
@@ -83,20 +86,9 @@ export default {
         selected: payload,
       };
     },
-    clearSelected(state) {
-      return {
-        ...state,
-        selected: {},
-      };
-    },
     updateList(state, { payload }) {
       const { list } = state;
-      const newList = list.map(item => {
-        if (item.id === payload.id) {
-          return { ...payload, state: !!payload.state };
-        }
-        return item;
-      });
+      const newList = list.map(item => (item.id === payload.id ? { ...payload } : item));
       return {
         ...state,
         list: newList,
