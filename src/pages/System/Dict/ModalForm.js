@@ -5,7 +5,7 @@ const FormItem = Form.Item;
 const { TextArea } = Input;
 
 const ModalForm = Form.create({ name: 'dictionaryForm' })(props => {
-  const { visible, handleCancel, form, dispatch, dictionary, ...rest } = props;
+  const { visible, handleCancel, form, dispatch, systemDictionary, ...rest } = props;
   const { location, match } = rest;
   const {
     query: { name: parentName },
@@ -14,7 +14,7 @@ const ModalForm = Form.create({ name: 'dictionaryForm' })(props => {
     params: { id: parentId },
   } = match;
   const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
-  const { selected } = dictionary;
+  const { selected } = systemDictionary;
   const isEdit = selected && selected.id;
 
   useEffect(() => {
@@ -30,13 +30,13 @@ const ModalForm = Form.create({ name: 'dictionaryForm' })(props => {
 
       if (fieldsValue.id) {
         dispatch({
-          type: 'dictionary/update',
+          type: 'systemDictionary/update',
           payload: fieldsValue,
           callback: () => {
             resetFields();
             handleCancel();
             dispatch({
-              type: 'dictionary/fetch',
+              type: 'systemDictionary/fetch',
               payload: {
                 parentId,
               },
@@ -46,13 +46,13 @@ const ModalForm = Form.create({ name: 'dictionaryForm' })(props => {
         });
       } else {
         dispatch({
-          type: 'dictionary/add',
+          type: 'systemDictionary/add',
           payload: fieldsValue,
           callback: () => {
             resetFields();
             handleCancel();
             dispatch({
-              type: 'dictionary/fetch',
+              type: 'systemDictionary/fetch',
               payload: {
                 parentId,
               },

@@ -15,9 +15,9 @@ const getValue = obj =>
     .join(',');
 const status = ['禁用', '启用'];
 
-@connect(({ dictionary, loading }) => ({
-  dictionary,
-  loading: loading.models.dictionary,
+@connect(({ systemDictionary, loading }) => ({
+  systemDictionary,
+  loading: loading.models.systemDictionary,
 }))
 @Form.create({})
 class Dictionary extends Component {
@@ -25,7 +25,6 @@ class Dictionary extends Component {
     current: 1,
     pageSize: 10,
     selectedRows: [],
-    formValues: {},
     visible: false,
   };
 
@@ -109,7 +108,7 @@ class Dictionary extends Component {
     } = match;
 
     dispatch({
-      type: 'dictionary/fetch',
+      type: 'systemDictionary/fetch',
       payload: {
         parentId: id || -1,
         pageSize,
@@ -122,7 +121,7 @@ class Dictionary extends Component {
     const { dispatch } = this.props;
     if (id) {
       dispatch({
-        type: 'dictionary/fetchOneById',
+        type: 'systemDictionary/fetchById',
         id,
         callback: () => {
           this.setState({
@@ -139,7 +138,7 @@ class Dictionary extends Component {
   closeModal = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'dictionary/clearOne',
+      type: 'systemDictionary/clearSelected',
     });
     this.setState({
       visible: false,
@@ -150,7 +149,7 @@ class Dictionary extends Component {
   toggleState = (checked, record) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'dictionary/update',
+      type: 'systemDictionary/update',
       payload: { ...record, state: checked },
     });
   };
@@ -181,16 +180,14 @@ class Dictionary extends Component {
 
     if (selectedRows.length === 0) return;
     dispatch({
-      type: 'dictionary/removeBatch',
-      payload: {
-        ids: selectedRows,
-      },
+      type: 'systemDictionary/deleteBatch',
+      ids: selectedRows,
       callback: () => {
         this.setState({
           selectedRows: [],
         });
         dispatch({
-          type: 'dictionary/fetch',
+          type: 'systemDictionary/fetch',
           payload: {
             parentId,
           },
@@ -216,14 +213,14 @@ class Dictionary extends Component {
       params: { id: parentId },
     } = match;
     dispatch({
-      type: 'dictionary/remove',
+      type: 'systemDictionary/delete',
       id,
       callback: () => {
         this.setState({
           selectedRows: [],
         });
         dispatch({
-          type: 'dictionary/fetch',
+          type: 'systemDictionary/fetch',
           payload: {
             parentId,
           },
@@ -248,7 +245,6 @@ class Dictionary extends Component {
   // 【分页、排序、过滤】
   handleTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
-    const { formValues } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -265,7 +261,6 @@ class Dictionary extends Component {
     const params = {
       current,
       pageSize,
-      ...formValues,
       ...filters,
     };
     if (sorter.field) {
@@ -273,14 +268,14 @@ class Dictionary extends Component {
     }
 
     dispatch({
-      type: 'dictionary/fetch',
+      type: 'systemDictionary/fetch',
       payload: params,
     });
   };
 
   render() {
     const {
-      dictionary: { list, pagination },
+      systemDictionary: { list, pagination },
       loading,
       match,
     } = this.props;

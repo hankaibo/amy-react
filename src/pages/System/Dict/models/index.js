@@ -2,13 +2,13 @@ import {
   queryDictList,
   queryDictOneById,
   addDict,
-  removeDict,
-  removeBatchDict,
+  deleteDict,
+  deleteBatchDict,
   updateDict,
-} from '../dictService';
+} from '../service';
 
 export default {
-  namespace: 'dictionary',
+  namespace: 'systemDictionary',
 
   state: {
     list: [],
@@ -17,18 +17,33 @@ export default {
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
+    *fetch({ payload, callback }, { call, put }) {
       const response = yield call(queryDictList, payload);
+      const { list, pageNum: current, pageSize, total } = response.data;
       yield put({
         type: 'saveList',
-        payload: response.data,
+        payload: {
+          list: list.map(item => ({ ...item, state: !!item.state })),
+          pagination: {
+            current,
+            pageSize,
+            total,
+          },
+        },
       });
+      if (callback) callback();
     },
-    *fetchOneById({ id, callback }, { call, put }) {
+    *fetchById({ id, callback }, { call, put }) {
       const response = yield call(queryDictOneById, id);
+      const { data } = response;
+      const dictionary = { ...data, state: !!data.state };
+      delete dictionary.createUser;
+      delete dictionary.createTime;
+      delete dictionary.modifyUser;
+      delete dictionary.modifyTime;
       yield put({
-        type: 'saveOne',
-        payload: response.data,
+        type: 'selected',
+        payload: dictionary,
       });
       if (callback) callback();
     },
@@ -37,65 +52,52 @@ export default {
       yield call(addDict, data);
       if (callback) callback();
     },
-    *remove({ id, callback }, { call }) {
-      yield call(removeDict, id);
+    *delete({ id, callback }, { call }) {
+      yield call(deleteDict, id);
       if (callback) callback();
     },
-    *removeBatch({ payload, callback }, { call }) {
-      const { ids } = payload;
-      yield call(removeBatchDict, ids);
+    *deleteBatch({ ids, callback }, { call }) {
+      yield call(deleteBatchDict, ids);
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
       const data = { ...payload, state: Number(payload.state) };
       yield call(updateDict, data);
+      const response = yield call(queryDictOneById, data.id);
       yield put({
         type: 'updateState',
-        payload: data,
+        payload: response.data,
       });
       if (callback) callback();
     },
   },
 
   reducers: {
-    saveList(state, action) {
-      const { payload } = action;
-      const { list: data, pageNum: current, pageSize, total } = payload;
-      const list = data.map(item => ({ ...item, state: !!item.state }));
+    saveList(state, { payload }) {
+      const { list, pagination } = payload;
       return {
         ...state,
         list,
-        pagination: {
-          current,
-          pageSize,
-          total,
-        },
+        pagination,
       };
     },
-    saveOne(state, action) {
-      const { payload } = action;
-      const data = { ...payload, state: !!payload.state };
-      delete data.createUser;
-      delete data.createTime;
-      delete data.modifyUser;
-      delete data.modifyTime;
+    selected(state, { payload }) {
       return {
         ...state,
-        selected: data,
+        selected: payload,
       };
     },
-    clearOne(state) {
+    clearSelected(state) {
       return {
         ...state,
         selected: {},
       };
     },
-    updateState(state, action) {
+    updateState(state, { payload }) {
       const { list } = state;
-      const { payload } = action;
       const newList = list.map(item => {
         if (item.id === payload.id) {
-          return { ...item, state: !!payload.state };
+          return { ...payload, state: !!payload.state };
         }
         return item;
       });
