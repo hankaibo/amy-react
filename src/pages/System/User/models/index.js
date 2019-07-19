@@ -5,6 +5,7 @@ import {
   deleteUser,
   deleteBatchUser,
   updateUser,
+  enabledUser,
 } from '../service';
 
 export default {
@@ -31,15 +32,7 @@ export default {
     *fetchById({ id, callback }, { call, put }) {
       const response = yield call(queryUserById, id);
       const { data } = response;
-      const user = { ...data, state: !!data.state };
-      delete user.createUser;
-      delete user.createTime;
-      delete user.modifyUser;
-      delete user.modifyTime;
-      delete user.salt;
-      delete user.resourceList;
-      delete user.roleList;
-      delete user.lastLoginTime;
+      const user = { ...data, status: !!data.status };
       yield put({
         type: 'selected',
         payload: user,
@@ -47,7 +40,7 @@ export default {
       if (callback) callback();
     },
     *add({ payload, callback }, { call }) {
-      const data = { ...payload, state: Number(payload.state) };
+      const data = { ...payload, status: +payload.status };
       yield call(addUser, data);
       if (callback) callback();
     },
@@ -59,13 +52,34 @@ export default {
       yield call(deleteBatchUser, ids);
       if (callback) callback();
     },
-    *update({ payload, callback }, { call, put }) {
-      const data = { ...payload, state: Number(payload.state) };
-      yield call(updateUser, data);
-      const response = yield call(queryUserById, payload.id);
+    *update({ payload, callback }, { call, put, select }) {
+      const params = { ...payload, status: +payload.status };
+      yield call(updateUser, params);
+      const oldList = yield select(state => state.systemUser.list);
+      const newList = oldList.map(item => {
+        if (item.id === payload.id) return { ...item, ...payload };
+        return { ...item, status: !!item.status };
+      });
       yield put({
         type: 'updateList',
-        payload: response.data,
+        payload: newList,
+      });
+      if (callback) callback();
+    },
+    *enable({ payload, callback }, { call, put, select }) {
+      const { id, status } = payload;
+      const params = { id, status: +status };
+      yield call(enabledUser, params);
+      const oldList = yield select(state => state.systemUser.list);
+      const newList = oldList.map(item => {
+        if (item.id === id) return { ...item, status };
+        return { ...item, status: !!item.status };
+      });
+      yield put({
+        type: 'updateList',
+        payload: {
+          list: newList,
+        },
       });
       if (callback) callback();
     },
@@ -86,12 +100,17 @@ export default {
         selected: payload,
       };
     },
-    updateList(state, { payload }) {
-      const { list } = state;
-      const newList = list.map(item => (item.id === payload.id ? { ...payload } : item));
+    unselected(state) {
       return {
         ...state,
-        list: newList,
+        selected: {},
+      };
+    },
+    updateList(state, { payload }) {
+      const { list } = payload;
+      return {
+        ...state,
+        list,
       };
     },
   },

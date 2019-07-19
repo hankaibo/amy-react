@@ -50,7 +50,7 @@ export async function deleteUser(id) {
  * @returns {Promise<void>}
  */
 export async function deleteBatchUser(ids) {
-  return request(`/api/v1/users`, {
+  return request('/api/v1/users', {
     method: 'DELETE',
     data: {
       ids,
@@ -63,11 +63,27 @@ export async function deleteBatchUser(ids) {
  * @param params
  * @returns {Promise<void>}
  */
-export async function updateUser(params = {}) {
-  return request(`/api/v1/users`, {
+export async function updateUser(params) {
+  return request('/api/v1/users', {
     method: 'PUT',
     data: {
       ...params,
+    },
+  });
+}
+
+/**
+ * 启用禁用用户。
+ *
+ * @param params
+ * @returns {Promise<void>}
+ */
+export async function enabledUser(params) {
+  const { id, status } = params;
+  return request(`/api/v1/users/${id}`, {
+    method: 'PUT',
+    data: {
+      status,
     },
   });
 }

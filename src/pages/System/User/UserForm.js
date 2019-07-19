@@ -69,12 +69,13 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
           rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
         })(<Input />)}
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密码">
-        {getFieldDecorator('password', {
-          initialValue: '123456',
-          rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 6 }],
-        })(<Input />)}
-      </FormItem>
+      {!isEdit && (
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密码">
+          {getFieldDecorator('password', {
+            rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 6 }],
+          })(<Input type="password" />)}
+        </FormItem>
+      )}
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="昵称">
         {getFieldDecorator('nickname', {
           rules: [{ message: '请输入至少1个字符的规则描述！', min: 1 }],
@@ -86,7 +87,7 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
         })(<Input />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="状态">
-        {getFieldDecorator('state', { initialValue: true, valuePropName: 'checked' })(
+        {getFieldDecorator('status', { initialValue: true, valuePropName: 'checked' })(
           <Switch checkedChildren="开" unCheckedChildren="关" />
         )}
       </FormItem>

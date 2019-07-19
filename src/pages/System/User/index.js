@@ -35,7 +35,7 @@ class User extends Component {
     },
     {
       title: '用户状态',
-      dataIndex: 'state',
+      dataIndex: 'status',
       filters: [
         {
           text: status[0],
@@ -52,7 +52,6 @@ class User extends Component {
         );
       },
     },
-
     {
       title: '操作',
       render: (text, record) => (
@@ -66,11 +65,11 @@ class User extends Component {
           </a>
           <Divider type="vertical" />
           <a onClick={() => this.openModal(record)}>
-            <Icon type="play-circle" title="分配角色" />
+            <IconFont type="icon-role" title="分配角色" />
           </a>
           <Divider type="vertical" />
           <a onClick={() => this.openModal(record)}>
-            <IconFont type="icon-daochu" title="分配部门" />
+            <IconFont type="icon-department" title="分配部门" />
           </a>
         </Fragment>
       ),
@@ -110,7 +109,7 @@ class User extends Component {
   closeModal = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemUser/clearSelected',
+      type: 'systemUser/unselected',
     });
     this.setState({
       visible: false,
@@ -119,9 +118,13 @@ class User extends Component {
 
   toggleState = (checked, record) => {
     const { dispatch } = this.props;
+    const { id } = record;
     dispatch({
-      type: 'systemUser/update',
-      payload: { ...record, state: checked ? 1 : 0 },
+      type: 'systemUser/enable',
+      payload: {
+        id,
+        status: checked,
+      },
     });
   };
 

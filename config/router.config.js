@@ -17,9 +17,9 @@ export default [
     path: '/',
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
-    authority: ['admin', 'user'],
+    authority: ['user', 'admin'],
     routes: [
-      { path: '/', redirect: '/home', authority: ['admin', 'user'] },
+      { path: '/', redirect: '/home' },
       // home
       {
         path: '/home',
@@ -30,27 +30,28 @@ export default [
       // system
       {
         path: '/system',
-        icon: 'setting',
         name: 'system',
+        icon: 'setting',
         authority: ['admin'],
         routes: [
           {
             path: '/system/users',
-            name: 'users',
-            routes: [
-              {
-                path: '/system/users',
-                component: './System/User',
-              },
-              {
-                path: '/system/users/:id',
-                component: './System/User',
-              },
-            ],
+            name: 'user',
+            component: './System/User',
+          },
+          {
+            path: '/system/menus',
+            name: 'menu',
+            component: './System/Menu',
+          },
+          {
+            path: '/system/interfaces',
+            name: 'interface',
+            component: './System/Interface',
           },
           {
             path: '/system/dictionaries',
-            name: 'dictionaries',
+            name: 'dictionary',
             routes: [
               {
                 path: '/system/dictionaries',
@@ -67,9 +68,9 @@ export default [
       },
       // exception
       {
+        path: '/exception',
         name: 'exception',
         icon: 'warning',
-        path: '/exception',
         hideInMenu: true,
         routes: [
           {
