@@ -4,6 +4,7 @@ import { Card, Button, Input, Switch, Divider, Modal, message, Icon, Table } fro
 import IconFont from '@/components/IconFont';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import UserForm from './UserForm';
+import UserRoleForm from './UserRoleForm';
 import styles from '../System.less';
 
 const getValue = obj =>
@@ -22,6 +23,7 @@ class User extends Component {
     pageSize: 10,
     selectedRows: [],
     visible: false,
+    visibleRole: false,
   };
 
   columns = [
@@ -47,28 +49,26 @@ class User extends Component {
         },
       ],
       render: (text, record) => {
-        return (
-          <Switch checked={Boolean(text)} onClick={checked => this.toggleState(checked, record)} />
-        );
+        return <Switch checked={text} onClick={checked => this.toggleStatus(checked, record)} />;
       },
     },
     {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.openModal(record.id)}>
+          <a onClick={() => this.openModal(record)}>
             <IconFont type="icon-edit" title="编辑" />
           </a>
           <Divider type="vertical" />
-          <a onClick={() => this.handleDelete(record.id)}>
+          <a onClick={() => this.handleDelete(record)}>
             <IconFont type="icon-delete" title="删除" />
           </a>
           <Divider type="vertical" />
-          <a onClick={() => this.openModal(record)}>
+          <a onClick={() => this.openModalRole(record)}>
             <IconFont type="icon-role" title="分配角色" />
           </a>
           <Divider type="vertical" />
-          <a onClick={() => this.openModal(record)}>
+          <a onClick={() => message.info('正在开发中……')}>
             <IconFont type="icon-department" title="分配部门" />
           </a>
         </Fragment>
@@ -88,8 +88,10 @@ class User extends Component {
     });
   }
 
-  openModal = id => {
+  openModal = record => {
+    const { id } = record;
     const { dispatch } = this.props;
+    // 修改窗口
     if (id) {
       dispatch({
         type: 'systemUser/fetchById',
@@ -101,6 +103,7 @@ class User extends Component {
         },
       });
     }
+    // 新增窗口
     this.setState({
       visible: true,
     });
@@ -109,14 +112,40 @@ class User extends Component {
   closeModal = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemUser/unselected',
+      type: 'systemUser/clearInfo',
     });
     this.setState({
       visible: false,
     });
   };
 
-  toggleState = (checked, record) => {
+  openModalRole = record => {
+    const { id } = record;
+    const { dispatch } = this.props;
+    if (id) {
+      dispatch({
+        type: 'systemUser/fetchAllRole',
+        record,
+        callback: () => {
+          this.setState({
+            visibleRole: true,
+          });
+        },
+      });
+    }
+  };
+
+  closeModalRole = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'systemUser/clearRole',
+    });
+    this.setState({
+      visibleRole: false,
+    });
+  };
+
+  toggleStatus = (checked, record) => {
     const { dispatch } = this.props;
     const { id } = record;
     dispatch({
@@ -129,9 +158,8 @@ class User extends Component {
   };
 
   // 【搜索】
-  handleFormSubmit = value => {
-    // eslint-disable-next-line
-    console.log(value);
+  handleFormSubmit = () => {
+    message.info('正在开发中');
   };
 
   // 【批量删除】
@@ -159,14 +187,18 @@ class User extends Component {
         });
         dispatch({
           type: 'systemUser/fetch',
-          payload: {},
+          payload: {
+            current: 1,
+            pageSize: 10,
+          },
         });
       },
     });
   };
 
   // 【删除】
-  handleDelete = id => {
+  handleDelete = record => {
+    const { id } = record;
     Modal.confirm({
       title: '删除',
       content: '您确定要删除该用户吗？',
@@ -187,7 +219,10 @@ class User extends Component {
         });
         dispatch({
           type: 'systemUser/fetch',
-          payload: {},
+          payload: {
+            current: 1,
+            pageSize: 10,
+          },
         });
         message.success('删除成功');
       },
@@ -237,7 +272,7 @@ class User extends Component {
       systemUser: { list, pagination },
       loading,
     } = this.props;
-    const { selectedRows, visible } = this.state;
+    const { selectedRows, visible, visibleRole } = this.state;
 
     const mainSearch = (
       <div style={{ textAlign: 'center' }}>
@@ -261,7 +296,7 @@ class User extends Component {
         <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Button type="primary" title="新增" onClick={() => this.openModal()}>
+              <Button type="primary" title="新增" onClick={this.openModal}>
                 <Icon type="plus" />
               </Button>
               <Button
@@ -285,6 +320,7 @@ class User extends Component {
           </div>
         </Card>
         <UserForm {...this.props} visible={visible} handleCancel={this.closeModal} />
+        <UserRoleForm {...this.props} visible={visibleRole} handleCancel={this.closeModalRole} />
       </PageHeaderWrapper>
     );
   }

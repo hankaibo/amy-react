@@ -2,7 +2,7 @@ import { stringify } from 'qs';
 import request from '@/utils/request';
 
 /**
- * 条件查询用户列表数据。
+ * 按条件查询用户列表数据。
  * @param params
  * @returns {Promise<void>}
  */
@@ -64,7 +64,8 @@ export async function deleteBatchUser(ids) {
  * @returns {Promise<void>}
  */
 export async function updateUser(params) {
-  return request('/api/v1/users', {
+  const { id } = params;
+  return request(`/api/v1/users/${id}`, {
     method: 'PUT',
     data: {
       ...params,
@@ -80,10 +81,34 @@ export async function updateUser(params) {
  */
 export async function enabledUser(params) {
   const { id, status } = params;
-  return request(`/api/v1/users/${id}`, {
+  return request(`/api/v1/users/${id}/status`, {
     method: 'PUT',
     data: {
       status,
+    },
+  });
+}
+
+/**
+ * 查询用户所有角色。
+ * @returns {Promise<void>}
+ */
+export async function queryRoleByUser(id) {
+  return request(`/api/v1/users/${id}/roles`);
+}
+
+/**
+ * 赋予某用户某角色。
+ *
+ * @param params
+ * @returns {Promise<void>}
+ */
+export async function giveUserRole(params) {
+  const { id, ids } = params;
+  return request(`/api/v1/users/${id}/roles`, {
+    method: 'POST',
+    data: {
+      ids,
     },
   });
 }

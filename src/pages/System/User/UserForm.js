@@ -6,21 +6,21 @@ const FormItem = Form.Item;
 const UserForm = Form.create({ name: 'userForm' })(props => {
   const { visible, handleCancel, form, dispatch, systemUser } = props;
   const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
-  const { selected } = systemUser;
-  const isEdit = selected && selected.id;
+  const { info } = systemUser;
+  const isEdit = info && info.id;
 
   useEffect(() => {
     // 👍 将条件判断放置在 effect 中
-    if (Object.keys(selected).length > 0) {
-      setFieldsValue(selected);
+    if (Object.keys(info).length > 0) {
+      setFieldsValue(info);
     }
-  }, [selected, setFieldsValue]);
+  }, [info, setFieldsValue]);
 
   const handleAddOrUpdate = () => {
     validateFields((err, fieldsValue) => {
       if (err) return;
 
-      if (fieldsValue.id) {
+      if (isEdit) {
         dispatch({
           type: 'systemUser/update',
           payload: fieldsValue,
@@ -29,7 +29,10 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
             handleCancel();
             dispatch({
               type: 'systemUser/fetch',
-              payload: {},
+              payload: {
+                current: 1,
+                pageSize: 10,
+              },
             });
             message.success('修改成功');
           },
@@ -58,9 +61,9 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
       title={isEdit ? '修改' : '新增'}
       visible={visible}
       onOk={handleAddOrUpdate}
-      onCancel={() => handleCancel()}
+      onCancel={handleCancel}
     >
-      {isEdit && getFieldDecorator('id', {})(<Input hidden />)}
+      {isEdit && getFieldDecorator('id')(<Input hidden />)}
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="头像">
         {getFieldDecorator('avatar')(<Input />)}
       </FormItem>

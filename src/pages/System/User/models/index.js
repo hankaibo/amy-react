@@ -6,25 +6,34 @@ import {
   deleteBatchUser,
   updateUser,
   enabledUser,
+  queryRoleByUser,
+  giveUserRole,
 } from '../service';
 
 export default {
   namespace: 'systemUser',
 
   state: {
+    // 列表及分页
     list: [],
     pagination: {},
-    selected: {},
+    // 编辑信息
+    info: {},
+    // 分配角色列表及选中+用户id
+    userId: '',
+    roleList: [],
+    roleSelected: [],
   },
 
   effects: {
     *fetch({ payload }, { call, put }) {
       const response = yield call(queryUserList, payload);
       const { list, pageNum: current, pageSize, total } = response.data;
+      const newList = list.map(item => ({ ...item, status: !!item.status }));
       yield put({
         type: 'saveList',
         payload: {
-          list,
+          list: newList,
           pagination: { current, pageSize, total },
         },
       });
@@ -32,16 +41,18 @@ export default {
     *fetchById({ id, callback }, { call, put }) {
       const response = yield call(queryUserById, id);
       const { data } = response;
-      const user = { ...data, status: !!data.status };
+      const info = { ...data, status: !!data.status };
       yield put({
-        type: 'selected',
-        payload: user,
+        type: 'saveInfo',
+        payload: {
+          info,
+        },
       });
       if (callback) callback();
     },
     *add({ payload, callback }, { call }) {
-      const data = { ...payload, status: +payload.status };
-      yield call(addUser, data);
+      const params = { ...payload, status: +payload.status };
+      yield call(addUser, params);
       if (callback) callback();
     },
     *delete({ id, callback }, { call }) {
@@ -58,11 +69,13 @@ export default {
       const oldList = yield select(state => state.systemUser.list);
       const newList = oldList.map(item => {
         if (item.id === payload.id) return { ...item, ...payload };
-        return { ...item, status: !!item.status };
+        return item;
       });
       yield put({
         type: 'updateList',
-        payload: newList,
+        payload: {
+          list: newList,
+        },
       });
       if (callback) callback();
     },
@@ -73,7 +86,7 @@ export default {
       const oldList = yield select(state => state.systemUser.list);
       const newList = oldList.map(item => {
         if (item.id === id) return { ...item, status };
-        return { ...item, status: !!item.status };
+        return item;
       });
       yield put({
         type: 'updateList',
@@ -81,6 +94,26 @@ export default {
           list: newList,
         },
       });
+      if (callback) callback();
+    },
+    *fetchAllRole({ record, callback }, { call, put }) {
+      const { id } = record;
+      const response = yield call(queryRoleByUser, id);
+      const {
+        data: { roleList, roleSelected },
+      } = response;
+      yield put({
+        type: 'saveRoleList',
+        payload: {
+          roleList,
+          roleSelected: roleSelected.map(item => item.id),
+          userId: id,
+        },
+      });
+      if (callback) callback();
+    },
+    *giveUserRole({ payload, callback }, { call }) {
+      yield call(giveUserRole, payload);
       if (callback) callback();
     },
   },
@@ -94,16 +127,11 @@ export default {
         pagination,
       };
     },
-    selected(state, { payload }) {
+    saveInfo(state, { payload }) {
+      const { info } = payload;
       return {
         ...state,
-        selected: payload,
-      };
-    },
-    unselected(state) {
-      return {
-        ...state,
-        selected: {},
+        info,
       };
     },
     updateList(state, { payload }) {
@@ -111,6 +139,29 @@ export default {
       return {
         ...state,
         list,
+      };
+    },
+    saveRoleList(state, { payload }) {
+      const { roleList, roleSelected, userId } = payload;
+      return {
+        ...state,
+        roleList,
+        roleSelected,
+        userId,
+      };
+    },
+    clearInfo(state) {
+      return {
+        ...state,
+        info: {},
+      };
+    },
+    clearRole(state) {
+      return {
+        ...state,
+        roleList: [],
+        roleSelected: [],
+        userId: '',
       };
     },
   },
