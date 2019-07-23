@@ -26,7 +26,7 @@ export default {
       yield put({
         type: 'saveList',
         payload: {
-          list: list.map(item => ({ ...item, state: !!item.state })),
+          list: list.map(item => ({ ...item, status: !!item.status })),
           pagination: { current, pageSize, total },
         },
       });
@@ -35,7 +35,7 @@ export default {
     *fetchById({ id, callback }, { call, put }) {
       const response = yield call(queryDictById, id);
       const { data } = response;
-      const info = { ...data, state: !!data.state };
+      const info = { ...data, status: !!data.status };
       yield put({
         type: 'saveInfo',
         payload: {
