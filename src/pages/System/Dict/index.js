@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Card, Button, Input, Divider, Modal, message, Icon, Switch, Table } from 'antd';
 import IconFont from '@/components/IconFont';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import DictionaryForm from './ModalForm';
+import DictionaryForm from './DictionaryForm';
 import styles from '../System.less';
 
 const getValue = obj =>
@@ -49,7 +49,7 @@ class Dictionary extends Component {
     },
     {
       title: '状态',
-      dataIndex: 'state',
+      dataIndex: 'status',
       filters: [
         {
           text: status[0],
@@ -87,11 +87,11 @@ class Dictionary extends Component {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.openModal(record.id)}>
+          <a onClick={() => this.openModal(record)}>
             <IconFont type="icon-edit" title="编辑" />
           </a>
           <Divider type="vertical" />
-          <a onClick={() => this.handleDelete(record.id)}>
+          <a onClick={() => this.handleDelete(record)}>
             <IconFont type="icon-delete" title="删除" />
           </a>
         </Fragment>
@@ -116,7 +116,8 @@ class Dictionary extends Component {
     });
   }
 
-  openModal = id => {
+  openModal = record => {
+    const { id } = record;
     const { dispatch } = this.props;
     if (id) {
       dispatch({
@@ -128,16 +129,17 @@ class Dictionary extends Component {
           });
         },
       });
+    } else {
+      this.setState({
+        visible: true,
+      });
     }
-    this.setState({
-      visible: true,
-    });
   };
 
   closeModal = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemDictionary/clearSelected',
+      type: 'systemDictionary/clearInfo',
     });
     this.setState({
       visible: false,
@@ -147,16 +149,19 @@ class Dictionary extends Component {
   // 【开启禁用字典状态】
   toggleState = (checked, record) => {
     const { dispatch } = this.props;
+    const { id } = record;
     dispatch({
-      type: 'systemDictionary/update',
-      payload: { ...record, state: checked ? 1 : 0 },
+      type: 'systemDictionary/enable',
+      payload: {
+        id,
+        status: checked,
+      },
     });
   };
 
   // 【搜索】
-  handleFormSubmit = value => {
-    // eslint-disable-next-line
-    console.log(value);
+  handleFormSubmit = () => {
+    message.info('正在开发中……');
   };
 
   // 【批量删除】
@@ -196,7 +201,8 @@ class Dictionary extends Component {
   };
 
   // 【删除】
-  handleDelete = id => {
+  handleDelete = record => {
+    const { id } = record;
     Modal.confirm({
       title: '删除',
       content: '您确定要删除该列表吗？',
@@ -304,7 +310,7 @@ class Dictionary extends Component {
         <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Button type="primary" title="新增" onClick={() => this.openModal()}>
+              <Button type="primary" title="新增" onClick={this.openModal}>
                 <Icon type="plus" />
               </Button>
               <Button
@@ -316,7 +322,7 @@ class Dictionary extends Component {
                 <IconFont type="icon-delete" />
               </Button>
               {Object.keys(id).length > 0 && (
-                <Button title="返回" onClick={() => this.handleBack()}>
+                <Button title="返回" onClick={this.handleBack}>
                   <Icon type="rollback" />
                 </Button>
               )}

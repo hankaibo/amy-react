@@ -4,7 +4,7 @@ import { Form, Input, Modal, InputNumber, Switch, message } from 'antd';
 const FormItem = Form.Item;
 const { TextArea } = Input;
 
-const ModalForm = Form.create({ name: 'dictionaryForm' })(props => {
+const DictionaryForm = Form.create({ name: 'dictionaryForm' })(props => {
   const { visible, handleCancel, form, dispatch, systemDictionary, ...rest } = props;
   const { location, match } = rest;
   const {
@@ -14,21 +14,21 @@ const ModalForm = Form.create({ name: 'dictionaryForm' })(props => {
     params: { id: parentId },
   } = match;
   const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
-  const { selected } = systemDictionary;
-  const isEdit = selected && selected.id;
+  const { info } = systemDictionary;
+  const isEdit = info && info.id;
 
   useEffect(() => {
     // 👍 将条件判断放置在 effect 中
-    if (Object.keys(selected).length > 0) {
-      setFieldsValue(selected);
+    if (Object.keys(info).length > 0) {
+      setFieldsValue(info);
     }
-  }, [selected, setFieldsValue]);
+  }, [info, setFieldsValue]);
 
   const handleAddOrUpdate = () => {
     validateFields((err, fieldsValue) => {
       if (err) return;
 
-      if (fieldsValue.id) {
+      if (isEdit) {
         dispatch({
           type: 'systemDictionary/update',
           payload: fieldsValue,
@@ -92,7 +92,7 @@ const ModalForm = Form.create({ name: 'dictionaryForm' })(props => {
         })(<Input placeholder="请输入字典编码" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="状态">
-        {getFieldDecorator('state', { initialValue: true, valuePropName: 'checked' })(
+        {getFieldDecorator('status', { initialValue: true, valuePropName: 'checked' })(
           <Switch checkedChildren="开" unCheckedChildren="关" />
         )}
       </FormItem>
@@ -110,4 +110,4 @@ const ModalForm = Form.create({ name: 'dictionaryForm' })(props => {
   );
 });
 
-export default ModalForm;
+export default DictionaryForm;

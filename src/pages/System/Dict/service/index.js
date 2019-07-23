@@ -29,7 +29,6 @@ export async function addDict(params) {
     method: 'POST',
     data: {
       ...params,
-      method: 'post',
     },
   });
 }
@@ -64,11 +63,28 @@ export async function deleteBatchDict(ids) {
  * @param params
  * @returns {Promise<void>}
  */
-export async function updateDict(params = {}) {
-  return request('/api/v1/dicts', {
+export async function updateDict(params) {
+  const { id } = params;
+  return request(`/api/v1/dicts/${id}`, {
     method: 'PUT',
     data: {
       ...params,
+    },
+  });
+}
+
+/**
+ * 启用禁用字典。
+ *
+ * @param params
+ * @returns {Promise<void>}
+ */
+export async function enabledDict(params) {
+  const { id, status } = params;
+  return request(`/api/v1/dicts/${id}/status`, {
+    method: 'PUT',
+    data: {
+      status,
     },
   });
 }

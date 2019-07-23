@@ -5,15 +5,18 @@ import {
   deleteDict,
   deleteBatchDict,
   updateDict,
+  enabledDict,
 } from '../service';
 
 export default {
   namespace: 'systemDictionary',
 
   state: {
+    // 列表及分页
     list: [],
     pagination: {},
-    selected: {},
+    // 编辑
+    info: {},
   },
 
   effects: {
@@ -32,20 +35,18 @@ export default {
     *fetchById({ id, callback }, { call, put }) {
       const response = yield call(queryDictById, id);
       const { data } = response;
-      const dictionary = { ...data, state: !!data.state };
-      delete dictionary.createUser;
-      delete dictionary.createTime;
-      delete dictionary.modifyUser;
-      delete dictionary.modifyTime;
+      const info = { ...data, state: !!data.state };
       yield put({
-        type: 'selected',
-        payload: dictionary,
+        type: 'saveInfo',
+        payload: {
+          info,
+        },
       });
       if (callback) callback();
     },
     *add({ payload, callback }, { call }) {
-      const data = { ...payload, state: Number(payload.state) };
-      yield call(addDict, data);
+      const params = { ...payload, status: +payload.status };
+      yield call(addDict, params);
       if (callback) callback();
     },
     *delete({ id, callback }, { call }) {
@@ -56,13 +57,36 @@ export default {
       yield call(deleteBatchDict, ids);
       if (callback) callback();
     },
-    *update({ payload, callback }, { call, put }) {
-      const data = { ...payload, state: Number(payload.state) };
-      yield call(updateDict, data);
-      const response = yield call(queryDictById, data.id);
+    *update({ payload, callback }, { call, put, select }) {
+      const params = { ...payload, status: payload.status };
+      yield call(updateDict, params);
+      const oldList = yield select(state => state.systemDictionary.list);
+      const newList = oldList.map(item => {
+        if (item.id === payload.id) return { ...item, ...payload };
+        return item;
+      });
       yield put({
         type: 'updateList',
-        payload: response.data,
+        payload: {
+          list: newList,
+        },
+      });
+      if (callback) callback();
+    },
+    *enable({ payload, callback }, { call, put, select }) {
+      const { id, status } = payload;
+      const params = { id, status: +status };
+      yield call(enabledDict, params);
+      const oldList = yield select(state => state.systemDictionary.list);
+      const newList = oldList.map(item => {
+        if (item.id === id) return { ...item, status };
+        return item;
+      });
+      yield put({
+        type: 'updateList',
+        payload: {
+          list: newList,
+        },
       });
       if (callback) callback();
     },
@@ -77,29 +101,24 @@ export default {
         pagination,
       };
     },
-    selected(state, { payload }) {
+    saveInfo(state, { payload }) {
+      const { info } = payload;
       return {
         ...state,
-        selected: payload,
+        info,
       };
     },
-    clearSelected(state) {
+    clearInfo(state) {
       return {
         ...state,
-        selected: {},
+        info: {},
       };
     },
     updateList(state, { payload }) {
-      const { list } = state;
-      const newList = list.map(item => {
-        if (item.id === payload.id) {
-          return { ...payload, state: !!payload.state };
-        }
-        return item;
-      });
+      const { list } = payload;
       return {
         ...state,
-        list: newList,
+        list,
       };
     },
   },
