@@ -1,8 +1,8 @@
 import {
   queryInterfaceTree,
+  queryInterfaceById,
   queryChildrenById,
   moveInterface,
-  queryInterfaceById,
   addInterface,
   deleteInterface,
   deleteBatchInterface,
@@ -13,30 +13,33 @@ export default {
   namespace: 'systemInterface',
 
   state: {
-    treeData: [],
+    // 菜单树
+    menuTree: [],
+    // 列表
     list: [],
-    selected: {},
+    // 编辑
+    info: {},
   },
 
   effects: {
-    *fetch({ _ }, { call, put }) {
-      console.log(_);
-      const response = yield call(queryInterfaceTree);
+    *fetch({ payload }, { call, put }) {
+      const response = yield call(queryInterfaceTree, payload);
       const { data } = response;
       yield put({
-        type: 'saveTreeData',
+        type: 'saveMenuTree',
         payload: {
-          treeData: data,
+          menuTree: data,
         },
       });
     },
     *fetchChildrenById({ id }, { call, put }) {
       const response = yield call(queryChildrenById, id);
       const { data } = response;
+      const newList = data.map(item => ({ ...item, status: !!item.status }));
       yield put({
         type: 'saveList',
         payload: {
-          list: data,
+          list: newList,
         },
       });
     },
@@ -96,11 +99,11 @@ export default {
   },
 
   reducers: {
-    saveTreeData(state, { payload }) {
-      const { treeData } = payload;
+    saveMenuTree(state, { payload }) {
+      const { menuTree } = payload;
       return {
         ...state,
-        treeData,
+        menuTree,
       };
     },
     saveList(state, { payload }) {
@@ -110,17 +113,17 @@ export default {
         list,
       };
     },
-    selected(state, { payload }) {
+    saveInfo(state, { payload }) {
       const { info } = payload;
       return {
         ...state,
-        selected: info,
+        info,
       };
     },
-    unselected(state) {
+    clearInfo(state) {
       return {
         ...state,
-        selected: {},
+        info: {},
       };
     },
     updateList(state, { payload }) {

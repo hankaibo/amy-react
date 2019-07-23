@@ -60,7 +60,7 @@ const MenuForm = Form.create({ name: 'menuForm' })(props => {
       onOk={handleAddOrUpdate}
       onCancel={() => handleCancel()}
     >
-      {isEdit && getFieldDecorator('id', {})(<Input hidden />)}
+      {isEdit && getFieldDecorator('id')(<Input hidden />)}
       {getFieldDecorator('type', { initialValue: 1 })(<Input hidden />)}
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="名称">
         {getFieldDecorator('name', {

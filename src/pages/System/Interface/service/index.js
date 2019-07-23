@@ -5,7 +5,7 @@ import request from '@/utils/request';
  * @returns {Promise<void>}
  */
 export async function queryInterfaceTree() {
-  return request(`/api/v1/resources?type=1`);
+  return request('/api/v1/resources?type=1');
 }
 
 /**
@@ -24,7 +24,7 @@ export async function queryChildrenById(id) {
  */
 export async function moveInterface(params) {
   const { id, step } = params;
-  return request(`/api/v1/resources/${id}`, {
+  return request(`/api/v1/resources/${id}/location`, {
     method: 'PUT',
     data: {
       step,
@@ -72,7 +72,7 @@ export async function deleteInterface(id) {
  * @returns {Promise<void>}
  */
 export async function deleteBatchInterface(ids) {
-  return request(`/api/v1/resources`, {
+  return request('/api/v1/resources', {
     method: 'DELETE',
     data: {
       ids,
@@ -85,8 +85,9 @@ export async function deleteBatchInterface(ids) {
  * @param params
  * @returns {Promise<void>}
  */
-export async function updateInterface(params = {}) {
-  return request(`/api/v1/resources`, {
+export async function updateInterface(params) {
+  const { id } = params;
+  return request(`/api/v1/resources/${id}`, {
     method: 'PUT',
     data: {
       ...params,

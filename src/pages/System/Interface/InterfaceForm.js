@@ -6,21 +6,21 @@ const FormItem = Form.Item;
 const InterfaceForm = Form.create({ name: 'interfaceForm' })(props => {
   const { visible, handleCancel, form, dispatch, systemInterface } = props;
   const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
-  const { selected, treeData } = systemInterface;
-  const isEdit = selected && selected.id;
+  const { info, menuTree } = systemInterface;
+  const isEdit = info && info.id;
 
   useEffect(() => {
     // 👍 将条件判断放置在 effect 中
-    if (Object.keys(selected).length > 0) {
-      setFieldsValue(selected);
+    if (Object.keys(info).length > 0) {
+      setFieldsValue(info);
     }
-  }, [selected, setFieldsValue]);
+  }, [info, setFieldsValue]);
 
   const handleAddOrUpdate = () => {
     validateFields((err, fieldsValue) => {
       if (err) return;
 
-      if (fieldsValue.id) {
+      if (isEdit) {
         dispatch({
           type: 'systemInterface/update',
           payload: fieldsValue,
@@ -60,7 +60,7 @@ const InterfaceForm = Form.create({ name: 'interfaceForm' })(props => {
       onOk={handleAddOrUpdate}
       onCancel={() => handleCancel()}
     >
-      {isEdit && getFieldDecorator('id', {})(<Input hidden />)}
+      {isEdit && getFieldDecorator('id')(<Input hidden />)}
       {getFieldDecorator('type', { initialValue: 2 })(<Input hidden />)}
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="名称">
         {getFieldDecorator('name', {
@@ -92,7 +92,7 @@ const InterfaceForm = Form.create({ name: 'interfaceForm' })(props => {
           <TreeSelect
             style={{ width: 300 }}
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            treeData={treeData}
+            treeData={menuTree}
             placeholder="Please select"
             treeDefaultExpandAll
           />

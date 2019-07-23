@@ -15,7 +15,7 @@ const status = ['禁用', '启用'];
 class Interface extends Component {
   state = {
     visible: false,
-    selected: null,
+    iface: null,
   };
 
   columns = [
@@ -45,9 +45,7 @@ class Interface extends Component {
         },
       ],
       render: (text, record) => {
-        return (
-          <Switch checked={Boolean(text)} onClick={checked => this.toggleState(checked, record)} />
-        );
+        return <Switch checked={text} onClick={checked => this.toggleState(checked, record)} />;
       },
     },
     {
@@ -55,12 +53,12 @@ class Interface extends Component {
       render: (text, record) => (
         <Fragment>
           <a
-            onClick={() => this.handleGo(record.id, 1)}
+            onClick={() => this.handleGo(record, 1)}
             style={{ padding: '0 5px', marginRight: '10px' }}
           >
             <Icon type="arrow-up" title="向上" />
           </a>
-          <a onClick={() => this.handleGo(record.id, -1)}>
+          <a onClick={() => this.handleGo(record, -1)}>
             <Icon type="arrow-down" title="向下" />
           </a>
         </Fragment>
@@ -70,11 +68,11 @@ class Interface extends Component {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.openModal(record.id)}>
+          <a onClick={() => this.openModal(record)}>
             <IconFont type="icon-edit" title="编辑" />
           </a>
           <Divider type="vertical" />
-          <a onClick={() => this.handleDelete(record.id)}>
+          <a onClick={() => this.handleDelete(record)}>
             <IconFont type="icon-delete" title="删除" />
           </a>
         </Fragment>
@@ -89,7 +87,8 @@ class Interface extends Component {
     });
   }
 
-  openModal = id => {
+  openModal = record => {
+    const { id } = record;
     const { dispatch } = this.props;
     if (id) {
       dispatch({
@@ -101,16 +100,17 @@ class Interface extends Component {
           });
         },
       });
+    } else {
+      this.setState({
+        visible: true,
+      });
     }
-    this.setState({
-      visible: true,
-    });
   };
 
   closeModal = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemInterface/unselected',
+      type: 'systemInterface/clearInfo',
     });
     this.setState({
       visible: false,
@@ -136,12 +136,13 @@ class Interface extends Component {
       });
       //
       this.setState({
-        selected: info.node.props,
+        iface: info.node.props,
       });
     }
   };
 
-  handleGo = (id, step) => {
+  handleGo = (record, step) => {
+    const { id } = record;
     const { dispatch } = this.props;
     const { selected } = this.state;
     const { id: selectId } = selected;
@@ -164,7 +165,8 @@ class Interface extends Component {
   };
 
   // 【删除】
-  handleDelete = id => {
+  handleDelete = record => {
+    const { id } = record;
     Modal.confirm({
       title: '删除',
       content: '您确定要删除该菜单吗？',
@@ -180,6 +182,10 @@ class Interface extends Component {
       type: 'systemInterface/delete',
       id,
       callback: () => {
+        dispatch({
+          type: 'systemInterface/fetch',
+          payload: {},
+        });
         message.success('删除成功');
       },
     });
@@ -187,10 +193,10 @@ class Interface extends Component {
 
   render() {
     const {
-      systemInterface: { treeData, list },
+      systemInterface: { menuTree, list },
       loading,
     } = this.props;
-    const { visible, selected } = this.state;
+    const { visible, iface } = this.state;
 
     return (
       <PageHeaderWrapper>
@@ -202,19 +208,19 @@ class Interface extends Component {
               bordered={false}
               bodyStyle={{ padding: '15px' }}
             >
-              <Tree treeData={treeData} onSelect={this.handleSelect} />
+              <Tree treeData={menuTree} onSelect={this.handleSelect} />
             </Card>
           </Col>
           <Col span={18}>
             <Card
-              title={selected ? `[${selected.title}]的接口` : '接口列表'}
+              title={iface ? `[${iface.title}]的接口` : '接口列表'}
               bordered={false}
               bodyStyle={{ padding: '15px' }}
               style={{ marginTop: 10 }}
             >
               <div className={styles.tableList}>
                 <div className={styles.tableListOperator}>
-                  <Button type="primary" title="新增" onClick={() => this.openModal()}>
+                  <Button type="primary" title="新增" onClick={this.openModal}>
                     <Icon type="plus" />
                   </Button>
                 </div>

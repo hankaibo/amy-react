@@ -5,7 +5,7 @@ import request from '@/utils/request';
  * @returns {Promise<void>}
  */
 export async function queryMenuTree() {
-  return request(`/api/v1/resources?type=1`);
+  return request('/api/v1/resources?type=1');
 }
 
 /**
@@ -72,7 +72,7 @@ export async function deleteMenu(id) {
  * @returns {Promise<void>}
  */
 export async function deleteBatchMenu(ids) {
-  return request(`/api/v1/resources`, {
+  return request('/api/v1/resources', {
     method: 'DELETE',
     data: {
       ids,
