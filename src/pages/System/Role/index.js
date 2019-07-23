@@ -3,8 +3,8 @@ import { connect } from 'dva';
 import { Card, Button, Input, Switch, Divider, Modal, message, Icon, Table } from 'antd';
 import IconFont from '@/components/IconFont';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import UserForm from './UserForm';
-import UserRoleForm from './UserRoleForm';
+import RoleForm from './RoleForm';
+import RoleResourceForm from './RoleResourceForm';
 import styles from '../System.less';
 
 const getValue = obj =>
@@ -13,30 +13,30 @@ const getValue = obj =>
     .join(',');
 const status = ['禁用', '启用'];
 
-@connect(({ systemUser, loading }) => ({
-  systemUser,
-  loading: loading.models.systemUser,
+@connect(({ systemRole, loading }) => ({
+  systemRole,
+  loading: loading.models.systemRole,
 }))
-class User extends Component {
+class Role extends Component {
   state = {
     current: 1,
     pageSize: 10,
     selectedRows: [],
     visible: false,
-    visibleRole: false,
+    visibleRes: false,
   };
 
   columns = [
     {
-      title: '用户名称',
-      dataIndex: 'username',
+      title: '角色名称',
+      dataIndex: 'name',
     },
     {
-      title: '用户昵称',
-      dataIndex: 'nickname',
+      title: '角色编码',
+      dataIndex: 'code',
     },
     {
-      title: '用户状态',
+      title: '角色状态',
       dataIndex: 'status',
       filters: [
         {
@@ -49,7 +49,7 @@ class User extends Component {
         },
       ],
       render: (text, record) => {
-        return <Switch checked={text} onClick={checked => this.toggleStatus(checked, record)} />;
+        return <Switch checked={text} onClick={checked => this.toggleState(checked, record)} />;
       },
     },
     {
@@ -64,12 +64,8 @@ class User extends Component {
             <IconFont type="icon-delete" title="删除" />
           </a>
           <Divider type="vertical" />
-          <a onClick={() => this.openModalRole(record)}>
-            <IconFont type="icon-role" title="分配角色" />
-          </a>
-          <Divider type="vertical" />
-          <a onClick={() => message.info('正在开发中……')}>
-            <IconFont type="icon-department" title="分配部门" />
+          <a onClick={() => this.openModalRes(record)}>
+            <IconFont type="icon-permission" title="分配资源" />
           </a>
         </Fragment>
       ),
@@ -80,7 +76,7 @@ class User extends Component {
     const { dispatch } = this.props;
     const { pageSize, current } = this.state;
     dispatch({
-      type: 'systemUser/fetch',
+      type: 'systemRole/fetch',
       payload: {
         pageSize,
         current,
@@ -94,7 +90,7 @@ class User extends Component {
     // 修改窗口
     if (id) {
       dispatch({
-        type: 'systemUser/fetchById',
+        type: 'systemRole/fetchById',
         id,
         callback: () => {
           this.setState({
@@ -113,44 +109,44 @@ class User extends Component {
   closeModal = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemUser/clearInfo',
+      type: 'systemRole/clearInfo',
     });
     this.setState({
       visible: false,
     });
   };
 
-  openModalRole = record => {
+  openModalRes = record => {
     const { id } = record;
     const { dispatch } = this.props;
     if (id) {
       dispatch({
-        type: 'systemUser/fetchRoleList',
+        type: 'systemRole/fetchResTree',
         record,
         callback: () => {
           this.setState({
-            visibleRole: true,
+            visibleRes: true,
           });
         },
       });
     }
   };
 
-  closeModalRole = () => {
+  closeModalRes = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemUser/clearRole',
+      type: 'systemRole/clearRes',
     });
     this.setState({
-      visibleRole: false,
+      visibleRes: false,
     });
   };
 
-  toggleStatus = (checked, record) => {
+  toggleState = (checked, record) => {
     const { dispatch } = this.props;
     const { id } = record;
     dispatch({
-      type: 'systemUser/enable',
+      type: 'systemRole/enable',
       payload: {
         id,
         status: checked,
@@ -167,7 +163,7 @@ class User extends Component {
   handleBatchDelete = () => {
     Modal.confirm({
       title: '批量删除',
-      content: '您确定批量删除这些用户吗？',
+      content: '您确定批量删除这些角色吗？',
       okText: '确认',
       cancelText: '取消',
       onOk: () => this.deleteBatchItem(),
@@ -180,14 +176,14 @@ class User extends Component {
 
     if (selectedRows.length === 0) return;
     dispatch({
-      type: 'systemUser/deleteBatch',
+      type: 'systemRole/deleteBatch',
       ids: selectedRows,
       callback: () => {
         this.setState({
           selectedRows: [],
         });
         dispatch({
-          type: 'systemUser/fetch',
+          type: 'systemRole/fetch',
           payload: {
             current: 1,
             pageSize: 10,
@@ -202,7 +198,7 @@ class User extends Component {
     const { id } = record;
     Modal.confirm({
       title: '删除',
-      content: '您确定要删除该用户吗？',
+      content: '您确定要删除该角色吗？',
       okText: '确认',
       cancelText: '取消',
       onOk: () => this.deleteItem(id),
@@ -212,14 +208,14 @@ class User extends Component {
   deleteItem = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemUser/delete',
+      type: 'systemRole/delete',
       id,
       callback: () => {
         this.setState({
           selectedRows: [],
         });
         dispatch({
-          type: 'systemUser/fetch',
+          type: 'systemRole/fetch',
           payload: {
             current: 1,
             pageSize: 10,
@@ -263,22 +259,22 @@ class User extends Component {
     }
 
     dispatch({
-      type: 'systemUser/fetch',
+      type: 'systemRole/fetch',
       payload: params,
     });
   };
 
   render() {
     const {
-      systemUser: { list, pagination },
+      systemRole: { list, pagination },
       loading,
     } = this.props;
-    const { selectedRows, visible, visibleRole } = this.state;
+    const { selectedRows, visible, visibleRes } = this.state;
 
     const mainSearch = (
       <div style={{ textAlign: 'center' }}>
         <Input.Search
-          placeholder="请输入用户名称或者手机号码"
+          placeholder="请输入角色名称或者手机号码"
           enterButton
           size="large"
           onSearch={this.handleFormSubmit}
@@ -320,11 +316,11 @@ class User extends Component {
             />
           </div>
         </Card>
-        <UserForm {...this.props} visible={visible} handleCancel={this.closeModal} />
-        <UserRoleForm {...this.props} visible={visibleRole} handleCancel={this.closeModalRole} />
+        <RoleForm {...this.props} visible={visible} handleCancel={this.closeModal} />
+        <RoleResourceForm {...this.props} visible={visibleRes} handleCancel={this.closeModalRes} />
       </PageHeaderWrapper>
     );
   }
 }
 
-export default User;
+export default Role;

@@ -1,17 +1,17 @@
 import {
-  queryUserList,
-  queryUserById,
-  addUser,
-  deleteUser,
-  deleteBatchUser,
-  updateUser,
-  enabledUser,
-  queryRoleByUser,
-  giveUserRole,
+  queryRoleList,
+  queryRoleById,
+  addRole,
+  deleteRole,
+  deleteBatchRole,
+  updateRole,
+  enabledRole,
+  queryResourceByRole,
+  giveRoleResource,
 } from '../service';
 
 export default {
-  namespace: 'systemUser',
+  namespace: 'systemRole',
 
   state: {
     // 列表及分页
@@ -19,15 +19,15 @@ export default {
     pagination: {},
     // 编辑信息
     info: {},
-    // 分配角色列表及选中+用户id
-    userId: '',
-    roleList: [],
-    roleSelected: [],
+    // 分配资源树及选中
+    roleId: '',
+    resTree: [],
+    resSelected: [],
   },
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryUserList, payload);
+      const response = yield call(queryRoleList, payload);
       const { list, pageNum: current, pageSize, total } = response.data;
       const newList = list.map(item => ({ ...item, status: !!item.status }));
       yield put({
@@ -39,7 +39,7 @@ export default {
       });
     },
     *fetchById({ id, callback }, { call, put }) {
-      const response = yield call(queryUserById, id);
+      const response = yield call(queryRoleById, id);
       const { data } = response;
       const info = { ...data, status: !!data.status };
       yield put({
@@ -51,22 +51,22 @@ export default {
       if (callback) callback();
     },
     *add({ payload, callback }, { call }) {
-      const params = { ...payload, status: +payload.status };
-      yield call(addUser, params);
+      const data = { ...payload, status: +payload.status };
+      yield call(addRole, data);
       if (callback) callback();
     },
     *delete({ id, callback }, { call }) {
-      yield call(deleteUser, id);
+      yield call(deleteRole, id);
       if (callback) callback();
     },
     *deleteBatch({ ids, callback }, { call }) {
-      yield call(deleteBatchUser, ids);
+      yield call(deleteBatchRole, ids);
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put, select }) {
       const params = { ...payload, status: +payload.status };
-      yield call(updateUser, params);
-      const oldList = yield select(state => state.systemUser.list);
+      yield call(updateRole, params);
+      const oldList = yield select(state => state.systemRole.list);
       const newList = oldList.map(item => {
         if (item.id === payload.id) return { ...item, ...payload };
         return item;
@@ -82,11 +82,11 @@ export default {
     *enable({ payload, callback }, { call, put, select }) {
       const { id, status } = payload;
       const params = { id, status: +status };
-      yield call(enabledUser, params);
-      const oldList = yield select(state => state.systemUser.list);
+      yield call(enabledRole, params);
+      const oldList = yield select(state => state.systemRole.list);
       const newList = oldList.map(item => {
         if (item.id === id) return { ...item, status };
-        return item;
+        return { ...item, status: !!item.status };
       });
       yield put({
         type: 'updateList',
@@ -96,24 +96,24 @@ export default {
       });
       if (callback) callback();
     },
-    *fetchRoleList({ record, callback }, { call, put }) {
+    *fetchResTree({ record, callback }, { call, put }) {
       const { id } = record;
-      const response = yield call(queryRoleByUser, id);
+      const response = yield call(queryResourceByRole, id);
       const {
-        data: { roleList, roleSelected },
+        data: { resTree, resSelected },
       } = response;
       yield put({
-        type: 'saveRoleList',
+        type: 'saveResTree',
         payload: {
-          roleList,
-          roleSelected: roleSelected.map(item => item.id),
-          userId: id,
+          resTree,
+          resSelected: resSelected.map(item => item.id),
+          roleId: id,
         },
       });
       if (callback) callback();
     },
-    *giveUserRole({ payload, callback }, { call }) {
-      yield call(giveUserRole, payload);
+    *giveRoleResource({ payload, callback }, { call }) {
+      yield call(giveRoleResource, payload);
       if (callback) callback();
     },
   },
@@ -147,21 +147,21 @@ export default {
         list,
       };
     },
-    saveRoleList(state, { payload }) {
-      const { roleList, roleSelected, userId } = payload;
+    saveResTree(state, { payload }) {
+      const { resTree, resSelected, roleId } = payload;
       return {
         ...state,
-        roleList,
-        roleSelected,
-        userId,
+        resTree,
+        resSelected,
+        roleId,
       };
     },
-    clearRole(state) {
+    clearRes(state) {
       return {
         ...state,
-        roleList: [],
-        roleSelected: [],
-        userId: '',
+        resTree: [],
+        resSelected: [],
+        roleId: '',
       };
     },
   },

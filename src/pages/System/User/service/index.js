@@ -98,7 +98,7 @@ export async function queryRoleByUser(id) {
 }
 
 /**
- * 赋予某用户某角色。
+ * 赋予用户某角色。
  *
  * @param params
  * @returns {Promise<void>}

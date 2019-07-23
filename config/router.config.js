@@ -40,6 +40,11 @@ export default [
             component: './System/User',
           },
           {
+            path: '/system/roles',
+            name: 'role',
+            component: './System/Role',
+          },
+          {
             path: '/system/menus',
             name: 'menu',
             component: './System/Menu',
