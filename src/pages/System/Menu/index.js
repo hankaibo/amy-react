@@ -15,17 +15,13 @@ const status = ['禁用', '启用'];
 class Menu extends Component {
   state = {
     visible: false,
-    selected: null,
+    menu: null,
   };
 
   columns = [
     {
       title: '菜单名称',
       dataIndex: 'title',
-    },
-    {
-      title: '菜单url',
-      dataIndex: 'url',
     },
     {
       title: '菜单状态',
@@ -41,9 +37,7 @@ class Menu extends Component {
         },
       ],
       render: (text, record) => {
-        return (
-          <Switch checked={Boolean(text)} onClick={checked => this.toggleState(checked, record)} />
-        );
+        return <Switch checked={text} onClick={checked => this.toggleState(checked, record)} />;
       },
     },
     {
@@ -51,12 +45,12 @@ class Menu extends Component {
       render: (text, record) => (
         <Fragment>
           <a
-            onClick={() => this.handleGo(record.id, 1)}
+            onClick={() => this.handleGo(record, 1)}
             style={{ padding: '0 5px', marginRight: '10px' }}
           >
             <Icon type="arrow-up" title="向上" />
           </a>
-          <a onClick={() => this.handleGo(record.id, -1)}>
+          <a onClick={() => this.handleGo(record, -1)}>
             <Icon type="arrow-down" title="向下" />
           </a>
         </Fragment>
@@ -66,11 +60,11 @@ class Menu extends Component {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.openModal(record.id)}>
+          <a onClick={() => this.openModal(record)}>
             <IconFont type="icon-edit" title="编辑" />
           </a>
           <Divider type="vertical" />
-          <a onClick={() => this.handleDelete(record.id)}>
+          <a onClick={() => this.handleDelete(record)}>
             <IconFont type="icon-delete" title="删除" />
           </a>
         </Fragment>
@@ -85,7 +79,8 @@ class Menu extends Component {
     });
   }
 
-  openModal = id => {
+  openModal = record => {
+    const { id } = record;
     const { dispatch } = this.props;
     if (id) {
       dispatch({
@@ -97,16 +92,17 @@ class Menu extends Component {
           });
         },
       });
+    } else {
+      this.setState({
+        visible: true,
+      });
     }
-    this.setState({
-      visible: true,
-    });
   };
 
   closeModal = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemMenu/unselected',
+      type: 'systemMenu/clearInfo',
     });
     this.setState({
       visible: false,
@@ -123,7 +119,7 @@ class Menu extends Component {
 
   handleSelect = (selectedKeys, info) => {
     const { dispatch } = this.props;
-    // 当点击靠右时，selectedKeys 为空。
+    // bug? 当点击靠右时，selectedKeys 为空。
     const id = selectedKeys.length === 0 ? info.node.props.id : selectedKeys;
     dispatch({
       type: 'systemMenu/fetchChildrenById',
@@ -131,14 +127,15 @@ class Menu extends Component {
     });
     //
     this.setState({
-      selected: info.node.props,
+      menu: info.node.props,
     });
   };
 
-  handleGo = (id, step) => {
+  handleGo = (record, step) => {
+    const { id } = record;
     const { dispatch } = this.props;
-    const { selected } = this.state;
-    const { id: selectId } = selected;
+    const { menu } = this.state;
+    const { id: selectId } = menu;
     dispatch({
       type: 'systemMenu/moveMenu',
       payload: {
@@ -158,7 +155,8 @@ class Menu extends Component {
   };
 
   // 【删除】
-  handleDelete = id => {
+  handleDelete = record => {
+    const { id } = record;
     Modal.confirm({
       title: '删除',
       content: '您确定要删除该菜单吗？',
@@ -174,6 +172,10 @@ class Menu extends Component {
       type: 'systemMenu/delete',
       id,
       callback: () => {
+        dispatch({
+          type: 'systemMenu/fetch',
+          payload: {},
+        });
         message.success('删除成功');
       },
     });
@@ -181,10 +183,10 @@ class Menu extends Component {
 
   render() {
     const {
-      systemMenu: { treeData, list },
+      systemMenu: { menuTree, list },
       loading,
     } = this.props;
-    const { visible, selected } = this.state;
+    const { visible, menu } = this.state;
 
     return (
       <PageHeaderWrapper>
@@ -196,19 +198,19 @@ class Menu extends Component {
               bordered={false}
               bodyStyle={{ padding: '15px' }}
             >
-              <Tree treeData={treeData} onSelect={this.handleSelect} />
+              <Tree treeData={menuTree} onSelect={this.handleSelect} />
             </Card>
           </Col>
           <Col span={18}>
             <Card
-              title={selected ? `[${selected.title}]的子菜单` : '菜单列表'}
+              title={menu ? `[${menu.title}]的子菜单` : '菜单列表'}
               bordered={false}
               bodyStyle={{ padding: '15px' }}
               style={{ marginTop: 10 }}
             >
               <div className={styles.tableList}>
                 <div className={styles.tableListOperator}>
-                  <Button type="primary" title="新增" onClick={() => this.openModal()}>
+                  <Button type="primary" title="新增" onClick={this.openModal}>
                     <Icon type="plus" />
                   </Button>
                 </div>

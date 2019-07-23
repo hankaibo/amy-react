@@ -24,7 +24,7 @@ export async function queryChildrenById(id) {
  */
 export async function moveMenu(params) {
   const { id, step } = params;
-  return request(`/api/v1/resources/${id}`, {
+  return request(`/api/v1/resources/${id}/location`, {
     method: 'PUT',
     data: {
       step,
@@ -85,8 +85,9 @@ export async function deleteBatchMenu(ids) {
  * @param params
  * @returns {Promise<void>}
  */
-export async function updateMenu(params = {}) {
-  return request(`/api/v1/resources`, {
+export async function updateMenu(params) {
+  const { id } = params;
+  return request(`/api/v1/resources/${id}`, {
     method: 'PUT',
     data: {
       ...params,

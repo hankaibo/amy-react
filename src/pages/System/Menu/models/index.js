@@ -1,8 +1,8 @@
 import {
   queryMenuTree,
+  queryMenuById,
   queryChildrenById,
   moveMenu,
-  queryMenuById,
   addMenu,
   deleteMenu,
   deleteBatchMenu,
@@ -13,30 +13,33 @@ export default {
   namespace: 'systemMenu',
 
   state: {
-    treeData: [],
+    // 菜单树
+    menuTree: [],
+    // 列表
     list: [],
-    selected: {},
+    // 编辑信息
+    info: {},
   },
 
   effects: {
-    *fetch({ _ }, { call, put }) {
-      console.log(_);
-      const response = yield call(queryMenuTree);
+    *fetch({ payload }, { call, put }) {
+      const response = yield call(queryMenuTree, payload);
       const { data } = response;
       yield put({
-        type: 'saveTreeData',
+        type: 'saveMenuTree',
         payload: {
-          treeData: data,
+          menuTree: data,
         },
       });
     },
     *fetchChildrenById({ id }, { call, put }) {
       const response = yield call(queryChildrenById, id);
       const { data } = response;
+      const newList = data.map(item => ({ ...item, status: !!item.status }));
       yield put({
         type: 'saveList',
         payload: {
-          list: data,
+          list: newList,
         },
       });
     },
@@ -47,11 +50,11 @@ export default {
     *fetchById({ id, callback }, { call, put }) {
       const response = yield call(queryMenuById, id);
       const { data } = response;
-      const menu = { ...data, status: !!data.status };
+      const info = { ...data, status: !!data.status };
       yield put({
-        type: 'selected',
+        type: 'saveInfo',
         payload: {
-          menu,
+          info,
         },
       });
       if (callback) callback();
@@ -96,11 +99,11 @@ export default {
   },
 
   reducers: {
-    saveTreeData(state, { payload }) {
-      const { treeData } = payload;
+    saveMenuTree(state, { payload }) {
+      const { menuTree } = payload;
       return {
         ...state,
-        treeData,
+        menuTree,
       };
     },
     saveList(state, { payload }) {
@@ -110,17 +113,17 @@ export default {
         list,
       };
     },
-    selected(state, { payload }) {
-      const { menu } = payload;
+    saveInfo(state, { payload }) {
+      const { info } = payload;
       return {
         ...state,
-        selected: menu,
+        info,
       };
     },
-    unselected(state) {
+    clearInfo(state) {
       return {
         ...state,
-        selected: {},
+        info: {},
       };
     },
     updateList(state, { payload }) {

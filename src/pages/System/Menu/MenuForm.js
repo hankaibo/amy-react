@@ -6,21 +6,21 @@ const FormItem = Form.Item;
 const MenuForm = Form.create({ name: 'menuForm' })(props => {
   const { visible, handleCancel, form, dispatch, systemMenu } = props;
   const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
-  const { selected, treeData } = systemMenu;
-  const isEdit = selected && selected.id;
+  const { info, menuTree } = systemMenu;
+  const isEdit = info && info.id;
 
   useEffect(() => {
     // 👍 将条件判断放置在 effect 中
-    if (Object.keys(selected).length > 0) {
-      setFieldsValue(selected);
+    if (Object.keys(info).length > 0) {
+      setFieldsValue(info);
     }
-  }, [selected, setFieldsValue]);
+  }, [info, setFieldsValue]);
 
   const handleAddOrUpdate = () => {
     validateFields((err, fieldsValue) => {
       if (err) return;
 
-      if (fieldsValue.id) {
+      if (isEdit) {
         dispatch({
           type: 'systemMenu/update',
           payload: fieldsValue,
@@ -77,8 +77,8 @@ const MenuForm = Form.create({ name: 'menuForm' })(props => {
           <TreeSelect
             style={{ width: 300 }}
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            treeData={treeData}
-            placeholder="Please select"
+            treeData={menuTree}
+            placeholder="请选择菜单"
             treeDefaultExpandAll
           />
         )}
