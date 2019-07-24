@@ -108,7 +108,7 @@ class SettingDrawer extends Component {
     });
   };
 
-  toggleContent = () => {
+  togglerContent = () => {
     const { collapse } = this.state;
     this.setState({ collapse: !collapse });
   };
@@ -134,10 +134,10 @@ class SettingDrawer extends Component {
       <Drawer
         visible={collapse}
         width={300}
-        onClose={this.toggleContent}
+        onClose={this.togglerContent}
         placement="right"
         handler={
-          <div className={styles.handle} onClick={this.toggleContent}>
+          <div className={styles.handle} onClick={this.togglerContent}>
             <Icon
               type={collapse ? 'close' : 'setting'}
               style={{
