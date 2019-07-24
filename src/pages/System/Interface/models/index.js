@@ -52,7 +52,7 @@ export default {
       const { data } = response;
       const info = { ...data, status: !!data.status };
       yield put({
-        type: 'selected',
+        type: 'saveInfo',
         payload: {
           info,
         },

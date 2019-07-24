@@ -45,12 +45,12 @@ class Menu extends Component {
       render: (text, record) => (
         <Fragment>
           <a
-            onClick={() => this.handleGo(record, 1)}
+            onClick={() => this.handleGo(record, 'UP')}
             style={{ padding: '0 5px', marginRight: '10px' }}
           >
             <Icon type="arrow-up" title="向上" />
           </a>
-          <a onClick={() => this.handleGo(record, -1)}>
+          <a onClick={() => this.handleGo(record, 'DOWN')}>
             <Icon type="arrow-down" title="向下" />
           </a>
         </Fragment>
@@ -131,16 +131,14 @@ class Menu extends Component {
     });
   };
 
-  handleGo = (record, step) => {
+  handleGo = (record, direction) => {
     const { id } = record;
     const { dispatch } = this.props;
-    const { menu } = this.state;
-    const { id: selectId } = menu;
     dispatch({
       type: 'systemMenu/moveMenu',
       payload: {
         id,
-        step,
+        direction,
       },
       callback: () => {
         dispatch({
@@ -148,7 +146,7 @@ class Menu extends Component {
         });
         dispatch({
           type: 'systemMenu/fetchChildrenById',
-          id: selectId,
+          id,
         });
       },
     });

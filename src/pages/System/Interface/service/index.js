@@ -23,11 +23,11 @@ export async function queryChildrenById(id) {
  * @returns {Promise<void>}
  */
 export async function moveInterface(params) {
-  const { id, step } = params;
+  const { id, direction } = params;
   return request(`/api/v1/resources/${id}/location`, {
     method: 'PUT',
     data: {
-      step,
+      direction,
     },
   });
 }

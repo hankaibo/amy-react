@@ -57,6 +57,7 @@ export default [
           {
             path: '/system/dictionaries',
             name: 'dictionary',
+            authority: ['user', 'admin'],
             routes: [
               {
                 path: '/system/dictionaries',
@@ -68,6 +69,20 @@ export default [
                 component: './System/Dict',
               },
             ],
+          },
+        ],
+      },
+      // fe
+      {
+        path: '/fe',
+        name: 'fe',
+        icon: 'setting',
+        authority: ['user'],
+        routes: [
+          {
+            path: '/fe/hello',
+            name: 'hello',
+            component: './Hello',
           },
         ],
       },

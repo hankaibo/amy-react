@@ -53,12 +53,12 @@ class Interface extends Component {
       render: (text, record) => (
         <Fragment>
           <a
-            onClick={() => this.handleGo(record, 1)}
+            onClick={() => this.handleGo(record, 'UP')}
             style={{ padding: '0 5px', marginRight: '10px' }}
           >
             <Icon type="arrow-up" title="向上" />
           </a>
-          <a onClick={() => this.handleGo(record, -1)}>
+          <a onClick={() => this.handleGo(record, 'DOWN')}>
             <Icon type="arrow-down" title="向下" />
           </a>
         </Fragment>
@@ -141,16 +141,16 @@ class Interface extends Component {
     }
   };
 
-  handleGo = (record, step) => {
+  handleGo = (record, direction) => {
     const { id } = record;
     const { dispatch } = this.props;
-    const { selected } = this.state;
-    const { id: selectId } = selected;
+    const { iface } = this.state;
+    const { id: selectId } = iface;
     dispatch({
       type: 'systemInterface/moveInterface',
       payload: {
         id,
-        step,
+        direction,
       },
       callback: () => {
         dispatch({

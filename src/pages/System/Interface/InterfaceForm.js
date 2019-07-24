@@ -78,7 +78,9 @@ const InterfaceForm = Form.create({ name: 'interfaceForm' })(props => {
         )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="方法类型">
-        {getFieldDecorator('method')(
+        {getFieldDecorator('method', {
+          rules: [{ required: true, message: '请选择方法类型。' }],
+        })(
           <Radio.Group>
             <Radio value="GET">GET</Radio>
             <Radio value="POST">POST</Radio>
