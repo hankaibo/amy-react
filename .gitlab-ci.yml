@@ -13,6 +13,8 @@ install_dependencies:
   stage: install
   script:
     - npm install
+  only:
+    - develop
   artifacts:
     paths:
       - node_modules/
