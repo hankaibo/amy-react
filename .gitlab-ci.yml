@@ -15,9 +15,6 @@ install_dependencies:
     - npm install
   only:
     - develop
-  artifacts:
-    paths:
-      - node_modules/
   tags:
     - gitlab-runner-fe-tag-v.1.0
 
