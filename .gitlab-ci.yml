@@ -1,28 +1,43 @@
-before_script: # 定义在job执行之前的执行脚本(就一次)
+before_script:
   - echo "hello gitlab ci"
 
 stages:
   - install
-  - start
+  - build
+  - deploy
 
 cache:
   paths:
     - node_modules/
+    - dist
 
-install_dependencies:
+install_job:
   stage: install
-  script:
-    - npm install
   only:
     - develop
+  script:
+    - echo 'install ...'
+    - npm install
   tags:
     - gitlab-runner-fe-tag-v.1.0
 
-job-start:
-  stage: start
-  script:
-    - npm run start
+build_job:
+  stage: build
   only:
     - develop
+  script:
+    - echo 'build ...'
+    - npm run build
+  tags:
+    - gitlab-runner-fe-tag-v.1.0
+
+deploy_job:
+  stage: deploy
+  only:
+    - develop
+  script:
+    - echo 'deploy ...'
+    - cd dist
+    - scp -r ./* D:/gitlab-runner/nginx-1.16.0/runner/fe
   tags:
     - gitlab-runner-fe-tag-v.1.0
