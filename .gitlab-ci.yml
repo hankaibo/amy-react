@@ -18,6 +18,8 @@ install_dependencies:
   artifacts:
     paths:
       - node_modules/
+  tags:
+    - gitlab-runner-fe-tag-v.1.0
 
 job-start:
   stage: start
@@ -25,3 +27,5 @@ job-start:
     - npm run start
   only:
     - develop
+  tags:
+    - gitlab-runner-fe-tag-v.1.0
