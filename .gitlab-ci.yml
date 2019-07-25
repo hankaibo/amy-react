@@ -1,0 +1,10 @@
+# 定义 stages
+stages:
+  - test
+
+# 定义 job
+job1:
+  stage: test
+  script:
+    - echo "I am job1"
+    - echo "I am in test stage"
