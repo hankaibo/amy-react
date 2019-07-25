@@ -1,10 +1,25 @@
-# 定义 stages
-stages:
-  - test
+before_script: # 定义在job执行之前的执行脚本(就一次)
+  - echo "hello gitlab ci"
 
-# 定义 job
-job1:
-  stage: test
+stages:
+  - install
+  - start
+
+cache:
+  paths:
+    - node_modules/
+
+install_dependencies:
+  stage: install
   script:
-    - echo "I am job1"
-    - echo "I am in test stage"
+    - npm install
+  artifacts:
+    paths:
+      - node_modules/
+
+job-start:
+  stage: start
+  script:
+    - npm run start
+  only:
+    - develop
