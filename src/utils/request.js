@@ -66,7 +66,7 @@ const errorHandler = error => {
  */
 const request = extend({
   headers: {
-    Authorization: `${localStorage.getItem('jwt')}`,
+    Authorization: `Bearer ${localStorage.getItem('jwt')}`,
   },
   maxCache: 10, // 最大缓存个数, 超出后会自动清掉按时间最开始的一个.
   // prefix: '/api/v1', // prefix
