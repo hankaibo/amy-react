@@ -31,27 +31,30 @@ export default [
         path: '/system',
         name: 'system',
         icon: 'setting',
-        authority: ['admin'],
         routes: [
           {
             path: '/system/users',
             name: 'user',
             component: './System/User',
+            authority: ['admin'],
           },
           {
             path: '/system/roles',
             name: 'role',
             component: './System/Role',
+            authority: ['admin'],
           },
           {
             path: '/system/menus',
             name: 'menu',
             component: './System/Menu',
+            authority: ['admin'],
           },
           {
             path: '/system/interfaces',
             name: 'interface',
             component: './System/Interface',
+            authority: ['admin'],
           },
           {
             path: '/system/dictionaries',
@@ -68,20 +71,6 @@ export default [
                 component: './System/Dict',
               },
             ],
-          },
-        ],
-      },
-      // fe
-      {
-        path: '/fe',
-        name: 'fe',
-        icon: 'setting',
-        authority: ['user'],
-        routes: [
-          {
-            path: '/fe/hello',
-            name: 'hello',
-            component: './Hello',
           },
         ],
       },
