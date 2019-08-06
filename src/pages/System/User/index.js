@@ -3,8 +3,8 @@ import { connect } from 'dva';
 import { Card, Button, Input, Switch, Divider, Modal, message, Icon, Table } from 'antd';
 import IconFont from '@/components/IconFont';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import UserForm from './UserForm';
-import UserRoleForm from './UserRoleForm';
+import UserForm from './components/UserForm';
+import UserRoleForm from './components/UserRoleForm';
 import styles from '../System.less';
 
 const getValue = obj =>
@@ -19,11 +19,7 @@ const status = ['禁用', '启用'];
 }))
 class User extends Component {
   state = {
-    current: 1,
-    pageSize: 10,
     selectedRows: [],
-    visible: false,
-    visibleRole: false,
   };
 
   columns = [
@@ -56,17 +52,21 @@ class User extends Component {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.openModal(record)}>
-            <IconFont type="icon-edit" title="编辑" />
-          </a>
+          <UserForm isEdit record={record}>
+            <a>
+              <IconFont type="icon-edit" title="编辑" />
+            </a>
+          </UserForm>
           <Divider type="vertical" />
           <a onClick={() => this.handleDelete(record)}>
             <IconFont type="icon-delete" title="删除" />
           </a>
           <Divider type="vertical" />
-          <a onClick={() => this.openModalRole(record)}>
-            <IconFont type="icon-role" title="分配角色" />
-          </a>
+          <UserRoleForm record={record}>
+            <a>
+              <IconFont type="icon-role" title="分配角色" />
+            </a>
+          </UserRoleForm>
           <Divider type="vertical" />
           <a onClick={() => message.info('正在开发中……')}>
             <IconFont type="icon-department" title="分配部门" />
@@ -78,73 +78,14 @@ class User extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    const { pageSize, current } = this.state;
     dispatch({
       type: 'systemUser/fetch',
       payload: {
-        pageSize,
-        current,
+        current: 1,
+        pageSize: 10,
       },
     });
   }
-
-  openModal = record => {
-    const { id } = record;
-    const { dispatch } = this.props;
-    // 修改窗口
-    if (id) {
-      dispatch({
-        type: 'systemUser/fetchById',
-        id,
-        callback: () => {
-          this.setState({
-            visible: true,
-          });
-        },
-      });
-    } else {
-      // 新增窗口
-      this.setState({
-        visible: true,
-      });
-    }
-  };
-
-  closeModal = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'systemUser/clearInfo',
-    });
-    this.setState({
-      visible: false,
-    });
-  };
-
-  openModalRole = record => {
-    const { id } = record;
-    const { dispatch } = this.props;
-    if (id) {
-      dispatch({
-        type: 'systemUser/fetchRoleList',
-        record,
-        callback: () => {
-          this.setState({
-            visibleRole: true,
-          });
-        },
-      });
-    }
-  };
-
-  closeModalRole = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'systemUser/clearRole',
-    });
-    this.setState({
-      visibleRole: false,
-    });
-  };
 
   toggleStatus = (checked, record) => {
     const { dispatch } = this.props;
@@ -181,17 +122,12 @@ class User extends Component {
     if (selectedRows.length === 0) return;
     dispatch({
       type: 'systemUser/deleteBatch',
-      ids: selectedRows,
+      payload: {
+        ids: selectedRows,
+      },
       callback: () => {
         this.setState({
           selectedRows: [],
-        });
-        dispatch({
-          type: 'systemUser/fetch',
-          payload: {
-            current: 1,
-            pageSize: 10,
-          },
         });
       },
     });
@@ -213,17 +149,10 @@ class User extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'systemUser/delete',
-      id,
+      payload: id,
       callback: () => {
         this.setState({
           selectedRows: [],
-        });
-        dispatch({
-          type: 'systemUser/fetch',
-          payload: {
-            current: 1,
-            pageSize: 10,
-          },
         });
         message.success('删除成功');
       },
@@ -248,10 +177,6 @@ class User extends Component {
     }, {});
 
     const { current, pageSize } = pagination;
-    this.setState({
-      current,
-      pageSize,
-    });
 
     const params = {
       current,
@@ -273,7 +198,7 @@ class User extends Component {
       systemUser: { list, pagination },
       loading,
     } = this.props;
-    const { selectedRows, visible, visibleRole } = this.state;
+    const { selectedRows } = this.state;
 
     const mainSearch = (
       <div style={{ textAlign: 'center' }}>
@@ -297,9 +222,11 @@ class User extends Component {
         <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Button type="primary" title="新增" onClick={this.openModal}>
-                <Icon type="plus" />
-              </Button>
+              <UserForm>
+                <Button type="primary" title="新增" onClick={this.openModal}>
+                  <Icon type="plus" />
+                </Button>
+              </UserForm>
               <Button
                 type="danger"
                 disabled={selectedRows.length <= 0}
@@ -320,8 +247,6 @@ class User extends Component {
             />
           </div>
         </Card>
-        <UserForm {...this.props} visible={visible} handleCancel={this.closeModal} />
-        <UserRoleForm {...this.props} visible={visibleRole} handleCancel={this.closeModalRole} />
       </PageHeaderWrapper>
     );
   }

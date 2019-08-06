@@ -17,12 +17,6 @@ export default {
     // 列表及分页
     list: [],
     pagination: {},
-    // 编辑信息
-    info: {},
-    // 分配角色列表及选中+用户id
-    userId: '',
-    roleList: [],
-    roleSelected: [],
   },
 
   effects: {
@@ -38,43 +32,57 @@ export default {
         },
       });
     },
-    *fetchById({ id, callback }, { call, put }) {
+    *fetchById({ payload, callback }, { call }) {
+      const { id } = payload;
       const response = yield call(queryUserById, id);
       const { data } = response;
-      const info = { ...data, status: !!data.status };
+      if (callback) callback();
+      return { ...data, status: !!data.status };
+    },
+    *add({ payload, callback }, { call, put, select }) {
+      const params = { ...payload, status: +payload.status };
+      yield call(addUser, params);
+      const pagination = yield select(state => state.systemUser.pagination);
       yield put({
-        type: 'saveInfo',
+        type: 'fetch',
         payload: {
-          info,
+          ...pagination,
         },
       });
       if (callback) callback();
     },
-    *add({ payload, callback }, { call }) {
-      const params = { ...payload, status: +payload.status };
-      yield call(addUser, params);
-      if (callback) callback();
-    },
-    *delete({ id, callback }, { call }) {
+    *delete({ payload, callback }, { call, put, select }) {
+      const { id } = payload;
       yield call(deleteUser, id);
+      const pagination = yield select(state => state.systemUser.pagination);
+      yield put({
+        type: 'fetch',
+        payload: {
+          ...pagination,
+        },
+      });
       if (callback) callback();
     },
-    *deleteBatch({ ids, callback }, { call }) {
+    *deleteBatch({ payload, callback }, { call, put, select }) {
+      const { ids } = payload;
       yield call(deleteBatchUser, ids);
+      const pagination = yield select(state => state.systemUser.pagination);
+      yield put({
+        type: 'fetch',
+        payload: {
+          ...pagination,
+        },
+      });
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put, select }) {
       const params = { ...payload, status: +payload.status };
       yield call(updateUser, params);
-      const oldList = yield select(state => state.systemUser.list);
-      const newList = oldList.map(item => {
-        if (item.id === payload.id) return { ...item, ...payload };
-        return item;
-      });
+      const pagination = yield select(state => state.systemUser.pagination);
       yield put({
-        type: 'updateList',
+        type: 'fetch',
         payload: {
-          list: newList,
+          ...pagination,
         },
       });
       if (callback) callback();
@@ -83,34 +91,23 @@ export default {
       const { id, status } = payload;
       const params = { id, status: +status };
       yield call(enabledUser, params);
-      const oldList = yield select(state => state.systemUser.list);
-      const newList = oldList.map(item => {
-        if (item.id === id) return { ...item, status };
-        return item;
-      });
+      const pagination = yield select(state => state.systemUser.pagination);
       yield put({
-        type: 'updateList',
+        type: 'fetch',
         payload: {
-          list: newList,
+          ...pagination,
         },
       });
       if (callback) callback();
     },
-    *fetchRoleList({ record, callback }, { call, put }) {
-      const { id } = record;
+    *fetchRoleList({ payload, callback }, { call }) {
+      const { id } = payload;
       const response = yield call(queryRoleByUser, id);
       const {
         data: { roleList, roleSelected },
       } = response;
-      yield put({
-        type: 'saveRoleList',
-        payload: {
-          roleList,
-          roleSelected: roleSelected.map(item => item.id),
-          userId: id,
-        },
-      });
       if (callback) callback();
+      return { roleList, roleSelected: roleSelected.map(item => item.id) };
     },
     *giveUserRole({ payload, callback }, { call }) {
       yield call(giveUserRole, payload);
@@ -125,43 +122,6 @@ export default {
         ...state,
         list,
         pagination,
-      };
-    },
-    saveInfo(state, { payload }) {
-      const { info } = payload;
-      return {
-        ...state,
-        info,
-      };
-    },
-    clearInfo(state) {
-      return {
-        ...state,
-        info: {},
-      };
-    },
-    updateList(state, { payload }) {
-      const { list } = payload;
-      return {
-        ...state,
-        list,
-      };
-    },
-    saveRoleList(state, { payload }) {
-      const { roleList, roleSelected, userId } = payload;
-      return {
-        ...state,
-        roleList,
-        roleSelected,
-        userId,
-      };
-    },
-    clearRole(state) {
-      return {
-        ...state,
-        roleList: [],
-        roleSelected: [],
-        userId: '',
       };
     },
   },
