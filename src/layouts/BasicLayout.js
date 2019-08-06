@@ -13,7 +13,7 @@ import getPageTitle from '@/utils/getPageTitle';
 import styles from './BasicLayout.less';
 
 // lazy load SettingDrawer
-// const SettingDrawer = React.lazy(() => import('@/components/SettingDrawer'));
+const SettingDrawer = React.lazy(() => import('@/components/SettingDrawer'));
 
 const { Content } = Layout;
 
@@ -51,10 +51,9 @@ class BasicLayout extends React.Component {
     dispatch({
       type: 'user/fetchCurrent',
     });
-    // bug https://github.com/ant-design/ant-design/issues/17387
-    // dispatch({
-    //   type: 'setting/getSetting',
-    // });
+    dispatch({
+      type: 'setting/getSetting',
+    });
     dispatch({
       type: 'menu/getMenuData',
       payload: { routes, path, authority },
@@ -92,9 +91,7 @@ class BasicLayout extends React.Component {
     if (process.env.NODE_ENV === 'production') {
       return null;
     }
-    // bug https://github.com/ant-design/ant-design/issues/17387
-    // return <SettingDrawer />;
-    return null;
+    return <SettingDrawer />;
   };
 
   render() {
