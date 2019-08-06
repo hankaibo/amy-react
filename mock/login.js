@@ -3,7 +3,7 @@ export default {
   // GET POST 可省略
   'POST /api/v1/login': (req, res) => {
     const { password, username, type } = req.body;
-    if (password === 'q' && username === 'admin') {
+    if (password === '123456' && username === 'admin') {
       res.send({
         code: 200,
         status: 'ok',
@@ -16,7 +16,7 @@ export default {
       });
       return;
     }
-    if (password === 'q' && username === 'user') {
+    if (password === '123456' && username === 'user') {
       res.send({
         code: 200,
         status: 'ok',
@@ -37,8 +37,5 @@ export default {
   },
   'POst /api/v1/logout': (req, res) => {
     res.send({ code: 200, success: true, message: '用户登出成功。' });
-  },
-  'POST /api/v1/register': (req, res) => {
-    res.send({ status: 'ok', currentAuthority: 'user' });
   },
 };

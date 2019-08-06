@@ -6,7 +6,7 @@ export default {
   'app.logo.name': 'Qing ',
   'app.login.username': 'username',
   'app.login.password': 'password',
-  'app.login.message-invalid-credentials': 'Invalid username or password（admin|user/q）',
+  'app.login.message-invalid-credentials': 'Invalid username or password（admin|user/123456）',
   'app.login.message-invalid-verification-code': 'Invalid verification code',
   'app.login.tab-login-credentials': 'Credentials',
   'app.login.tab-login-mobile': 'Mobile number',

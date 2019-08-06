@@ -6,7 +6,7 @@ export default {
   'app.logo.name': '清創網禦',
   'app.login.username': '賬戶',
   'app.login.password': '密碼',
-  'app.login.message-invalid-credentials': '賬戶或密碼錯誤（admin|user/q）',
+  'app.login.message-invalid-credentials': '賬戶或密碼錯誤（admin|user/123456）',
   'app.login.message-invalid-verification-code': '驗證碼錯誤',
   'app.login.tab-login-credentials': '賬戶密碼登錄',
   'app.login.tab-login-mobile': '手機號登錄',
