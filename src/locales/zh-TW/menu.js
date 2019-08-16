@@ -2,8 +2,15 @@ export default {
   'menu.home': '首頁',
   'menu.login': '登錄',
   'menu.register': '註冊',
+  // system
+  'menu.system': '系統配置',
+  'menu.system.user': '用戶管理',
+  'menu.system.role': '角色管理',
+  'menu.system.menu': '菜單管理',
+  'menu.system.interface': '接口保護',
+  'menu.system.dictionary': '字典管理',
   // exception
-  'menu.exception': '异常页',
+  'menu.exception': '異常頁',
   'menu.exception.not-permission': '403',
   'menu.exception.not-find': '404',
   'menu.exception.server-error': '500',

@@ -13,10 +13,13 @@ const { Tab, Username, Password, Mobile, Captcha, Submit } = Login;
   submitting: loading.effects['login/login'],
 }))
 class LoginPage extends Component {
-  state = {
-    type: 'account',
-    autoLogin: true,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      type: 'account',
+      autoLogin: true,
+    };
+  }
 
   onTabChange = type => {
     this.setState({ type });

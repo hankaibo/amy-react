@@ -65,13 +65,28 @@ const errorHandler = error => {
  * 配置request请求时的默认参数
  */
 const request = extend({
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-  },
   maxCache: 10, // 最大缓存个数, 超出后会自动清掉按时间最开始的一个.
-  // prefix: '/api/v1', // prefix
+  prefix: '/api/v1', // 默认前缀
   errorHandler, // 默认错误处理
-  credentials: 'include', // 默认请求是否带上cookie
+  credentials: 'omit', // 默认请求是否带上cookie
+});
+
+request.interceptors.request.use(async (url, options) => {
+  const token = localStorage.getItem('jwt');
+  if (token) {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+    return {
+      url,
+      options: { ...options, headers },
+    };
+  }
+  return {
+    url,
+    options: { ...options },
+  };
 });
 
 export default request;

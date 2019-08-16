@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Form, Input, Modal, Switch, message, TreeSelect } from 'antd';
+import { Form, Input, Modal, Switch, message, TreeSelect, Tooltip, Icon } from 'antd';
 
 const FormItem = Form.Item;
 
@@ -64,6 +64,22 @@ const MenuForm = Form.create({ name: 'menuForm' })(props => {
       {getFieldDecorator('type', { initialValue: 1 })(<Input hidden />)}
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="名称">
         {getFieldDecorator('name', {
+          rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
+        })(<Input />)}
+      </FormItem>
+      <FormItem
+        labelCol={{ span: 5 }}
+        wrapperCol={{ span: 15 }}
+        label={
+          <span>
+            <span>编码</span>
+            <Tooltip title="请保证与前台路由组织的name一致，以实现动态菜单功能。">
+              <Icon type="question-circle-o" />
+            </Tooltip>
+          </span>
+        }
+      >
+        {getFieldDecorator('code', {
           rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
         })(<Input />)}
       </FormItem>

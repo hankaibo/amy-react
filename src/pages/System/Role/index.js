@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Card, Button, Input, Switch, Divider, Modal, message, Icon, Table } from 'antd';
 import IconFont from '@/components/IconFont';
@@ -18,14 +18,6 @@ const status = ['禁用', '启用'];
   loading: loading.models.systemRole,
 }))
 class Role extends Component {
-  state = {
-    current: 1,
-    pageSize: 10,
-    selectedRows: [],
-    visible: false,
-    visibleRes: false,
-  };
-
   columns = [
     {
       title: '角色名称',
@@ -55,7 +47,7 @@ class Role extends Component {
     {
       title: '操作',
       render: (text, record) => (
-        <Fragment>
+        <>
           <a onClick={() => this.openModal(record)}>
             <IconFont type="icon-edit" title="编辑" />
           </a>
@@ -67,10 +59,21 @@ class Role extends Component {
           <a onClick={() => this.openModalRes(record)}>
             <IconFont type="icon-permission" title="分配资源" />
           </a>
-        </Fragment>
+        </>
       ),
     },
   ];
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      current: 1,
+      pageSize: 10,
+      selectedRows: [],
+      visible: false,
+      visibleRes: false,
+    };
+  }
 
   componentDidMount() {
     const { dispatch } = this.props;

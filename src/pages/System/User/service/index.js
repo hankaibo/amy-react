@@ -7,7 +7,7 @@ import request from '@/utils/request';
  * @returns {Promise<void>}
  */
 export async function queryUserList(params) {
-  return request(`/api/v1/users?${stringify(params)}`);
+  return request(`/users?${stringify(params)}`);
 }
 
 /**
@@ -16,7 +16,7 @@ export async function queryUserList(params) {
  * @returns {Promise<void>}
  */
 export async function queryUserById(id) {
-  return request(`/api/v1/users/${id}`);
+  return request(`/users/${id}`);
 }
 
 /**
@@ -25,7 +25,7 @@ export async function queryUserById(id) {
  * @returns {Promise<void>}
  */
 export async function addUser(params) {
-  return request('/api/v1/users', {
+  return request('/users', {
     method: 'POST',
     data: {
       ...params,
@@ -39,7 +39,7 @@ export async function addUser(params) {
  * @returns {Promise<void>}
  */
 export async function deleteUser(id) {
-  return request(`/api/v1/users/${id}`, {
+  return request(`/users/${id}`, {
     method: 'DELETE',
   });
 }
@@ -50,7 +50,7 @@ export async function deleteUser(id) {
  * @returns {Promise<void>}
  */
 export async function deleteBatchUser(ids) {
-  return request('/api/v1/users', {
+  return request('/users', {
     method: 'DELETE',
     data: {
       ids,
@@ -65,7 +65,7 @@ export async function deleteBatchUser(ids) {
  */
 export async function updateUser(params) {
   const { id } = params;
-  return request(`/api/v1/users/${id}`, {
+  return request(`/users/${id}`, {
     method: 'PUT',
     data: {
       ...params,
@@ -81,7 +81,7 @@ export async function updateUser(params) {
  */
 export async function enabledUser(params) {
   const { id, status } = params;
-  return request(`/api/v1/users/${id}/status`, {
+  return request(`/users/${id}/status`, {
     method: 'PUT',
     data: {
       status,
@@ -94,7 +94,7 @@ export async function enabledUser(params) {
  * @returns {Promise<void>}
  */
 export async function queryRoleByUser(id) {
-  return request(`/api/v1/users/${id}/roles`);
+  return request(`/users/${id}/roles`);
 }
 
 /**
@@ -105,7 +105,7 @@ export async function queryRoleByUser(id) {
  */
 export async function giveUserRole(params) {
   const { id, ids } = params;
-  return request(`/api/v1/users/${id}/roles`, {
+  return request(`/users/${id}/roles`, {
     method: 'POST',
     data: {
       ids,

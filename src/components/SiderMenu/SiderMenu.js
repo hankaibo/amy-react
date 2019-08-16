@@ -15,6 +15,7 @@ let firstMount = true;
 export default class SiderMenu extends PureComponent {
   constructor(props) {
     super(props);
+    // eslint-disable-next-line react/state-in-constructor
     this.state = {
       openKeys: getDefaultCollapsedSubMenus(props),
     };

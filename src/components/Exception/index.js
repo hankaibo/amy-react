@@ -5,11 +5,6 @@ import config from './typeConfig';
 import styles from './index.less';
 
 class Exception extends React.PureComponent {
-  static defaultProps = {
-    backText: 'back to home',
-    redirect: '/',
-  };
-
   constructor(props) {
     super(props);
     this.state = {};
@@ -57,5 +52,10 @@ class Exception extends React.PureComponent {
     );
   }
 }
+
+Exception.defaultProps = {
+  backText: 'back to home',
+  redirect: '/',
+};
 
 export default Exception;

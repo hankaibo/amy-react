@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import router from 'umi/router';
@@ -20,13 +20,6 @@ const status = ['禁用', '启用'];
   loading: loading.models.systemDictionary,
 }))
 class Dictionary extends Component {
-  state = {
-    current: 1,
-    pageSize: 10,
-    selectedRows: [],
-    visible: false,
-  };
-
   columns = [
     {
       title: '字典类型',
@@ -86,7 +79,7 @@ class Dictionary extends Component {
     {
       title: '操作',
       render: (text, record) => (
-        <Fragment>
+        <>
           <a onClick={() => this.openModal(record)}>
             <IconFont type="icon-edit" title="编辑" />
           </a>
@@ -94,10 +87,20 @@ class Dictionary extends Component {
           <a onClick={() => this.handleDelete(record)}>
             <IconFont type="icon-delete" title="删除" />
           </a>
-        </Fragment>
+        </>
       ),
     },
   ];
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      current: 1,
+      pageSize: 10,
+      selectedRows: [],
+      visible: false,
+    };
+  }
 
   componentDidMount() {
     const { dispatch, match } = this.props;

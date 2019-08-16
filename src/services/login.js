@@ -1,25 +1,25 @@
 import request from '@/utils/request';
 
 export async function accountLogin(params) {
-  return request('/api/v1/login', {
+  return request('/login', {
     method: 'POST',
     data: params,
   });
 }
 
 export async function accountLogout() {
-  return request('/api/v1/logout', {
+  return request('/logout', {
     method: 'POST',
   });
 }
 
 export async function register(params) {
-  return request('/api/v1/register', {
+  return request('/register', {
     method: 'POST',
     data: params,
   });
 }
 
 export async function getCaptcha(mobile) {
-  return request(`/api/v1/captcha?mobile=${mobile}`);
+  return request(`/captcha?mobile=${mobile}`);
 }

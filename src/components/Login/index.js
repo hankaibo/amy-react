@@ -9,22 +9,9 @@ import styles from './index.less';
 import LoginContext from './loginContext';
 
 class Login extends Component {
-  static propTypes = {
-    className: PropTypes.string,
-    defaultActiveKey: PropTypes.string,
-    onTabChange: PropTypes.func,
-    onSubmit: PropTypes.func,
-  };
-
-  static defaultProps = {
-    className: '',
-    defaultActiveKey: '',
-    onTabChange: () => {},
-    onSubmit: () => {},
-  };
-
   constructor(props) {
     super(props);
+    // eslint-disable-next-line react/state-in-constructor
     this.state = {
       type: props.defaultActiveKey,
       tabs: [],
@@ -104,7 +91,7 @@ class Login extends Component {
         <div className={classNames(className, styles.login)}>
           <Form onSubmit={this.handleSubmit}>
             {tabs.length ? (
-              <React.Fragment>
+              <>
                 <Tabs
                   animated={false}
                   className={styles.tabs}
@@ -114,7 +101,7 @@ class Login extends Component {
                   {TabChildren}
                 </Tabs>
                 {otherChildren}
-              </React.Fragment>
+              </>
             ) : (
               children
             )}
@@ -130,5 +117,17 @@ Login.Submit = LoginSubmit;
 Object.keys(LoginItem).forEach(item => {
   Login[item] = LoginItem[item];
 });
+Login.propTypes = {
+  className: PropTypes.string,
+  defaultActiveKey: PropTypes.string,
+  onTabChange: PropTypes.func,
+  onSubmit: PropTypes.func,
+};
+Login.defaultProps = {
+  className: '',
+  defaultActiveKey: '',
+  onTabChange: () => {},
+  onSubmit: () => {},
+};
 
 export default Form.create()(Login);

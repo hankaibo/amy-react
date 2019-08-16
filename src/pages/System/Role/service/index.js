@@ -7,7 +7,7 @@ import request from '@/utils/request';
  * @returns {Promise<void>}
  */
 export async function queryRoleList(params) {
-  return request(`/api/v1/roles?${stringify(params)}`);
+  return request(`/roles?${stringify(params)}`);
 }
 
 /**
@@ -16,7 +16,7 @@ export async function queryRoleList(params) {
  * @returns {Promise<void>}
  */
 export async function queryRoleById(id) {
-  return request(`/api/v1/roles/${id}`);
+  return request(`/roles/${id}`);
 }
 
 /**
@@ -25,7 +25,7 @@ export async function queryRoleById(id) {
  * @returns {Promise<void>}
  */
 export async function addRole(params) {
-  return request('/api/v1/roles', {
+  return request('/roles', {
     method: 'POST',
     data: {
       ...params,
@@ -39,7 +39,7 @@ export async function addRole(params) {
  * @returns {Promise<void>}
  */
 export async function deleteRole(id) {
-  return request(`/api/v1/roles/${id}`, {
+  return request(`/roles/${id}`, {
     method: 'DELETE',
   });
 }
@@ -50,7 +50,7 @@ export async function deleteRole(id) {
  * @returns {Promise<void>}
  */
 export async function deleteBatchRole(ids) {
-  return request('/api/v1/roles', {
+  return request('/roles', {
     method: 'DELETE',
     data: {
       ids,
@@ -65,7 +65,7 @@ export async function deleteBatchRole(ids) {
  */
 export async function updateRole(params) {
   const { id } = params;
-  return request(`/api/v1/roles/${id}`, {
+  return request(`/roles/${id}`, {
     method: 'PUT',
     data: {
       ...params,
@@ -81,7 +81,7 @@ export async function updateRole(params) {
  */
 export async function enabledRole(params) {
   const { id, status } = params;
-  return request(`/api/v1/roles/${id}/status`, {
+  return request(`/roles/${id}/status`, {
     method: 'PUT',
     data: {
       status,
@@ -94,7 +94,7 @@ export async function enabledRole(params) {
  * @returns {Promise<void>}
  */
 export async function queryResourceByRole(id) {
-  return request(`/api/v1/roles/${id}/resources`);
+  return request(`/roles/${id}/resources`);
 }
 
 /**
@@ -105,7 +105,7 @@ export async function queryResourceByRole(id) {
  */
 export async function giveRoleResource(params) {
   const { id, ids } = params;
-  return request(`/api/v1/roles/${id}/resources`, {
+  return request(`/roles/${id}/resources`, {
     method: 'POST',
     data: {
       ids,

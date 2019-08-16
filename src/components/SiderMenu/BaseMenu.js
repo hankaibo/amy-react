@@ -10,7 +10,7 @@ import IconFont from '@/components/IconFont';
 
 const { SubMenu } = Menu;
 
-// Allow menu.js config icon as string or ReactNode
+// Allow config icon as string or ReactNode
 //   icon: 'setting',
 //   icon: 'icon-geren' #For Iconfont ,
 //   icon: 'http://demo.com/icon.png',

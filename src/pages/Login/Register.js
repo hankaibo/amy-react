@@ -40,13 +40,16 @@ const passwordProgressMap = {
 }))
 @Form.create()
 class Register extends Component {
-  state = {
-    count: 0,
-    confirmDirty: false,
-    visible: false,
-    help: '',
-    prefix: '86',
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: 0,
+      confirmDirty: false,
+      visible: false,
+      help: '',
+      prefix: '86',
+    };
+  }
 
   componentDidUpdate() {
     const { form, register } = this.props;

@@ -8,11 +8,6 @@ import LoginContext from './loginContext';
 const FormItem = Form.Item;
 
 class WrapFormItem extends Component {
-  static defaultProps = {
-    getCaptchaButtonText: 'captcha',
-    getCaptchaSecondText: 'second',
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -143,5 +138,9 @@ Object.keys(ItemMap).forEach(key => {
     </LoginContext.Consumer>
   );
 });
+WrapFormItem.defaultProps = {
+  getCaptchaButtonText: 'captcha',
+  getCaptchaSecondText: 'second',
+};
 
 export default LoginItem;

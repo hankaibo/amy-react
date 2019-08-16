@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Tree, Card, Button, Switch, Divider, Modal, message, Icon, Table } from 'antd';
 import IconFont from '@/components/IconFont';
@@ -13,15 +13,14 @@ const status = ['禁用', '启用'];
   loading: loading.models.systemMenu,
 }))
 class Menu extends Component {
-  state = {
-    visible: false,
-    menu: null,
-  };
-
   columns = [
     {
       title: '菜单名称',
       dataIndex: 'title',
+    },
+    {
+      title: '菜单编码',
+      dataIndex: 'code',
     },
     {
       title: '菜单状态',
@@ -43,7 +42,7 @@ class Menu extends Component {
     {
       title: '排序',
       render: (text, record) => (
-        <Fragment>
+        <>
           <a
             onClick={() => this.handleGo(record, 'UP')}
             style={{ padding: '0 5px', marginRight: '10px' }}
@@ -53,13 +52,13 @@ class Menu extends Component {
           <a onClick={() => this.handleGo(record, 'DOWN')}>
             <Icon type="arrow-down" title="向下" />
           </a>
-        </Fragment>
+        </>
       ),
     },
     {
       title: '操作',
       render: (text, record) => (
-        <Fragment>
+        <>
           <a onClick={() => this.openModal(record)}>
             <IconFont type="icon-edit" title="编辑" />
           </a>
@@ -67,10 +66,18 @@ class Menu extends Component {
           <a onClick={() => this.handleDelete(record)}>
             <IconFont type="icon-delete" title="删除" />
           </a>
-        </Fragment>
+        </>
       ),
     },
   ];
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+      menu: null,
+    };
+  }
 
   componentDidMount() {
     const { dispatch } = this.props;

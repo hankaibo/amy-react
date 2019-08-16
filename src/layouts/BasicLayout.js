@@ -50,13 +50,10 @@ class BasicLayout extends React.Component {
     } = this.props;
     dispatch({
       type: 'user/fetchCurrent',
+      payload: { routes, path, authority },
     });
     dispatch({
       type: 'setting/getSetting',
-    });
-    dispatch({
-      type: 'menu/getMenuData',
-      payload: { routes, path, authority },
     });
   }
 
@@ -139,7 +136,7 @@ class BasicLayout extends React.Component {
       </Layout>
     );
     return (
-      <React.Fragment>
+      <>
         <DocumentTitle title={getPageTitle(pathname, breadcrumbNameMap)}>
           <ContainerQuery query={query}>
             {params => (
@@ -150,16 +147,16 @@ class BasicLayout extends React.Component {
           </ContainerQuery>
         </DocumentTitle>
         <Suspense fallback={null}>{this.renderSettingDrawer()}</Suspense>
-      </React.Fragment>
+      </>
     );
   }
 }
 
-export default connect(({ global, setting, menu: menuModel }) => ({
+export default connect(({ global, setting, user: userModel }) => ({
   collapsed: global.collapsed,
   layout: setting.layout,
-  menuData: menuModel.menuData,
-  breadcrumbNameMap: menuModel.breadcrumbNameMap,
+  menuData: userModel.menuData,
+  breadcrumbNameMap: userModel.breadcrumbNameMap,
   ...setting,
 }))(props => (
   <Media query="(max-width: 599px)">

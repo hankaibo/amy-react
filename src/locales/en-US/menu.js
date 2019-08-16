@@ -2,6 +2,13 @@ export default {
   'menu.home': 'Home',
   'menu.login': 'login',
   'menu.register': 'register',
+  // system
+  'menu.system': 'System',
+  'menu.system.user': 'User',
+  'menu.system.role': 'Role',
+  'menu.system.menu': 'Menu',
+  'menu.system.interface': 'API',
+  'menu.system.dictionary': 'Dictionary',
   // exception
   'menu.exception': 'Exception',
   'menu.exception.not-permission': '403',

@@ -6,31 +6,7 @@ import Debounce from 'lodash-decorators/debounce';
 import Bind from 'lodash-decorators/bind';
 import styles from './index.less';
 
-export default class HeaderSearch extends PureComponent {
-  static propTypes = {
-    className: PropTypes.string,
-    placeholder: PropTypes.string,
-    onSearch: PropTypes.func,
-    onChange: PropTypes.func,
-    onPressEnter: PropTypes.func,
-    defaultActiveFirstOption: PropTypes.bool,
-    dataSource: PropTypes.array,
-    defaultOpen: PropTypes.bool,
-    onVisibleChange: PropTypes.func,
-  };
-
-  static defaultProps = {
-    defaultActiveFirstOption: false,
-    onPressEnter: () => {},
-    onSearch: () => {},
-    onChange: () => {},
-    className: '',
-    placeholder: '',
-    dataSource: [],
-    defaultOpen: false,
-    onVisibleChange: () => {},
-  };
-
+class HeaderSearch extends PureComponent {
   static getDerivedStateFromProps(props) {
     if ('open' in props) {
       return {
@@ -43,7 +19,8 @@ export default class HeaderSearch extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      searchMode: props.defaultOpen,
+      // eslint-disable-next-line react/destructuring-assignment
+      searchMode: this.props.defaultOpen,
       value: '',
     };
   }
@@ -143,3 +120,29 @@ export default class HeaderSearch extends PureComponent {
     );
   }
 }
+
+HeaderSearch.propTypes = {
+  className: PropTypes.string,
+  placeholder: PropTypes.string,
+  onSearch: PropTypes.func,
+  onChange: PropTypes.func,
+  onPressEnter: PropTypes.func,
+  defaultActiveFirstOption: PropTypes.bool,
+  dataSource: PropTypes.array,
+  defaultOpen: PropTypes.bool,
+  onVisibleChange: PropTypes.func,
+};
+
+HeaderSearch.defaultProps = {
+  defaultActiveFirstOption: false,
+  onPressEnter: () => {},
+  onSearch: () => {},
+  onChange: () => {},
+  className: '',
+  placeholder: '',
+  dataSource: [],
+  defaultOpen: false,
+  onVisibleChange: () => {},
+};
+
+export default HeaderSearch;

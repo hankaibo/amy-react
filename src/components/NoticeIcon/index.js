@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import { Icon, Tabs, Badge, Spin } from 'antd';
 import classNames from 'classnames';
@@ -8,28 +8,15 @@ import styles from './index.less';
 
 const { TabPane } = Tabs;
 
-export default class NoticeIcon extends PureComponent {
+class NoticeIcon extends PureComponent {
   static Tab = TabPane;
 
-  static defaultProps = {
-    onItemClick: () => {},
-    onPopupVisibleChange: () => {},
-    onTabChange: () => {},
-    onClear: () => {},
-    onViewMore: () => {},
-    loading: false,
-    clearClose: false,
-    locale: {
-      emptyText: 'No notifications',
-      clear: 'Clear',
-      viewMore: 'More',
-    },
-    emptyImage: 'https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg',
-  };
-
-  state = {
-    visible: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+    };
+  }
 
   onItemClick = (item, tabProps) => {
     const { onItemClick } = this.props;
@@ -87,13 +74,13 @@ export default class NoticeIcon extends PureComponent {
       );
     });
     return (
-      <Fragment>
+      <>
         <Spin spinning={loading} delay={0}>
           <Tabs className={styles.tabs} onChange={this.onTabChange}>
             {panes}
           </Tabs>
         </Spin>
-      </Fragment>
+      </>
     );
   }
 
@@ -139,3 +126,21 @@ export default class NoticeIcon extends PureComponent {
     );
   }
 }
+
+NoticeIcon.defaultProps = {
+  onItemClick: () => {},
+  onPopupVisibleChange: () => {},
+  onTabChange: () => {},
+  onClear: () => {},
+  onViewMore: () => {},
+  loading: false,
+  clearClose: false,
+  locale: {
+    emptyText: 'No notifications',
+    clear: 'Clear',
+    viewMore: 'More',
+  },
+  emptyImage: 'https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg',
+};
+
+export default NoticeIcon;

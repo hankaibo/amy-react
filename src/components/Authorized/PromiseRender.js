@@ -5,9 +5,12 @@ import React from 'react';
 import { isComponentClass } from './Secured';
 
 export default class PromiseRender extends React.Component {
-  state = {
-    component: null,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      component: null,
+    };
+  }
 
   componentDidMount() {
     this.setRenderComponent(this.props);

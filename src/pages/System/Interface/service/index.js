@@ -5,7 +5,7 @@ import request from '@/utils/request';
  * @returns {Promise<void>}
  */
 export async function queryInterfaceTree() {
-  return request('/api/v1/resources?type=1');
+  return request('/resources?type=1');
 }
 
 /**
@@ -14,7 +14,7 @@ export async function queryInterfaceTree() {
  * @returns {Promise<void>}
  */
 export async function queryChildrenById(id) {
-  return request(`/api/v1/resources/${id}/children?type=2`);
+  return request(`/resources/${id}/children?type=2`);
 }
 
 /**
@@ -24,7 +24,7 @@ export async function queryChildrenById(id) {
  */
 export async function moveInterface(params) {
   const { id, direction } = params;
-  return request(`/api/v1/resources/${id}/location`, {
+  return request(`/resources/${id}/location`, {
     method: 'PUT',
     data: {
       direction,
@@ -38,7 +38,7 @@ export async function moveInterface(params) {
  * @returns {Promise<void>}
  */
 export async function queryInterfaceById(id) {
-  return request(`/api/v1/resources/${id}`);
+  return request(`/resources/${id}`);
 }
 
 /**
@@ -47,7 +47,7 @@ export async function queryInterfaceById(id) {
  * @returns {Promise<void>}
  */
 export async function addInterface(params) {
-  return request('/api/v1/resources', {
+  return request('/resources', {
     method: 'POST',
     data: {
       ...params,
@@ -61,7 +61,7 @@ export async function addInterface(params) {
  * @returns {Promise<void>}
  */
 export async function deleteInterface(id) {
-  return request(`/api/v1/resources/${id}`, {
+  return request(`/resources/${id}`, {
     method: 'DELETE',
   });
 }
@@ -72,7 +72,7 @@ export async function deleteInterface(id) {
  * @returns {Promise<void>}
  */
 export async function deleteBatchInterface(ids) {
-  return request('/api/v1/resources', {
+  return request('/resources', {
     method: 'DELETE',
     data: {
       ids,
@@ -87,7 +87,7 @@ export async function deleteBatchInterface(ids) {
  */
 export async function updateInterface(params) {
   const { id } = params;
-  return request(`/api/v1/resources/${id}`, {
+  return request(`/resources/${id}`, {
     method: 'PUT',
     data: {
       ...params,

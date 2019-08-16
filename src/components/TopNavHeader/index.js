@@ -7,9 +7,12 @@ import { getFlatMenuKeys } from '../SiderMenu/SiderMenuUtils';
 import styles from './index.less';
 
 export default class TopNavHeader extends PureComponent {
-  state = {
-    maxWidth: undefined,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      maxWidth: undefined,
+    };
+  }
 
   static getDerivedStateFromProps(props) {
     return {

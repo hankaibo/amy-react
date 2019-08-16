@@ -16,9 +16,8 @@ export default [
   {
     path: '/',
     component: '../layouts/BasicLayout',
-    Routes: ['src/pages/Authorized'],
     routes: [
-      { path: '/', redirect: '/home', authority: ['admin', 'user'] },
+      { path: '/', redirect: '/home' },
       // home
       {
         path: '/home',
@@ -31,35 +30,36 @@ export default [
         path: '/system',
         name: 'system',
         icon: 'setting',
+        dynamic: true,
         routes: [
           {
             path: '/system/users',
             name: 'user',
             component: './System/User',
-            authority: ['admin'],
+            dynamic: true,
           },
           {
             path: '/system/roles',
             name: 'role',
             component: './System/Role',
-            authority: ['admin'],
+            dynamic: true,
           },
           {
             path: '/system/menus',
             name: 'menu',
             component: './System/Menu',
-            authority: ['admin'],
+            dynamic: true,
           },
           {
             path: '/system/interfaces',
             name: 'interface',
             component: './System/Interface',
-            authority: ['admin'],
+            dynamic: true,
           },
           {
             path: '/system/dictionaries',
             name: 'dictionary',
-            authority: ['user', 'admin'],
+            dynamic: true,
             routes: [
               {
                 path: '/system/dictionaries',

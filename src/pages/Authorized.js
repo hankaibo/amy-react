@@ -33,6 +33,6 @@ function AuthComponent({ children, location, routerData }) {
     </Authorized>
   );
 }
-export default connect(({ menu: menuModel }) => ({
+export default connect(({ user: menuModel }) => ({
   routerData: menuModel.routerData,
 }))(AuthComponent);

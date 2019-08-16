@@ -24,9 +24,12 @@ const Body = ({ children, title, style }) => (
 
 @connect(({ setting }) => ({ setting }))
 class SettingDrawer extends Component {
-  state = {
-    collapse: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      collapse: false,
+    };
+  }
 
   getLayoutSetting = () => {
     const {

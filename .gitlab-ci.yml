@@ -1,15 +1,16 @@
 before_script:
   - echo "hello gitlab ci"
 
+cache:
+  key: "$CI_BUILD_REF_NAME"
+  paths:
+    - node_modules/
+    - dist/
+
 stages:
   - install
   - build
   - deploy
-
-cache:
-  paths:
-    - node_modules/
-    - dist
 
 install_job:
   stage: install

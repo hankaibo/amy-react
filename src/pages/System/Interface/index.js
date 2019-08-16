@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Tree, Card, Button, Switch, Divider, Modal, message, Icon, Table } from 'antd';
 import IconFont from '@/components/IconFont';
@@ -13,11 +13,6 @@ const status = ['禁用', '启用'];
   loading: loading.models.systemInterface,
 }))
 class Interface extends Component {
-  state = {
-    visible: false,
-    iface: null,
-  };
-
   columns = [
     {
       title: '接口名称',
@@ -51,7 +46,7 @@ class Interface extends Component {
     {
       title: '排序',
       render: (text, record) => (
-        <Fragment>
+        <>
           <a
             onClick={() => this.handleGo(record, 'UP')}
             style={{ padding: '0 5px', marginRight: '10px' }}
@@ -61,13 +56,13 @@ class Interface extends Component {
           <a onClick={() => this.handleGo(record, 'DOWN')}>
             <Icon type="arrow-down" title="向下" />
           </a>
-        </Fragment>
+        </>
       ),
     },
     {
       title: '操作',
       render: (text, record) => (
-        <Fragment>
+        <>
           <a onClick={() => this.openModal(record)}>
             <IconFont type="icon-edit" title="编辑" />
           </a>
@@ -75,10 +70,18 @@ class Interface extends Component {
           <a onClick={() => this.handleDelete(record)}>
             <IconFont type="icon-delete" title="删除" />
           </a>
-        </Fragment>
+        </>
       ),
     },
   ];
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+      iface: null,
+    };
+  }
 
   componentDidMount() {
     const { dispatch } = this.props;

@@ -11,9 +11,12 @@ import styles from './Header.less';
 const { Header } = Layout;
 
 class HeaderView extends Component {
-  state = {
-    visible: true,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: true,
+    };
+  }
 
   static getDerivedStateFromProps(props, state) {
     if (!props.autoHideHeader && !state.visible) {

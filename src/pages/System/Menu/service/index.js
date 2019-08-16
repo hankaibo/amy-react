@@ -5,7 +5,7 @@ import request from '@/utils/request';
  * @returns {Promise<void>}
  */
 export async function queryMenuTree() {
-  return request('/api/v1/resources?type=1');
+  return request('/resources?type=1');
 }
 
 /**
@@ -14,7 +14,7 @@ export async function queryMenuTree() {
  * @returns {Promise<void>}
  */
 export async function queryChildrenById(id) {
-  return request(`/api/v1/resources/${id}/children?type=1`);
+  return request(`/resources/${id}/children?type=1`);
 }
 
 /**
@@ -24,7 +24,7 @@ export async function queryChildrenById(id) {
  */
 export async function moveMenu(params) {
   const { id, direction } = params;
-  return request(`/api/v1/resources/${id}/location`, {
+  return request(`/resources/${id}/location`, {
     method: 'PUT',
     data: {
       direction,
@@ -38,7 +38,7 @@ export async function moveMenu(params) {
  * @returns {Promise<void>}
  */
 export async function queryMenuById(id) {
-  return request(`/api/v1/resources/${id}`);
+  return request(`/resources/${id}`);
 }
 
 /**
@@ -47,7 +47,7 @@ export async function queryMenuById(id) {
  * @returns {Promise<void>}
  */
 export async function addMenu(params) {
-  return request('/api/v1/resources', {
+  return request('/resources', {
     method: 'POST',
     data: {
       ...params,
@@ -61,7 +61,7 @@ export async function addMenu(params) {
  * @returns {Promise<void>}
  */
 export async function deleteMenu(id) {
-  return request(`/api/v1/resources/${id}`, {
+  return request(`/resources/${id}`, {
     method: 'DELETE',
   });
 }
@@ -72,7 +72,7 @@ export async function deleteMenu(id) {
  * @returns {Promise<void>}
  */
 export async function deleteBatchMenu(ids) {
-  return request('/api/v1/resources', {
+  return request('/resources', {
     method: 'DELETE',
     data: {
       ids,
@@ -87,7 +87,7 @@ export async function deleteBatchMenu(ids) {
  */
 export async function updateMenu(params) {
   const { id } = params;
-  return request(`/api/v1/resources/${id}`, {
+  return request(`/resources/${id}`, {
     method: 'PUT',
     data: {
       ...params,

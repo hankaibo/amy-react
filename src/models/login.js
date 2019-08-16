@@ -20,7 +20,7 @@ export default {
         payload: response,
       });
       // Login successfully
-      if (response.code === 200) {
+      if (response.success) {
         const {
           data: { token, role },
         } = response;

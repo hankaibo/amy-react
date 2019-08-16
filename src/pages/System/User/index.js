@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Card, Button, Input, Switch, Divider, Modal, message, Icon, Table } from 'antd';
 import IconFont from '@/components/IconFont';
@@ -18,10 +18,6 @@ const status = ['禁用', '启用'];
   loading: loading.models.systemUser,
 }))
 class User extends Component {
-  state = {
-    selectedRows: [],
-  };
-
   columns = [
     {
       title: '用户名称',
@@ -51,7 +47,7 @@ class User extends Component {
     {
       title: '操作',
       render: (text, record) => (
-        <Fragment>
+        <>
           <UserForm isEdit record={record}>
             <a>
               <IconFont type="icon-edit" title="编辑" />
@@ -71,10 +67,17 @@ class User extends Component {
           <a onClick={() => message.info('正在开发中……')}>
             <IconFont type="icon-department" title="分配部门" />
           </a>
-        </Fragment>
+        </>
       ),
     },
   ];
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedRows: [],
+    };
+  }
 
   componentDidMount() {
     const { dispatch } = this.props;
