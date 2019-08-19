@@ -10,6 +10,7 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
     role: { id },
     resTree,
     resSelected,
+    halfCheckedKeys,
     form,
     dispatch,
   } = props;
@@ -17,7 +18,9 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
 
   // https://github.com/ant-design/ant-design/issues/9807
   // https://github.com/ant-design/ant-design/issues/9807
-  const [halfValue, setHalfValue] = useState([]);
+  const [expandedKeys, setExpandedKeys] = useState([]);
+  const [autoExpandParent, setAutoExpandParent] = useState(true);
+  const [checkedKeys, setCheckedKeys] = useState([]);
   const [visible, setVisible] = useState(false);
 
   const showModalHandler = e => {
@@ -48,22 +51,32 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
     };
   }, [visible, id]);
 
-  const handleCheck = (checkedKeys, event) => {
-    const { halfCheckedKeys } = event;
-    setFieldsValue({ ids: checkedKeys });
-    setHalfValue(halfCheckedKeys);
+  useEffect(() => {
+    if (resSelected.length > 0) {
+      setCheckedKeys(resSelected);
+      setFieldsValue({ ids: resSelected.concat(halfCheckedKeys) });
+    }
+  }, [resSelected, halfCheckedKeys]);
+
+  const onExpand = values => {
+    setExpandedKeys(values);
+    setAutoExpandParent(false);
+  };
+
+  const handleCheck = (values, event) => {
+    const { halfValues } = event;
+    setFieldsValue({ ids: [...values, ...halfValues] });
+    setCheckedKeys(values);
   };
 
   const handleGive = () => {
     validateFields((err, fieldsValue) => {
       if (err) return;
 
-      if (fieldsValue.id && fieldsValue.ids) {
-        const newFieldsValue = { ...fieldsValue };
-        newFieldsValue.ids = fieldsValue.ids.concat(halfValue);
+      if (fieldsValue.id) {
         dispatch({
           type: 'systemRole/giveRoleResource',
-          payload: newFieldsValue,
+          payload: fieldsValue,
           callback: () => {
             hideModelHandler();
             message.success('分配成功');
@@ -82,12 +95,13 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
           <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }}>
             {getFieldDecorator('ids')(
               <Tree
-                autoExpandParent
                 checkable
-                checkedKeys={resSelected}
-                defaultExpandAll
-                treeData={resTree}
+                onExpand={onExpand}
+                expandedKeys={expandedKeys}
+                autoExpandParent={autoExpandParent}
                 onCheck={handleCheck}
+                checkedKeys={checkedKeys}
+                treeData={resTree}
               />
             )}
           </FormItem>
@@ -97,7 +111,8 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
   );
 });
 
-export default connect(({ systemRole: { resTree, resSelected } }) => ({
+export default connect(({ systemRole: { resTree, resSelected, halfCheckedKeys } }) => ({
   resTree,
   resSelected,
+  halfCheckedKeys,
 }))(RoleResourceForm);

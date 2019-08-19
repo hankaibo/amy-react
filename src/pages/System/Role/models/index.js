@@ -20,6 +20,7 @@ export default {
     // 分配资源树及选中
     resTree: [],
     resSelected: [],
+    halfCheckedKeys: [],
   },
 
   effects: {
@@ -109,11 +110,21 @@ export default {
       const {
         data: { resTree, resSelected },
       } = response;
+      const selected = [];
+      const halfSelect = [];
+      resSelected.forEach(item => {
+        if (item.rgt - item.lft === 1) {
+          selected.push(item);
+        } else {
+          halfSelect.push(item);
+        }
+      });
       yield put({
         type: 'saveResTree',
         payload: {
           resTree,
-          resSelected: resSelected.filter(item => item.rgt - item.lft === 1).map(item => item.id.toString()),
+          resSelected: selected.map(item => item.id.toString()),
+          halfCheckedKeys: halfSelect.map(item => item.id.toString()),
         },
       });
       if (callback) callback();
@@ -134,12 +145,12 @@ export default {
       };
     },
     saveResTree(state, { payload }) {
-      const { resTree, resSelected, roleId } = payload;
+      const { resTree, resSelected, halfCheckedKeys } = payload;
       return {
         ...state,
         resTree,
         resSelected,
-        roleId,
+        halfCheckedKeys,
       };
     },
     clearRes(state) {
