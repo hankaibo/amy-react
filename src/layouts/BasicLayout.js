@@ -158,8 +158,4 @@ export default connect(({ global, setting, user: userModel }) => ({
   menuData: userModel.menuData,
   breadcrumbNameMap: userModel.breadcrumbNameMap,
   ...setting,
-}))(props => (
-  <Media query="(max-width: 599px)">
-    {isMobile => <BasicLayout {...props} isMobile={isMobile} />}
-  </Media>
-));
+}))(props => <Media query="(max-width: 599px)">{isMobile => <BasicLayout {...props} isMobile={isMobile} />}</Media>);

@@ -48,7 +48,7 @@ class User extends Component {
       title: '操作',
       render: (text, record) => (
         <>
-          <UserForm isEdit record={record}>
+          <UserForm isEdit user={record}>
             <a>
               <IconFont type="icon-edit" title="编辑" />
             </a>
@@ -58,7 +58,7 @@ class User extends Component {
             <IconFont type="icon-delete" title="删除" />
           </a>
           <Divider type="vertical" />
-          <UserRoleForm record={record}>
+          <UserRoleForm user={record}>
             <a>
               <IconFont type="icon-role" title="分配角色" />
             </a>
@@ -230,12 +230,7 @@ class User extends Component {
                   <Icon type="plus" />
                 </Button>
               </UserForm>
-              <Button
-                type="danger"
-                disabled={selectedRows.length <= 0}
-                title="删除"
-                onClick={this.handleBatchDelete}
-              >
+              <Button type="danger" disabled={selectedRows.length <= 0} title="删除" onClick={this.handleBatchDelete}>
                 <IconFont type="icon-delete" />
               </Button>
             </div>

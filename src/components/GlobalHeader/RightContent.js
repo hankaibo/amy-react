@@ -64,14 +64,7 @@ export default class GlobalHeaderRight extends PureComponent {
   };
 
   render() {
-    const {
-      currentUser,
-      fetchingNotices,
-      onNoticeVisibleChange,
-      onMenuClick,
-      onNoticeClear,
-      theme,
-    } = this.props;
+    const { currentUser, fetchingNotices, onNoticeVisibleChange, onMenuClick, onNoticeClear, theme } = this.props;
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
         <Menu.Item key="userCenter">
@@ -161,12 +154,7 @@ export default class GlobalHeaderRight extends PureComponent {
         {currentUser.username ? (
           <HeaderDropdown overlay={menu}>
             <span className={`${styles.action} ${styles.account}`}>
-              <Avatar
-                size="small"
-                className={styles.avatar}
-                src={currentUser.avatar}
-                alt="avatar"
-              />
+              <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
               <span className={styles.name}>{currentUser.username}</span>
             </span>
           </HeaderDropdown>

@@ -32,10 +32,7 @@ export default class GlobalHeader extends PureComponent {
       <div className={styles.header}>
         {isMobile && (
           <Link to="/" className={styles.logo} key="logo">
-            <IconFont
-              type={collapsed ? 'icon-logo-min' : 'icon-logo-max'}
-              style={{ height: '64px', width: '32px' }}
-            />
+            <IconFont type={collapsed ? 'icon-logo-min' : 'icon-logo-max'} style={{ height: '64px', width: '32px' }} />
           </Link>
         )}
         <span className={styles.trigger} onClick={this.toggle}>

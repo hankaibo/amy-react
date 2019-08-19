@@ -46,13 +46,9 @@ class SettingDrawer extends Component {
             style={{ width: 80 }}
           >
             {layout === 'sidemenu' ? null : (
-              <Option value="Fixed">
-                {formatMessage({ id: 'app.setting.content-width.fixed' })}
-              </Option>
+              <Option value="Fixed">{formatMessage({ id: 'app.setting.content-width.fixed' })}</Option>
             )}
-            <Option value="Fluid">
-              {formatMessage({ id: 'app.setting.content-width.fluid' })}
-            </Option>
+            <Option value="Fluid">{formatMessage({ id: 'app.setting.content-width.fluid' })}</Option>
           </Select>
         ),
       },
@@ -201,11 +197,7 @@ class SettingDrawer extends Component {
             />
           </Body>
 
-          <List
-            split={false}
-            dataSource={this.getLayoutSetting()}
-            renderItem={this.renderLayoutSettingItem}
-          />
+          <List split={false} dataSource={this.getLayoutSetting()} renderItem={this.renderLayoutSettingItem} />
 
           <Divider />
 
@@ -242,11 +234,7 @@ class SettingDrawer extends Component {
             message={
               <div>
                 {formatMessage({ id: 'app.setting.production.hint' })}{' '}
-                <a
-                  href="https://u.ant.design/pro-v2-default-settings"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href="https://u.ant.design/pro-v2-default-settings" target="_blank" rel="noopener noreferrer">
                   src/defaultSettings.js
                 </a>
               </div>

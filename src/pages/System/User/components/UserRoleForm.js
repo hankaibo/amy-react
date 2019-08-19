@@ -8,7 +8,7 @@ const { Option } = Select;
 const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
   const {
     children,
-    record: { id },
+    user: { id },
     form,
     dispatch,
   } = props;
@@ -71,25 +71,21 @@ const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
   return (
     <span>
       <span onClick={showModalHandler}>{children}</span>
-      <Modal
-        destroyOnClose
-        title="角色配置"
-        visible={visible}
-        onOk={handleGive}
-        onCancel={hideModelHandler}
-      >
-        {getFieldDecorator('id')(<Input hidden />)}
-        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }}>
-          {getFieldDecorator('ids')(
-            <Select mode="multiple" style={{ width: '100%' }} placeholder="请选择">
-              {roleList.map(item => (
-                <Option key={item.id} value={item.id}>
-                  {item.code}
-                </Option>
-              ))}
-            </Select>
-          )}
-        </FormItem>
+      <Modal destroyOnClose title="角色配置" visible={visible} onOk={handleGive} onCancel={hideModelHandler}>
+        <Form>
+          {getFieldDecorator('id')(<Input hidden />)}
+          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }}>
+            {getFieldDecorator('ids')(
+              <Select mode="multiple" style={{ width: '100%' }} placeholder="请选择">
+                {roleList.map(item => (
+                  <Option key={item.id} value={item.id}>
+                    {item.code}
+                  </Option>
+                ))}
+              </Select>
+            )}
+          </FormItem>
+        </Form>
       </Modal>
     </span>
   );

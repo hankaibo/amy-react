@@ -92,12 +92,7 @@ class Login extends Component {
           <Form onSubmit={this.handleSubmit}>
             {tabs.length ? (
               <>
-                <Tabs
-                  animated={false}
-                  className={styles.tabs}
-                  activeKey={type}
-                  onChange={this.onSwitch}
-                >
+                <Tabs animated={false} className={styles.tabs} activeKey={type} onChange={this.onSwitch}>
                   {TabChildren}
                 </Tabs>
                 {otherChildren}

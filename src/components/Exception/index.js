@@ -11,27 +11,13 @@ class Exception extends React.PureComponent {
   }
 
   render() {
-    const {
-      className,
-      backText,
-      linkElement = 'a',
-      type,
-      title,
-      desc,
-      img,
-      actions,
-      redirect,
-      ...rest
-    } = this.props;
+    const { className, backText, linkElement = 'a', type, title, desc, img, actions, redirect, ...rest } = this.props;
     const pageType = type in config ? type : '404';
     const clsString = classNames(styles.exception, className);
     return (
       <div className={clsString} {...rest}>
         <div className={styles.imgBlock}>
-          <div
-            className={styles.imgEle}
-            style={{ backgroundImage: `url(${img || config[pageType].img})` }}
-          />
+          <div className={styles.imgEle} style={{ backgroundImage: `url(${img || config[pageType].img})` }} />
         </div>
         <div className={styles.content}>
           <h1>{title || config[pageType].title}</h1>

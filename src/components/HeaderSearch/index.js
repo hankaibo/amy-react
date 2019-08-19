@@ -99,13 +99,7 @@ class HeaderSearch extends PureComponent {
         }}
       >
         <Icon type="search" key="Icon" />
-        <AutoComplete
-          key="AutoComplete"
-          {...restProps}
-          className={inputClass}
-          value={value}
-          onChange={this.onChange}
-        >
+        <AutoComplete key="AutoComplete" {...restProps} className={inputClass} value={value} onChange={this.onChange}>
           <Input
             ref={node => {
               this.input = node;

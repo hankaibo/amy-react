@@ -95,16 +95,9 @@ class WrapFormItem extends Component {
       return (
         <FormItem>
           <Row gutter={8}>
-            <Col span={16}>
-              {getFieldDecorator(name, options)(<Input {...customprops} {...inputProps} />)}
-            </Col>
+            <Col span={16}>{getFieldDecorator(name, options)(<Input {...customprops} {...inputProps} />)}</Col>
             <Col span={8}>
-              <Button
-                disabled={count}
-                className={styles.getCaptcha}
-                size="large"
-                onClick={this.onGetCaptcha}
-              >
+              <Button disabled={count} className={styles.getCaptcha} size="large" onClick={this.onGetCaptcha}>
                 {count ? `${count} ${getCaptchaSecondText}` : getCaptchaButtonText}
               </Button>
             </Col>
@@ -112,11 +105,7 @@ class WrapFormItem extends Component {
         </FormItem>
       );
     }
-    return (
-      <FormItem>
-        {getFieldDecorator(name, options)(<Input {...customprops} {...otherProps} />)}
-      </FormItem>
-    );
+    return <FormItem>{getFieldDecorator(name, options)(<Input {...customprops} {...otherProps} />)}</FormItem>;
   }
 }
 

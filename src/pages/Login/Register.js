@@ -201,9 +201,7 @@ class Register extends Component {
                   message: formatMessage({ id: 'validation.email.wrong-format' }),
                 },
               ],
-            })(
-              <Input size="large" placeholder={formatMessage({ id: 'form.email.placeholder' })} />
-            )}
+            })(<Input size="large" placeholder={formatMessage({ id: 'form.email.placeholder' })} />)}
           </FormItem>
           <FormItem help={help}>
             <Popover
@@ -228,11 +226,7 @@ class Register extends Component {
                   },
                 ],
               })(
-                <Input
-                  size="large"
-                  type="password"
-                  placeholder={formatMessage({ id: 'form.password.placeholder' })}
-                />
+                <Input size="large" type="password" placeholder={formatMessage({ id: 'form.password.placeholder' })} />
               )}
             </Popover>
           </FormItem>
@@ -257,12 +251,7 @@ class Register extends Component {
           </FormItem>
           <FormItem>
             <InputGroup compact>
-              <Select
-                size="large"
-                value={prefix}
-                onChange={this.changePrefix}
-                style={{ width: '20%' }}
-              >
+              <Select size="large" value={prefix} onChange={this.changePrefix} style={{ width: '20%' }}>
                 <Option value="86">+86</Option>
                 <Option value="87">+87</Option>
               </Select>
@@ -296,35 +285,17 @@ class Register extends Component {
                       message: formatMessage({ id: 'validation.verification-code.required' }),
                     },
                   ],
-                })(
-                  <Input
-                    size="large"
-                    placeholder={formatMessage({ id: 'form.verification-code.placeholder' })}
-                  />
-                )}
+                })(<Input size="large" placeholder={formatMessage({ id: 'form.verification-code.placeholder' })} />)}
               </Col>
               <Col span={8}>
-                <Button
-                  size="large"
-                  disabled={count}
-                  className={styles.getCaptcha}
-                  onClick={this.onGetCaptcha}
-                >
-                  {count
-                    ? `${count} s`
-                    : formatMessage({ id: 'app.register.get-verification-code' })}
+                <Button size="large" disabled={count} className={styles.getCaptcha} onClick={this.onGetCaptcha}>
+                  {count ? `${count} s` : formatMessage({ id: 'app.register.get-verification-code' })}
                 </Button>
               </Col>
             </Row>
           </FormItem>
           <FormItem>
-            <Button
-              size="large"
-              loading={submitting}
-              className={styles.submit}
-              type="primary"
-              htmlType="submit"
-            >
+            <Button size="large" loading={submitting} className={styles.submit} type="primary" htmlType="submit">
               <FormattedMessage id="app.register.register" />
             </Button>
             <Link className={styles.login} to="/User/Login">

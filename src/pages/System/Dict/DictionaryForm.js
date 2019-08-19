@@ -97,9 +97,7 @@ const DictionaryForm = Form.create({ name: 'dictionaryForm' })(props => {
         )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="排序">
-        {getFieldDecorator('sort')(
-          <InputNumber placeholder="请输入字典排序" style={{ width: '100%' }} />
-        )}
+        {getFieldDecorator('sort')(<InputNumber placeholder="请输入字典排序" style={{ width: '100%' }} />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="描述">
         {getFieldDecorator('description')(
