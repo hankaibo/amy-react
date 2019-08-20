@@ -64,7 +64,7 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
   };
 
   const handleCheck = (values, event) => {
-    const { halfValues } = event;
+    const { halfCheckedKeys: halfValues } = event;
     setFieldsValue({ ids: [...values, ...halfValues] });
     setCheckedKeys(values);
   };

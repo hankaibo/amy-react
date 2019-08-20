@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Card, Button, Input, Switch, Divider, Modal, message, Icon, Table } from 'antd';
 import IconFont from '@/components/IconFont';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import Authorized from '@/utils/Authorized';
 import UserForm from './components/UserForm';
 import UserRoleForm from './components/UserRoleForm';
 import styles from '../System.less';
@@ -48,25 +49,33 @@ class User extends Component {
       title: '操作',
       render: (text, record) => (
         <>
-          <UserForm isEdit user={record}>
-            <a>
-              <IconFont type="icon-edit" title="编辑" />
+          <Authorized authority="system.user.update" noMatch={null}>
+            <UserForm isEdit user={record}>
+              <a>
+                <IconFont type="icon-edit" title="编辑" />
+              </a>
+            </UserForm>
+            <Divider type="vertical" />
+          </Authorized>
+          <Authorized authority="system.user.delete" noMatch={null}>
+            <a onClick={() => this.handleDelete(record)}>
+              <IconFont type="icon-delete" title="删除" />
             </a>
-          </UserForm>
-          <Divider type="vertical" />
-          <a onClick={() => this.handleDelete(record)}>
-            <IconFont type="icon-delete" title="删除" />
-          </a>
-          <Divider type="vertical" />
-          <UserRoleForm user={record}>
-            <a>
-              <IconFont type="icon-role" title="分配角色" />
+            <Divider type="vertical" />
+          </Authorized>
+          <Authorized authority="system.user.role.give" noMatch={null}>
+            <UserRoleForm user={record}>
+              <a>
+                <IconFont type="icon-role" title="分配角色" />
+              </a>
+            </UserRoleForm>
+            <Divider type="vertical" />
+          </Authorized>
+          <Authorized>
+            <a onClick={() => message.info('正在开发中……')}>
+              <IconFont type="icon-department" title="分配部门" />
             </a>
-          </UserRoleForm>
-          <Divider type="vertical" />
-          <a onClick={() => message.info('正在开发中……')}>
-            <IconFont type="icon-department" title="分配部门" />
-          </a>
+          </Authorized>
         </>
       ),
     },
@@ -225,14 +234,18 @@ class User extends Component {
         <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <UserForm>
-                <Button type="primary" title="新增" onClick={this.openModal}>
-                  <Icon type="plus" />
+              <Authorized authority="system.user.add" noMatch={null}>
+                <UserForm>
+                  <Button type="primary" title="新增" onClick={this.openModal}>
+                    <Icon type="plus" />
+                  </Button>
+                </UserForm>
+              </Authorized>
+              <Authorized authority="system.user.batchDelete" noMatch={null}>
+                <Button type="danger" disabled={selectedRows.length <= 0} title="删除" onClick={this.handleBatchDelete}>
+                  <IconFont type="icon-delete" />
                 </Button>
-              </UserForm>
-              <Button type="danger" disabled={selectedRows.length <= 0} title="删除" onClick={this.handleBatchDelete}>
-                <IconFont type="icon-delete" />
-              </Button>
+              </Authorized>
             </div>
             <Table
               rowKey="id"

@@ -8,7 +8,7 @@ import Exception403 from '@/pages/Exception/403';
 
 function AuthComponent({ children, location, routerData }) {
   const auth = getAuthority();
-  const isLogin = auth && auth[0] !== 'guest';
+  const isLogin = auth;
   const getRouteAuthority = (path, routeData) => {
     let authorities;
     routeData.forEach(route => {

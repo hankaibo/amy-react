@@ -7,7 +7,7 @@ export default {
   'menu.system.user': '用戶管理',
   'menu.system.role': '角色管理',
   'menu.system.menu': '菜單管理',
-  'menu.system.interface': '接口保護',
+  'menu.system.resource': '資源保護',
   'menu.system.dictionary': '字典管理',
   // exception
   'menu.exception': '異常頁',

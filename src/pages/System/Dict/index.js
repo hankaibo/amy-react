@@ -4,6 +4,7 @@ import Link from 'umi/link';
 import router from 'umi/router';
 import moment from 'moment';
 import { Card, Button, Input, Divider, Modal, message, Icon, Switch, Table } from 'antd';
+import Authorized from '@/utils/Authorized';
 import IconFont from '@/components/IconFont';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import DictionaryForm from './DictionaryForm';
@@ -80,10 +81,12 @@ class Dictionary extends Component {
       title: '操作',
       render: (text, record) => (
         <>
-          <a onClick={() => this.openModal(record)}>
-            <IconFont type="icon-edit" title="编辑" />
-          </a>
-          <Divider type="vertical" />
+          <Authorized authority="system.dictionary.put" noMatch={null}>
+            <a onClick={() => this.openModal(record)}>
+              <IconFont type="icon-edit" title="编辑" />
+            </a>
+            <Divider type="vertical" />
+          </Authorized>
           <a onClick={() => this.handleDelete(record)}>
             <IconFont type="icon-delete" title="删除" />
           </a>

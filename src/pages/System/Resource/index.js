@@ -3,16 +3,16 @@ import { connect } from 'dva';
 import { Row, Col, Tree, Card, Button, Switch, Divider, Modal, message, Icon, Table } from 'antd';
 import IconFont from '@/components/IconFont';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import InterfaceForm from './InterfaceForm';
+import ResourceForm from './ResourceForm';
 import styles from '../System.less';
 
 const status = ['禁用', '启用'];
 
-@connect(({ systemInterface, loading }) => ({
-  systemInterface,
-  loading: loading.models.systemInterface,
+@connect(({ systemResource, loading }) => ({
+  systemResource,
+  loading: loading.models.systemResource,
 }))
-class Interface extends Component {
+class Resource extends Component {
   columns = [
     {
       title: '接口名称',
@@ -21,6 +21,10 @@ class Interface extends Component {
     {
       title: '接口url',
       dataIndex: 'uri',
+    },
+    {
+      title: '编码',
+      dataIndex: 'code',
     },
     {
       title: '方法类型',
@@ -83,7 +87,7 @@ class Interface extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemInterface/fetch',
+      type: 'systemResource/fetch',
     });
   }
 
@@ -92,7 +96,7 @@ class Interface extends Component {
     const { dispatch } = this.props;
     if (id) {
       dispatch({
-        type: 'systemInterface/fetchById',
+        type: 'systemResource/fetchById',
         id,
         callback: () => {
           this.setState({
@@ -110,7 +114,7 @@ class Interface extends Component {
   closeModal = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemInterface/clearInfo',
+      type: 'systemResource/clearInfo',
     });
     this.setState({
       visible: false,
@@ -120,7 +124,7 @@ class Interface extends Component {
   toggleState = (checked, record) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemInterface/update',
+      type: 'systemResource/update',
       payload: { ...record, status: checked },
     });
   };
@@ -131,7 +135,7 @@ class Interface extends Component {
     const id = selectedKeys.length === 0 ? info.node.props.id : selectedKeys;
     if (info.node.isLeaf()) {
       dispatch({
-        type: 'systemInterface/fetchChildrenById',
+        type: 'systemResource/fetchChildrenById',
         id,
       });
       //
@@ -147,17 +151,17 @@ class Interface extends Component {
     const { iface } = this.state;
     const { id: selectId } = iface;
     dispatch({
-      type: 'systemInterface/moveInterface',
+      type: 'systemResource/moveResource',
       payload: {
         id,
         direction,
       },
       callback: () => {
         dispatch({
-          type: 'systemInterface/fetch',
+          type: 'systemResource/fetch',
         });
         dispatch({
-          type: 'systemInterface/fetchChildrenById',
+          type: 'systemResource/fetchChildrenById',
           id: selectId,
         });
       },
@@ -179,11 +183,11 @@ class Interface extends Component {
   deleteItem = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemInterface/delete',
+      type: 'systemResource/delete',
       id,
       callback: () => {
         dispatch({
-          type: 'systemInterface/fetch',
+          type: 'systemResource/fetch',
           payload: {},
         });
         message.success('删除成功');
@@ -193,7 +197,7 @@ class Interface extends Component {
 
   render() {
     const {
-      systemInterface: { menuTree, list },
+      systemResource: { menuTree, list },
       loading,
     } = this.props;
     const { visible, iface } = this.state;
@@ -224,10 +228,10 @@ class Interface extends Component {
             </Card>
           </Col>
         </Row>
-        <InterfaceForm {...this.props} visible={visible} handleCancel={this.closeModal} />
+        <ResourceForm {...this.props} visible={visible} handleCancel={this.closeModal} />
       </PageHeaderWrapper>
     );
   }
 }
 
-export default Interface;
+export default Resource;

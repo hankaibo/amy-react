@@ -3,10 +3,10 @@ import { Form, Input, Modal, Switch, message, Radio, TreeSelect } from 'antd';
 
 const FormItem = Form.Item;
 
-const InterfaceForm = Form.create({ name: 'interfaceForm' })(props => {
-  const { visible, handleCancel, form, dispatch, systemInterface } = props;
+const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
+  const { visible, handleCancel, form, dispatch, systemResource } = props;
   const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
-  const { info, menuTree } = systemInterface;
+  const { info, menuTree } = systemResource;
   const isEdit = info && info.id;
 
   useEffect(() => {
@@ -22,13 +22,13 @@ const InterfaceForm = Form.create({ name: 'interfaceForm' })(props => {
 
       if (isEdit) {
         dispatch({
-          type: 'systemInterface/update',
+          type: 'systemResource/update',
           payload: fieldsValue,
           callback: () => {
             resetFields();
             handleCancel();
             dispatch({
-              type: 'systemInterface/fetch',
+              type: 'systemResource/fetch',
               payload: {},
             });
             message.success('修改成功');
@@ -36,13 +36,13 @@ const InterfaceForm = Form.create({ name: 'interfaceForm' })(props => {
         });
       } else {
         dispatch({
-          type: 'systemInterface/add',
+          type: 'systemResource/add',
           payload: fieldsValue,
           callback: () => {
             resetFields();
             handleCancel();
             dispatch({
-              type: 'systemInterface/fetch',
+              type: 'systemResource/fetch',
               payload: {},
             });
             message.success('添加成功');
@@ -64,6 +64,11 @@ const InterfaceForm = Form.create({ name: 'interfaceForm' })(props => {
       {getFieldDecorator('type', { initialValue: 2 })(<Input hidden />)}
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="名称">
         {getFieldDecorator('name', {
+          rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
+        })(<Input />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="编码">
+        {getFieldDecorator('code', {
           rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
         })(<Input />)}
       </FormItem>
@@ -104,4 +109,4 @@ const InterfaceForm = Form.create({ name: 'interfaceForm' })(props => {
   );
 });
 
-export default InterfaceForm;
+export default ResourceForm;

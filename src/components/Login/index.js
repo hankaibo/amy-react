@@ -11,7 +11,6 @@ import LoginContext from './loginContext';
 class Login extends Component {
   constructor(props) {
     super(props);
-    // eslint-disable-next-line react/state-in-constructor
     this.state = {
       type: props.defaultActiveKey,
       tabs: [],

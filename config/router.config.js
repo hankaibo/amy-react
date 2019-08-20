@@ -16,6 +16,7 @@ export default [
   {
     path: '/',
     component: '../layouts/BasicLayout',
+    Routes: ['src/pages/Authorized'],
     routes: [
       { path: '/', redirect: '/home' },
       // home
@@ -51,9 +52,9 @@ export default [
             dynamic: true,
           },
           {
-            path: '/system/interfaces',
-            name: 'interface',
-            component: './System/Interface',
+            path: '/system/resources',
+            name: 'resource',
+            component: './System/Resource',
             dynamic: true,
           },
           {

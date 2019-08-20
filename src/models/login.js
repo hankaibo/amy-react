@@ -22,10 +22,10 @@ export default {
       // Login successfully
       if (response.success) {
         const {
-          data: { token, role },
+          data: { token, resources },
         } = response;
         localStorage.setItem('jwt', token);
-        reloadAuthorized(role);
+        reloadAuthorized(resources);
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
@@ -81,7 +81,7 @@ export default {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.data.role);
+      setAuthority(payload.data.resources);
       return {
         ...state,
         status: payload.status,

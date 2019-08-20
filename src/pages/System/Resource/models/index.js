@@ -1,16 +1,16 @@
 import {
-  queryInterfaceTree,
-  queryInterfaceById,
+  queryResourceTree,
+  queryResourceById,
   queryChildrenById,
-  moveInterface,
-  addInterface,
-  deleteInterface,
-  deleteBatchInterface,
-  updateInterface,
+  moveResource,
+  addResource,
+  deleteResource,
+  deleteBatchResource,
+  updateResource,
 } from '../service';
 
 export default {
-  namespace: 'systemInterface',
+  namespace: 'systemResource',
 
   state: {
     // 菜单树
@@ -23,7 +23,7 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryInterfaceTree, payload);
+      const response = yield call(queryResourceTree, payload);
       const { data } = response;
       yield put({
         type: 'saveMenuTree',
@@ -43,12 +43,12 @@ export default {
         },
       });
     },
-    *moveInterface({ payload, callback }, { call }) {
-      yield call(moveInterface, payload);
+    *moveResource({ payload, callback }, { call }) {
+      yield call(moveResource, payload);
       if (callback) callback();
     },
     *fetchById({ id, callback }, { call, put }) {
-      const response = yield call(queryInterfaceById, id);
+      const response = yield call(queryResourceById, id);
       const { data } = response;
       const info = { ...data, status: !!data.status };
       yield put({
@@ -61,11 +61,11 @@ export default {
     },
     *add({ payload, callback }, { call }) {
       const params = { ...payload, status: +payload.status };
-      yield call(addInterface, params);
+      yield call(addResource, params);
       if (callback) callback();
     },
     *delete({ id, callback }, { call, put, select }) {
-      yield call(deleteInterface, id);
+      yield call(deleteResource, id);
       const oldList = yield select(state => state.systemMenu.list);
       const newList = oldList.filter(item => item.id !== id);
       yield put({
@@ -77,13 +77,13 @@ export default {
       if (callback) callback();
     },
     *deleteBatch({ ids, callback }, { call }) {
-      yield call(deleteBatchInterface, ids);
+      yield call(deleteBatchResource, ids);
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put, select }) {
       const params = { ...payload, status: +payload.status };
-      yield call(updateInterface, params);
-      const oldList = yield select(state => state.systemInterface.list);
+      yield call(updateResource, params);
+      const oldList = yield select(state => state.systemResource.list);
       const newList = oldList.map(item => {
         if (item.id === payload.id) return { ...item, ...payload };
         return item;

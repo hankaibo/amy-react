@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Card, Button, Input, Switch, Divider, Modal, message, Icon, Table } from 'antd';
+import Authorized from '@/utils/Authorized';
 import IconFont from '@/components/IconFont';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import RoleForm from './components/RoleForm';
@@ -41,28 +42,34 @@ class Role extends Component {
         },
       ],
       render: (text, record) => {
-        return <Switch checked={text} onClick={checked => this.toggleState(checked, record)} />;
+        return <Switch checked={text} onClick={checked => this.toggleStatus(checked, record)} />;
       },
     },
     {
       title: '操作',
       render: (text, record) => (
         <>
-          <RoleForm isEdit role={record}>
-            <a>
-              <IconFont type="icon-edit" title="编辑" />
+          <Authorized authority="system.role.update" noMatch={null}>
+            <RoleForm isEdit role={record}>
+              <a>
+                <IconFont type="icon-edit" title="编辑" />
+              </a>
+            </RoleForm>
+            <Divider type="vertical" />
+          </Authorized>
+          <Authorized authority="system.role.delete" noMatch={null}>
+            <a onClick={() => this.handleDelete(record)}>
+              <IconFont type="icon-delete" title="删除" />
             </a>
-          </RoleForm>
-          <Divider type="vertical" />
-          <a onClick={() => this.handleDelete(record)}>
-            <IconFont type="icon-delete" title="删除" />
-          </a>
-          <Divider type="vertical" />
-          <RoleResourceForm role={record}>
-            <a>
-              <IconFont type="icon-permission" title="分配资源" />
-            </a>
-          </RoleResourceForm>
+            <Divider type="vertical" />
+          </Authorized>
+          <Authorized authority="system.role.resource.give" noMatch={null}>
+            <RoleResourceForm role={record}>
+              <a>
+                <IconFont type="icon-permission" title="分配资源" />
+              </a>
+            </RoleResourceForm>
+          </Authorized>
         </>
       ),
     },
@@ -86,7 +93,7 @@ class Role extends Component {
     });
   }
 
-  toggleState = (checked, record) => {
+  toggleStatus = (checked, record) => {
     const { dispatch } = this.props;
     const { id } = record;
     dispatch({
@@ -221,14 +228,18 @@ class Role extends Component {
         <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <RoleForm>
-                <Button type="primary" title="新增" onClick={this.openModal}>
-                  <Icon type="plus" />
+              <Authorized authority="system.role.add" noMatch={null}>
+                <RoleForm>
+                  <Button type="primary" title="新增" onClick={this.openModal}>
+                    <Icon type="plus" />
+                  </Button>
+                </RoleForm>
+              </Authorized>
+              <Authorized authority="system.role.batchDelete" noMatch={null}>
+                <Button type="danger" disabled={selectedRows.length <= 0} title="删除" onClick={this.handleBatchDelete}>
+                  <IconFont type="icon-delete" />
                 </Button>
-              </RoleForm>
-              <Button type="danger" disabled={selectedRows.length <= 0} title="删除" onClick={this.handleBatchDelete}>
-                <IconFont type="icon-delete" />
-              </Button>
+              </Authorized>
             </div>
             <Table
               rowKey="id"

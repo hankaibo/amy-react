@@ -85,7 +85,7 @@ const RoleForm = Form.create({ name: 'roleForm' })(props => {
         onCancel={hideModelHandler}
       >
         <Form>
-          {isEdit && getFieldDecorator('id', {})(<Input hidden />)}
+          {isEdit && getFieldDecorator('id')(<Input hidden />)}
           <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="名称">
             {getFieldDecorator('name', {
               rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],

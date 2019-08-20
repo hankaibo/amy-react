@@ -158,6 +158,7 @@ export default {
         ...state,
         resTree: [],
         resSelected: [],
+        halfCheckedKeys: [],
       };
     },
   },

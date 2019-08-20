@@ -4,7 +4,7 @@ import request from '@/utils/request';
  * 查询接口树数据。
  * @returns {Promise<void>}
  */
-export async function queryInterfaceTree() {
+export async function queryResourceTree() {
   return request('/resources?type=1');
 }
 
@@ -22,7 +22,7 @@ export async function queryChildrenById(id) {
  * @param params {id,step} id是要操作的节点，step表示上移(1)还是下移(-1)
  * @returns {Promise<void>}
  */
-export async function moveInterface(params) {
+export async function moveResource(params) {
   const { id, direction } = params;
   return request(`/resources/${id}/location`, {
     method: 'PUT',
@@ -37,7 +37,7 @@ export async function moveInterface(params) {
  * @param id
  * @returns {Promise<void>}
  */
-export async function queryInterfaceById(id) {
+export async function queryResourceById(id) {
   return request(`/resources/${id}`);
 }
 
@@ -46,7 +46,7 @@ export async function queryInterfaceById(id) {
  * @param params
  * @returns {Promise<void>}
  */
-export async function addInterface(params) {
+export async function addResource(params) {
   return request('/resources', {
     method: 'POST',
     data: {
@@ -60,7 +60,7 @@ export async function addInterface(params) {
  * @param id
  * @returns {Promise<void>}
  */
-export async function deleteInterface(id) {
+export async function deleteResource(id) {
   return request(`/resources/${id}`, {
     method: 'DELETE',
   });
@@ -71,7 +71,7 @@ export async function deleteInterface(id) {
  * @param ids
  * @returns {Promise<void>}
  */
-export async function deleteBatchInterface(ids) {
+export async function deleteBatchResource(ids) {
   return request('/resources', {
     method: 'DELETE',
     data: {
@@ -85,7 +85,7 @@ export async function deleteBatchInterface(ids) {
  * @param params
  * @returns {Promise<void>}
  */
-export async function updateInterface(params) {
+export async function updateResource(params) {
   const { id } = params;
   return request(`/resources/${id}`, {
     method: 'PUT',

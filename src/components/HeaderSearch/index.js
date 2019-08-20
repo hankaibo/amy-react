@@ -19,8 +19,7 @@ class HeaderSearch extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      // eslint-disable-next-line react/destructuring-assignment
-      searchMode: this.props.defaultOpen,
+      searchMode: props.defaultOpen,
       value: '',
     };
   }
