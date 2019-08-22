@@ -20,6 +20,7 @@ export default {
         payload: response,
       });
       // Login successfully
+      // 此处不可以请求用户信息（包括当前登录用户个人信息及菜单）请求，原因请看BasicLayout.js L 51。
       if (response.success) {
         const {
           data: { token, resources },

@@ -242,7 +242,12 @@ class User extends Component {
                 </UserForm>
               </Authorized>
               <Authorized authority="system.user.batchDelete" noMatch={null}>
-                <Button type="danger" disabled={selectedRows.length <= 0} title="删除" onClick={this.handleBatchDelete}>
+                <Button
+                  type="danger"
+                  disabled={selectedRows.length <= 0}
+                  title="删除"
+                  onClick={this.handleBatchDelete}
+                >
                   <IconFont type="icon-delete" />
                 </Button>
               </Authorized>

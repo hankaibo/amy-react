@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import Link from 'umi/link';
-import IconFont from '@/components/IconFont';
 import RightContent from '../GlobalHeader/RightContent';
 import BaseMenu from '../SiderMenu/BaseMenu';
 import { getFlatMenuKeys } from '../SiderMenu/SiderMenuUtils';
 import styles from './index.less';
+import { title } from '../../defaultSettings';
 
 export default class TopNavHeader extends PureComponent {
   constructor(props) {
@@ -17,12 +17,15 @@ export default class TopNavHeader extends PureComponent {
   static getDerivedStateFromProps(props) {
     return {
       maxWidth:
-        (props.contentWidth === 'Fixed' && window.innerWidth > 1200 ? 1200 : window.innerWidth) - 280 - 120 - 40,
+        (props.contentWidth === 'Fixed' && window.innerWidth > 1200 ? 1200 : window.innerWidth) -
+        280 -
+        120 -
+        40,
     };
   }
 
   render() {
-    const { collapsed, theme, contentWidth, menuData } = this.props;
+    const { theme, contentWidth, menuData, logo } = this.props;
     const { maxWidth } = this.state;
     const flatMenuKeys = getFlatMenuKeys(menuData);
     return (
@@ -36,10 +39,8 @@ export default class TopNavHeader extends PureComponent {
           <div className={styles.left}>
             <div className={styles.logo} key="logo" id="logo">
               <Link to="/">
-                <IconFont
-                  type={collapsed ? 'icon-logo-min' : 'icon-logo-max'}
-                  style={{ height: '64px', width: '100%', padding: collapsed ? '12px' : 0 }}
-                />
+                <img src={logo} alt="logo" />
+                <h1>{title}</h1>
               </Link>
             </div>
             <div

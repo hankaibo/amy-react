@@ -1,4 +1,4 @@
-<h1 align="center">清创网御前端脚手架</h1>
+<h1 align="center">前端脚手架</h1>
 
 ## 特性
 
@@ -15,7 +15,7 @@
 ### 使用命令行
 
 ```bash
-$ git clone git@192.168.28.63:qcdatavet/fe.git
+$ git clone https://github.com/hankaibo/myantdpro.git
 $ cd fe
 $ npm install(npm --registry https://registry.npm.taobao.org install)
 $ npm start         # 访问 http://localhost:8000

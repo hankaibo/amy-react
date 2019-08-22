@@ -30,7 +30,9 @@ class LoginTab extends Component {
 }
 
 const wrapContext = props => (
-  <LoginContext.Consumer>{value => <LoginTab tabUtil={value.tabUtil} {...props} />}</LoginContext.Consumer>
+  <LoginContext.Consumer>
+    {value => <LoginTab tabUtil={value.tabUtil} {...props} />}
+  </LoginContext.Consumer>
 );
 
 // 标志位 用来判断是不是自定义组件

@@ -10,7 +10,7 @@ const FooterView = () => (
       links={[]}
       copyright={
         <>
-          Copyright <Icon type="copyright" /> 2019 <FormattedMessage id="app.logo.name" />
+          Copyright <Icon type="copyright" /> 2019 <FormattedMessage id="app.copyright" />
         </>
       }
     />

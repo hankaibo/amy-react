@@ -18,8 +18,9 @@ export default [
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
     routes: [
-      { path: '/', redirect: '/home' },
       // home
+      // 最好在这里配置authority，要不然没有权限打开下面页面会报错而停留在异常页面非登录页面。
+      { path: '/', redirect: '/home', authority: ['system.user.info'] },
       {
         path: '/home',
         name: 'home',

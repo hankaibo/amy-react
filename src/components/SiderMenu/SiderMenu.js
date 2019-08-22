@@ -2,10 +2,10 @@ import React, { PureComponent, Suspense } from 'react';
 import { Layout } from 'antd';
 import classNames from 'classnames';
 import Link from 'umi/link';
-import IconFont from '@/components/IconFont';
 import styles from './index.less';
 import PageLoading from '../PageLoading';
 import { getDefaultCollapsedSubMenus } from './SiderMenuUtils';
+import { title } from '../../defaultSettings';
 
 const BaseMenu = React.lazy(() => import('./BaseMenu'));
 const { Sider } = Layout;
@@ -54,7 +54,7 @@ export default class SiderMenu extends PureComponent {
   };
 
   render() {
-    const { collapsed, onCollapse, fixSiderbar, theme, isMobile } = this.props;
+    const { logo, collapsed, onCollapse, fixSiderbar, theme, isMobile } = this.props;
     const { openKeys } = this.state;
     const defaultProps = collapsed ? {} : { openKeys };
 
@@ -79,10 +79,8 @@ export default class SiderMenu extends PureComponent {
       >
         <div className={styles.logo} id="logo">
           <Link to="/">
-            <IconFont
-              type={collapsed ? 'icon-logo-min' : 'icon-logo-max'}
-              style={{ height: '64px', width: '100%', padding: collapsed ? '12px' : 0 }}
-            />
+            <img src={logo} alt="logo" />
+            <h1>{title}</h1>
           </Link>
         </div>
         <Suspense fallback={<PageLoading />}>

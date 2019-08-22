@@ -22,7 +22,9 @@ const itemRender = (route, params, routes, paths) => {
 
 const renderItemLocal = item => {
   if (item.locale) {
-    const name = menu.disableLocal ? item.name : formatMessage({ id: item.locale, defaultMessage: item.name });
+    const name = menu.disableLocal
+      ? item.name
+      : formatMessage({ id: item.locale, defaultMessage: item.name });
     return name;
   }
   return item.name;

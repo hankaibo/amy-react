@@ -6,8 +6,8 @@ import { Icon } from 'antd';
 import DocumentTitle from 'react-document-title';
 import GlobalFooter from '@/components/GlobalFooter';
 import SelectLang from '@/components/SelectLang';
-import IconFont from '@/components/IconFont';
 import styles from './UserLayout.less';
+import logo from '../assets/logo.svg';
 import getPageTitle from '@/utils/getPageTitle';
 
 const links = [
@@ -30,7 +30,7 @@ const links = [
 
 const copyright = (
   <>
-    Copyright <Icon type="copyright" /> 2019 <FormattedMessage id="app.logo.name" />
+    Copyright <Icon type="copyright" /> 2019 <FormattedMessage id="app.copyright" />
   </>
 );
 
@@ -50,11 +50,10 @@ const UserLayout = props => {
           <div className={styles.top}>
             <div className={styles.header}>
               <Link to="/">
-                <IconFont type="icon-logo" style={{ fontSize: '32px', color: '#531dab' }} />
-                <span className={styles.title}>{formatMessage({ id: 'app.logo.name' })}</span>
+                <img alt="logo" className={styles.logo} src={logo} />
+                <span className={styles.title}>FE</span>
               </Link>
             </div>
-            {/* <div className={styles.desc}>Qing</div> */}
           </div>
           {children}
         </div>

@@ -236,7 +236,12 @@ class Role extends Component {
                 </RoleForm>
               </Authorized>
               <Authorized authority="system.role.batchDelete" noMatch={null}>
-                <Button type="danger" disabled={selectedRows.length <= 0} title="删除" onClick={this.handleBatchDelete}>
+                <Button
+                  type="danger"
+                  disabled={selectedRows.length <= 0}
+                  title="删除"
+                  onClick={this.handleBatchDelete}
+                >
                   <IconFont type="icon-delete" />
                 </Button>
               </Authorized>

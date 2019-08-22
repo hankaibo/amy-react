@@ -16,6 +16,6 @@ export function getAuthority(str) {
 }
 
 export function setAuthority(authority) {
-  const proAuthority = typeof authority === 'string' ? authority.split(',') : authority;
-  return localStorage.setItem('fe-authority', JSON.stringify(proAuthority));
+  const feAuthority = typeof authority === 'string' ? authority.split(',') : authority;
+  return localStorage.setItem('fe-authority', JSON.stringify(feAuthority));
 }

@@ -3,7 +3,7 @@ export default {
   'layout.user.link.help': '帮助',
   'layout.user.link.privacy': '隐私',
   'layout.user.link.terms': '条款',
-  'app.logo.name': '清创网御',
+  'app.copyright': 'hankaibo',
   'app.login.username': '用户名',
   'app.login.password': '密码',
   'app.login.message-invalid-credentials': '账户或密码错误（admin|user/123456）',

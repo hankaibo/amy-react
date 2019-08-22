@@ -27,7 +27,9 @@ function formatter(data, parentAuthority, parentName) {
       }
       // if enableMenuLocale use item.name,
       // close menu international
-      const name = menu.disableLocal ? item.name : formatMessage({ id: locale, defaultMessage: item.name });
+      const name = menu.disableLocal
+        ? item.name
+        : formatMessage({ id: locale, defaultMessage: item.name });
       const result = {
         ...item,
         name,
@@ -109,7 +111,9 @@ const filyer = (sectionList, route, deep) => {
   if (!sections.length && route.dynamic && deep !== 0) {
     return null;
   }
-  const oneLevel = sections.filter(item => item.split('.').length >= 2).map(item => item.split('.')[1]);
+  const oneLevel = sections
+    .filter(item => item.split('.').length >= 2)
+    .map(item => item.split('.')[1]);
   const levelMore = sections
     .filter(item => item.split('.').length > 2)
     .map(item =>
@@ -139,7 +143,9 @@ const filyer = (sectionList, route, deep) => {
 const filterRouters = (routes, menuList) => {
   if (!routes) return [];
   const sectionList = menuList.filter(item => item && isString(item));
-  const oneLevel = sectionList.filter(item => item.split('.').length >= 1).map(item => item.split('.')[0]);
+  const oneLevel = sectionList
+    .filter(item => item.split('.').length >= 1)
+    .map(item => item.split('.')[0]);
   const levelMore = sectionList.filter(item => item.split('.').length > 1);
   const newRoutes = filterLevel1(routes, oneLevel);
   const list = [];
@@ -173,7 +179,9 @@ export default {
         const menuData = filterMenuData(memoizeOneFormatter(routerMap, authority));
         // const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
         // 这是修改后的代码，因为menuData是已经过滤掉存在hideInMenu
-        const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(memoizeOneFormatter(routerMap, authority));
+        const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(
+          memoizeOneFormatter(routerMap, authority)
+        );
         yield put({
           type: 'save',
           payload: {

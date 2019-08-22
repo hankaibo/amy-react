@@ -5,16 +5,24 @@
 .logo {
   position: relative;
   height: @nav-header-height;
+  padding-left: (@menu-collapsed-width - 32px) / 2;
   overflow: hidden;
   line-height: @nav-header-height;
   background: #002140;
   transition: all 0.3s;
-
-  :global {
-    svg {
-      width: 100%;
-      height: 100%;
-    }
+  img {
+    display: inline-block;
+    height: 32px;
+    vertical-align: middle;
+  }
+  h1 {
+    display: inline-block;
+    margin: 0 0 0 12px;
+    color: white;
+    font-weight: 600;
+    font-size: 20px;
+    font-family: Avenir, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    vertical-align: middle;
   }
 }
 
@@ -54,8 +62,10 @@
     .logo {
       background: white;
       box-shadow: 1px 1px 0 0 @border-color-split;
+      h1 {
+        color: @primary-color;
+      }
     }
-
     :global(.ant-menu-light) {
       border-right-color: transparent;
     }
@@ -79,7 +89,12 @@
 
   .ant-menu-inline-collapsed {
     & > .ant-menu-item .sider-menu-item-img + span,
-    & > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-item .sider-menu-item-img + span,
+    &
+      > .ant-menu-item-group
+      > .ant-menu-item-group-list
+      > .ant-menu-item
+      .sider-menu-item-img
+      + span,
     & > .ant-menu-submenu > .ant-menu-submenu-title .sider-menu-item-img + span {
       display: inline-block;
       max-width: 0;

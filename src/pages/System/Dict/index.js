@@ -319,7 +319,12 @@ class Dictionary extends Component {
               <Button type="primary" title="新增" onClick={this.openModal}>
                 <Icon type="plus" />
               </Button>
-              <Button type="danger" disabled={selectedRows.length <= 0} title="删除" onClick={this.handleBatchDelete}>
+              <Button
+                type="danger"
+                disabled={selectedRows.length <= 0}
+                title="删除"
+                onClick={this.handleBatchDelete}
+              >
                 <IconFont type="icon-delete" />
               </Button>
               {Object.keys(id).length > 0 && (

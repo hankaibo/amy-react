@@ -71,7 +71,13 @@ const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
   return (
     <span>
       <span onClick={showModalHandler}>{children}</span>
-      <Modal destroyOnClose title="角色配置" visible={visible} onOk={handleGive} onCancel={hideModelHandler}>
+      <Modal
+        destroyOnClose
+        title="角色配置"
+        visible={visible}
+        onOk={handleGive}
+        onCancel={hideModelHandler}
+      >
         <Form>
           {getFieldDecorator('id')(<Input hidden />)}
           <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }}>

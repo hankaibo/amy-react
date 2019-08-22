@@ -66,7 +66,9 @@ class LoginPage extends Component {
     });
   };
 
-  renderMessage = content => <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />;
+  renderMessage = content => (
+    <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />
+  );
 
   render() {
     const { login, submitting } = this.props;
@@ -115,7 +117,9 @@ class LoginPage extends Component {
             {login.status === 'error' &&
               login.type === 'mobile' &&
               !submitting &&
-              this.renderMessage(formatMessage({ id: 'app.login.message-invalid-verification-code' }))}
+              this.renderMessage(
+                formatMessage({ id: 'app.login.message-invalid-verification-code' })
+              )}
             <Mobile
               name="mobile"
               placeholder={formatMessage({ id: 'form.phone-number.placeholder' })}

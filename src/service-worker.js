@@ -36,8 +36,14 @@ workbox.routing.registerRoute(/\/api\//, workbox.strategies.networkFirst());
 /**
  * Handle third party requests
  */
-workbox.routing.registerRoute(/^https:\/\/gw.alipayobjects.com\//, workbox.strategies.networkFirst());
-workbox.routing.registerRoute(/^https:\/\/cdnjs.cloudflare.com\//, workbox.strategies.networkFirst());
+workbox.routing.registerRoute(
+  /^https:\/\/gw.alipayobjects.com\//,
+  workbox.strategies.networkFirst()
+);
+workbox.routing.registerRoute(
+  /^https:\/\/cdnjs.cloudflare.com\//,
+  workbox.strategies.networkFirst()
+);
 workbox.routing.registerRoute(/\/color.less/, workbox.strategies.networkFirst());
 
 /**
@@ -48,7 +54,12 @@ addEventListener('message', event => {
   const message = event.data;
   if (replyPort && message && message.type === 'skip-waiting') {
     event.waitUntil(
-      self.skipWaiting().then(() => replyPort.postMessage({ error: null }), error => replyPort.postMessage({ error }))
+      self
+        .skipWaiting()
+        .then(
+          () => replyPort.postMessage({ error: null }),
+          error => replyPort.postMessage({ error })
+        )
     );
   }
 });

@@ -89,7 +89,13 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
   return (
     <span>
       <span onClick={showModalHandler}>{children}</span>
-      <Modal destroyOnClose title="权限配置" visible={visible} onOk={handleGive} onCancel={hideModelHandler}>
+      <Modal
+        destroyOnClose
+        title="权限配置"
+        visible={visible}
+        onOk={handleGive}
+        onCancel={hideModelHandler}
+      >
         <Form>
           {getFieldDecorator('id')(<Input hidden />)}
           <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }}>

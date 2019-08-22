@@ -3,7 +3,7 @@ export default {
   'layout.user.link.help': 'Help',
   'layout.user.link.privacy': 'Privacy',
   'layout.user.link.terms': 'Terms',
-  'app.logo.name': 'Qing ',
+  'app.copyright': 'hankaibo',
   'app.login.username': 'username',
   'app.login.password': 'password',
   'app.login.message-invalid-credentials': 'Invalid username or password（admin|user/123456）',

@@ -51,7 +51,10 @@ class Resource extends Component {
       title: '排序',
       render: (text, record) => (
         <>
-          <a onClick={() => this.handleGo(record, 'UP')} style={{ padding: '0 5px', marginRight: '10px' }}>
+          <a
+            onClick={() => this.handleGo(record, 'UP')}
+            style={{ padding: '0 5px', marginRight: '10px' }}
+          >
             <Icon type="arrow-up" title="向上" />
           </a>
           <a onClick={() => this.handleGo(record, 'DOWN')}>
@@ -206,7 +209,12 @@ class Resource extends Component {
       <PageHeaderWrapper>
         <Row gutter={8}>
           <Col span={6}>
-            <Card title="菜单树" style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
+            <Card
+              title="菜单树"
+              style={{ marginTop: 10 }}
+              bordered={false}
+              bodyStyle={{ padding: '15px' }}
+            >
               <Tree treeData={menuTree} onSelect={this.handleSelect} />
             </Card>
           </Col>

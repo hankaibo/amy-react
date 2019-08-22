@@ -61,6 +61,7 @@ const checkPermissions = (authority, currentAuthority, target, Exception) => {
 
 export { checkPermissions };
 
-const check = (authority, target, Exception) => checkPermissions(authority, CURRENT, target, Exception);
+const check = (authority, target, Exception) =>
+  checkPermissions(authority, CURRENT, target, Exception);
 
 export default check;

@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import { ContainerQuery } from 'react-container-query';
 import classNames from 'classnames';
 import Media from 'react-media';
+import logo from '../assets/logo.svg';
 import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';
@@ -48,6 +49,11 @@ class BasicLayout extends React.Component {
       dispatch,
       route: { routes, path, authority },
     } = this.props;
+    /**
+     * routes 即路由配置文件中的Routes配置的所有路由组件。
+     * 这就导致了只有进入BasicLayout组件之后才能获取到routes，才可以发起user/fetchCurrent请求获取动态要展示的菜单。
+     * 动态菜单作为过滤条件，对routes过滤之后，组装成menu组件需要的数据，这样动态菜单组件就可以在页面显示了。
+     */
     dispatch({
       type: 'user/fetchCurrent',
       payload: { routes, path, authority },
@@ -109,6 +115,7 @@ class BasicLayout extends React.Component {
       <Layout>
         {isTop && !isMobile ? null : (
           <SiderMenu
+            logo={logo}
             theme={navTheme}
             onCollapse={this.handleMenuCollapse}
             menuData={menuData}
@@ -125,6 +132,7 @@ class BasicLayout extends React.Component {
           <Header
             menuData={menuData}
             handleMenuCollapse={this.handleMenuCollapse}
+            logo={logo}
             isMobile={isMobile}
             {...this.props}
           />
@@ -158,4 +166,8 @@ export default connect(({ global, setting, user: userModel }) => ({
   menuData: userModel.menuData,
   breadcrumbNameMap: userModel.breadcrumbNameMap,
   ...setting,
-}))(props => <Media query="(max-width: 599px)">{isMobile => <BasicLayout {...props} isMobile={isMobile} />}</Media>);
+}))(props => (
+  <Media query="(max-width: 599px)">
+    {isMobile => <BasicLayout {...props} isMobile={isMobile} />}
+  </Media>
+));
