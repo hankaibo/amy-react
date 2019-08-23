@@ -9,13 +9,14 @@
 - :globe_with_meridians: **国际化**：内建业界通用的国际化方案
 - :gear: **最佳实践**：良好的工程实践助您持续产出高质量代码
 - :1234: **Mock 数据**：实用的本地数据调试方案
+- :menu: **动态菜单**：实现动态菜单及按钮级别的权限控制（后台代码配合）
 
 ## 使用
 
 ### 使用命令行
 
 ```bash
-$ git clone https://github.com/hankaibo/myantdpro.git
+$ git clone https://github.com/hankaibo/myantdpro.git fe
 $ cd fe
 $ npm install(npm --registry https://registry.npm.taobao.org install)
 $ npm start         # 访问 http://localhost:8000
