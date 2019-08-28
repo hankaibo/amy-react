@@ -1,13 +1,15 @@
 import React from 'react';
 import { FormattedMessage } from 'umi-plugin-react/locale';
 import Link from 'umi/link';
-import { PageHeader, Tabs } from 'antd';
+import { PageHeader, Tabs, Typography } from 'antd';
 import { connect } from 'dva';
 import classNames from 'classnames';
 import GridContent from './GridContent';
 import styles from './index.less';
 import MenuContext from '@/layouts/MenuContext';
 import { conversionBreadcrumbList } from './breadcrumb';
+
+const { Title } = Typography;
 
 /**
  * render Footer tabList
@@ -48,7 +50,7 @@ const PageHeaderWrapper = ({
   ...restProps
 }) => {
   return (
-    <div style={{ margin: '-10px -10px 0' }} className={classNames(wrapperClassName, styles.main)}>
+    <div style={{ margin: '-24px -24px 0' }} className={classNames(wrapperClassName, styles.main)}>
       {top}
       <MenuContext.Consumer>
         {value => {
@@ -60,6 +62,20 @@ const PageHeaderWrapper = ({
                 })}
               >
                 <PageHeader
+                  title={
+                    <>
+                      {logo && <span className={styles.logo}>{logo}</span>}
+                      <Title
+                        level={4}
+                        style={{
+                          marginBottom: 0,
+                          display: 'inline-block',
+                        }}
+                      >
+                        {title}
+                      </Title>
+                    </>
+                  }
                   key="pageheader"
                   {...restProps}
                   breadcrumb={
@@ -72,6 +88,7 @@ const PageHeaderWrapper = ({
                       }),
                     })
                   }
+                  className={styles.pageHeader}
                   linkElement={Link}
                   footer={renderFooter(restProps)}
                 >
