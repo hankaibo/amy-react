@@ -24,6 +24,6 @@ install: yarn
 script:
   - yarn run build
 
-after_script:
-  - pwd
-  - scp -o StrictHostKeyChecking=no -r dist/ ubuntu@$IP:/var/www/html/myantdpro
+after_success:
+  - cd dist
+  - scp -o StrictHostKeyChecking=no -r ./* ubuntu@$IP:/var/www/html/myantdpro
