@@ -1,7 +1,22 @@
 # .travis.yml
 language: node_js
-node_js: 10.16.3
+node_js:
+  - '10'
 
 branches:
   only:
     - master
+
+cache:
+  yarn: true
+  directories:
+    - node_modules
+
+install: yarn
+
+script:
+  - yarn run build
+
+addons:
+  ssh_known_hosts:
+    - 58.87.121.239:22
