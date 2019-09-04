@@ -22,6 +22,7 @@ branches:
 install: yarn
 
 script:
+  - echo $KNOWN_HOST >> ~/.ssh/known_hosts
   - yarn run build
 
 after_success:
