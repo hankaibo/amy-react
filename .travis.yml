@@ -27,4 +27,4 @@ script:
 
 after_success:
   - cd dist
-  - scp -o StrictHostKeyChecking=no -r ./* ubuntu@$IP:/var/www/html/myantdpro
+  - scp -o StrictHostKeyChecking=no -r ./* ubuntu@$IP:/home/ubuntu/myantdpro-docker/dist
