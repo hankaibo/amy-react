@@ -161,7 +161,9 @@ class User extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'systemUser/delete',
-      payload: id,
+      payload: {
+        id,
+      },
       callback: () => {
         this.setState({
           selectedRows: [],

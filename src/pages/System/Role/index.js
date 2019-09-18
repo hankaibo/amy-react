@@ -155,7 +155,9 @@ class Role extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'systemRole/delete',
-      id,
+      payload: {
+        id,
+      },
       callback: () => {
         this.setState({
           selectedRows: [],
