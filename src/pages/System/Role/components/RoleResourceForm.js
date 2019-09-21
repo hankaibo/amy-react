@@ -5,15 +5,7 @@ import { Form, Input, Tree, Modal, message } from 'antd';
 const FormItem = Form.Item;
 
 const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
-  const {
-    children,
-    role: { id },
-    resTree,
-    resSelected,
-    halfCheckedKeys,
-    form,
-    dispatch,
-  } = props;
+  const { children, role, resTree, resSelected, halfCheckedKeys, form, dispatch } = props;
   const { validateFields, getFieldDecorator, setFieldsValue } = form;
 
   // https://github.com/ant-design/ant-design/issues/9807
@@ -21,19 +13,22 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [autoExpandParent, setAutoExpandParent] = useState(true);
   const [checkedKeys, setCheckedKeys] = useState([]);
+  // 【模态框显示隐藏属性】
   const [visible, setVisible] = useState(false);
 
+  // 【模态框显示隐藏函数】
   const showModalHandler = e => {
     if (e) e.stopPropagation();
     setVisible(true);
   };
-
   const hideModelHandler = () => {
     setVisible(false);
   };
 
+  // 【获取要修改用户的角色】
   useEffect(() => {
     if (visible) {
+      const { id } = role;
       dispatch({
         type: 'systemRole/fetchResTree',
         payload: {
@@ -44,38 +39,35 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
         },
       });
     }
-    return function cleanup() {
-      dispatch({
-        type: 'systemRole/clearRes',
-      });
-    };
-  }, [visible, id]);
+  }, [visible, role, setFieldsValue]);
 
+  // 【回显树复选择框】
   useEffect(() => {
     if (resSelected.length > 0) {
       setCheckedKeys(resSelected);
       setFieldsValue({ ids: resSelected.concat(halfCheckedKeys) });
     }
-  }, [resSelected, halfCheckedKeys]);
+  }, [resSelected, halfCheckedKeys, setFieldsValue]);
 
+  // 【树操作】
   const onExpand = values => {
     setExpandedKeys(values);
     setAutoExpandParent(false);
   };
-
   const handleCheck = (values, event) => {
     const { halfCheckedKeys: halfValues } = event;
     setFieldsValue({ ids: [...values, ...halfValues] });
     setCheckedKeys(values);
   };
 
-  const handleGive = () => {
+  // 【授权】
+  const handleGrant = () => {
     validateFields((err, fieldsValue) => {
       if (err) return;
 
       if (fieldsValue.id) {
         dispatch({
-          type: 'systemRole/giveRoleResource',
+          type: 'systemRole/grantRoleResource',
           payload: fieldsValue,
           callback: () => {
             hideModelHandler();
@@ -93,7 +85,7 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
         destroyOnClose
         title="权限配置"
         visible={visible}
-        onOk={handleGive}
+        onOk={handleGrant}
         onCancel={hideModelHandler}
       >
         <Form>

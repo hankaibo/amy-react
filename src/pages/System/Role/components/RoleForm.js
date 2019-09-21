@@ -5,21 +5,22 @@ import { Form, Input, Modal, Switch, message } from 'antd';
 const FormItem = Form.Item;
 
 const RoleForm = Form.create({ name: 'roleForm' })(props => {
-  const { children, isEdit, role, form, dispatch } = props;
+  const { children, isEdit, role, editRole, form, dispatch } = props;
   const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
 
+  // 【模态框显示隐藏属性】
   const [visible, setVisible] = useState(false);
-  const [editRole, setEditRole] = useState({});
 
+  // 【模态框显示隐藏函数】
   const showModalHandler = e => {
     if (e) e.stopPropagation();
     setVisible(true);
   };
-
   const hideModelHandler = () => {
     setVisible(false);
   };
 
+  // 【获取要修改角色的数据】
   useEffect(() => {
     if (visible && isEdit) {
       const { id } = role;
@@ -31,12 +32,11 @@ const RoleForm = Form.create({ name: 'roleForm' })(props => {
         callback: () => {
           setVisible(true);
         },
-      }).then(data => {
-        setEditRole(data);
       });
     }
   }, [visible, isEdit, role]);
 
+  // 【回显表单】
   useEffect(() => {
     // 👍 将条件判断放置在 effect 中
     if (visible && isEdit) {
@@ -44,8 +44,9 @@ const RoleForm = Form.create({ name: 'roleForm' })(props => {
         setFieldsValue(editRole);
       }
     }
-  }, [visible, isEdit, editRole]);
+  }, [visible, isEdit, editRole, setFieldsValue]);
 
+  // 【添加与修改】
   const handleAddOrUpdate = () => {
     validateFields((err, fieldsValue) => {
       if (err) return;
@@ -74,6 +75,18 @@ const RoleForm = Form.create({ name: 'roleForm' })(props => {
     });
   };
 
+  // 【表单布局】
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 5 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 15 },
+    },
+  };
+
   return (
     <span>
       <span onClick={showModalHandler}>{children}</span>
@@ -84,19 +97,19 @@ const RoleForm = Form.create({ name: 'roleForm' })(props => {
         onOk={handleAddOrUpdate}
         onCancel={hideModelHandler}
       >
-        <Form>
+        <Form {...formItemLayout}>
           {isEdit && getFieldDecorator('id')(<Input hidden />)}
-          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="名称">
+          <FormItem label="名称">
             {getFieldDecorator('name', {
               rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
             })(<Input />)}
           </FormItem>
-          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="编码">
+          <FormItem label="编码">
             {getFieldDecorator('code', {
-              rules: [{ message: '请输入至少1个字符的规则描述！', min: 1 }],
+              rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
             })(<Input />)}
           </FormItem>
-          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="状态">
+          <FormItem label="状态">
             {getFieldDecorator('status', { initialValue: true, valuePropName: 'checked' })(
               <Switch checkedChildren="开" unCheckedChildren="关" />
             )}
@@ -107,6 +120,6 @@ const RoleForm = Form.create({ name: 'roleForm' })(props => {
   );
 });
 
-export default connect(({ systemRole }) => ({
-  systemRole,
+export default connect(({ systemRole: { editRole } }) => ({
+  editRole,
 }))(RoleForm);

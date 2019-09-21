@@ -6,7 +6,7 @@ import request from '@/utils/request';
  * @param params
  * @returns {Promise<void>}
  */
-export async function queryRoleList(params) {
+export async function pageRole(params) {
   return request(`/roles?${stringify(params)}`);
 }
 
@@ -15,7 +15,7 @@ export async function queryRoleList(params) {
  * @param id
  * @returns {Promise<void>}
  */
-export async function queryRoleById(id) {
+export async function getRoleById(id) {
   return request(`/roles/${id}`);
 }
 
@@ -79,7 +79,7 @@ export async function updateRole(params) {
  * @param params
  * @returns {Promise<void>}
  */
-export async function enabledRole(params) {
+export async function enableRole(params) {
   const { id, status } = params;
   return request(`/roles/${id}/status`, {
     method: 'PUT',
@@ -93,7 +93,7 @@ export async function enabledRole(params) {
  * 查询完整的资源树。
  * @returns {Promise<void>}
  */
-export async function queryResourceByRole(id) {
+export async function getResourceByRole(id) {
   return request(`/roles/${id}/resources`);
 }
 
@@ -103,7 +103,7 @@ export async function queryResourceByRole(id) {
  * @param params
  * @returns {Promise<void>}
  */
-export async function giveRoleResource(params) {
+export async function grantRoleResource(params) {
   const { id, ids } = params;
   return request(`/roles/${id}/resources`, {
     method: 'POST',

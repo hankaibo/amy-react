@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Card, Button, Input, Switch, Divider, Modal, message, Icon, Table } from 'antd';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Authorized from '@/utils/Authorized';
 import IconFont from '@/components/IconFont';
-import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import RoleForm from './components/RoleForm';
 import RoleResourceForm from './components/RoleResourceForm';
 import styles from '../System.less';
@@ -12,14 +12,131 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const status = ['禁用', '启用'];
 
-@connect(({ systemRole, loading }) => ({
-  systemRole,
-  loading: loading.models.systemRole,
-}))
-class Role extends Component {
-  columns = [
+const Role = props => {
+  const { loading, list, pagination, dispatch } = props;
+
+  // 【复选框状态属性与函数】
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  // 【首次请求加载列表数据】
+  useEffect(() => {
+    dispatch({
+      type: 'systemRole/fetch',
+      payload: {
+        current: 1,
+        pageSize: 10,
+      },
+    });
+  }, []);
+
+  // 【启用禁用】
+  const toggleStatus = (checked, record) => {
+    const { id } = record;
+    dispatch({
+      type: 'systemRole/enable',
+      payload: {
+        id,
+        status: checked,
+      },
+    });
+  };
+
+  // 【搜索】
+  const handleFormSubmit = () => {
+    message.info('正在开发中');
+  };
+
+  // 【批量删除】
+  const deleteBatchItem = () => {
+    if (selectedRows.length === 0) return;
+    dispatch({
+      type: 'systemRole/deleteBatch',
+      payload: {
+        ids: selectedRows,
+      },
+      callback: () => {
+        setSelectedRows([]);
+      },
+    });
+  };
+  const handleBatchDelete = () => {
+    Modal.confirm({
+      title: '批量删除',
+      content: '您确定批量删除这些角色吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => deleteBatchItem(),
+    });
+  };
+
+  // 【删除】
+  const deleteItem = id => {
+    dispatch({
+      type: 'systemRole/delete',
+      payload: {
+        id,
+      },
+      callback: () => {
+        setSelectedRows([]);
+        message.success('删除成功');
+      },
+    });
+  };
+  const handleDelete = record => {
+    const { id } = record;
+    Modal.confirm({
+      title: '删除',
+      content: '您确定要删除该角色吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => deleteItem(id),
+    });
+  };
+
+  // 【分页、过滤】
+  const handleTableChange = (page, filtersArg) => {
+    const filters = Object.keys(filtersArg).reduce((obj, key) => {
+      const newObj = { ...obj };
+      newObj[key] = getValue(filtersArg[key]);
+      return newObj;
+    }, {});
+
+    const { current, pageSize } = page;
+
+    const params = {
+      current,
+      pageSize,
+      ...filters,
+    };
+
+    dispatch({
+      type: 'systemRole/fetch',
+      payload: params,
+    });
+  };
+
+  // 【全页搜索框】
+  const mainSearch = (
+    <div style={{ textAlign: 'center' }}>
+      <Input.Search
+        placeholder="请输入角色名称"
+        enterButton
+        size="large"
+        onSearch={handleFormSubmit}
+        style={{ maxWidth: 522, width: '100%' }}
+      />
+    </div>
+  );
+
+  // 【复选框相关操作】
+  const rowSelection = {
+    selectedRows,
+    onChange: setSelectedRows,
+  };
+
+  // 【表格列】
+  const columns = [
     {
       title: '角色名称',
       dataIndex: 'name',
@@ -31,18 +148,9 @@ class Role extends Component {
     {
       title: '角色状态',
       dataIndex: 'status',
-      filters: [
-        {
-          text: status[0],
-          value: 0,
-        },
-        {
-          text: status[1],
-          value: 1,
-        },
-      ],
+      filters: [{ text: '禁用', value: 0 }, { text: '启用', value: 1 }],
       render: (text, record) => {
-        return <Switch checked={text} onClick={checked => this.toggleStatus(checked, record)} />;
+        return <Switch checked={text} onClick={checked => toggleStatus(checked, record)} />;
       },
     },
     {
@@ -58,12 +166,12 @@ class Role extends Component {
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system.role.delete" noMatch={null}>
-            <a onClick={() => this.handleDelete(record)}>
+            <a onClick={() => handleDelete(record)}>
               <IconFont type="icon-delete" title="删除" />
             </a>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system.role.resource.give" noMatch={null}>
+          <Authorized authority="system.role.resource.grant" noMatch={null}>
             <RoleResourceForm role={record}>
               <a>
                 <IconFont type="icon-permission" title="分配资源" />
@@ -75,193 +183,46 @@ class Role extends Component {
     },
   ];
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedRows: [],
-    };
-  }
-
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'systemRole/fetch',
-      payload: {
-        current: 1,
-        pageSize: 10,
-      },
-    });
-  }
-
-  toggleStatus = (checked, record) => {
-    const { dispatch } = this.props;
-    const { id } = record;
-    dispatch({
-      type: 'systemRole/enable',
-      payload: {
-        id,
-        status: checked,
-      },
-    });
-  };
-
-  // 【搜索】
-  handleFormSubmit = () => {
-    message.info('正在开发中');
-  };
-
-  // 【批量删除】
-  handleBatchDelete = () => {
-    Modal.confirm({
-      title: '批量删除',
-      content: '您确定批量删除这些角色吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => this.deleteBatchItem(),
-    });
-  };
-
-  deleteBatchItem = () => {
-    const { dispatch } = this.props;
-    const { selectedRows } = this.state;
-
-    if (selectedRows.length === 0) return;
-    dispatch({
-      type: 'systemRole/deleteBatch',
-      payload: {
-        ids: selectedRows,
-      },
-      callback: () => {
-        this.setState({
-          selectedRows: [],
-        });
-      },
-    });
-  };
-
-  // 【删除】
-  handleDelete = record => {
-    const { id } = record;
-    Modal.confirm({
-      title: '删除',
-      content: '您确定要删除该角色吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => this.deleteItem(id),
-    });
-  };
-
-  deleteItem = id => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'systemRole/delete',
-      payload: {
-        id,
-      },
-      callback: () => {
-        this.setState({
-          selectedRows: [],
-        });
-        message.success('删除成功');
-      },
-    });
-  };
-
-  // 【选择表格行】
-  handleSelectRows = rows => {
-    this.setState({
-      selectedRows: rows,
-    });
-  };
-
-  // 【分页、排序、过滤】
-  handleTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
-
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-
-    const { current, pageSize } = pagination;
-
-    const params = {
-      current,
-      pageSize,
-      ...filters,
-    };
-    if (sorter.field) {
-      params.sorter = `${sorter.field}_${sorter.order}`;
-    }
-
-    dispatch({
-      type: 'systemRole/fetch',
-      payload: params,
-    });
-  };
-
-  render() {
-    const {
-      systemRole: { list, pagination },
-      loading,
-    } = this.props;
-    const { selectedRows } = this.state;
-
-    const mainSearch = (
-      <div style={{ textAlign: 'center' }}>
-        <Input.Search
-          placeholder="请输入角色名称"
-          enterButton
-          size="large"
-          onSearch={this.handleFormSubmit}
-          style={{ maxWidth: 522, width: '100%' }}
-        />
-      </div>
-    );
-
-    const rowSelection = {
-      selectedRows,
-      onChange: this.handleSelectRows,
-    };
-
-    return (
-      <PageHeaderWrapper content={mainSearch}>
-        <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListOperator}>
-              <Authorized authority="system.role.add" noMatch={null}>
-                <RoleForm>
-                  <Button type="primary" title="新增" onClick={this.openModal}>
-                    <Icon type="plus" />
-                  </Button>
-                </RoleForm>
-              </Authorized>
-              <Authorized authority="system.role.batchDelete" noMatch={null}>
-                <Button
-                  type="danger"
-                  disabled={selectedRows.length <= 0}
-                  title="删除"
-                  onClick={this.handleBatchDelete}
-                >
-                  <IconFont type="icon-delete" />
+  return (
+    <PageHeaderWrapper content={mainSearch}>
+      <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
+        <div className={styles.tableList}>
+          <div className={styles.tableListOperator}>
+            <Authorized authority="system.role.add" noMatch={null}>
+              <RoleForm>
+                <Button type="primary" title="新增">
+                  <Icon type="plus" />
                 </Button>
-              </Authorized>
-            </div>
-            <Table
-              rowKey="id"
-              loading={loading}
-              columns={this.columns}
-              dataSource={list}
-              pagination={pagination}
-              rowSelection={rowSelection}
-              onChange={this.handleTableChange}
-            />
+              </RoleForm>
+            </Authorized>
+            <Authorized authority="system.role.batchDelete" noMatch={null}>
+              <Button
+                type="danger"
+                disabled={selectedRows.length <= 0}
+                title="删除"
+                onClick={handleBatchDelete}
+              >
+                <IconFont type="icon-delete" />
+              </Button>
+            </Authorized>
           </div>
-        </Card>
-      </PageHeaderWrapper>
-    );
-  }
-}
+          <Table
+            rowKey="id"
+            loading={loading}
+            columns={columns}
+            dataSource={list}
+            pagination={pagination}
+            rowSelection={rowSelection}
+            onChange={handleTableChange}
+          />
+        </div>
+      </Card>
+    </PageHeaderWrapper>
+  );
+};
 
-export default Role;
+export default connect(({ systemRole: { list, pagination }, loading }) => ({
+  list,
+  pagination,
+  loading: loading.models.systemRole,
+}))(Role);

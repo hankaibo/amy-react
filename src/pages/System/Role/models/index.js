@@ -1,13 +1,13 @@
 import {
-  queryRoleList,
-  queryRoleById,
+  pageRole,
+  getRoleById,
   addRole,
   deleteRole,
   deleteBatchRole,
   updateRole,
-  enabledRole,
-  queryResourceByRole,
-  giveRoleResource,
+  enableRole,
+  getResourceByRole,
+  grantRoleResource,
 } from '../service';
 
 export default {
@@ -17,6 +17,8 @@ export default {
     // 列表及分页
     list: [],
     pagination: {},
+    // 编辑
+    editRole: {},
     // 分配资源树及选中
     resTree: [],
     resSelected: [],
@@ -25,7 +27,7 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryRoleList, payload);
+      const response = yield call(pageRole, payload);
       const { list, pageNum: current, pageSize, total } = response.data;
       const newList = list.map(item => ({ ...item, status: !!item.status }));
       yield put({
@@ -36,12 +38,18 @@ export default {
         },
       });
     },
-    *fetchById({ payload, callback }, { call }) {
+    *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
-      const response = yield call(queryRoleById, id);
+      const response = yield call(getRoleById, id);
       const { data } = response;
+      const editRole = { ...data, status: !!data.status };
+      yield put({
+        type: 'saveRole',
+        payload: {
+          editRole,
+        },
+      });
       if (callback) callback();
-      return { ...data, status: !!data.status };
     },
     *add({ payload, callback }, { call, put, select }) {
       const params = { ...payload, status: +payload.status };
@@ -94,7 +102,7 @@ export default {
     *enable({ payload, callback }, { call, put, select }) {
       const { id, status } = payload;
       const params = { id, status: +status };
-      yield call(enabledRole, params);
+      yield call(enableRole, params);
       const pagination = yield select(state => state.systemRole.pagination);
       yield put({
         type: 'fetch',
@@ -106,7 +114,7 @@ export default {
     },
     *fetchResTree({ payload, callback }, { call, put }) {
       const { id } = payload;
-      const response = yield call(queryResourceByRole, id);
+      const response = yield call(getResourceByRole, id);
       const {
         data: { resTree, resSelected },
       } = response;
@@ -129,8 +137,8 @@ export default {
       });
       if (callback) callback();
     },
-    *giveRoleResource({ payload, callback }, { call }) {
-      yield call(giveRoleResource, payload);
+    *grantRoleResource({ payload, callback }, { call }) {
+      yield call(grantRoleResource, payload);
       if (callback) callback();
     },
   },
@@ -144,6 +152,13 @@ export default {
         pagination,
       };
     },
+    saveRole(state, { payload }) {
+      const { editRole } = payload;
+      return {
+        ...state,
+        editRole,
+      };
+    },
     saveResTree(state, { payload }) {
       const { resTree, resSelected, halfCheckedKeys } = payload;
       return {
@@ -151,14 +166,6 @@ export default {
         resTree,
         resSelected,
         halfCheckedKeys,
-      };
-    },
-    clearRes(state) {
-      return {
-        ...state,
-        resTree: [],
-        resSelected: [],
-        halfCheckedKeys: [],
       };
     },
   },
