@@ -1,19 +1,19 @@
 import request from '@/utils/request';
 
 /**
- * 查询接口树数据。
+ * 查询资源树数据。
  * @returns {Promise<void>}
  */
-export async function queryResourceTree() {
+export async function getResourceTree() {
   return request('/resources?type=1');
 }
 
 /**
- * 按主键查询所有子节点数据。
+ * 按主键查询所有子资源数据。
  * @param id
  * @returns {Promise<void>}
  */
-export async function queryChildrenById(id) {
+export async function getChildrenById(id) {
   return request(`/resources/${id}/children?type=2`);
 }
 
@@ -33,16 +33,16 @@ export async function moveResource(params) {
 }
 
 /**
- * 按主键查询一条接口数据。
+ * 按主键查询一条资源数据。
  * @param id
  * @returns {Promise<void>}
  */
-export async function queryResourceById(id) {
+export async function getResourceById(id) {
   return request(`/resources/${id}`);
 }
 
 /**
- * 添加接口。
+ * 添加资源。
  * @param params
  * @returns {Promise<void>}
  */
@@ -56,7 +56,7 @@ export async function addResource(params) {
 }
 
 /**
- * 删除接口。
+ * 删除资源。
  * @param id
  * @returns {Promise<void>}
  */
@@ -67,7 +67,7 @@ export async function deleteResource(id) {
 }
 
 /**
- * 批量删除接口。
+ * 批量删除资源。
  * @param ids
  * @returns {Promise<void>}
  */
@@ -81,7 +81,7 @@ export async function deleteBatchResource(ids) {
 }
 
 /**
- * 更新接口。
+ * 更新资源。
  * @param params
  * @returns {Promise<void>}
  */

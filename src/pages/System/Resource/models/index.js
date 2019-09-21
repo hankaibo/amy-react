@@ -1,7 +1,7 @@
 import {
-  queryResourceTree,
-  queryResourceById,
-  queryChildrenById,
+  getResourceTree,
+  getResourceById,
+  getChildrenById,
   moveResource,
   addResource,
   deleteResource,
@@ -18,12 +18,12 @@ export default {
     // 列表
     list: [],
     // 编辑
-    info: {},
+    editResource: {},
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(queryResourceTree, payload);
+    *fetch({ payload, callback }, { call, put }) {
+      const response = yield call(getResourceTree, payload);
       const { data } = response;
       yield put({
         type: 'saveMenuTree',
@@ -31,30 +31,37 @@ export default {
           menuTree: data,
         },
       });
+      if (callback) callback();
     },
-    *fetchChildrenById({ id }, { call, put }) {
-      const response = yield call(queryChildrenById, id);
+    *fetchChildrenById({ payload, callback }, { call, put }) {
+      const { id } = payload;
+      const response = yield call(getChildrenById, id);
       const { data } = response;
-      const newList = data.map(item => ({ ...item, status: !!item.status }));
+      const list = data.map(item => ({ ...item, status: !!item.status }));
       yield put({
         type: 'saveList',
         payload: {
-          list: newList,
+          list,
         },
       });
-    },
-    *moveResource({ payload, callback }, { call }) {
-      yield call(moveResource, payload);
       if (callback) callback();
     },
-    *fetchById({ id, callback }, { call, put }) {
-      const response = yield call(queryResourceById, id);
-      const { data } = response;
-      const info = { ...data, status: !!data.status };
+    *moveResource({ payload, callback }, { call, put }) {
+      yield call(moveResource, payload);
       yield put({
-        type: 'saveInfo',
+        type: 'fetch',
+      });
+      if (callback) callback();
+    },
+    *fetchById({ payload, callback }, { call, put }) {
+      const { id } = payload;
+      const response = yield call(getResourceById, id);
+      const { data } = response;
+      const editResource = { ...data, status: !!data.status };
+      yield put({
+        type: 'saveResource',
         payload: {
-          info,
+          editResource,
         },
       });
       if (callback) callback();
@@ -113,24 +120,17 @@ export default {
         list,
       };
     },
-    saveInfo(state, { payload }) {
-      const { info } = payload;
+    saveResource(state, { payload }) {
+      const { editResource } = payload;
       return {
         ...state,
-        info,
+        editResource,
       };
     },
-    clearInfo(state) {
+    clearResource(state) {
       return {
         ...state,
-        info: {},
-      };
-    },
-    updateList(state, { payload }) {
-      const { list } = payload;
-      return {
-        ...state,
-        list,
+        editResource: {},
       };
     },
   },
