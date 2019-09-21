@@ -4,7 +4,7 @@ import request from '@/utils/request';
  * 查询菜单树数据。
  * @returns {Promise<void>}
  */
-export async function queryMenuTree() {
+export async function getMenuTree() {
   return request('/resources?type=1');
 }
 
@@ -13,7 +13,7 @@ export async function queryMenuTree() {
  * @param id
  * @returns {Promise<void>}
  */
-export async function queryChildrenById(id) {
+export async function getChildrenById(id) {
   return request(`/resources/${id}/children?type=1`);
 }
 
@@ -37,7 +37,7 @@ export async function moveMenu(params) {
  * @param id
  * @returns {Promise<void>}
  */
-export async function queryMenuById(id) {
+export async function getMenuById(id) {
   return request(`/resources/${id}`);
 }
 
