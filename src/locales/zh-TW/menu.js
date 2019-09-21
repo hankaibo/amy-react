@@ -4,6 +4,7 @@ export default {
   'menu.register': '註冊',
   // system
   'menu.system': '系統配置',
+  'menu.system.department': '部門管理',
   'menu.system.user': '用戶管理',
   'menu.system.role': '角色管理',
   'menu.system.menu': '菜單管理',

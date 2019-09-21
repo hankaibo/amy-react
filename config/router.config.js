@@ -35,6 +35,12 @@ export default [
         dynamic: true,
         routes: [
           {
+            path: '/system/depts',
+            name: 'department',
+            component: './System/Department',
+            dynamic: true,
+          },
+          {
             path: '/system/users',
             name: 'user',
             component: './System/User',
@@ -65,12 +71,12 @@ export default [
             routes: [
               {
                 path: '/system/dictionaries',
-                component: './System/Dict',
+                component: './System/Dictionary',
               },
               {
                 path: '/system/dictionaries/:id',
                 hideInMenu: true,
-                component: './System/Dict',
+                component: './System/Dictionary',
               },
             ],
           },

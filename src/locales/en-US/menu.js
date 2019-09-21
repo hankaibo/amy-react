@@ -4,6 +4,7 @@ export default {
   'menu.register': 'register',
   // system
   'menu.system': 'System',
+  'menu.system.department': 'Department',
   'menu.system.user': 'User',
   'menu.system.role': 'Role',
   'menu.system.menu': 'Menu',
