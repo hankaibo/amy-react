@@ -5,8 +5,8 @@ import request from '@/utils/request';
  * @param params
  * @returns {Promise<void>}
  */
-export async function queryDictList(params) {
-  const { parentId = -1, pageSize = 10, current = 1 } = params;
+export async function pageDict(params) {
+  const { parentId = 0, pageSize = 10, current = 1 } = params;
   return request(`/dicts?parentId=${parentId}&pageSize=${pageSize}&pageNum=${current}`);
 }
 
@@ -15,7 +15,7 @@ export async function queryDictList(params) {
  * @param id
  * @returns {Promise<void>}
  */
-export async function queryDictById(id) {
+export async function getDictById(id) {
   return request(`/dicts/${id}`);
 }
 
@@ -79,7 +79,7 @@ export async function updateDict(params) {
  * @param params
  * @returns {Promise<void>}
  */
-export async function enabledDict(params) {
+export async function enableDict(params) {
   const { id, status } = params;
   return request(`/dicts/${id}/status`, {
     method: 'PUT',

@@ -63,12 +63,12 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
   // 【回显表单】
   useEffect(() => {
     // 👍 将条件判断放置在 effect 中
-    if (visible) {
+    if (visible && isEdit) {
       if (Object.keys(editUser).length > 0) {
         setFieldsValue(editUser);
       }
     }
-  }, [visible, editUser]);
+  }, [visible, isEdit, editUser]);
 
   // 【添加与修改】
   const handleAddOrUpdate = () => {
