@@ -29,11 +29,13 @@ const RoleForm = Form.create({ name: 'roleForm' })(props => {
         payload: {
           id,
         },
-        callback: () => {
-          setVisible(true);
-        },
       });
     }
+    return function cleanup() {
+      dispatch({
+        type: 'systemRole/clearRole',
+      });
+    };
   }, [visible, isEdit, role]);
 
   // 【回显表单】

@@ -39,7 +39,12 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
         },
       });
     }
-  }, [visible, role, setFieldsValue]);
+    return function cleanup() {
+      dispatch({
+        type: 'systemRole/clearResTree',
+      });
+    };
+  }, [visible, role]);
 
   // 【回显树复选择框】
   useEffect(() => {
@@ -47,7 +52,7 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
       setCheckedKeys(resSelected);
       setFieldsValue({ ids: resSelected.concat(halfCheckedKeys) });
     }
-  }, [resSelected, halfCheckedKeys, setFieldsValue]);
+  }, [resSelected, halfCheckedKeys]);
 
   // 【树操作】
   const onExpand = values => {

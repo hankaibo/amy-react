@@ -159,6 +159,9 @@ export default {
         editRole,
       };
     },
+    clearRole(state) {
+      return { ...state, editRole: {} };
+    },
     saveResTree(state, { payload }) {
       const { resTree, resSelected, halfCheckedKeys } = payload;
       return {
@@ -167,6 +170,9 @@ export default {
         resSelected,
         halfCheckedKeys,
       };
+    },
+    clearResTree(state) {
+      return { ...state, resTree: [], resSelected: [], halfCheckedKeys: [] };
     },
   },
 };
