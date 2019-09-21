@@ -46,14 +46,10 @@ export default {
       });
       if (callback) callback();
     },
-    *moveMenu({ payload, callback }, { call, put, select }) {
+    *moveMenu({ payload, callback }, { call, put }) {
       yield call(moveMenu, payload);
-      const pagination = yield select(state => state.systemMenu.pagination);
       yield put({
         type: 'fetch',
-        payload: {
-          ...pagination,
-        },
       });
       if (callback) callback();
     },

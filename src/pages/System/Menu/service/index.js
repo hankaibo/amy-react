@@ -9,7 +9,7 @@ export async function getMenuTree() {
 }
 
 /**
- * 按主键查询所有子节点数据。
+ * 按主键查询所有子菜单数据。
  * @param id
  * @returns {Promise<void>}
  */
