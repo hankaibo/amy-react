@@ -30,11 +30,13 @@ const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
         payload: {
           id,
         },
-        callback: () => {
-          setVisible(true);
-        },
       });
     }
+    return function cleanup() {
+      dispatch({
+        type: 'systemUser/clearUser',
+      });
+    };
   }, [visible, user]);
 
   // 【回显树复选择框】

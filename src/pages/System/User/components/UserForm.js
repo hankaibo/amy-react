@@ -53,11 +53,13 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
         payload: {
           id,
         },
-        callback: () => {
-          setVisible(true);
-        },
       });
     }
+    return function cleanup() {
+      dispatch({
+        type: 'systemUser/clearUser',
+      });
+    };
   }, [visible, isEdit, user]);
 
   // 【回显表单】
