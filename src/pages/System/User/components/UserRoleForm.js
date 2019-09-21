@@ -6,58 +6,54 @@ const FormItem = Form.Item;
 const { Option } = Select;
 
 const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
-  const {
-    children,
-    user: { id },
-    form,
-    dispatch,
-  } = props;
+  const { children, user, roleList, roleSelected, form, dispatch } = props;
   const { validateFields, getFieldDecorator, setFieldsValue } = form;
 
+  // 【模态框显示隐藏属性】
   const [visible, setVisible] = useState(false);
-  const [roleList, setRoleList] = useState([]);
-  const [roleSelected, setRoleSelected] = useState([]);
 
+  // 【模态框显示隐藏函数】
   const showModalHandler = e => {
     if (e) e.stopPropagation();
     setVisible(true);
   };
-
   const hideModelHandler = () => {
     setVisible(false);
   };
 
+  // 【获取要修改用户的角色】
   useEffect(() => {
     if (visible) {
+      const { id } = user;
       dispatch({
-        type: 'systemUser/fetchRoleList',
+        type: 'systemUser/fetchRoleByUser',
         payload: {
           id,
         },
         callback: () => {
           setVisible(true);
         },
-      }).then(data => {
-        setRoleList(data.roleList);
-        setRoleSelected(data.roleSelected);
       });
     }
-  }, [visible, id]);
+  }, [visible, user]);
 
+  // 【回显树复选择框】
   useEffect(() => {
     // 👍 将条件判断放置在 effect 中
     if (visible) {
+      const { id } = user;
       setFieldsValue({ id, ids: roleSelected });
     }
-  }, [id, roleSelected]);
+  }, [visible, user, roleSelected]);
 
-  const handleGive = () => {
+  // 【授权】
+  const handleGrant = () => {
     validateFields((err, fieldsValue) => {
       if (err) return;
 
       if (fieldsValue.id) {
         dispatch({
-          type: 'systemUser/giveUserRole',
+          type: 'systemUser/grantUserRole',
           payload: fieldsValue,
           callback: () => {
             hideModelHandler();
@@ -75,7 +71,7 @@ const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
         destroyOnClose
         title="角色配置"
         visible={visible}
-        onOk={handleGive}
+        onOk={handleGrant}
         onCancel={hideModelHandler}
       >
         <Form>
@@ -97,6 +93,7 @@ const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
   );
 });
 
-export default connect(({ systemUser }) => ({
-  systemUser,
+export default connect(({ systemUser: { roleList, roleSelected } }) => ({
+  roleList,
+  roleSelected,
 }))(UserRoleForm);

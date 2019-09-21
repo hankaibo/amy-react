@@ -1,13 +1,13 @@
 import {
-  queryUserList,
-  queryUserById,
+  pageUser,
+  getUserById,
   addUser,
   deleteUser,
   deleteBatchUser,
   updateUser,
-  enabledUser,
-  queryRoleByUser,
-  giveUserRole,
+  enableUser,
+  listRoleByUser,
+  grantUserRole,
 } from '../service';
 
 export default {
@@ -17,11 +17,16 @@ export default {
     // 列表及分页
     list: [],
     pagination: {},
+    // 编辑
+    editUser: {},
+    // 角色列表与已选角色
+    roleList: [],
+    roleSelected: [],
   },
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryUserList, payload);
+      const response = yield call(pageUser, payload);
       const { list, pageNum: current, pageSize, total } = response.data;
       const newList = list.map(item => ({ ...item, status: !!item.status }));
       yield put({
@@ -32,12 +37,18 @@ export default {
         },
       });
     },
-    *fetchById({ payload, callback }, { call }) {
+    *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
-      const response = yield call(queryUserById, id);
+      const response = yield call(getUserById, id);
       const { data } = response;
+      const editUser = { ...data, status: !!data.status };
+      yield put({
+        type: 'saveUser',
+        payload: {
+          editUser,
+        },
+      });
       if (callback) callback();
-      return { ...data, status: !!data.status };
     },
     *add({ payload, callback }, { call, put, select }) {
       const params = { ...payload, status: +payload.status };
@@ -90,7 +101,7 @@ export default {
     *enable({ payload, callback }, { call, put, select }) {
       const { id, status } = payload;
       const params = { id, status: +status };
-      yield call(enabledUser, params);
+      yield call(enableUser, params);
       const pagination = yield select(state => state.systemUser.pagination);
       yield put({
         type: 'fetch',
@@ -100,17 +111,24 @@ export default {
       });
       if (callback) callback();
     },
-    *fetchRoleList({ payload, callback }, { call }) {
+    *fetchRoleByUser({ payload, callback }, { call, put }) {
       const { id } = payload;
-      const response = yield call(queryRoleByUser, id);
+      const response = yield call(listRoleByUser, id);
       const {
         data: { roleList, roleSelected },
       } = response;
+      const newRoleSelected = roleSelected.map(item => item.id);
+      yield put({
+        type: 'saveRole',
+        payload: {
+          roleList,
+          roleSelected: newRoleSelected,
+        },
+      });
       if (callback) callback();
-      return { roleList, roleSelected: roleSelected.map(item => item.id) };
     },
-    *giveUserRole({ payload, callback }, { call }) {
-      yield call(giveUserRole, payload);
+    *grantUserRole({ payload, callback }, { call }) {
+      yield call(grantUserRole, payload);
       if (callback) callback();
     },
   },
@@ -122,6 +140,21 @@ export default {
         ...state,
         list,
         pagination,
+      };
+    },
+    saveUser(state, { payload }) {
+      const { editUser } = payload;
+      return {
+        ...state,
+        editUser,
+      };
+    },
+    saveRole(state, { payload }) {
+      const { roleList, roleSelected } = payload;
+      return {
+        ...state,
+        roleList,
+        roleSelected,
       };
     },
   },

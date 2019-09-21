@@ -6,7 +6,7 @@ import request from '@/utils/request';
  * @param params
  * @returns {Promise<void>}
  */
-export async function queryUserList(params) {
+export async function pageUser(params) {
   return request(`/users?${stringify(params)}`);
 }
 
@@ -15,7 +15,7 @@ export async function queryUserList(params) {
  * @param id
  * @returns {Promise<void>}
  */
-export async function queryUserById(id) {
+export async function getUserById(id) {
   return request(`/users/${id}`);
 }
 
@@ -79,7 +79,7 @@ export async function updateUser(params) {
  * @param params
  * @returns {Promise<void>}
  */
-export async function enabledUser(params) {
+export async function enableUser(params) {
   const { id, status } = params;
   return request(`/users/${id}/status`, {
     method: 'PUT',
@@ -93,7 +93,7 @@ export async function enabledUser(params) {
  * 查询用户所有角色。
  * @returns {Promise<void>}
  */
-export async function queryRoleByUser(id) {
+export async function listRoleByUser(id) {
   return request(`/users/${id}/roles`);
 }
 
@@ -103,7 +103,7 @@ export async function queryRoleByUser(id) {
  * @param params
  * @returns {Promise<void>}
  */
-export async function giveUserRole(params) {
+export async function grantUserRole(params) {
   const { id, ids } = params;
   return request(`/users/${id}/roles`, {
     method: 'POST',
