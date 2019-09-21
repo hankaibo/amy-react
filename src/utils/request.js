@@ -4,7 +4,6 @@
  */
 import { extend } from 'umi-request';
 import { notification } from 'antd';
-import router from 'umi/router';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -29,36 +28,20 @@ const codeMessage = {
  */
 const errorHandler = error => {
   const { response = {} } = error;
-  const errortext = codeMessage[response.status] || response.statusText;
-  const { status, url } = response;
+  const errorText = codeMessage[response.status] || response.statusText;
+  const { status } = response;
 
   if (status === 401) {
     notification.error({
       message: '未登录或登录已过期，请重新登录。',
     });
-    // @HACK
-    /* eslint-disable no-underscore-dangle */
-    window.g_app._store.dispatch({
-      type: 'login/logout',
-    });
     return;
   }
   notification.error({
-    message: `请求错误 ${status}: ${url}`,
-    description: errortext,
+    message: `请求错误 ${status}`,
+    description: errorText,
   });
-  // environment should not be used
-  if (status === 403) {
-    router.push('/exception/403');
-    return;
-  }
-  if (status <= 504 && status >= 500) {
-    router.push('/exception/500');
-    return;
-  }
-  if (status >= 404 && status < 422) {
-    router.push('/exception/404');
-  }
+  throw error;
 };
 
 /**
