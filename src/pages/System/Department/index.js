@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Tree, Card, Button, Switch, Divider, Modal, message, Icon, Table } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import Authorized from '@/utils/Authorized';
 import IconFont from '@/components/IconFont';
 import DepartmentForm from './components/DepartmentForm';
 import styles from '../System.less';
@@ -44,11 +45,10 @@ const Department = props => {
 
   // 【移动】
   const handleGo = (record, direction) => {
-    const { id } = record;
     dispatch({
       type: 'systemDepartment/moveDepartment',
       payload: {
-        id,
+        ...record,
         direction,
       },
     });
@@ -84,10 +84,6 @@ const Department = props => {
       dataIndex: 'title',
     },
     {
-      title: '部门编码',
-      dataIndex: 'code',
-    },
-    {
       title: '部门状态',
       dataIndex: 'status',
       filters: [{ text: '禁用', value: 0 }, { text: '启用', value: 1 }],
@@ -116,15 +112,19 @@ const Department = props => {
       title: '操作',
       render: (text, record) => (
         <>
-          <DepartmentForm isEdit department={record}>
-            <a>
-              <IconFont type="icon-edit" title="编辑" />
+          <Authorized authority="system.department.update" noMatch={null}>
+            <DepartmentForm isEdit department={record}>
+              <a>
+                <IconFont type="icon-edit" title="编辑" />
+              </a>
+              <Divider type="vertical" />
+            </DepartmentForm>
+          </Authorized>
+          <Authorized authority="system.department.del" noMatch={null}>
+            <a onClick={() => handleDelete(record)}>
+              <IconFont type="icon-delete" title="删除" />
             </a>
-            <Divider type="vertical" />
-          </DepartmentForm>
-          <a onClick={() => handleDelete(record)}>
-            <IconFont type="icon-delete" title="删除" />
-          </a>
+          </Authorized>
         </>
       ),
     },

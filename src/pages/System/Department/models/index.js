@@ -47,9 +47,13 @@ export default {
       if (callback) callback();
     },
     *moveDepartment({ payload, callback }, { call, put }) {
+      const { parentId } = payload;
       yield call(moveDepartment, payload);
       yield put({
-        type: 'fetch',
+        type: 'fetchChildrenById',
+        payload: {
+          id: parentId,
+        },
       });
       if (callback) callback();
     },
@@ -88,18 +92,14 @@ export default {
       yield call(deleteBatchDepartment, ids);
       if (callback) callback();
     },
-    *update({ payload, callback }, { call, put, select }) {
+    *update({ payload, callback }, { call, put }) {
+      const { parentId } = payload;
       const params = { ...payload, status: +payload.status };
       yield call(updateDepartment, params);
-      const oldList = yield select(state => state.systemDepartment.list);
-      const newList = oldList.map(item => {
-        if (item.id === payload.id) return { ...item, ...payload };
-        return item;
-      });
       yield put({
-        type: 'updateList',
+        type: 'fetchChildrenById',
         payload: {
-          list: newList,
+          id: parentId,
         },
       });
       if (callback) callback();

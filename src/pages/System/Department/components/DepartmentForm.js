@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Modal, Switch, message, TreeSelect, Tooltip, Icon } from 'antd';
+import { Form, Input, Modal, Switch, message, TreeSelect } from 'antd';
 
 const FormItem = Form.Item;
+const { TextArea } = Input;
 
 const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
   const { children, isEdit, department, editDepartment, departmentTree, form, dispatch } = props;
@@ -111,30 +112,20 @@ const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
         onCancel={hideModelHandler}
       >
         <Form {...formItemLayout}>
-          {getFieldDecorator('type', { initialValue: 1 })(<Input hidden />)}
           {isEdit && getFieldDecorator('id')(<Input hidden />)}
           <FormItem label="名称">
             {getFieldDecorator('name', {
               rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
             })(<Input />)}
           </FormItem>
-          <FormItem
-            label={
-              <span>
-                <span>编码</span>
-                <Tooltip title="请保证与前台路由组织的name一致，以实现动态菜单功能。">
-                  <Icon type="question-circle-o" />
-                </Tooltip>
-              </span>
-            }
-          >
-            {getFieldDecorator('code', {
-              rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
-            })(<Input />)}
-          </FormItem>
           <FormItem label="状态">
             {getFieldDecorator('status', { initialValue: true, valuePropName: 'checked' })(
               <Switch checkedChildren="开" unCheckedChildren="关" />
+            )}
+          </FormItem>
+          <FormItem label="描述">
+            {getFieldDecorator('description')(
+              <TextArea placeholder="请输入字典描述" autosize={{ minRows: 2, maxRows: 6 }} />
             )}
           </FormItem>
           <FormItem label="上级菜单">
