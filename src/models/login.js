@@ -40,11 +40,14 @@ export default {
             if (redirect.match(/^\/.*#/)) {
               redirect = redirect.substr(redirect.indexOf('#') + 1);
             }
+            if (redirect === '/user/login') {
+              redirect = null;
+            }
           } else {
             redirect = null;
           }
         }
-        yield put(routerRedux.replace(redirect || '/'));
+        yield put(routerRedux.replace(redirect || '/dashboard'));
       }
     },
 

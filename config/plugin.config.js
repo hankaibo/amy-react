@@ -61,18 +61,61 @@ export default config => {
           test: module => {
             const packageName = getModulePackageName(module);
             if (packageName) {
-              return ['echarts'].indexOf(packageName) >= 0;
+              return (
+                [
+                  'react',
+                  'react-dom',
+                  'react-router',
+                  'react-router-dom',
+                  'lodash',
+                  'lodash-decorators',
+                  'redux-saga',
+                  're-select',
+                  'dva',
+                  'moment',
+                ].indexOf(packageName) >= 0
+              );
             }
             return false;
           },
           name(module) {
             const packageName = getModulePackageName(module);
-
-            if (['echarts'].indexOf(packageName) >= 0) {
-              return 'echarts'; // visualization package
+            if (
+              [
+                'react',
+                'react-dom',
+                'react-router',
+                'react-router-dom',
+                'lodash',
+                'lodash-decorators',
+                'redux-saga',
+                're-select',
+                'dva',
+                'moment',
+              ].indexOf(packageName) >= 0
+            ) {
+              return 'vendors';
             }
             return 'misc';
           },
+          priority: 30,
+        },
+        antd: {
+          test: module => {
+            const packageName = getModulePackageName(module);
+            if (packageName) {
+              return ['antd', '@ant-design'].indexOf(packageName) >= 0;
+            }
+            return false;
+          },
+          name(module) {
+            const packageName = getModulePackageName(module);
+            if (['antd', '@ant-design'].indexOf(packageName) >= 0) {
+              return 'antdesigns'; // visualization package
+            }
+            return 'antdesigns';
+          },
+          priority: 20,
         },
       },
     });

@@ -1,7 +1,7 @@
 import {
   getDepartmentTree,
   getDepartmentById,
-  getChildrenById,
+  getDepartmentChildrenById,
   moveDepartment,
   addDepartment,
   deleteDepartment,
@@ -14,7 +14,7 @@ export default {
 
   state: {
     // 部门树
-    departmentTree: [],
+    tree: [],
     // 列表
     list: [],
     // 编辑信息
@@ -26,16 +26,16 @@ export default {
       const response = yield call(getDepartmentTree, payload);
       const { data } = response;
       yield put({
-        type: 'saveDepartmentTree',
+        type: 'saveTree',
         payload: {
-          departmentTree: data,
+          tree: data,
         },
       });
       if (callback) callback();
     },
     *fetchChildrenById({ payload, callback }, { call, put }) {
       const { id } = payload;
-      const response = yield call(getChildrenById, id);
+      const response = yield call(getDepartmentChildrenById, id);
       const { data } = response;
       const list = data.map(item => ({ ...item, status: !!item.status }));
       yield put({
@@ -46,7 +46,7 @@ export default {
       });
       if (callback) callback();
     },
-    *moveDepartment({ payload, callback }, { call, put }) {
+    *move({ payload, callback }, { call, put }) {
       const { parentId } = payload;
       yield call(moveDepartment, payload);
       yield put({
@@ -54,6 +54,9 @@ export default {
         payload: {
           id: parentId,
         },
+      });
+      yield put({
+        type: 'fetch',
       });
       if (callback) callback();
     },
@@ -63,28 +66,39 @@ export default {
       const { data } = response;
       const editDepartment = { ...data, status: !!data.status };
       yield put({
-        type: 'saveDepartment',
+        type: 'save',
         payload: {
           editDepartment,
         },
       });
       if (callback) callback();
     },
-    *add({ payload, callback }, { call }) {
+    *add({ payload, callback }, { call, put }) {
+      const { parentId } = payload;
       const params = { ...payload, status: +payload.status };
       yield call(addDepartment, params);
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          id: parentId,
+        },
+      });
+      yield put({
+        type: 'fetch',
+      });
       if (callback) callback();
     },
-    *delete({ payload, callback }, { call, put, select }) {
-      const { id } = payload;
+    *delete({ payload, callback }, { call, put }) {
+      const { id, parentId } = payload;
       yield call(deleteDepartment, id);
-      const oldList = yield select(state => state.systemDepartment.list);
-      const newList = oldList.filter(item => item.id !== id);
       yield put({
-        type: 'updateList',
+        type: 'fetchChildrenById',
         payload: {
-          list: newList,
+          id: parentId,
         },
+      });
+      yield put({
+        type: 'fetch',
       });
       if (callback) callback();
     },
@@ -102,16 +116,19 @@ export default {
           id: parentId,
         },
       });
+      yield put({
+        type: 'fetch',
+      });
       if (callback) callback();
     },
   },
 
   reducers: {
-    saveDepartmentTree(state, { payload }) {
-      const { departmentTree } = payload;
+    saveTree(state, { payload }) {
+      const { tree } = payload;
       return {
         ...state,
-        departmentTree,
+        tree,
       };
     },
     saveList(state, { payload }) {
@@ -121,14 +138,14 @@ export default {
         list,
       };
     },
-    saveDepartment(state, { payload }) {
+    save(state, { payload }) {
       const { editDepartment } = payload;
       return {
         ...state,
         editDepartment,
       };
     },
-    clearDepartment(state) {
+    clear(state) {
       return {
         ...state,
         editDepartment: {},

@@ -52,22 +52,32 @@ export function getTimeDistance(type) {
   return [moment(`${year}-01-01 00:00:00`), moment(`${year}-12-31 23:59:59`)];
 }
 
-export function getPlainNode(nodeList, parentPath = '') {
+// 将一个父子结构的树扁平化为一个扁平数组。
+export function getPlainNode(nodeList) {
   const arr = [];
-  nodeList.forEach(node => {
-    const item = node;
-    item.path = `${parentPath}/${item.path || ''}`.replace(/\/+/g, '/');
-    item.exact = true;
-    if (item.children && !item.component) {
-      arr.push(...getPlainNode(item.children, item.path));
-    } else {
-      if (item.children && item.component) {
-        item.exact = false;
-      }
-      arr.push(item);
+  nodeList.forEach(item => {
+    arr.push(item);
+    if (item.children) {
+      arr.push(...getPlainNode(item.children));
     }
   });
   return arr;
+}
+
+// 查找一个父子结构树中子节点的所有父节点
+export function getParentKey(key, tree) {
+  let parentKey;
+  for (let i = 0; i < tree.length; i += 1) {
+    const node = tree[i];
+    if (node.children) {
+      if (node.children.some(item => item.key === key)) {
+        parentKey = node.key;
+      } else if (getParentKey(key, node.children)) {
+        parentKey = getParentKey(key, node.children);
+      }
+    }
+  }
+  return parentKey;
 }
 
 export function digitUppercase(n) {

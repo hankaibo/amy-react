@@ -6,7 +6,7 @@ const FormItem = Form.Item;
 const { TextArea } = Input;
 
 const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
-  const { children, isEdit, department, editDepartment, departmentTree, form, dispatch } = props;
+  const { children, isEdit, department, editDepartment, tree, form, dispatch } = props;
   const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
 
   // 【模态框显示隐藏属性】
@@ -34,7 +34,7 @@ const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
     }
     return function cleanup() {
       dispatch({
-        type: 'systemDepartment/clearDepartment',
+        type: 'systemDepartment/clear',
       });
     };
   }, [visible, isEdit, department]);
@@ -54,11 +54,11 @@ const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
     if (visible) {
       if (department) {
         setFieldsValue({ parentId: department.id });
-      } else if (departmentTree.length) {
-        setFieldsValue({ parentId: departmentTree[0].id });
+      } else if (tree.length) {
+        setFieldsValue({ parentId: tree[0].id });
       }
     }
-  }, [visible, department, departmentTree]);
+  }, [visible, department, tree]);
 
   // 【添加与修改】
   const handleAddOrUpdate = () => {
@@ -133,7 +133,7 @@ const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
               <TreeSelect
                 style={{ width: 300 }}
                 dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                treeData={departmentTree}
+                treeData={tree}
                 placeholder="请选择菜单"
                 treeDefaultExpandAll
               />
@@ -145,7 +145,7 @@ const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
   );
 });
 
-export default connect(({ systemDepartment: { departmentTree, editDepartment } }) => ({
-  departmentTree,
+export default connect(({ systemDepartment: { tree, editDepartment } }) => ({
+  tree,
   editDepartment,
 }))(DepartmentForm);

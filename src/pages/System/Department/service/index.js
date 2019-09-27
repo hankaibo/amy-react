@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 /**
- * 查询部门树数据。
+ * 获取整棵部门树数据。
  * @returns {Promise<void>}
  */
 export async function getDepartmentTree() {
@@ -9,16 +9,16 @@ export async function getDepartmentTree() {
 }
 
 /**
- * 按主键查询所有子部门数据。
+ * 根据父部门主键查询其所有子部门数据。
  * @param id
  * @returns {Promise<void>}
  */
-export async function getChildrenById(id) {
+export async function getDepartmentChildrenById(id) {
   return request(`/departments/${id}/children`);
 }
 
 /**
- * 按主键上移下移节点。
+ * 按主键与方向移动部门。
  * @param params {id,step} id是要操作的节点，step表示上移(1)还是下移(-1)
  * @returns {Promise<void>}
  */

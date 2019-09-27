@@ -1,4 +1,6 @@
 export default [
+  // /
+  { path: '/', redirect: '/user' },
   // user
   {
     path: '/user',
@@ -14,95 +16,74 @@ export default [
   },
   // app
   {
-    path: '/',
+    path: '/dashboard',
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
     routes: [
       // home
       // 最好在这里配置authority，要不然没有权限打开下面页面会报错而停留在异常页面非登录页面。
-      { path: '/', redirect: '/home', authority: ['system.user.info'] },
+      { path: '/dashboard', redirect: '/dashboard/home', authority: ['system.user.info'] },
       {
-        path: '/home',
+        path: '/dashboard/home',
         name: 'home',
         icon: 'home',
         component: './Home/Home',
       },
       // system
       {
-        path: '/system',
+        path: '/dashboard/system',
         name: 'system',
         icon: 'setting',
         dynamic: true,
         routes: [
           {
-            path: '/system/depts',
+            path: '/dashboard/system/departments',
             name: 'department',
             component: './System/Department',
             dynamic: true,
           },
           {
-            path: '/system/users',
+            path: '/dashboard/system/users',
             name: 'user',
             component: './System/User',
             dynamic: true,
           },
           {
-            path: '/system/roles',
+            path: '/dashboard/system/roles',
             name: 'role',
             component: './System/Role',
             dynamic: true,
           },
           {
-            path: '/system/menus',
+            path: '/dashboard/system/menus',
             name: 'menu',
             component: './System/Menu',
             dynamic: true,
           },
           {
-            path: '/system/resources',
+            path: '/dashboard/system/resources',
             name: 'resource',
             component: './System/Resource',
             dynamic: true,
           },
           {
-            path: '/system/dictionaries',
+            path: '/dashboard/system/dictionaries',
             name: 'dictionary',
             dynamic: true,
             routes: [
               {
-                path: '/system/dictionaries',
+                path: '/dashboard/system/dictionaries',
                 component: './System/Dictionary',
               },
               {
-                path: '/system/dictionaries/:id',
+                path: '/dashboard/system/dictionaries/:id',
                 hideInMenu: true,
                 component: './System/Dictionary',
               },
             ],
           },
-        ],
-      },
-      // exception
-      {
-        path: '/exception',
-        name: 'exception',
-        icon: 'warning',
-        hideInMenu: true,
-        routes: [
           {
-            path: '/exception/403',
-            name: 'not-permission',
-            component: './Exception/403',
-          },
-          {
-            path: '/exception/404',
-            name: 'not-find',
-            component: './Exception/404',
-          },
-          {
-            path: '/exception/500',
-            name: 'server-error',
-            component: './Exception/500',
+            component: '404',
           },
         ],
       },
@@ -110,5 +91,32 @@ export default [
         component: '404',
       },
     ],
+  },
+  // exception
+  {
+    path: '/exception',
+    name: 'exception',
+    icon: 'warning',
+    hideInMenu: true,
+    routes: [
+      {
+        path: '/exception/403',
+        name: 'not-permission',
+        component: './Exception/403',
+      },
+      {
+        path: '/exception/404',
+        name: 'not-find',
+        component: './Exception/404',
+      },
+      {
+        path: '/exception/500',
+        name: 'server-error',
+        component: './Exception/500',
+      },
+    ],
+  },
+  {
+    component: '404',
   },
 ];

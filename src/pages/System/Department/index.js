@@ -1,17 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Tree, Card, Button, Switch, Divider, Modal, message, Icon, Table } from 'antd';
+import {
+  Row,
+  Col,
+  Tree,
+  Card,
+  Button,
+  Switch,
+  Divider,
+  Modal,
+  message,
+  Icon,
+  Table,
+  Input,
+} from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Authorized from '@/utils/Authorized';
 import IconFont from '@/components/IconFont';
+import { getPlainNode, getParentKey } from '@/utils/utils';
 import DepartmentForm from './components/DepartmentForm';
 import styles from '../System.less';
 
+const { TreeNode } = Tree;
+const { Search } = Input;
+
 const Department = props => {
-  const { loading, departmentTree, list, dispatch } = props;
+  const { loading, tree, list, dispatch } = props;
 
   // 【当前点击的部门】
   const [current, setCurrent] = useState(null);
+  const [expandedKeys, setExpandedKeys] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [autoExpandParent, setAutoExpandParent] = useState(true);
 
   // 【首次请求加载树数据】
   useEffect(() => {
@@ -20,7 +40,7 @@ const Department = props => {
     });
   }, []);
 
-  // 【启用禁用】
+  // 【启用禁用部门】
   const toggleState = (checked, record) => {
     dispatch({
       type: 'systemDepartment/update',
@@ -43,10 +63,60 @@ const Department = props => {
     });
   };
 
+  // 【搜索高亮部门】
+  const handleChange = e => {
+    const { value } = e.target;
+    const keys = getPlainNode(tree)
+      .map(item => {
+        if (item.title.indexOf(value) > -1) {
+          return getParentKey(item.key, tree);
+        }
+        return null;
+      })
+      .filter((item, i, self) => item && self.indexOf(item) === i);
+    setExpandedKeys(keys);
+    setSearchValue(value);
+    setAutoExpandParent(true);
+  };
+
+  const handleExpand = keys => {
+    setExpandedKeys(keys);
+    setAutoExpandParent(false);
+  };
+
+  // 【构造树结构，添加高亮支持】
+  const loop = data =>
+    data.map(item => {
+      const it = { ...item };
+      it.titleValue = it.title;
+      delete it.title;
+      const index = item.title.indexOf(searchValue);
+      const beforeStr = item.title.substr(0, index);
+      const afterStr = item.title.substr(index + searchValue.length);
+      const title =
+        index > -1 ? (
+          <span>
+            {beforeStr}
+            <span style={{ color: '#f50' }}>{searchValue}</span>
+            {afterStr}
+          </span>
+        ) : (
+          <span>{item.title}</span>
+        );
+      if (item.children) {
+        return (
+          <TreeNode key={item.key} title={title} {...it}>
+            {loop(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode key={item.key} title={title} {...it} />;
+    });
+
   // 【移动】
-  const handleGo = (record, direction) => {
+  const handleMove = (record, direction) => {
     dispatch({
-      type: 'systemDepartment/moveDepartment',
+      type: 'systemDepartment/move',
       payload: {
         ...record,
         direction,
@@ -55,11 +125,13 @@ const Department = props => {
   };
 
   // 【删除】
-  const deleteItem = id => {
+  const deleteItem = record => {
+    const { id, parentId } = record;
     dispatch({
       type: 'systemDepartment/delete',
       payload: {
         id,
+        parentId,
       },
       callback: () => {
         message.success('删除成功');
@@ -67,13 +139,12 @@ const Department = props => {
     });
   };
   const handleDelete = record => {
-    const { id } = record;
     Modal.confirm({
       title: '删除',
       content: '您确定要删除该部门吗？',
       okText: '确认',
       cancelText: '取消',
-      onOk: () => deleteItem(id),
+      onOk: () => deleteItem(record),
     });
   };
 
@@ -97,12 +168,12 @@ const Department = props => {
       render: (text, record) => (
         <>
           <a
-            onClick={() => handleGo(record, 'UP')}
+            onClick={() => handleMove(record, 'UP')}
             style={{ padding: '0 5px', marginRight: '10px' }}
           >
             <Icon type="arrow-up" title="向上" />
           </a>
-          <a onClick={() => handleGo(record, 'DOWN')}>
+          <a onClick={() => handleMove(record, 'DOWN')}>
             <Icon type="arrow-down" title="向下" />
           </a>
         </>
@@ -120,7 +191,7 @@ const Department = props => {
               <Divider type="vertical" />
             </DepartmentForm>
           </Authorized>
-          <Authorized authority="system.department.del" noMatch={null}>
+          <Authorized authority="system.department.delete" noMatch={null}>
             <a onClick={() => handleDelete(record)}>
               <IconFont type="icon-delete" title="删除" />
             </a>
@@ -140,12 +211,22 @@ const Department = props => {
             bordered={false}
             bodyStyle={{ padding: '15px' }}
           >
-            <Tree treeData={departmentTree} onSelect={handleSelect} />
+            <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={handleChange} />
+            <Tree
+              showLine
+              switcherIcon={<IconFont type="icon-department" />}
+              expandedKeys={expandedKeys}
+              autoExpandParent={autoExpandParent}
+              onSelect={handleSelect}
+              onExpand={handleExpand}
+            >
+              {loop(tree)}
+            </Tree>
           </Card>
         </Col>
         <Col xs={24} sm={24} md={24} lg={18} xl={18}>
           <Card
-            title={current ? `[${current.title}]的子部门` : '部门列表'}
+            title={current ? `【${current.titleValue}】的子部门` : '部门列表'}
             bordered={false}
             bodyStyle={{ padding: '15px' }}
             style={{ marginTop: 10 }}
@@ -167,8 +248,8 @@ const Department = props => {
   );
 };
 
-export default connect(({ systemDepartment: { departmentTree, list }, loading }) => ({
-  departmentTree,
+export default connect(({ systemDepartment: { tree, list }, loading }) => ({
+  tree,
   list,
   loading: loading.models.systemDepartment,
 }))(Department);
