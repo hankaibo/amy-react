@@ -125,7 +125,7 @@ const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
           </FormItem>
           <FormItem label="描述">
             {getFieldDecorator('description')(
-              <TextArea placeholder="请输入字典描述" autosize={{ minRows: 2, maxRows: 6 }} />
+              <TextArea placeholder="请输入部门描述。" autosize={{ minRows: 2, maxRows: 6 }} />
             )}
           </FormItem>
           <FormItem label="上级部门">
