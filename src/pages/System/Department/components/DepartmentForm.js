@@ -115,7 +115,7 @@ const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
           {isEdit && getFieldDecorator('id')(<Input hidden />)}
           <FormItem label="名称">
             {getFieldDecorator('name', {
-              rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
+              rules: [{ required: true, message: '请输入至少1个字符的名称描述！', min: 1 }],
             })(<Input />)}
           </FormItem>
           <FormItem label="状态">
@@ -128,13 +128,13 @@ const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
               <TextArea placeholder="请输入字典描述" autosize={{ minRows: 2, maxRows: 6 }} />
             )}
           </FormItem>
-          <FormItem label="上级菜单">
+          <FormItem label="上级部门">
             {getFieldDecorator('parentId')(
               <TreeSelect
                 style={{ width: 300 }}
                 dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                 treeData={tree}
-                placeholder="请选择菜单"
+                placeholder="请选择部门"
                 treeDefaultExpandAll
               />
             )}
