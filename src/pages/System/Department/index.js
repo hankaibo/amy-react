@@ -28,7 +28,7 @@ const Department = props => {
   const { loading, tree, list, dispatch } = props;
 
   // 【当前点击的部门】
-  const [current, setCurrent] = useState(null);
+  const [department, setDepartment] = useState(null);
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [autoExpandParent, setAutoExpandParent] = useState(true);
@@ -58,7 +58,7 @@ const Department = props => {
         id,
       },
       callback: () => {
-        setCurrent(info.node.props);
+        setDepartment(info.node.props);
       },
     });
   };
@@ -226,14 +226,14 @@ const Department = props => {
         </Col>
         <Col xs={24} sm={24} md={24} lg={18} xl={18}>
           <Card
-            title={current ? `【${current.titleValue}】的子部门` : '部门列表'}
+            title={department ? `【${department.titleValue}】的子部门` : '部门列表'}
             bordered={false}
             bodyStyle={{ padding: '15px' }}
             style={{ marginTop: 10 }}
           >
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
-                <DepartmentForm department={current}>
+                <DepartmentForm department={department}>
                   <Button type="primary" title="新增">
                     <Icon type="plus" />
                   </Button>
