@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Modal, Switch, message, Radio, Upload, Icon } from 'antd';
+import { Form, Input, Modal, Switch, message, Radio, Upload, Icon, TreeSelect } from 'antd';
 
 const FormItem = Form.Item;
 
@@ -25,7 +25,7 @@ const beforeUpload = file => {
 };
 
 const UserForm = Form.create({ name: 'userForm' })(props => {
-  const { children, isEdit, user, editUser, form, dispatch } = props;
+  const { children, isEdit, user, editUser, tree, form, dispatch } = props;
   const { getFieldDecorator, setFieldsValue, validateFields, resetFields } = form;
 
   // 【模态框显示隐藏属性】
@@ -71,6 +71,17 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
       }
     }
   }, [visible, isEdit, editUser]);
+
+  // 【保证任何时候添加上级菜单都有默认值】
+  useEffect(() => {
+    if (visible) {
+      if (user) {
+        setFieldsValue({ departmentId: user.departmentId });
+      } else if (tree.length) {
+        setFieldsValue({ departmentId: tree[0].id });
+      }
+    }
+  }, [visible, user, tree]);
 
   // 【添加与修改】
   const handleAddOrUpdate = () => {
@@ -177,6 +188,17 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
               })(<Input type="password" />)}
             </FormItem>
           )}
+          <FormItem label="所属部门">
+            {getFieldDecorator('departmentId')(
+              <TreeSelect
+                style={{ width: 300 }}
+                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                treeData={tree}
+                placeholder="请选择部门"
+                treeDefaultExpandAll
+              />
+            )}
+          </FormItem>
           <FormItem label="昵称">
             {getFieldDecorator('nickname', {
               rules: [{ message: '请输入至少1个字符的规则描述！', min: 1 }],
@@ -224,6 +246,7 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
   );
 });
 
-export default connect(({ systemUser: { editUser } }) => ({
+export default connect(({ systemUser: { tree, editUser } }) => ({
+  tree,
   editUser,
 }))(UserForm);

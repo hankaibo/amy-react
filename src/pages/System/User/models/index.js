@@ -9,11 +9,13 @@ import {
   listRoleByUser,
   grantUserRole,
 } from '../service';
+import { getDepartmentTree } from '../../Department/service';
 
 export default {
   namespace: 'systemUser',
 
   state: {
+    tree: [],
     // 列表及分页
     list: [],
     pagination: {},
@@ -25,7 +27,18 @@ export default {
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
+    *fetchTree({ payload, callback }, { call, put }) {
+      const response = yield call(getDepartmentTree, payload);
+      const { data } = response;
+      yield put({
+        type: 'saveTree',
+        payload: {
+          tree: data,
+        },
+      });
+      if (callback) callback();
+    },
+    *fetch({ payload, callback }, { call, put }) {
       const response = yield call(pageUser, payload);
       const { list, pageNum: current, pageSize, total } = response.data;
       const newList = list.map(item => ({ ...item, status: !!item.status }));
@@ -36,6 +49,7 @@ export default {
           pagination: { current, pageSize, total },
         },
       });
+      if (callback) callback();
     },
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
@@ -134,6 +148,13 @@ export default {
   },
 
   reducers: {
+    saveTree(state, { payload }) {
+      const { tree } = payload;
+      return {
+        ...state,
+        tree,
+      };
+    },
     saveList(state, { payload }) {
       const { list, pagination } = payload;
       return {

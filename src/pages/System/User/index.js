@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Card, Button, Input, Switch, Divider, Modal, message, Icon, Table } from 'antd';
+import {
+  Row,
+  Col,
+  Tree,
+  Card,
+  Button,
+  Input,
+  Switch,
+  Divider,
+  Modal,
+  message,
+  Icon,
+  Table,
+} from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Authorized from '@/utils/Authorized';
 import IconFont from '@/components/IconFont';
@@ -14,22 +27,34 @@ const getValue = obj =>
     .join(',');
 
 const User = props => {
-  const { loading, list, pagination, dispatch } = props;
+  const { loading, tree, list, pagination, dispatch } = props;
 
   // 【复选框状态属性与函数】
   const [selectedRows, setSelectedRows] = useState([]);
+  const [department, setDepartment] = useState(null);
 
-  // 【首次请求加载列表数据】
+  // 【首次请求加载部门树与用户列表数据】
   useEffect(() => {
     dispatch({
-      type: 'systemUser/fetch',
-      payload: {
-        current: 1,
-        pageSize: 10,
-      },
+      type: 'systemUser/fetchTree',
     });
   }, []);
 
+  // 【获取部门用户数据】
+  const handleSelect = (selectedKeys, info) => {
+    const id = selectedKeys.length === 0 ? info.node.props.id : selectedKeys[0];
+    dispatch({
+      type: 'systemUser/fetch',
+      payload: {
+        departmentId: id,
+        current: 1,
+        pageSize: 10,
+      },
+      callback: () => {
+        setDepartment(info.node.props);
+      },
+    });
+  };
   // 【启用禁用】
   const toggleStatus = (checked, record) => {
     const { id } = record;
@@ -211,11 +236,6 @@ const User = props => {
             </UserRoleForm>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized>
-            <a onClick={() => message.info('正在开发中……')}>
-              <IconFont type="icon-department" title="分配部门" />
-            </a>
-          </Authorized>
         </>
       ),
     },
@@ -223,43 +243,68 @@ const User = props => {
 
   return (
     <PageHeaderWrapper content={mainSearch}>
-      <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
-        <div className={styles.tableList}>
-          <div className={styles.tableListOperator}>
-            <Authorized authority="system.user.add" noMatch={null}>
-              <UserForm>
-                <Button type="primary" title="新增">
-                  <Icon type="plus" />
-                </Button>
-              </UserForm>
-            </Authorized>
-            <Authorized authority="system.user.batchDelete" noMatch={null}>
-              <Button
-                type="danger"
-                disabled={selectedRows.length <= 0}
-                title="删除"
-                onClick={handleBatchDelete}
-              >
-                <IconFont type="icon-delete" />
-              </Button>
-            </Authorized>
-          </div>
-          <Table
-            rowKey="id"
-            loading={loading}
-            columns={columns}
-            dataSource={list}
-            pagination={pagination}
-            rowSelection={rowSelection}
-            onChange={handleTableChange}
-          />
-        </div>
-      </Card>
+      <Row gutter={8}>
+        <Col xs={24} sm={24} md={24} lg={6} xl={6}>
+          <Card
+            title="部门树"
+            style={{ marginTop: 10 }}
+            bordered={false}
+            bodyStyle={{ padding: '15px' }}
+          >
+            <Tree
+              showLine
+              switcherIcon={<IconFont type="icon-department" />}
+              onSelect={handleSelect}
+              treeData={tree}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={24} md={24} lg={18} xl={18}>
+          <Card
+            title={department ? `【${department.title}】的用户` : '用户列表'}
+            bordered={false}
+            style={{ marginTop: 10 }}
+            bodyStyle={{ padding: '15px' }}
+          >
+            <div className={styles.tableList}>
+              <div className={styles.tableListOperator}>
+                <Authorized authority="system.user.add" noMatch={null}>
+                  <UserForm user={department ? { departmentId: department.id } : null}>
+                    <Button type="primary" title="新增">
+                      <Icon type="plus" />
+                    </Button>
+                  </UserForm>
+                </Authorized>
+                <Authorized authority="system.user.batchDelete" noMatch={null}>
+                  <Button
+                    type="danger"
+                    disabled={selectedRows.length <= 0}
+                    title="删除"
+                    onClick={handleBatchDelete}
+                  >
+                    <IconFont type="icon-delete" />
+                  </Button>
+                </Authorized>
+              </div>
+              <Table
+                rowKey="id"
+                loading={loading}
+                columns={columns}
+                dataSource={list}
+                pagination={pagination}
+                rowSelection={rowSelection}
+                onChange={handleTableChange}
+              />
+            </div>
+          </Card>
+        </Col>
+      </Row>
     </PageHeaderWrapper>
   );
 };
 
-export default connect(({ systemUser: { list, pagination }, loading }) => ({
+export default connect(({ systemUser: { tree, list, pagination }, loading }) => ({
+  tree,
   list,
   pagination,
   loading: loading.models.systemUser,
