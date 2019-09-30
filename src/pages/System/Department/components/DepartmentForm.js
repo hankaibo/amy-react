@@ -97,7 +97,7 @@ const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
     },
     wrapperCol: {
       xs: { span: 24 },
-      sm: { span: 15 },
+      sm: { span: 17 },
     },
   };
 
@@ -118,6 +118,17 @@ const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
               rules: [{ required: true, message: '请输入至少1个字符的名称描述！', min: 1 }],
             })(<Input />)}
           </FormItem>
+          <FormItem label="上级部门">
+            {getFieldDecorator('parentId')(
+              <TreeSelect
+                style={{ width: '100%' }}
+                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                treeData={tree}
+                placeholder="请选择部门"
+                treeDefaultExpandAll
+              />
+            )}
+          </FormItem>
           <FormItem label="状态">
             {getFieldDecorator('status', { initialValue: true, valuePropName: 'checked' })(
               <Switch checkedChildren="开" unCheckedChildren="关" />
@@ -126,17 +137,6 @@ const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
           <FormItem label="描述">
             {getFieldDecorator('description')(
               <TextArea placeholder="请输入部门描述。" autosize={{ minRows: 2, maxRows: 6 }} />
-            )}
-          </FormItem>
-          <FormItem label="上级部门">
-            {getFieldDecorator('parentId')(
-              <TreeSelect
-                style={{ width: 300 }}
-                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                treeData={tree}
-                placeholder="请选择部门"
-                treeDefaultExpandAll
-              />
             )}
           </FormItem>
         </Form>

@@ -24,11 +24,10 @@ export default {
   effects: {
     *fetch({ payload, callback }, { call, put }) {
       const response = yield call(getDepartmentTree, payload);
-      const { data } = response;
       yield put({
         type: 'saveTree',
         payload: {
-          tree: data,
+          tree: response,
         },
       });
       if (callback) callback();
@@ -36,8 +35,7 @@ export default {
     *fetchChildrenById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getDepartmentChildrenById, id);
-      const { data } = response;
-      const list = data.map(item => ({ ...item, status: !!item.status }));
+      const list = response.map(item => ({ ...item, status: !!item.status }));
       yield put({
         type: 'saveList',
         payload: {
@@ -63,8 +61,7 @@ export default {
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getDepartmentById, id);
-      const { data } = response;
-      const editDepartment = { ...data, status: !!data.status };
+      const editDepartment = { ...response, status: !!response.status };
       yield put({
         type: 'save',
         payload: {
