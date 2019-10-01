@@ -21,34 +21,30 @@ export default {
       });
       // Login successfully
       // 此处不可以请求用户信息（包括当前登录用户个人信息及菜单）请求，原因请看BasicLayout.js L 51。
-      if (response.success) {
-        const {
-          data: { token, resources },
-        } = response;
-        localStorage.setItem('jwt', token);
-        reloadAuthorized(resources);
-        const urlParams = new URL(window.location.href);
-        const params = getPageQuery();
-        let { redirect } = params;
-        if (redirect) {
-          const redirectUrlParams = new URL(redirect);
-          if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
-            if (window.routerBase !== '/') {
-              redirect = redirect.replace(window.routerBase, '/');
-            }
-            if (redirect.match(/^\/.*#/)) {
-              redirect = redirect.substr(redirect.indexOf('#') + 1);
-            }
-            if (redirect === '/user/login') {
-              redirect = null;
-            }
-          } else {
+      const { token, resources } = response;
+      localStorage.setItem('jwt', token);
+      reloadAuthorized(resources);
+      const urlParams = new URL(window.location.href);
+      const params = getPageQuery();
+      let { redirect } = params;
+      if (redirect) {
+        const redirectUrlParams = new URL(redirect);
+        if (redirectUrlParams.origin === urlParams.origin) {
+          redirect = redirect.substr(urlParams.origin.length);
+          if (window.routerBase !== '/') {
+            redirect = redirect.replace(window.routerBase, '/');
+          }
+          if (redirect.match(/^\/.*#/)) {
+            redirect = redirect.substr(redirect.indexOf('#') + 1);
+          }
+          if (redirect === '/user/login') {
             redirect = null;
           }
+        } else {
+          redirect = null;
         }
-        yield put(routerRedux.replace(redirect || '/dashboard'));
       }
+      yield put(routerRedux.replace(redirect || '/dashboard'));
     },
 
     *getCaptcha({ payload }, { call }) {
@@ -56,7 +52,7 @@ export default {
     },
 
     *logout(_, { call, put }) {
-      const response = yield call(accountLogout);
+      yield call(accountLogout);
       yield put({
         type: 'changeLoginStatus',
         payload: {
@@ -64,28 +60,26 @@ export default {
           data: {},
         },
       });
-      if (response.code === 200) {
-        reloadAuthorized();
-        localStorage.clear();
-        const { redirect } = getPageQuery();
-        // redirect
-        if (window.location.pathname !== '/user/login' && !redirect) {
-          yield put(
-            routerRedux.replace({
-              pathname: '/user/login',
-              search: stringify({
-                redirect: window.location.href,
-              }),
-            })
-          );
-        }
+      reloadAuthorized();
+      localStorage.clear();
+      const { redirect } = getPageQuery();
+      // redirect
+      if (window.location.pathname !== '/user/login' && !redirect) {
+        yield put(
+          routerRedux.replace({
+            pathname: '/user/login',
+            search: stringify({
+              redirect: window.location.href,
+            }),
+          })
+        );
       }
     },
   },
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.data.resources);
+      setAuthority(payload.resources);
       return {
         ...state,
         status: payload.status,

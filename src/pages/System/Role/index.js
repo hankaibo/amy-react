@@ -23,10 +23,6 @@ const Role = props => {
   useEffect(() => {
     dispatch({
       type: 'systemRole/fetch',
-      payload: {
-        current: 1,
-        pageSize: 10,
-      },
     });
   }, []);
 

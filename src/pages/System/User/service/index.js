@@ -93,7 +93,7 @@ export async function enableUser(params) {
  * 查询用户所有角色。
  * @returns {Promise<void>}
  */
-export async function listRoleByUser(id) {
+export async function listUserRole(id) {
   return request(`/users/${id}/roles`);
 }
 
@@ -104,11 +104,9 @@ export async function listRoleByUser(id) {
  * @returns {Promise<void>}
  */
 export async function grantUserRole(params) {
-  const { id, ids } = params;
+  const { id, ...rest } = params;
   return request(`/users/${id}/roles`, {
     method: 'POST',
-    data: {
-      ids,
-    },
+    data: rest,
   });
 }

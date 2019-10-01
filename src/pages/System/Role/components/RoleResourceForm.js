@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Form, Input, Tree, Modal, message } from 'antd';
+import { difference } from '@/utils/utils';
 
 const FormItem = Form.Item;
 
@@ -25,7 +26,7 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
     setVisible(false);
   };
 
-  // 【获取要修改用户的角色】
+  // 【获取要修改角色的资源】
   useEffect(() => {
     if (visible) {
       const { id } = role;
@@ -69,11 +70,18 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
   const handleGrant = () => {
     validateFields((err, fieldsValue) => {
       if (err) return;
+      const { id, ids } = fieldsValue;
+      const plusResource = difference(ids, resSelected);
+      const minusResource = difference(resSelected, ids);
 
-      if (fieldsValue.id) {
+      if (id) {
         dispatch({
           type: 'systemRole/grantRoleResource',
-          payload: fieldsValue,
+          payload: {
+            id,
+            plusResource,
+            minusResource,
+          },
           callback: () => {
             hideModelHandler();
             message.success('分配成功');

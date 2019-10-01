@@ -27,18 +27,11 @@ const codeMessage = {
  * 异常处理程序
  */
 const errorHandler = error => {
-  const { response = {} } = error;
-  const errorText = codeMessage[response.status] || response.statusText;
+  const { response = {}, data } = error;
   const { status } = response;
+  const errorText = data.message || codeMessage[status] || response.statusText;
   const KEY_ERROR = 'keyError';
 
-  if (status === 401 || status === 403) {
-    notification.error({
-      key: KEY_ERROR,
-      message: '未登录或登录已过期，请重新登录。',
-    });
-    return;
-  }
   notification.error({
     key: KEY_ERROR,
     message: `请求错误 ${status}`,

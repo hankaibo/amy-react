@@ -171,28 +171,26 @@ export default {
     *fetchCurrent({ payload }, { call, put }) {
       // 查询登录用户的个人与菜单信息数据
       const response = yield call(queryCurrent);
-      if (response.success) {
-        const { menuList, user } = response.data;
-        // 拿出路由
-        const { routes, authority } = payload;
-        const routerMap = filterRouters(routes, menuList); // 这边取出实际的路由表
-        const menuData = filterMenuData(memoizeOneFormatter(routerMap, authority));
-        // const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
-        // 这是修改后的代码，因为menuData是已经过滤掉存在hideInMenu
-        const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(
-          memoizeOneFormatter(routerMap, authority)
-        );
-        yield put({
-          type: 'save',
-          payload: {
-            currentUser: user,
-            menuData,
-            breadcrumbNameMap,
-            routerMap,
-            routerData: routes,
-          }, // 将实际的路由一同放入
-        });
-      }
+      const { menuList, user } = response;
+      // 拿出路由
+      const { routes, authority } = payload;
+      const routerMap = filterRouters(routes, menuList); // 这边取出实际的路由表
+      const menuData = filterMenuData(memoizeOneFormatter(routerMap, authority));
+      // const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
+      // 这是修改后的代码，因为menuData是已经过滤掉存在hideInMenu
+      const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(
+        memoizeOneFormatter(routerMap, authority)
+      );
+      yield put({
+        type: 'save',
+        payload: {
+          currentUser: user,
+          menuData,
+          breadcrumbNameMap,
+          routerMap,
+          routerData: routes,
+        }, // 将实际的路由一同放入
+      });
     },
   },
 

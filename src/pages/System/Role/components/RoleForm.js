@@ -46,7 +46,7 @@ const RoleForm = Form.create({ name: 'roleForm' })(props => {
         setFieldsValue(editRole);
       }
     }
-  }, [visible, isEdit, editRole, setFieldsValue]);
+  }, [visible, isEdit, editRole]);
 
   // 【添加与修改】
   const handleAddOrUpdate = () => {

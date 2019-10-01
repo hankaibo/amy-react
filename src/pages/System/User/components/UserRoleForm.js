@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Form, Input, Select, Modal, message } from 'antd';
+import { difference } from '@/utils/utils';
 
 const FormItem = Form.Item;
 const { Option } = Select;
 
 const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
-  const { children, user, roleList, roleSelected, form, dispatch } = props;
+  const { children, user, roleList, roleIdSelectedList, form, dispatch } = props;
   const { validateFields, getFieldDecorator, setFieldsValue } = form;
 
   // 【模态框显示隐藏属性】
@@ -26,15 +27,15 @@ const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
     if (visible) {
       const { id } = user;
       dispatch({
-        type: 'systemUser/fetchRoleByUser',
+        type: 'systemUser/fetchUserRole',
         payload: {
           id,
         },
       });
     }
-    return function cleanup() {
+    return () => {
       dispatch({
-        type: 'systemUser/clearUser',
+        type: 'systemUser/clearUserRole',
       });
     };
   }, [visible, user]);
@@ -44,19 +45,26 @@ const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
     // 👍 将条件判断放置在 effect 中
     if (visible) {
       const { id } = user;
-      setFieldsValue({ id, ids: roleSelected });
+      setFieldsValue({ id, ids: roleIdSelectedList });
     }
-  }, [visible, user, roleSelected]);
+  }, [visible, user, roleIdSelectedList]);
 
   // 【授权】
   const handleGrant = () => {
     validateFields((err, fieldsValue) => {
       if (err) return;
+      const { id, ids } = fieldsValue;
+      const plusRole = difference(ids, roleIdSelectedList);
+      const minusRole = difference(roleIdSelectedList, ids);
 
-      if (fieldsValue.id) {
+      if (id) {
         dispatch({
           type: 'systemUser/grantUserRole',
-          payload: fieldsValue,
+          payload: {
+            id,
+            plusRole,
+            minusRole,
+          },
           callback: () => {
             hideModelHandler();
             message.success('分配成功');
@@ -95,7 +103,7 @@ const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
   );
 });
 
-export default connect(({ systemUser: { roleList, roleSelected } }) => ({
+export default connect(({ systemUser: { roleList, roleIdSelectedList } }) => ({
   roleList,
-  roleSelected,
+  roleIdSelectedList,
 }))(UserRoleForm);

@@ -104,11 +104,9 @@ export async function getResourceByRole(id) {
  * @returns {Promise<void>}
  */
 export async function grantRoleResource(params) {
-  const { id, ids } = params;
+  const { id, ...rest } = params;
   return request(`/roles/${id}/resources`, {
     method: 'POST',
-    data: {
-      ids,
-    },
+    data: rest,
   });
 }

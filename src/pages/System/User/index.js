@@ -58,11 +58,13 @@ const User = props => {
   // 【启用禁用】
   const toggleStatus = (checked, record) => {
     const { id } = record;
+    const { id: departmentId } = department;
     dispatch({
       type: 'systemUser/enable',
       payload: {
         id,
         status: checked,
+        departmentId,
       },
     });
   };
@@ -75,10 +77,12 @@ const User = props => {
   // 【批量删除】
   const deleteBatchItem = () => {
     if (selectedRows.length === 0) return;
+    const { id: departmentId } = department;
     dispatch({
       type: 'systemUser/deleteBatch',
       payload: {
         ids: selectedRows,
+        departmentId,
       },
       callback: () => {
         setSelectedRows([]);
@@ -96,11 +100,14 @@ const User = props => {
   };
 
   // 【删除】
-  const deleteItem = id => {
+  const deleteItem = record => {
+    const { id } = record;
+    const { id: departmentId } = department;
     dispatch({
       type: 'systemUser/delete',
       payload: {
         id,
+        departmentId,
       },
       callback: () => {
         setSelectedRows([]);
@@ -109,13 +116,12 @@ const User = props => {
     });
   };
   const handleDelete = record => {
-    const { id } = record;
     Modal.confirm({
       title: '删除',
       content: '您确定要删除该用户吗？',
       okText: '确认',
       cancelText: '取消',
-      onOk: () => deleteItem(id),
+      onOk: () => deleteItem(record),
     });
   };
 
@@ -127,9 +133,11 @@ const User = props => {
       return newObj;
     }, {});
 
+    const { id: departmentId } = department;
     const { current, pageSize } = page;
 
     const params = {
+      departmentId,
       current,
       pageSize,
       ...filters,

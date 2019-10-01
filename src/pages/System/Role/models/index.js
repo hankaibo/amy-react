@@ -26,9 +26,9 @@ export default {
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
+    *fetch({ payload, callback }, { call, put }) {
       const response = yield call(pageRole, payload);
-      const { list, pageNum: current, pageSize, total } = response.data;
+      const { list, pageNum: current, pageSize, total } = response;
       const newList = list.map(item => ({ ...item, status: !!item.status }));
       yield put({
         type: 'saveList',
@@ -37,12 +37,12 @@ export default {
           pagination: { current, pageSize, total },
         },
       });
+      if (callback) callback();
     },
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getRoleById, id);
-      const { data } = response;
-      const editRole = { ...data, status: !!data.status };
+      const editRole = { ...response, status: !!response.status };
       yield put({
         type: 'saveRole',
         payload: {
@@ -55,6 +55,7 @@ export default {
       const params = { ...payload, status: +payload.status };
       yield call(addRole, params);
       const pagination = yield select(state => state.systemRole.pagination);
+      delete pagination.total;
       yield put({
         type: 'fetch',
         payload: {
@@ -67,6 +68,7 @@ export default {
       const { id } = payload;
       yield call(deleteRole, id);
       const pagination = yield select(state => state.systemRole.pagination);
+      delete pagination.total;
       yield put({
         type: 'fetch',
         payload: {
@@ -79,6 +81,7 @@ export default {
       const { ids } = payload;
       yield call(deleteBatchRole, ids);
       const pagination = yield select(state => state.systemRole.pagination);
+      delete pagination.total;
       yield put({
         type: 'fetch',
         payload: {
@@ -91,6 +94,7 @@ export default {
       const params = { ...payload, status: +payload.status };
       yield call(updateRole, params);
       const pagination = yield select(state => state.systemRole.pagination);
+      delete pagination.total;
       yield put({
         type: 'fetch',
         payload: {
@@ -104,6 +108,7 @@ export default {
       const params = { id, status: +status };
       yield call(enableRole, params);
       const pagination = yield select(state => state.systemRole.pagination);
+      delete pagination.total;
       yield put({
         type: 'fetch',
         payload: {
@@ -115,9 +120,7 @@ export default {
     *fetchResTree({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getResourceByRole, id);
-      const {
-        data: { resTree, resSelected },
-      } = response;
+      const { resTree, resSelected } = response;
       const selected = [];
       const halfSelect = [];
       resSelected.forEach(item => {
