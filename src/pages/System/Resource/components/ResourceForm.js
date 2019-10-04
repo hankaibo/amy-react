@@ -5,7 +5,7 @@ import { Form, Input, Modal, Switch, message, Radio, TreeSelect, Button } from '
 const FormItem = Form.Item;
 
 const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
-  const { loading, children, isEdit, resource, editResource, menuTree, form, dispatch } = props;
+  const { loading, children, isEdit, resource, editResource, tree, form, dispatch } = props;
   const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
 
   // 【模态框显示隐藏属性】
@@ -33,7 +33,7 @@ const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
     }
     return function cleanup() {
       dispatch({
-        type: 'systemResource/clearResource',
+        type: 'systemResource/clear',
       });
     };
   }, [visible, isEdit, resource]);
@@ -53,11 +53,11 @@ const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
     if (visible) {
       if (resource) {
         setFieldsValue({ parentId: resource.id });
-      } else if (menuTree.length) {
-        setFieldsValue({ parentId: menuTree[0].id });
+      } else if (tree.length) {
+        setFieldsValue({ parentId: tree[0].id });
       }
     }
-  }, [visible, resource, menuTree]);
+  }, [visible, resource, tree]);
 
   // 【添加与修改】
   const handleAddOrUpdate = () => {
@@ -131,7 +131,7 @@ const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
           <FormItem label="编码">
             {getFieldDecorator('code', {
               rules: [
-                { required: true, message: '请将编码长度保持在1至20字符之间！', min: 1, max: 20 },
+                { required: true, message: '请将编码长度保持在1至50字符之间！', min: 1, max: 50 },
               ],
             })(<Input />)}
           </FormItem>
@@ -164,7 +164,7 @@ const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
               <TreeSelect
                 style={{ width: 300 }}
                 dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                treeData={menuTree}
+                treeData={tree}
                 placeholder="Please select"
                 treeDefaultExpandAll
               />
@@ -176,8 +176,8 @@ const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
   );
 });
 
-export default connect(({ systemResource: { menuTree, editResource }, loading }) => ({
-  menuTree,
+export default connect(({ systemResource: { tree, editResource }, loading }) => ({
+  tree,
   editResource,
   loading: loading.models.systemResource,
 }))(ResourceForm);

@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Tree, Card, Button, Switch, Divider, Modal, message, Icon, Table } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import Authorized from '@/utils/Authorized';
 import IconFont from '@/components/IconFont';
 import ResourceForm from './components/ResourceForm';
 import styles from '../System.less';
 
 const Resource = props => {
-  const { loading, menuTree, list, dispatch } = props;
+  const { loading, tree, list, dispatch } = props;
 
   // 【当前点击的菜单】
-  const [current, setCurrent] = useState(null);
+  const [resource, setResource] = useState(null);
 
   // 【首次请求加载树数据】
   useEffect(() => {
@@ -37,30 +38,31 @@ const Resource = props => {
           id,
         },
         callback: () => {
-          setCurrent(info.node.props);
+          setResource(info.node.props);
         },
       });
     }
   };
 
   // 【移动】
-  const handleGo = (record, direction) => {
-    const { id } = record;
+  const handleMove = (record, direction) => {
     dispatch({
-      type: 'systemResource/moveResource',
+      type: 'systemResource/move',
       payload: {
-        id,
+        ...record,
         direction,
       },
     });
   };
 
   // 【删除】
-  const deleteItem = id => {
+  const deleteItem = record => {
+    const { id, parentId } = record;
     dispatch({
       type: 'systemResource/delete',
       payload: {
         id,
+        parentId,
       },
       callback: () => {
         message.success('删除成功');
@@ -68,13 +70,12 @@ const Resource = props => {
     });
   };
   const handleDelete = record => {
-    const { id } = record;
     Modal.confirm({
       title: '删除',
       content: '您确定要删除该菜单吗？',
       okText: '确认',
       cancelText: '取消',
-      onOk: () => deleteItem(id),
+      onOk: () => deleteItem(record),
     });
   };
 
@@ -110,12 +111,12 @@ const Resource = props => {
       render: (text, record) => (
         <>
           <a
-            onClick={() => handleGo(record, 'UP')}
+            onClick={() => handleMove(record, 'UP')}
             style={{ padding: '0 5px', marginRight: '10px' }}
           >
             <Icon type="arrow-up" title="向上" />
           </a>
-          <a onClick={() => handleGo(record, 'DOWN')}>
+          <a onClick={() => handleMove(record, 'DOWN')}>
             <Icon type="arrow-down" title="向下" />
           </a>
         </>
@@ -125,15 +126,19 @@ const Resource = props => {
       title: '操作',
       render: (text, record) => (
         <>
-          <ResourceForm isEdit resource={record}>
-            <a>
-              <IconFont type="icon-edit" title="编辑" />
+          <Authorized authority="system.resource.update" noMatch={null}>
+            <ResourceForm isEdit resource={record}>
+              <a>
+                <IconFont type="icon-edit" title="编辑" />
+              </a>
+              <Divider type="vertical" />
+            </ResourceForm>
+          </Authorized>
+          <Authorized authority="system.resource.delete" noMatch={null}>
+            <a onClick={() => handleDelete(record)}>
+              <IconFont type="icon-delete" title="删除" />
             </a>
-            <Divider type="vertical" />
-          </ResourceForm>
-          <a onClick={() => handleDelete(record)}>
-            <IconFont type="icon-delete" title="删除" />
-          </a>
+          </Authorized>
         </>
       ),
     },
@@ -149,23 +154,25 @@ const Resource = props => {
             bordered={false}
             bodyStyle={{ padding: '15px' }}
           >
-            <Tree treeData={menuTree} onSelect={handleSelect} />
+            <Tree treeData={tree} onSelect={handleSelect} />
           </Card>
         </Col>
         <Col xs={24} sm={24} md={24} lg={18} xl={18}>
           <Card
-            title={current ? `[${current.title}]的资源` : '资源列表'}
+            title={resource ? `[${resource.title}]的资源` : '资源列表'}
             bordered={false}
             bodyStyle={{ padding: '15px' }}
             style={{ marginTop: 10 }}
           >
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
-                <ResourceForm resource={current}>
-                  <Button type="primary" title="新增">
-                    <Icon type="plus" />
-                  </Button>
-                </ResourceForm>
+                <Authorized authority="system.resource.add" noMatch={null}>
+                  <ResourceForm resource={resource}>
+                    <Button type="primary" title="新增">
+                      <Icon type="plus" />
+                    </Button>
+                  </ResourceForm>
+                </Authorized>
               </div>
               <Table rowKey="id" loading={loading} columns={columns} dataSource={list} />
             </div>
@@ -176,8 +183,8 @@ const Resource = props => {
   );
 };
 
-export default connect(({ systemResource: { menuTree, list }, loading }) => ({
-  menuTree,
+export default connect(({ systemResource: { tree, list }, loading }) => ({
+  tree,
   list,
   loading: loading.models.systemResource,
 }))(Resource);

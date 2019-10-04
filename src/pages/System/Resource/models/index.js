@@ -14,7 +14,7 @@ export default {
 
   state: {
     // 菜单树
-    menuTree: [],
+    tree: [],
     // 列表
     list: [],
     // 编辑
@@ -24,11 +24,10 @@ export default {
   effects: {
     *fetch({ payload, callback }, { call, put }) {
       const response = yield call(getResourceTree, payload);
-      const { data } = response;
       yield put({
-        type: 'saveMenuTree',
+        type: 'saveTree',
         payload: {
-          menuTree: data,
+          tree: response,
         },
       });
       if (callback) callback();
@@ -36,8 +35,7 @@ export default {
     *fetchChildrenById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getChildrenById, id);
-      const { data } = response;
-      const list = data.map(item => ({ ...item, status: !!item.status }));
+      const list = response.map(item => ({ ...item, status: !!item.status }));
       yield put({
         type: 'saveList',
         payload: {
@@ -46,40 +44,58 @@ export default {
       });
       if (callback) callback();
     },
-    *moveResource({ payload, callback }, { call, put }) {
+    *move({ payload, callback }, { call, put }) {
+      const { parentId: id } = payload;
       yield call(moveResource, payload);
       yield put({
         type: 'fetch',
+      });
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          id,
+        },
       });
       if (callback) callback();
     },
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getResourceById, id);
-      const { data } = response;
-      const editResource = { ...data, status: !!data.status };
+      const editResource = { ...response, status: !!response.status };
       yield put({
-        type: 'saveResource',
+        type: 'save',
         payload: {
           editResource,
         },
       });
       if (callback) callback();
     },
-    *add({ payload, callback }, { call }) {
+    *add({ payload, callback }, { call, put }) {
+      const { parentId: id } = payload;
       const params = { ...payload, status: +payload.status };
       yield call(addResource, params);
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          id,
+        },
+      });
+      yield put({
+        type: 'fetch',
+      });
       if (callback) callback();
     },
-    *delete({ id, callback }, { call, put, select }) {
+    *delete({ payload, callback }, { call, put }) {
+      const { id, parentId } = payload;
       yield call(deleteResource, id);
-      const oldList = yield select(state => state.systemMenu.list);
-      const newList = oldList.filter(item => item.id !== id);
       yield put({
-        type: 'updateList',
+        type: 'fetchChildrenById',
         payload: {
-          list: newList,
+          id: parentId,
         },
+      });
+      yield put({
+        type: 'fetch',
       });
       if (callback) callback();
     },
@@ -87,30 +103,29 @@ export default {
       yield call(deleteBatchResource, ids);
       if (callback) callback();
     },
-    *update({ payload, callback }, { call, put, select }) {
+    *update({ payload, callback }, { call, put }) {
+      const { parentId } = payload;
       const params = { ...payload, status: +payload.status };
       yield call(updateResource, params);
-      const oldList = yield select(state => state.systemResource.list);
-      const newList = oldList.map(item => {
-        if (item.id === payload.id) return { ...item, ...payload };
-        return item;
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          id: parentId,
+        },
       });
       yield put({
-        type: 'updateList',
-        payload: {
-          list: newList,
-        },
+        type: 'fetch',
       });
       if (callback) callback();
     },
   },
 
   reducers: {
-    saveMenuTree(state, { payload }) {
-      const { menuTree } = payload;
+    saveTree(state, { payload }) {
+      const { tree } = payload;
       return {
         ...state,
-        menuTree,
+        tree,
       };
     },
     saveList(state, { payload }) {
@@ -120,14 +135,14 @@ export default {
         list,
       };
     },
-    saveResource(state, { payload }) {
+    save(state, { payload }) {
       const { editResource } = payload;
       return {
         ...state,
         editResource,
       };
     },
-    clearResource(state) {
+    clear(state) {
       return {
         ...state,
         editResource: {},
