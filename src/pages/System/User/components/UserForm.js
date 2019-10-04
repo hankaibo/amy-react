@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Modal, Switch, message, Radio, Upload, Icon, TreeSelect } from 'antd';
+import { Form, Input, Modal, Switch, message, Radio, Upload, Icon, TreeSelect, Button } from 'antd';
 
 const FormItem = Form.Item;
 
@@ -25,13 +25,13 @@ const beforeUpload = file => {
 };
 
 const UserForm = Form.create({ name: 'userForm' })(props => {
-  const { children, isEdit, user, editUser, tree, form, dispatch } = props;
+  const { loading, children, isEdit, user, editUser, tree, form, dispatch } = props;
   const { getFieldDecorator, setFieldsValue, validateFields, resetFields } = form;
 
   // 【模态框显示隐藏属性】
   const [visible, setVisible] = useState(false);
   // 【模拟图片上传的属性】
-  const [loading, setLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
 
   // 【模态框显示隐藏函数】
@@ -115,14 +115,14 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
   // 【头像上传】
   const handleChange = info => {
     if (info.file.status === 'uploading') {
-      setLoading(true);
+      setImageLoading(true);
       return;
     }
     if (info.file.status === 'done') {
       // 模拟一个url
       getBase64(info.file.originFileObj, imgUrl => {
         setImageUrl(imgUrl);
-        setLoading(false);
+        setImageLoading(false);
       });
     }
   };
@@ -135,13 +135,13 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
     },
     wrapperCol: {
       xs: { span: 24 },
-      sm: { span: 15 },
+      sm: { span: 17 },
     },
   };
   // 【上传按钮】
   const uploadButton = (
     <div>
-      <Icon type={loading ? 'loading' : 'plus'} />
+      <Icon type={imageLoading ? 'imageLoading' : 'plus'} />
       <div className="ant-upload-text">上传</div>
     </div>
   );
@@ -155,6 +155,14 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
         visible={visible}
         onOk={handleAddOrUpdate}
         onCancel={hideModelHandler}
+        footer={[
+          <Button key="back" onClick={hideModelHandler}>
+            取消
+          </Button>,
+          <Button key="submit" type="primary" loading={loading} onClick={handleAddOrUpdate}>
+            确定
+          </Button>,
+        ]}
       >
         <Form {...formItemLayout}>
           {isEdit && getFieldDecorator('id')(<Input hidden />)}
@@ -178,13 +186,17 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
           </FormItem>
           <FormItem label="名称">
             {getFieldDecorator('username', {
-              rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
+              rules: [
+                { required: true, message: '请将名称长度保持在1至20字符之间！', min: 1, max: 20 },
+              ],
             })(<Input />)}
           </FormItem>
           {!isEdit && (
             <FormItem label="密码">
               {getFieldDecorator('password', {
-                rules: [{ required: true, message: '请输入至少6个字符的规则描述！', min: 6 }],
+                rules: [
+                  { required: true, message: '请将密码长度保持在6至30字符之间！', min: 6, max: 30 },
+                ],
               })(<Input type="password" />)}
             </FormItem>
           )}
@@ -201,12 +213,12 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
           </FormItem>
           <FormItem label="昵称">
             {getFieldDecorator('nickname', {
-              rules: [{ message: '请输入至少1个字符的规则描述！', min: 1 }],
+              rules: [{ message: '请将昵称长度保持在1至20字符之间！', min: 1, max: 20 }],
             })(<Input />)}
           </FormItem>
           <FormItem label="真实姓名">
             {getFieldDecorator('realName', {
-              rules: [{ message: '请输入至少1个字符的规则描述！', min: 1 }],
+              rules: [{ message: '请将真实姓名长度保持在1至20字符之间！', min: 1, max: 20 }],
             })(<Input />)}
           </FormItem>
           <FormItem label="状态">
@@ -222,12 +234,12 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
           </FormItem>
           <FormItem label="座机号码">
             {getFieldDecorator('phone', {
-              rules: [{ message: '请输入至少8个字符的规则描述！', min: 8 }],
+              rules: [{ message: '请将座机号码长度保持在8至20字符之间！', min: 8, max: 20 }],
             })(<Input />)}
           </FormItem>
           <FormItem label="手机号码">
             {getFieldDecorator('mobile', {
-              rules: [{ message: '请输入至少11个字符的规则描述！', min: 11 }],
+              rules: [{ message: '请将手机号码长度保持在8至20字符之间！', min: 11, max: 20 }],
             })(<Input />)}
           </FormItem>
           <FormItem label="性别">
@@ -246,7 +258,8 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
   );
 });
 
-export default connect(({ systemUser: { tree, editUser } }) => ({
+export default connect(({ systemUser: { tree, editUser }, loading }) => ({
   tree,
   editUser,
+  loading: loading.models.systemUser,
 }))(UserForm);

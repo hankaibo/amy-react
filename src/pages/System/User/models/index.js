@@ -23,7 +23,7 @@ export default {
     editUser: {},
     // 角色列表与已选角色
     roleList: [],
-    roleIdSelectedList: [],
+    selectedRoleIdList: [],
   },
 
   effects: {
@@ -147,7 +147,7 @@ export default {
         type: 'saveUserRole',
         payload: {
           roleList,
-          roleIdSelectedList: newRoleSelected,
+          selectedRoleIdList: newRoleSelected,
         },
       });
       if (callback) callback();
@@ -185,15 +185,15 @@ export default {
       return { ...state, editUser: {} };
     },
     saveUserRole(state, { payload }) {
-      const { roleList, roleIdSelectedList } = payload;
+      const { roleList, selectedRoleIdList } = payload;
       return {
         ...state,
         roleList,
-        roleIdSelectedList,
+        selectedRoleIdList,
       };
     },
     clearUserRole(state) {
-      return { ...state, roleList: [], roleIdSelectedList: [] };
+      return { ...state, roleList: [], selectedRoleIdList: [] };
     },
   },
 };

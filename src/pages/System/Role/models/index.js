@@ -19,9 +19,9 @@ export default {
     pagination: {},
     // 编辑
     editRole: {},
-    // 分配资源树及选中
-    resTree: [],
-    resSelected: [],
+    // 资源树、选中的Keys、半联动的keys
+    tree: [],
+    checkedKeys: [],
     halfCheckedKeys: [],
   },
 
@@ -122,20 +122,21 @@ export default {
       const response = yield call(getResourceByRole, id);
       const { resTree, resSelected } = response;
       const selected = [];
-      const halfSelect = [];
+      const halfSelected = [];
+      // 分离出半联动的父节点
       resSelected.forEach(item => {
         if (item.rgt - item.lft === 1) {
           selected.push(item);
         } else {
-          halfSelect.push(item);
+          halfSelected.push(item);
         }
       });
       yield put({
         type: 'saveResTree',
         payload: {
-          resTree,
-          resSelected: selected.map(item => item.id.toString()),
-          halfCheckedKeys: halfSelect.map(item => item.id.toString()),
+          tree: resTree,
+          checkedKeys: selected.map(item => item.id.toString()),
+          halfCheckedKeys: halfSelected.map(item => item.id.toString()),
         },
       });
       if (callback) callback();
@@ -166,16 +167,16 @@ export default {
       return { ...state, editRole: {} };
     },
     saveResTree(state, { payload }) {
-      const { resTree, resSelected, halfCheckedKeys } = payload;
+      const { tree, checkedKeys, halfCheckedKeys } = payload;
       return {
         ...state,
-        resTree,
-        resSelected,
+        tree,
+        checkedKeys,
         halfCheckedKeys,
       };
     },
     clearResTree(state) {
-      return { ...state, resTree: [], resSelected: [], halfCheckedKeys: [] };
+      return { ...state, tree: [], checkedKeys: [], halfCheckedKeys: [] };
     },
   },
 };

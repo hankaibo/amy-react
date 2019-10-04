@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Modal, Switch, message, TreeSelect } from 'antd';
+import { Form, Input, Modal, Switch, message, TreeSelect, Button } from 'antd';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
 
 const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
-  const { children, isEdit, department, editDepartment, tree, form, dispatch } = props;
+  const { loading, children, isEdit, department, editDepartment, tree, form, dispatch } = props;
   const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
 
   // 【模态框显示隐藏属性】
@@ -110,12 +110,22 @@ const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
         visible={visible}
         onOk={handleAddOrUpdate}
         onCancel={hideModelHandler}
+        footer={[
+          <Button key="back" onClick={hideModelHandler}>
+            取消
+          </Button>,
+          <Button key="submit" type="primary" loading={loading} onClick={handleAddOrUpdate}>
+            确定
+          </Button>,
+        ]}
       >
         <Form {...formItemLayout}>
           {isEdit && getFieldDecorator('id')(<Input hidden />)}
           <FormItem label="名称">
             {getFieldDecorator('name', {
-              rules: [{ required: true, message: '请输入至少1个字符的名称描述！', min: 1 }],
+              rules: [
+                { required: true, message: '请将名称长度保持在1至20字符之间！', min: 1, max: 20 },
+              ],
             })(<Input />)}
           </FormItem>
           <FormItem label="上级部门">
@@ -135,9 +145,9 @@ const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
             )}
           </FormItem>
           <FormItem label="描述">
-            {getFieldDecorator('description')(
-              <TextArea placeholder="请输入部门描述。" autosize={{ minRows: 2, maxRows: 6 }} />
-            )}
+            {getFieldDecorator('description', {
+              rules: [{ message: '请将描述长度保持在1至50字符之间！', min: 1, max: 50 }],
+            })(<TextArea placeholder="请输入部门描述。" autosize={{ minRows: 2, maxRows: 6 }} />)}
           </FormItem>
         </Form>
       </Modal>
@@ -145,7 +155,8 @@ const DepartmentForm = Form.create({ name: 'departmentForm' })(props => {
   );
 });
 
-export default connect(({ systemDepartment: { tree, editDepartment } }) => ({
+export default connect(({ systemDepartment: { tree, editDepartment }, loading }) => ({
   tree,
   editDepartment,
+  loading: loading.models.systemDepartment,
 }))(DepartmentForm);

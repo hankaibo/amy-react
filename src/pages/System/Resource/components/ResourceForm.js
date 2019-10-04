@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Modal, Switch, message, Radio, TreeSelect } from 'antd';
+import { Form, Input, Modal, Switch, message, Radio, TreeSelect, Button } from 'antd';
 
 const FormItem = Form.Item;
 
 const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
-  const { children, isEdit, resource, editResource, menuTree, form, dispatch } = props;
+  const { loading, children, isEdit, resource, editResource, menuTree, form, dispatch } = props;
   const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
 
   // 【模态框显示隐藏属性】
@@ -96,7 +96,7 @@ const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
     },
     wrapperCol: {
       xs: { span: 24 },
-      sm: { span: 15 },
+      sm: { span: 17 },
     },
   };
 
@@ -109,23 +109,37 @@ const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
         visible={visible}
         onOk={handleAddOrUpdate}
         onCancel={hideModelHandler}
+        footer={[
+          <Button key="back" onClick={hideModelHandler}>
+            取消
+          </Button>,
+          <Button key="submit" type="primary" loading={loading} onClick={handleAddOrUpdate}>
+            确定
+          </Button>,
+        ]}
       >
         <Form {...formItemLayout}>
           {getFieldDecorator('type', { initialValue: 2 })(<Input hidden />)}
           {isEdit && getFieldDecorator('id')(<Input hidden />)}
           <FormItem label="名称">
             {getFieldDecorator('name', {
-              rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
+              rules: [
+                { required: true, message: '请将名称长度保持在1至20字符之间！', min: 1, max: 20 },
+              ],
             })(<Input />)}
           </FormItem>
           <FormItem label="编码">
             {getFieldDecorator('code', {
-              rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
+              rules: [
+                { required: true, message: '请将编码长度保持在1至20字符之间！', min: 1, max: 20 },
+              ],
             })(<Input />)}
           </FormItem>
           <FormItem label="URL">
             {getFieldDecorator('uri', {
-              rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
+              rules: [
+                { required: true, message: '请将URL长度保持在3至100字符之间！', min: 3, max: 100 },
+              ],
             })(<Input />)}
           </FormItem>
           <FormItem label="状态">
@@ -162,7 +176,8 @@ const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
   );
 });
 
-export default connect(({ systemResource: { menuTree, editResource } }) => ({
+export default connect(({ systemResource: { menuTree, editResource }, loading }) => ({
   menuTree,
   editResource,
+  loading: loading.models.systemResource,
 }))(ResourceForm);

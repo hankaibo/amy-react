@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Select, Modal, message } from 'antd';
+import { Form, Input, Select, Modal, message, Button } from 'antd';
 import { difference } from '@/utils/utils';
 
 const FormItem = Form.Item;
 const { Option } = Select;
 
 const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
-  const { children, user, roleList, roleIdSelectedList, form, dispatch } = props;
+  const { loading, children, user, roleList, selectedRoleIdList, form, dispatch } = props;
   const { validateFields, getFieldDecorator, setFieldsValue } = form;
 
   // 【模态框显示隐藏属性】
@@ -45,17 +45,17 @@ const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
     // 👍 将条件判断放置在 effect 中
     if (visible) {
       const { id } = user;
-      setFieldsValue({ id, ids: roleIdSelectedList });
+      setFieldsValue({ id, ids: selectedRoleIdList });
     }
-  }, [visible, user, roleIdSelectedList]);
+  }, [visible, user, selectedRoleIdList]);
 
   // 【授权】
   const handleGrant = () => {
     validateFields((err, fieldsValue) => {
       if (err) return;
       const { id, ids } = fieldsValue;
-      const plusRole = difference(ids, roleIdSelectedList);
-      const minusRole = difference(roleIdSelectedList, ids);
+      const plusRole = difference(ids, selectedRoleIdList);
+      const minusRole = difference(selectedRoleIdList, ids);
 
       if (id) {
         dispatch({
@@ -83,10 +83,18 @@ const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
         visible={visible}
         onOk={handleGrant}
         onCancel={hideModelHandler}
+        footer={[
+          <Button key="back" onClick={hideModelHandler}>
+            取消
+          </Button>,
+          <Button key="submit" type="primary" loading={loading} onClick={handleGrant}>
+            确定
+          </Button>,
+        ]}
       >
         <Form>
           {getFieldDecorator('id')(<Input hidden />)}
-          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }}>
+          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 17 }}>
             {getFieldDecorator('ids')(
               <Select mode="multiple" style={{ width: '100%' }} placeholder="请选择">
                 {roleList.map(item => (
@@ -103,7 +111,8 @@ const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
   );
 });
 
-export default connect(({ systemUser: { roleList, roleIdSelectedList } }) => ({
+export default connect(({ systemUser: { roleList, selectedRoleIdList }, loading }) => ({
   roleList,
-  roleIdSelectedList,
+  selectedRoleIdList,
+  loading: loading.models.systemUser,
 }))(UserRoleForm);

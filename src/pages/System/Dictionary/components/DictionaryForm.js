@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Modal, InputNumber, Switch, message } from 'antd';
+import { Form, Input, Modal, InputNumber, Switch, message, Button } from 'antd';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
 
 const DictionaryForm = Form.create({ name: 'dictionaryForm' })(props => {
-  const { children, isEdit, dictionary, editDictionary, form, dispatch, ...rest } = props;
+  const { loading, children, isEdit, dictionary, editDictionary, form, dispatch, ...rest } = props;
   const { location, match } = rest;
   const {
     query: { name: parentName },
@@ -92,7 +92,7 @@ const DictionaryForm = Form.create({ name: 'dictionaryForm' })(props => {
     },
     wrapperCol: {
       xs: { span: 24 },
-      sm: { span: 15 },
+      sm: { span: 17 },
     },
   };
 
@@ -105,6 +105,14 @@ const DictionaryForm = Form.create({ name: 'dictionaryForm' })(props => {
         visible={visible}
         onOk={handleAddOrUpdate}
         onCancel={() => hideModelHandler()}
+        footer={[
+          <Button key="back" onClick={hideModelHandler}>
+            取消
+          </Button>,
+          <Button key="submit" type="primary" loading={loading} onClick={handleAddOrUpdate}>
+            确定
+          </Button>,
+        ]}
       >
         <Form {...formItemLayout}>
           {getFieldDecorator('parentId', {
@@ -118,17 +126,23 @@ const DictionaryForm = Form.create({ name: 'dictionaryForm' })(props => {
           )}
           <FormItem label="名称">
             {getFieldDecorator('name', {
-              rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
+              rules: [
+                { required: true, message: '请将名称长度保持在1至20字符之间！', min: 1, max: 20 },
+              ],
             })(<Input placeholder="请输入字典名称" />)}
           </FormItem>
           <FormItem label="编码">
             {getFieldDecorator('code', {
-              rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
+              rules: [
+                { required: true, message: '请将编码长度保持在1至20字符之间！', min: 1, max: 20 },
+              ],
             })(<Input placeholder="请输入字典编码" />)}
           </FormItem>
           <FormItem label="值">
             {getFieldDecorator('value', {
-              rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
+              rules: [
+                { required: true, message: '请将值长度保持在1至20字符之间！', min: 1, max: 20 },
+              ],
             })(<Input placeholder="请输入字典值" />)}
           </FormItem>
           <FormItem label="状态">
@@ -138,13 +152,18 @@ const DictionaryForm = Form.create({ name: 'dictionaryForm' })(props => {
           </FormItem>
           <FormItem label="排序">
             {getFieldDecorator('sort')(
-              <InputNumber placeholder="请输入字典排序" style={{ width: '100%' }} />
+              <InputNumber
+                placeholder="请输入字典排序"
+                min={0}
+                max={999}
+                style={{ width: '100%' }}
+              />
             )}
           </FormItem>
           <FormItem label="描述">
-            {getFieldDecorator('description')(
-              <TextArea placeholder="请输入字典描述" autosize={{ minRows: 2, maxRows: 6 }} />
-            )}
+            {getFieldDecorator('description', {
+              rules: [{ message: '请将描述长度保持在1至50字符之间！', min: 1, max: 50 }],
+            })(<TextArea placeholder="请输入字典描述。" autosize={{ minRows: 2, maxRows: 6 }} />)}
           </FormItem>
         </Form>
       </Modal>
@@ -152,6 +171,7 @@ const DictionaryForm = Form.create({ name: 'dictionaryForm' })(props => {
   );
 });
 
-export default connect(({ systemDictionary: { editDictionary } }) => ({
+export default connect(({ systemDictionary: { editDictionary }, loading }) => ({
   editDictionary,
+  loading: loading.models.systemDictionary,
 }))(DictionaryForm);

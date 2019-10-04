@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Modal, Switch, message, TreeSelect, Tooltip, Icon } from 'antd';
+import { Form, Input, Modal, Switch, message, TreeSelect, Tooltip, Icon, Button } from 'antd';
 
 const FormItem = Form.Item;
 
 const MenuForm = Form.create({ name: 'menuForm' })(props => {
-  const { children, isEdit, menu, editMenu, menuTree, form, dispatch } = props;
+  const { loading, children, isEdit, menu, editMenu, menuTree, form, dispatch } = props;
   const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
 
   // 【模态框显示隐藏属性】
@@ -96,7 +96,7 @@ const MenuForm = Form.create({ name: 'menuForm' })(props => {
     },
     wrapperCol: {
       xs: { span: 24 },
-      sm: { span: 15 },
+      sm: { span: 17 },
     },
   };
 
@@ -109,13 +109,23 @@ const MenuForm = Form.create({ name: 'menuForm' })(props => {
         visible={visible}
         onOk={handleAddOrUpdate}
         onCancel={hideModelHandler}
+        footer={[
+          <Button key="back" onClick={hideModelHandler}>
+            取消
+          </Button>,
+          <Button key="submit" type="primary" loading={loading} onClick={handleAddOrUpdate}>
+            确定
+          </Button>,
+        ]}
       >
         <Form {...formItemLayout}>
           {getFieldDecorator('type', { initialValue: 1 })(<Input hidden />)}
           {isEdit && getFieldDecorator('id')(<Input hidden />)}
           <FormItem label="名称">
             {getFieldDecorator('name', {
-              rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
+              rules: [
+                { required: true, message: '请将名称长度保持在1至20字符之间！', min: 1, max: 20 },
+              ],
             })(<Input />)}
           </FormItem>
           <FormItem
@@ -129,7 +139,9 @@ const MenuForm = Form.create({ name: 'menuForm' })(props => {
             }
           >
             {getFieldDecorator('code', {
-              rules: [{ required: true, message: '请输入至少1个字符的规则描述！', min: 1 }],
+              rules: [
+                { required: true, message: '请将编码长度保持在1至20字符之间！', min: 1, max: 20 },
+              ],
             })(<Input />)}
           </FormItem>
           <FormItem label="状态">
@@ -154,7 +166,8 @@ const MenuForm = Form.create({ name: 'menuForm' })(props => {
   );
 });
 
-export default connect(({ systemMenu: { menuTree, editMenu } }) => ({
+export default connect(({ systemMenu: { menuTree, editMenu }, loading }) => ({
   menuTree,
   editMenu,
+  loading: loading.models.systeMenu,
 }))(MenuForm);

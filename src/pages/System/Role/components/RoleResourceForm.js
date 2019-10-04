@@ -1,18 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Tree, Modal, message } from 'antd';
+import { Form, Input, Tree, Modal, message, Button } from 'antd';
 import { difference } from '@/utils/utils';
 
 const FormItem = Form.Item;
 
+/**
+ * 本实现，将选中的子节点与半包含的父节点都提交到后台。
+ * 查询后台时，因为我使用左右树结构，非常方便分离出那些是父节点，expandedKeys只设置子节点的值。
+ */
 const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
-  const { children, role, resTree, resSelected, halfCheckedKeys, form, dispatch } = props;
+  const {
+    loading,
+    children,
+    role,
+    treeData,
+    resCheckedKeys,
+    halfCheckedKeys,
+    form,
+    dispatch,
+  } = props;
   const { validateFields, getFieldDecorator, setFieldsValue } = form;
 
   // https://github.com/ant-design/ant-design/issues/9807
-  // https://github.com/ant-design/ant-design/issues/9807
   const [expandedKeys, setExpandedKeys] = useState([]);
-  const [autoExpandParent, setAutoExpandParent] = useState(true);
   const [checkedKeys, setCheckedKeys] = useState([]);
   // 【模态框显示隐藏属性】
   const [visible, setVisible] = useState(false);
@@ -49,21 +60,23 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
 
   // 【回显树复选择框】
   useEffect(() => {
-    if (resSelected.length > 0) {
-      setCheckedKeys(resSelected);
-      setFieldsValue({ ids: resSelected.concat(halfCheckedKeys) });
+    if (resCheckedKeys.length > 0) {
+      setCheckedKeys(resCheckedKeys);
+      setExpandedKeys(halfCheckedKeys);
+      // 同步到表单
+      setFieldsValue({ ids: resCheckedKeys.concat(halfCheckedKeys) });
     }
-  }, [resSelected, halfCheckedKeys]);
+  }, [resCheckedKeys, halfCheckedKeys]);
 
   // 【树操作】
   const onExpand = values => {
     setExpandedKeys(values);
-    setAutoExpandParent(false);
   };
   const handleCheck = (values, event) => {
     const { halfCheckedKeys: halfValues } = event;
-    setFieldsValue({ ids: [...values, ...halfValues] });
     setCheckedKeys(values);
+    // 同步到form表单，因为tree组件不是表单组件的一部分，我无法自动同步，需要手动设置一下。
+    setFieldsValue({ ids: [...values, ...halfValues] });
   };
 
   // 【授权】
@@ -71,8 +84,9 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
     validateFields((err, fieldsValue) => {
       if (err) return;
       const { id, ids } = fieldsValue;
-      const plusResource = difference(ids, resSelected);
-      const minusResource = difference(resSelected, ids);
+      const oldCheckedKeys = [...resCheckedKeys, ...halfCheckedKeys];
+      const plusResource = difference(ids, oldCheckedKeys);
+      const minusResource = difference(oldCheckedKeys, ids);
 
       if (id) {
         dispatch({
@@ -100,19 +114,26 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
         visible={visible}
         onOk={handleGrant}
         onCancel={hideModelHandler}
+        footer={[
+          <Button key="back" onClick={hideModelHandler}>
+            取消
+          </Button>,
+          <Button key="submit" type="primary" loading={loading} onClick={handleGrant}>
+            确定
+          </Button>,
+        ]}
       >
         <Form>
           {getFieldDecorator('id')(<Input hidden />)}
-          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }}>
+          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 17 }}>
             {getFieldDecorator('ids')(
               <Tree
                 checkable
                 onExpand={onExpand}
                 expandedKeys={expandedKeys}
-                autoExpandParent={autoExpandParent}
                 onCheck={handleCheck}
                 checkedKeys={checkedKeys}
-                treeData={resTree}
+                treeData={treeData}
               />
             )}
           </FormItem>
@@ -122,8 +143,9 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
   );
 });
 
-export default connect(({ systemRole: { resTree, resSelected, halfCheckedKeys } }) => ({
-  resTree,
-  resSelected,
+export default connect(({ systemRole: { tree, checkedKeys, halfCheckedKeys }, loading }) => ({
+  treeData: tree,
+  resCheckedKeys: checkedKeys,
   halfCheckedKeys,
+  loading: loading.models.systemRole,
 }))(RoleResourceForm);
