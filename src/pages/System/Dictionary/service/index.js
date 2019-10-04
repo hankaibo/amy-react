@@ -6,8 +6,8 @@ import request from '@/utils/request';
  * @returns {Promise<void>}
  */
 export async function pageDict(params) {
-  const { parentId = 0, pageSize = 10, current = 1 } = params;
-  return request(`/dicts?parentId=${parentId}&pageSize=${pageSize}&pageNum=${current}`);
+  const { parentId, pageSize = 10, current = 1 } = params;
+  return request(`/dictionaries?parentId=${parentId}&pageSize=${pageSize}&pageNum=${current}`);
 }
 
 /**
@@ -16,7 +16,7 @@ export async function pageDict(params) {
  * @returns {Promise<void>}
  */
 export async function getDictById(id) {
-  return request(`/dicts/${id}`);
+  return request(`/dictionaries/${id}`);
 }
 
 /**
@@ -25,7 +25,7 @@ export async function getDictById(id) {
  * @returns {Promise<void>}
  */
 export async function addDict(params) {
-  return request('/dicts', {
+  return request('/dictionaries', {
     method: 'POST',
     data: {
       ...params,
@@ -39,7 +39,7 @@ export async function addDict(params) {
  * @returns {Promise<void>}
  */
 export async function deleteDict(id) {
-  return request(`/dicts/${id}`, {
+  return request(`/dictionaries/${id}`, {
     method: 'DELETE',
   });
 }
@@ -50,7 +50,7 @@ export async function deleteDict(id) {
  * @returns {Promise<void>}
  */
 export async function deleteBatchDict(ids) {
-  return request(`/dicts`, {
+  return request(`/dictionaries`, {
     method: 'DELETE',
     data: {
       ids,
@@ -65,7 +65,7 @@ export async function deleteBatchDict(ids) {
  */
 export async function updateDict(params) {
   const { id } = params;
-  return request(`/dicts/${id}`, {
+  return request(`/dictionaries/${id}`, {
     method: 'PUT',
     data: {
       ...params,
@@ -81,7 +81,7 @@ export async function updateDict(params) {
  */
 export async function enableDict(params) {
   const { id, status } = params;
-  return request(`/dicts/${id}/status`, {
+  return request(`/dictionaries/${id}/status`, {
     method: 'PUT',
     data: {
       status,

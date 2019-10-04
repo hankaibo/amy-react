@@ -233,11 +233,13 @@ const Department = props => {
           >
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
-                <DepartmentForm department={department}>
-                  <Button type="primary" title="新增">
-                    <Icon type="plus" />
-                  </Button>
-                </DepartmentForm>
+                <Authorized authority="system.department.add" noMatch={null}>
+                  <DepartmentForm department={department}>
+                    <Button type="primary" title="新增">
+                      <Icon type="plus" />
+                    </Button>
+                  </DepartmentForm>
+                </Authorized>
               </div>
               <Table rowKey="id" loading={loading} columns={columns} dataSource={list} />
             </div>

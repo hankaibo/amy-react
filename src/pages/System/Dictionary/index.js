@@ -157,7 +157,7 @@ const Dictionary = props => {
       render: (text, record) =>
         // 非子节点可以跳转
         record.parentId === 0 ? (
-          <Link to={`/system/dictionaries/${record.id}?name=${text}`}>{text}</Link>
+          <Link to={`/dashboard/system/dictionaries/${record.id}?name=${text}`}>{text}</Link>
         ) : (
           <span>{text}</span>
         ),
@@ -186,12 +186,6 @@ const Dictionary = props => {
     {
       title: '添加时间',
       dataIndex: 'createTime',
-      render: text => <span>{text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : ''}</span>,
-    },
-    {
-      title: '修改时间',
-      dataIndex: 'updateTime',
-      sorter: true,
       render: text => <span>{text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : ''}</span>,
     },
     {

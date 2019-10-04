@@ -22,7 +22,7 @@ export default {
   effects: {
     *fetch({ payload, callback }, { call, put }) {
       const response = yield call(pageDict, payload);
-      const { list, pageNum: current, pageSize, total } = response.data;
+      const { list, pageNum: current, pageSize, total } = response;
       yield put({
         type: 'saveList',
         payload: {
@@ -35,10 +35,9 @@ export default {
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getDictById, id);
-      const { data } = response;
-      const editDictionary = { ...data, status: !!data.status };
+      const editDictionary = { ...response, status: !!response.status };
       yield put({
-        type: 'saveDictionary',
+        type: 'save',
         payload: {
           editDictionary,
         },
@@ -50,6 +49,7 @@ export default {
       const params = { ...payload, status: +payload.status };
       yield call(addDict, params);
       const pagination = yield select(state => state.systemDictionary.pagination);
+      delete pagination.total;
       yield put({
         type: 'fetch',
         payload: {
@@ -63,6 +63,7 @@ export default {
       const { id, parentId } = payload;
       yield call(deleteDict, id);
       const pagination = yield select(state => state.systemDictionary.pagination);
+      delete pagination.total;
       yield put({
         type: 'fetch',
         payload: {
@@ -76,6 +77,7 @@ export default {
       const { ids, parentId } = payload;
       yield call(deleteBatchDict, ids);
       const pagination = yield select(state => state.systemDictionary.pagination);
+      delete pagination.total;
       yield put({
         type: 'fetch',
         payload: {
@@ -90,6 +92,7 @@ export default {
       const params = { ...payload, status: +payload.status };
       yield call(updateDict, params);
       const pagination = yield select(state => state.systemDictionary.pagination);
+      delete pagination.total;
       yield put({
         type: 'fetch',
         payload: {
@@ -104,6 +107,7 @@ export default {
       const params = { id, status: +status };
       yield call(enableDict, params);
       const pagination = yield select(state => state.systemDictionary.pagination);
+      delete pagination.total;
       yield put({
         type: 'fetch',
         payload: {
@@ -124,11 +128,17 @@ export default {
         pagination,
       };
     },
-    saveDictionary(state, { payload }) {
+    save(state, { payload }) {
       const { editDictionary } = payload;
       return {
         ...state,
         editDictionary,
+      };
+    },
+    clear(state) {
+      return {
+        ...state,
+        editDictionary: {},
       };
     },
   },

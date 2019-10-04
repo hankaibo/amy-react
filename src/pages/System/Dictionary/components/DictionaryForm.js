@@ -43,6 +43,11 @@ const DictionaryForm = Form.create({ name: 'dictionaryForm' })(props => {
         },
       });
     }
+    return () => {
+      dispatch({
+        type: 'systemDictionary/clear',
+      });
+    };
   }, [visible, isEdit, dictionary]);
 
   // 【回显表单】
