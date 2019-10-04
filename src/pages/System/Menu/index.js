@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Tree, Card, Button, Switch, Divider, Modal, message, Icon, Table } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import Authorized from '@/utils/Authorized';
 import IconFont from '@/components/IconFont';
 import MenuForm from './components/MenuForm';
 import styles from '../System.less';
 
 const Menu = props => {
-  const { loading, menuTree, list, dispatch } = props;
+  const { loading, tree, list, dispatch } = props;
 
   // 【当前点击的菜单】
-  const [current, setCurrent] = useState(null);
+  const [menu, setMenu] = useState(null);
 
   // 【首次请求加载树数据】
   useEffect(() => {
@@ -37,29 +38,30 @@ const Menu = props => {
         id,
       },
       callback: () => {
-        setCurrent(info.node.props);
+        setMenu(info.node.props);
       },
     });
   };
 
   // 【移动】
-  const handleGo = (record, direction) => {
-    const { id } = record;
+  const handleMove = (record, direction) => {
     dispatch({
-      type: 'systemMenu/moveMenu',
+      type: 'systemMenu/move',
       payload: {
-        id,
+        ...record,
         direction,
       },
     });
   };
 
   // 【删除】
-  const deleteItem = id => {
+  const deleteItem = record => {
+    const { id, parentId } = record;
     dispatch({
       type: 'systemMenu/delete',
       payload: {
         id,
+        parentId,
       },
       callback: () => {
         message.success('删除成功');
@@ -67,13 +69,12 @@ const Menu = props => {
     });
   };
   const handleDelete = record => {
-    const { id } = record;
     Modal.confirm({
       title: '删除',
       content: '您确定要删除该菜单吗？',
       okText: '确认',
       cancelText: '取消',
-      onOk: () => deleteItem(id),
+      onOk: () => deleteItem(record),
     });
   };
 
@@ -101,12 +102,12 @@ const Menu = props => {
       render: (text, record) => (
         <>
           <a
-            onClick={() => handleGo(record, 'UP')}
+            onClick={() => handleMove(record, 'UP')}
             style={{ padding: '0 5px', marginRight: '10px' }}
           >
             <Icon type="arrow-up" title="向上" />
           </a>
-          <a onClick={() => handleGo(record, 'DOWN')}>
+          <a onClick={() => handleMove(record, 'DOWN')}>
             <Icon type="arrow-down" title="向下" />
           </a>
         </>
@@ -116,15 +117,19 @@ const Menu = props => {
       title: '操作',
       render: (text, record) => (
         <>
-          <MenuForm isEdit menu={record}>
-            <a>
-              <IconFont type="icon-edit" title="编辑" />
+          <Authorized authority="system.menu.update" noMatch={null}>
+            <MenuForm isEdit menu={record}>
+              <a>
+                <IconFont type="icon-edit" title="编辑" />
+              </a>
+              <Divider type="vertical" />
+            </MenuForm>
+          </Authorized>
+          <Authorized authority="system.menu.delete" noMatch={null}>
+            <a onClick={() => handleDelete(record)}>
+              <IconFont type="icon-delete" title="删除" />
             </a>
-            <Divider type="vertical" />
-          </MenuForm>
-          <a onClick={() => handleDelete(record)}>
-            <IconFont type="icon-delete" title="删除" />
-          </a>
+          </Authorized>
         </>
       ),
     },
@@ -140,23 +145,25 @@ const Menu = props => {
             bordered={false}
             bodyStyle={{ padding: '15px' }}
           >
-            <Tree treeData={menuTree} onSelect={handleSelect} />
+            <Tree treeData={tree} onSelect={handleSelect} />
           </Card>
         </Col>
         <Col xs={24} sm={24} md={24} lg={18} xl={18}>
           <Card
-            title={current ? `[${current.title}]的子菜单` : '菜单列表'}
+            title={menu ? `[${menu.title}]的子菜单` : '菜单列表'}
             bordered={false}
             bodyStyle={{ padding: '15px' }}
             style={{ marginTop: 10 }}
           >
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
-                <MenuForm menu={current}>
-                  <Button type="primary" title="新增">
-                    <Icon type="plus" />
-                  </Button>
-                </MenuForm>
+                <Authorized authority="system.menu.add" noMatch={null}>
+                  <MenuForm menu={menu}>
+                    <Button type="primary" title="新增">
+                      <Icon type="plus" />
+                    </Button>
+                  </MenuForm>
+                </Authorized>
               </div>
               <Table rowKey="id" loading={loading} columns={columns} dataSource={list} />
             </div>
@@ -167,8 +174,8 @@ const Menu = props => {
   );
 };
 
-export default connect(({ systemMenu: { menuTree, list }, loading }) => ({
-  menuTree,
+export default connect(({ systemMenu: { tree, list }, loading }) => ({
+  tree,
   list,
   loading: loading.models.systemMenu,
 }))(Menu);

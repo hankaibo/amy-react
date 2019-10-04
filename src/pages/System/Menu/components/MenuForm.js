@@ -5,7 +5,7 @@ import { Form, Input, Modal, Switch, message, TreeSelect, Tooltip, Icon, Button 
 const FormItem = Form.Item;
 
 const MenuForm = Form.create({ name: 'menuForm' })(props => {
-  const { loading, children, isEdit, menu, editMenu, menuTree, form, dispatch } = props;
+  const { loading, children, isEdit, menu, editMenu, tree, form, dispatch } = props;
   const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
 
   // 【模态框显示隐藏属性】
@@ -33,7 +33,7 @@ const MenuForm = Form.create({ name: 'menuForm' })(props => {
     }
     return function cleanup() {
       dispatch({
-        type: 'systemMenu/clearMenu',
+        type: 'systemMenu/clear',
       });
     };
   }, [visible, isEdit, menu]);
@@ -53,11 +53,11 @@ const MenuForm = Form.create({ name: 'menuForm' })(props => {
     if (visible) {
       if (menu) {
         setFieldsValue({ parentId: menu.id });
-      } else if (menuTree.length) {
-        setFieldsValue({ parentId: menuTree[0].id });
+      } else if (tree.length) {
+        setFieldsValue({ parentId: tree[0].id });
       }
     }
-  }, [visible, menu, menuTree]);
+  }, [visible, menu, tree]);
 
   // 【添加与修改】
   const handleAddOrUpdate = () => {
@@ -154,7 +154,7 @@ const MenuForm = Form.create({ name: 'menuForm' })(props => {
               <TreeSelect
                 style={{ width: 300 }}
                 dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                treeData={menuTree}
+                treeData={tree}
                 placeholder="请选择菜单"
                 treeDefaultExpandAll
               />
@@ -166,8 +166,8 @@ const MenuForm = Form.create({ name: 'menuForm' })(props => {
   );
 });
 
-export default connect(({ systemMenu: { menuTree, editMenu }, loading }) => ({
-  menuTree,
+export default connect(({ systemMenu: { tree, editMenu }, loading }) => ({
+  tree,
   editMenu,
   loading: loading.models.systeMenu,
 }))(MenuForm);
