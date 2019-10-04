@@ -4,6 +4,7 @@ import { Card, Button, Input, Switch, Divider, Modal, message, Icon, Table } fro
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Authorized from '@/utils/Authorized';
 import IconFont from '@/components/IconFont';
+import Ellipsis from '@/components/Ellipsis';
 import RoleForm from './components/RoleForm';
 import RoleResourceForm from './components/RoleResourceForm';
 import styles from '../System.less';
@@ -147,6 +148,17 @@ const Role = props => {
       filters: [{ text: '禁用', value: 0 }, { text: '启用', value: 1 }],
       render: (text, record) => {
         return <Switch checked={text} onClick={checked => toggleStatus(checked, record)} />;
+      },
+    },
+    {
+      title: '角色描述',
+      dataIndex: 'description',
+      render: text => {
+        return (
+          <Ellipsis tooltip={text} length={20}>
+            {text}
+          </Ellipsis>
+        );
       },
     },
     {
