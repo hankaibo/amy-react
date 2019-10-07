@@ -1,3 +1,4 @@
+import { stringify } from 'qs';
 import request from '@/utils/request';
 
 /**
@@ -6,8 +7,7 @@ import request from '@/utils/request';
  * @returns {Promise<void>}
  */
 export async function pageDict(params) {
-  const { parentId, pageSize = 10, current = 1 } = params;
-  return request(`/dictionaries?parentId=${parentId}&pageSize=${pageSize}&pageNum=${current}`);
+  return request(`/dictionaries?${stringify(params)}`);
 }
 
 /**

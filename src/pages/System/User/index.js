@@ -38,6 +38,14 @@ const User = props => {
     dispatch({
       type: 'systemUser/fetchTree',
     });
+    return () => {
+      dispatch({
+        type: 'systemUser/clearTree',
+      });
+      dispatch({
+        type: 'systemUser/clearList',
+      });
+    };
   }, []);
 
   // 【获取部门用户数据】
@@ -236,13 +244,12 @@ const User = props => {
             </a>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system.user.role.grant" noMatch={null}>
+          <Authorized authority="system.user.grant" noMatch={null}>
             <UserRoleForm user={record}>
               <a>
                 <IconFont type="icon-role" title="分配角色" />
               </a>
             </UserRoleForm>
-            <Divider type="vertical" />
           </Authorized>
         </>
       ),

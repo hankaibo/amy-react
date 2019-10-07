@@ -26,14 +26,22 @@ const Dictionary = props => {
 
   // 【首次请求加载列表数据】
   useEffect(() => {
+    const params = {
+      current: 1,
+      pageSize: 10,
+    };
+    if (parentDictId) {
+      params.parentId = parentDictId;
+    }
     dispatch({
       type: 'systemDictionary/fetch',
-      payload: {
-        parentId: parentDictId || 0,
-        current: 1,
-        pageSize: 10,
-      },
+      payload: params,
     });
+    return () => {
+      dispatch({
+        type: 'systemDictionary/clearList',
+      });
+    };
   }, [parentDictId]);
 
   // 【开启禁用字典状态】
@@ -156,7 +164,7 @@ const Dictionary = props => {
       dataIndex: 'name',
       render: (text, record) =>
         // 非子节点可以跳转
-        record.parentId === 0 ? (
+        !record.parentId ? (
           <Link to={`/dashboard/system/dictionaries/${record.id}?name=${text}`}>{text}</Link>
         ) : (
           <span>{text}</span>
@@ -200,9 +208,11 @@ const Dictionary = props => {
               <Divider type="vertical" />
             </DictionaryForm>
           </Authorized>
-          <a onClick={() => handleDelete(record)}>
-            <IconFont type="icon-delete" title="删除" />
-          </a>
+          <Authorized authority="system.dictionary.delete" noMatch={null}>
+            <a onClick={() => handleDelete(record)}>
+              <IconFont type="icon-delete" title="删除" />
+            </a>
+          </Authorized>
         </>
       ),
     },
@@ -213,19 +223,23 @@ const Dictionary = props => {
       <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>
-            <DictionaryForm match={match} location={location}>
-              <Button type="primary" title="新增">
-                <Icon type="plus" />
+            <Authorized authority="system.dictionary.add" noMatch={null}>
+              <DictionaryForm match={match} location={location}>
+                <Button type="primary" title="新增">
+                  <Icon type="plus" />
+                </Button>
+              </DictionaryForm>
+            </Authorized>
+            <Authorized authority="system.dictionary.batchDelete" noMatch={null}>
+              <Button
+                type="danger"
+                disabled={selectedRows.length <= 0}
+                title="删除"
+                onClick={handleBatchDelete}
+              >
+                <IconFont type="icon-delete" />
               </Button>
-            </DictionaryForm>
-            <Button
-              type="danger"
-              disabled={selectedRows.length <= 0}
-              title="删除"
-              onClick={handleBatchDelete}
-            >
-              <IconFont type="icon-delete" />
-            </Button>
+            </Authorized>
             {parentDictId && Object.keys(parentDictId).length > 0 && (
               <Button title="返回" onClick={handleBack}>
                 <Icon type="rollback" />

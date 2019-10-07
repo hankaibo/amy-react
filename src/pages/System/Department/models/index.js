@@ -128,11 +128,23 @@ export default {
         tree,
       };
     },
+    clearTree(state) {
+      return {
+        ...state,
+        tree: [],
+      };
+    },
     saveList(state, { payload }) {
       const { list } = payload;
       return {
         ...state,
         list,
+      };
+    },
+    clearList(state) {
+      return {
+        ...state,
+        list: [],
       };
     },
     save(state, { payload }) {

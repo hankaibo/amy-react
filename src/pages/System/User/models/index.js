@@ -166,12 +166,25 @@ export default {
         tree,
       };
     },
+    clearTree(state) {
+      return {
+        ...state,
+        tree: [],
+      };
+    },
     saveList(state, { payload }) {
       const { list, pagination } = payload;
       return {
         ...state,
         list,
         pagination,
+      };
+    },
+    clearList(state) {
+      return {
+        ...state,
+        list: [],
+        pagination: {},
       };
     },
     saveUser(state, { payload }) {

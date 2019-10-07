@@ -25,6 +25,11 @@ const Role = props => {
     dispatch({
       type: 'systemRole/fetch',
     });
+    return () => {
+      dispatch({
+        type: 'systemRole/clearList',
+      });
+    };
   }, []);
 
   // 【启用禁用】
@@ -179,7 +184,7 @@ const Role = props => {
             </a>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system.role.resource.grant" noMatch={null}>
+          <Authorized authority="system.role.grant" noMatch={null}>
             <RoleResourceForm role={record}>
               <a>
                 <IconFont type="icon-permission" title="分配资源" />

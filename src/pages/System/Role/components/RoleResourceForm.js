@@ -60,12 +60,10 @@ const RoleResourceForm = Form.create({ name: 'roleResourceForm' })(props => {
 
   // 【回显树复选择框】
   useEffect(() => {
-    if (resCheckedKeys.length > 0) {
-      setCheckedKeys(resCheckedKeys);
-      setExpandedKeys(halfCheckedKeys);
-      // 同步到表单
-      setFieldsValue({ ids: resCheckedKeys.concat(halfCheckedKeys) });
-    }
+    setCheckedKeys(resCheckedKeys);
+    setExpandedKeys(halfCheckedKeys);
+    // 同步到表单
+    setFieldsValue({ ids: resCheckedKeys.concat(halfCheckedKeys) });
   }, [resCheckedKeys, halfCheckedKeys]);
 
   // 【树操作】

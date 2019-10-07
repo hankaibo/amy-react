@@ -38,6 +38,14 @@ const Department = props => {
     dispatch({
       type: 'systemDepartment/fetch',
     });
+    return () => {
+      dispatch({
+        type: 'systemDepartment/clearTree',
+      });
+      dispatch({
+        type: 'systemDepartment/clearList',
+      });
+    };
   }, []);
 
   // 【启用禁用部门】

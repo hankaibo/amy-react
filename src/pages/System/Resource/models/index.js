@@ -48,9 +48,6 @@ export default {
       const { parentId: id } = payload;
       yield call(moveResource, payload);
       yield put({
-        type: 'fetch',
-      });
-      yield put({
         type: 'fetchChildrenById',
         payload: {
           id,
@@ -80,9 +77,6 @@ export default {
           id,
         },
       });
-      yield put({
-        type: 'fetch',
-      });
       if (callback) callback();
     },
     *delete({ payload, callback }, { call, put }) {
@@ -93,9 +87,6 @@ export default {
         payload: {
           id: parentId,
         },
-      });
-      yield put({
-        type: 'fetch',
       });
       if (callback) callback();
     },
@@ -113,9 +104,6 @@ export default {
           id: parentId,
         },
       });
-      yield put({
-        type: 'fetch',
-      });
       if (callback) callback();
     },
   },
@@ -128,11 +116,23 @@ export default {
         tree,
       };
     },
+    clearTree(state) {
+      return {
+        ...state,
+        tree: [],
+      };
+    },
     saveList(state, { payload }) {
       const { list } = payload;
       return {
         ...state,
         list,
+      };
+    },
+    clearList(state) {
+      return {
+        ...state,
+        list: [],
       };
     },
     save(state, { payload }) {

@@ -132,7 +132,7 @@ const RoleForm = Form.create({ name: 'roleForm' })(props => {
           <FormItem label="描述">
             {getFieldDecorator('description', {
               rules: [{ message: '请将描述长度保持在1至50字符之间！', min: 1, max: 50 }],
-            })(<TextArea placeholder="请输入部门描述。" autosize={{ minRows: 2, maxRows: 6 }} />)}
+            })(<TextArea placeholder="请输入角色描述。" autosize={{ minRows: 2, maxRows: 6 }} />)}
           </FormItem>
         </Form>
       </Modal>

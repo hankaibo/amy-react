@@ -5,7 +5,7 @@ import { Form, Input, Modal, Switch, message, Radio, TreeSelect, Button } from '
 const FormItem = Form.Item;
 
 const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
-  const { loading, children, isEdit, resource, editResource, tree, form, dispatch } = props;
+  const { loading, children, parent, isEdit, resource, editResource, tree, form, dispatch } = props;
   const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
 
   // 【模态框显示隐藏属性】
@@ -43,7 +43,13 @@ const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
     // 👍 将条件判断放置在 effect 中
     if (visible && isEdit) {
       if (Object.keys(editResource).length > 0) {
-        setFieldsValue(editResource);
+        if (parent) {
+          const len = parent.code.length;
+          const data = { ...editResource, code: editResource.code.substring(len + 1) };
+          setFieldsValue(data);
+        } else {
+          setFieldsValue(editResource);
+        }
       }
     }
   }, [visible, isEdit, editResource]);
@@ -51,23 +57,24 @@ const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
   // 【保证任何时候添加上级菜单都有默认值】
   useEffect(() => {
     if (visible) {
-      if (resource) {
-        setFieldsValue({ parentId: resource.id });
+      if (parent) {
+        setFieldsValue({ parentId: parent.id });
       } else if (tree.length) {
         setFieldsValue({ parentId: tree[0].id });
       }
     }
-  }, [visible, resource, tree]);
+  }, [visible, parent, tree]);
 
   // 【添加与修改】
   const handleAddOrUpdate = () => {
     validateFields((err, fieldsValue) => {
       if (err) return;
+      const params = { ...fieldsValue, code: `${parent.code}.${fieldsValue.code}` };
 
       if (isEdit) {
         dispatch({
           type: 'systemResource/update',
-          payload: fieldsValue,
+          payload: params,
           callback: () => {
             resetFields();
             hideModelHandler();
@@ -77,7 +84,7 @@ const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
       } else {
         dispatch({
           type: 'systemResource/add',
-          payload: fieldsValue,
+          payload: params,
           callback: () => {
             resetFields();
             hideModelHandler();
@@ -133,7 +140,7 @@ const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
               rules: [
                 { required: true, message: '请将编码长度保持在1至50字符之间！', min: 1, max: 50 },
               ],
-            })(<Input />)}
+            })(<Input addonBefore={parent ? `${parent.code}.` : ''} />)}
           </FormItem>
           <FormItem label="URL">
             {getFieldDecorator('uri', {

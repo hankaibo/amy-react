@@ -156,6 +156,13 @@ export default {
         pagination,
       };
     },
+    clearList(state) {
+      return {
+        ...state,
+        list: [],
+        pagination: {},
+      };
+    },
     saveRole(state, { payload }) {
       const { editRole } = payload;
       return {

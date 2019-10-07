@@ -18,6 +18,14 @@ const Menu = props => {
     dispatch({
       type: 'systemMenu/fetch',
     });
+    return function cleanup() {
+      dispatch({
+        type: 'systemMenu/clearTree',
+      });
+      dispatch({
+        type: 'systemMenu/clearList',
+      });
+    };
   }, []);
 
   // 【启用禁用】

@@ -18,6 +18,14 @@ const Resource = props => {
     dispatch({
       type: 'systemResource/fetch',
     });
+    return function cleanup() {
+      dispatch({
+        type: 'systemResource/clearTree',
+      });
+      dispatch({
+        type: 'systemResource/clearList',
+      });
+    };
   }, []);
 
   // 【启用禁用】
@@ -40,6 +48,10 @@ const Resource = props => {
         callback: () => {
           setResource(info.node.props);
         },
+      });
+    } else {
+      dispatch({
+        type: 'systemResource/clearList',
       });
     }
   };
@@ -127,7 +139,7 @@ const Resource = props => {
       render: (text, record) => (
         <>
           <Authorized authority="system.resource.update" noMatch={null}>
-            <ResourceForm isEdit resource={record}>
+            <ResourceForm isEdit resource={record} parent={resource}>
               <a>
                 <IconFont type="icon-edit" title="编辑" />
               </a>
@@ -167,7 +179,7 @@ const Resource = props => {
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system.resource.add" noMatch={null}>
-                  <ResourceForm resource={resource}>
+                  <ResourceForm parent={resource}>
                     <Button type="primary" title="新增">
                       <Icon type="plus" />
                     </Button>

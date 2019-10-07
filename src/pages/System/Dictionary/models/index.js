@@ -128,6 +128,13 @@ export default {
         pagination,
       };
     },
+    clearList(state) {
+      return {
+        ...state,
+        list: [],
+        pagination: {},
+      };
+    },
     save(state, { payload }) {
       const { editDictionary } = payload;
       return {
