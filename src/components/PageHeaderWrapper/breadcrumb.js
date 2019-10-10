@@ -10,8 +10,8 @@ import { menu } from '../../defaultSettings';
 const itemRender = (route, params, routes, paths) => {
   const last = routes.indexOf(route) === routes.length - 1;
   // if path is home, use Link。
-  if (route.path === '/') {
-    return <Link to={paths.join('/')}>{route.breadcrumbName}</Link>;
+  if (route.path === '/dashboard') {
+    return <Link to="/dashboard">{route.breadcrumbName}</Link>;
   }
   return last || !route.component ? (
     <span>{route.breadcrumbName}</span>
@@ -88,7 +88,7 @@ const conversionFromLocation = (routerLocation, breadcrumbNameMap, props) => {
   // Add home breadcrumbs to your head if defined
   if (home) {
     extraBreadcrumbItems.unshift({
-      path: '/',
+      path: '/dashboard',
       breadcrumbName: home,
     });
   }

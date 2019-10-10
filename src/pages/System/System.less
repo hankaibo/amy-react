@@ -1,78 +1,17 @@
 @import '~antd/lib/style/themes/default.less';
 
-a.listItemMetaTitle {
-  color: @heading-color;
-}
-.listItemExtra {
-  width: 272px;
-  height: 1px;
-}
-.selfTrigger {
-  margin-left: 12px;
-}
-
-@media screen and (max-width: @screen-xs) {
-  .selfTrigger {
-    display: block;
-    margin-left: 0;
-  }
-}
-@media screen and (max-width: @screen-md) {
-  .selfTrigger {
-    display: block;
-    margin-left: 0;
-  }
-}
-@media screen and (max-width: @screen-lg) {
-  .listItemExtra {
-    width: 0;
-    height: 1px;
-  }
-}
-
 .tableList {
   .tableListOperator {
     margin-bottom: 16px;
+
     button {
       margin-right: 8px;
     }
   }
-}
 
-.tableListForm {
   :global {
-    .ant-form-item {
-      display: flex;
-      margin-right: 0;
-      margin-bottom: 24px;
-      > .ant-form-item-label {
-        width: auto;
-        padding-right: 8px;
-        line-height: 32px;
-      }
-      .ant-form-item-control {
-        line-height: 32px;
-      }
+    .ant-table-tbody > tr > td > .ant-divider-vertical:last-child {
+      display: none;
     }
-    .ant-form-item-control-wrapper {
-      flex: 1;
-    }
-  }
-  .submitButtons {
-    display: block;
-    margin-bottom: 24px;
-    white-space: nowrap;
-  }
-}
-
-@media screen and (max-width: @screen-lg) {
-  .tableListForm :global(.ant-form-item) {
-    margin-right: 24px;
-  }
-}
-
-@media screen and (max-width: @screen-md) {
-  .tableListForm :global(.ant-form-item) {
-    margin-right: 8px;
   }
 }
