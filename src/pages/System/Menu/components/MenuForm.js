@@ -36,7 +36,7 @@ const MenuForm = Form.create({ name: 'menuForm' })(props => {
         type: 'systemMenu/clear',
       });
     };
-  }, [visible, isEdit, menu]);
+  }, [visible, isEdit, menu, dispatch]);
 
   // 【回显表单】
   useEffect(() => {
@@ -46,7 +46,7 @@ const MenuForm = Form.create({ name: 'menuForm' })(props => {
         setFieldsValue(editMenu);
       }
     }
-  }, [visible, isEdit, editMenu]);
+  }, [visible, isEdit, editMenu, setFieldsValue]);
 
   // 【保证任何时候添加上级菜单都有默认值】
   useEffect(() => {
@@ -57,7 +57,7 @@ const MenuForm = Form.create({ name: 'menuForm' })(props => {
         setFieldsValue({ parentId: tree[0].id });
       }
     }
-  }, [visible, menu, tree]);
+  }, [visible, menu, tree, setFieldsValue]);
 
   // 【添加与修改】
   const handleAddOrUpdate = () => {

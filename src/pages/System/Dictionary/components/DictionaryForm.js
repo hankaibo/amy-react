@@ -48,7 +48,7 @@ const DictionaryForm = Form.create({ name: 'dictionaryForm' })(props => {
         type: 'systemDictionary/clear',
       });
     };
-  }, [visible, isEdit, dictionary]);
+  }, [visible, isEdit, dictionary, dispatch]);
 
   // 【回显表单】
   useEffect(() => {
@@ -58,7 +58,7 @@ const DictionaryForm = Form.create({ name: 'dictionaryForm' })(props => {
         setFieldsValue(editDictionary);
       }
     }
-  }, [visible, isEdit, editDictionary]);
+  }, [visible, isEdit, editDictionary, setFieldsValue]);
 
   // 【添加与修改】
   const handleAddOrUpdate = () => {

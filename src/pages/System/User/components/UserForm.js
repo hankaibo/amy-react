@@ -60,7 +60,7 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
         type: 'systemUser/clearUser',
       });
     };
-  }, [visible, isEdit, user]);
+  }, [visible, isEdit, user, dispatch]);
 
   // 【回显表单】
   useEffect(() => {
@@ -70,7 +70,7 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
         setFieldsValue(editUser);
       }
     }
-  }, [visible, isEdit, editUser]);
+  }, [visible, isEdit, editUser, setFieldsValue]);
 
   // 【保证任何时候添加上级菜单都有默认值】
   useEffect(() => {
@@ -81,7 +81,7 @@ const UserForm = Form.create({ name: 'userForm' })(props => {
         setFieldsValue({ departmentId: tree[0].id });
       }
     }
-  }, [visible, user, tree]);
+  }, [visible, user, tree, setFieldsValue]);
 
   // 【添加与修改】
   const handleAddOrUpdate = () => {

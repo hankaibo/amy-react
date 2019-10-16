@@ -30,7 +30,7 @@ const Role = props => {
         type: 'systemRole/clearList',
       });
     };
-  }, []);
+  }, [dispatch]);
 
   // 【启用禁用】
   const toggleStatus = (checked, record) => {

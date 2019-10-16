@@ -9,8 +9,6 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 
 class NoticeIcon extends PureComponent {
-  static Tab = TabPane;
-
   constructor(props) {
     super(props);
     this.state = {
@@ -89,6 +87,8 @@ class NoticeIcon extends PureComponent {
     this.setState({ visible });
     onPopupVisibleChange(visible);
   };
+
+  static Tab = TabPane;
 
   render() {
     const { className, count, popupVisible, bell } = this.props;

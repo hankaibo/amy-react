@@ -38,7 +38,7 @@ const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
         type: 'systemUser/clearUserRole',
       });
     };
-  }, [visible, user]);
+  }, [visible, user, dispatch]);
 
   // 【回显树复选择框】
   useEffect(() => {
@@ -47,7 +47,7 @@ const UserRoleForm = Form.create({ name: 'userRoleForm' })(props => {
       const { id } = user;
       setFieldsValue({ id, ids: selectedRoleIdList });
     }
-  }, [visible, user, selectedRoleIdList]);
+  }, [visible, user, selectedRoleIdList, setFieldsValue]);
 
   // 【授权】
   const handleGrant = () => {

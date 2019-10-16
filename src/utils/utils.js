@@ -52,7 +52,7 @@ export function getTimeDistance(type) {
   return [moment(`${year}-01-01 00:00:00`), moment(`${year}-12-31 23:59:59`)];
 }
 
-// 将一个父子结构的树扁平化为一个扁平数组。
+// 将一个父子结构的树扁平化为一个数组。
 export function getPlainNode(nodeList) {
   const arr = [];
   nodeList.forEach(item => {
@@ -79,6 +79,12 @@ export function getParentKey(key, tree) {
   }
   return parentKey;
 }
+
+// 获取对象的所有值
+export const getValue = obj =>
+  Object.keys(obj)
+    .map(key => obj[key])
+    .join(',');
 
 export function digitUppercase(n) {
   return nzh.toMoney(n);

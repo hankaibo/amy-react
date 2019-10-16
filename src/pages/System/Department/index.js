@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
 import {
   Row,
@@ -14,19 +14,23 @@ import {
   Table,
   Input,
 } from 'antd';
+import { isEqual } from 'lodash';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import Ellipsis from '@/components/Ellipsis';
 import Authorized from '@/utils/Authorized';
 import IconFont from '@/components/IconFont';
-import { getPlainNode, getParentKey } from '@/utils/utils';
+import { getPlainNode, getParentKey, getValue } from '@/utils/utils';
 import DepartmentForm from './components/DepartmentForm';
 import styles from '../System.less';
 
 const { TreeNode } = Tree;
 const { Search } = Input;
 
-const Department = props => {
-  const { loading, tree, list, dispatch } = props;
-
+const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
+  tree,
+  list,
+  loading: loading.models.systemDepartment,
+}))(({ loading, tree, list, dispatch }) => {
   // 【当前点击的部门】
   const [department, setDepartment] = useState(null);
   const [expandedKeys, setExpandedKeys] = useState([]);
@@ -46,12 +50,12 @@ const Department = props => {
         type: 'systemDepartment/clearList',
       });
     };
-  }, []);
+  }, [dispatch]);
 
   // 【启用禁用部门】
   const toggleState = (checked, record) => {
     dispatch({
-      type: 'systemDepartment/update',
+      type: 'systemDepartment/enable',
       payload: { ...record, status: checked },
     });
   };
@@ -113,21 +117,27 @@ const Department = props => {
         );
       if (item.children) {
         return (
-          <TreeNode key={item.key} title={title} {...it}>
+          <TreeNode disabled={it.status === 0} key={item.key} title={title} {...it}>
             {loop(item.children)}
           </TreeNode>
         );
       }
-      return <TreeNode key={item.key} title={title} {...it} />;
+      // 因为返回的是树，为了避免在models里循环就在这里直接使用status了。
+      return <TreeNode disabled={it.status === 0} key={item.key} title={title} {...it} />;
     });
 
   // 【移动】
-  const handleMove = (record, direction) => {
+  const handleMove = (record, index) => {
+    if (list.length <= index || index < 0) {
+      return;
+    }
+    const targetId = list[index].id;
     dispatch({
       type: 'systemDepartment/move',
       payload: {
         ...record,
-        direction,
+        sourceId: record.id,
+        targetId,
       },
     });
   };
@@ -156,6 +166,26 @@ const Department = props => {
     });
   };
 
+  // 【过滤】
+  const handleTableChange = (_, filtersArg) => {
+    const filters = Object.keys(filtersArg).reduce((obj, key) => {
+      const newObj = { ...obj };
+      newObj[key] = getValue(filtersArg[key]);
+      return newObj;
+    }, {});
+
+    const { id } = department;
+
+    const params = {
+      id,
+      ...filters,
+    };
+
+    dispatch({
+      type: 'systemDepartment/fetchChildrenById',
+      payload: params,
+    });
+  };
   // 【表格列】
   const columns = [
     {
@@ -173,19 +203,30 @@ const Department = props => {
     },
     {
       title: '排序',
-      render: (text, record) => (
+      render: (text, record, index) => (
         <>
           <a
-            onClick={() => handleMove(record, 'UP')}
+            onClick={() => handleMove(record, index - 1)}
             style={{ padding: '0 5px', marginRight: '10px' }}
           >
             <Icon type="arrow-up" title="向上" />
           </a>
-          <a onClick={() => handleMove(record, 'DOWN')}>
+          <a onClick={() => handleMove(record, index + 1)}>
             <Icon type="arrow-down" title="向下" />
           </a>
         </>
       ),
+    },
+    {
+      title: '部门备注',
+      dataIndex: 'description',
+      render: text => {
+        return (
+          <Ellipsis tooltip={text} length={20}>
+            {text}
+          </Ellipsis>
+        );
+      },
     },
     {
       title: '操作',
@@ -222,7 +263,7 @@ const Department = props => {
             <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={handleChange} />
             <Tree
               showLine
-              switcherIcon={<IconFont type="icon-department" />}
+              switcherIcon={<Icon type="down" />}
               expandedKeys={expandedKeys}
               autoExpandParent={autoExpandParent}
               onSelect={handleSelect}
@@ -249,17 +290,25 @@ const Department = props => {
                   </DepartmentForm>
                 </Authorized>
               </div>
-              <Table rowKey="id" loading={loading} columns={columns} dataSource={list} />
+              <Table
+                rowKey="id"
+                bordered
+                loading={loading}
+                columns={columns}
+                dataSource={list}
+                onChange={handleTableChange}
+                pagination={false}
+              />
             </div>
           </Card>
         </Col>
       </Row>
     </PageHeaderWrapper>
   );
+});
+
+const areEqual = (prevProps, nextProps) => {
+  return isEqual(prevProps, nextProps);
 };
 
-export default connect(({ systemDepartment: { tree, list }, loading }) => ({
-  tree,
-  list,
-  loading: loading.models.systemDepartment,
-}))(Department);
+export default memo(Department, areEqual);

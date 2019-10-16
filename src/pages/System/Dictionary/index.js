@@ -42,7 +42,7 @@ const Dictionary = props => {
         type: 'systemDictionary/clearList',
       });
     };
-  }, [parentDictId]);
+  }, [dispatch, parentDictId]);
 
   // 【开启禁用字典状态】
   const toggleState = (checked, record) => {
@@ -165,7 +165,7 @@ const Dictionary = props => {
       render: (text, record) =>
         // 非子节点可以跳转
         !record.parentId ? (
-          <Link to={`/dashboard/system/dictionaries/${record.id}?name=${text}`}>{text}</Link>
+          <Link to={`/app/system/dictionaries/${record.id}?name=${text}`}>{text}</Link>
         ) : (
           <span>{text}</span>
         ),

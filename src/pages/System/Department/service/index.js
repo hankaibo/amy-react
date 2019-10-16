@@ -1,3 +1,4 @@
+import { stringify } from 'qs';
 import request from '@/utils/request';
 
 /**
@@ -10,11 +11,12 @@ export async function getDepartmentTree() {
 
 /**
  * 根据父部门主键查询其所有子部门数据。
- * @param id
+ * @param payload
  * @returns {Promise<void>}
  */
-export async function getDepartmentChildrenById(id) {
-  return request(`/departments/${id}/children`);
+export async function listSubDepartmentById(payload) {
+  const { id, status } = payload;
+  return request(`/departments/${id}/children?${stringify(status)}`);
 }
 
 /**
@@ -23,13 +25,8 @@ export async function getDepartmentChildrenById(id) {
  * @returns {Promise<void>}
  */
 export async function moveDepartment(params) {
-  const { id, direction } = params;
-  return request(`/departments/${id}/location`, {
-    method: 'PUT',
-    data: {
-      direction,
-    },
-  });
+  const { sourceId, targetId } = params;
+  return request.put(`/departments?from=${sourceId}&to=${targetId}`);
 }
 
 /**
@@ -67,20 +64,6 @@ export async function deleteDepartment(id) {
 }
 
 /**
- * 批量删除部门。
- * @param ids
- * @returns {Promise<void>}
- */
-export async function deleteBatchDepartment(ids) {
-  return request('/departments', {
-    method: 'DELETE',
-    data: {
-      ids,
-    },
-  });
-}
-
-/**
  * 更新部门。
  * @param params
  * @returns {Promise<void>}
@@ -91,6 +74,21 @@ export async function updateDepartment(params) {
     method: 'PUT',
     data: {
       ...params,
+    },
+  });
+}
+
+/**
+ * 启用禁用部门。
+ * @param params
+ * @return {Promise<void>}
+ */
+export async function enableDepartment(params) {
+  const { id, status } = params;
+  return request(`/departments/${id}`, {
+    method: 'PATCH',
+    data: {
+      status,
     },
   });
 }

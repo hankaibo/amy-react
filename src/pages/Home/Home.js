@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { memo } from 'react';
+import _ from 'lodash';
 
 const Home = () => (
   <>
+    {/* {console.log('使用memo后，home只渲染一次。')} */}
     <h2>Hello! Welcome to FE!</h2>
     <section>
       <h3>
@@ -18,4 +20,13 @@ const Home = () => (
   </>
 );
 
-export default Home;
+const areEqual = (prevProps, nextProps) => {
+  /*
+  通过对比两次props决定是否渲染。
+  如果nextProps与prevProps相等，则为真，表示前后两次一样，不需要渲染；反之，为假，渲染。
+  可手动硬编码查看其渲染次数。
+  */
+  return _.isEqual(prevProps, nextProps);
+};
+
+export default memo(Home, areEqual);

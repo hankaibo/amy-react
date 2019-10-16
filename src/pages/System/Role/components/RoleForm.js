@@ -37,7 +37,7 @@ const RoleForm = Form.create({ name: 'roleForm' })(props => {
         type: 'systemRole/clearRole',
       });
     };
-  }, [visible, isEdit, role]);
+  }, [visible, isEdit, role, dispatch]);
 
   // 【回显表单】
   useEffect(() => {
@@ -47,7 +47,7 @@ const RoleForm = Form.create({ name: 'roleForm' })(props => {
         setFieldsValue(editRole);
       }
     }
-  }, [visible, isEdit, editRole]);
+  }, [visible, isEdit, editRole, setFieldsValue]);
 
   // 【添加与修改】
   const handleAddOrUpdate = () => {

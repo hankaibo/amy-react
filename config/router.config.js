@@ -16,67 +16,67 @@ export default [
   },
   // app
   {
-    path: '/dashboard',
+    path: '/app',
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
     routes: [
       // home
       // 最好在这里配置authority，要不然没有权限打开下面页面会报错而停留在异常页面非登录页面。
-      { path: '/dashboard', redirect: '/dashboard/home', authority: ['system.user.info'] },
+      { path: '/app', redirect: '/app/home', authority: ['system.user.info'] },
       {
-        path: '/dashboard/home',
+        path: '/app/home',
         name: 'home',
         icon: 'home',
         component: './Home/Home',
       },
       // system
       {
-        path: '/dashboard/system',
+        path: '/app/system',
         name: 'system',
         icon: 'setting',
         dynamic: true,
         routes: [
           {
-            path: '/dashboard/system/departments',
+            path: '/app/system/departments',
             name: 'department',
             component: './System/Department',
             dynamic: true,
           },
           {
-            path: '/dashboard/system/users',
+            path: '/app/system/users',
             name: 'user',
             component: './System/User',
             dynamic: true,
           },
           {
-            path: '/dashboard/system/roles',
+            path: '/app/system/roles',
             name: 'role',
             component: './System/Role',
             dynamic: true,
           },
           {
-            path: '/dashboard/system/menus',
+            path: '/app/system/menus',
             name: 'menu',
             component: './System/Menu',
             dynamic: true,
           },
           {
-            path: '/dashboard/system/resources',
+            path: '/app/system/resources',
             name: 'resource',
             component: './System/Resource',
             dynamic: true,
           },
           {
-            path: '/dashboard/system/dictionaries',
+            path: '/app/system/dictionaries',
             name: 'dictionary',
             dynamic: true,
             routes: [
               {
-                path: '/dashboard/system/dictionaries',
+                path: '/app/system/dictionaries',
                 component: './System/Dictionary',
               },
               {
-                path: '/dashboard/system/dictionaries/:id',
+                path: '/app/system/dictionaries/:id',
                 hideInMenu: true,
                 component: './System/Dictionary',
               },

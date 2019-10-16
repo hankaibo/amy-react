@@ -46,7 +46,7 @@ const User = props => {
         type: 'systemUser/clearList',
       });
     };
-  }, []);
+  }, [dispatch]);
 
   // 【获取部门用户数据】
   const handleSelect = (selectedKeys, info) => {

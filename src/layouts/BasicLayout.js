@@ -53,6 +53,9 @@ class BasicLayout extends React.Component {
      * routes 即路由配置文件中的Routes配置的所有路由组件。
      * 这就导致了只有进入BasicLayout组件之后才能获取到routes，才可以发起user/fetchCurrent请求获取动态要展示的菜单。
      * 动态菜单作为过滤条件，对routes过滤之后，组装成menu组件需要的数据，这样动态菜单组件就可以在页面显示了。
+     *
+     * 在这里发起请求成功之后，props会改变，导致children再次渲染。可以使用memo对组件进行优化。
+     * 详情请查看 src/pages/Home/Home.js 中 memo 的使用。
      */
     dispatch({
       type: 'user/fetchCurrent',

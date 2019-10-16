@@ -26,7 +26,7 @@ const Menu = props => {
         type: 'systemMenu/clearList',
       });
     };
-  }, []);
+  }, [dispatch]);
 
   // 【启用禁用】
   const toggleState = (checked, record) => {

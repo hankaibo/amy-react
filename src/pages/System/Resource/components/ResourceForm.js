@@ -36,7 +36,7 @@ const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
         type: 'systemResource/clear',
       });
     };
-  }, [visible, isEdit, resource]);
+  }, [visible, isEdit, resource, dispatch]);
 
   // 【回显表单】
   useEffect(() => {
@@ -52,7 +52,7 @@ const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
         }
       }
     }
-  }, [visible, isEdit, editResource]);
+  }, [visible, isEdit, editResource, parent, setFieldsValue]);
 
   // 【保证任何时候添加上级菜单都有默认值】
   useEffect(() => {
@@ -63,7 +63,7 @@ const ResourceForm = Form.create({ name: 'resourceForm' })(props => {
         setFieldsValue({ parentId: tree[0].id });
       }
     }
-  }, [visible, parent, tree]);
+  }, [visible, parent, tree, setFieldsValue]);
 
   // 【添加与修改】
   const handleAddOrUpdate = () => {

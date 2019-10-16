@@ -26,7 +26,7 @@ const Resource = props => {
         type: 'systemResource/clearList',
       });
     };
-  }, []);
+  }, [dispatch]);
 
   // 【启用禁用】
   const toggleState = (checked, record) => {

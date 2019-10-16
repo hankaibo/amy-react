@@ -1,12 +1,12 @@
 import {
   getDepartmentTree,
   getDepartmentById,
-  getDepartmentChildrenById,
+  listSubDepartmentById,
   moveDepartment,
   addDepartment,
   deleteDepartment,
-  deleteBatchDepartment,
   updateDepartment,
+  enableDepartment,
 } from '../service';
 
 export default {
@@ -33,39 +33,12 @@ export default {
       if (callback) callback();
     },
     *fetchChildrenById({ payload, callback }, { call, put }) {
-      const { id } = payload;
-      const response = yield call(getDepartmentChildrenById, id);
+      const response = yield call(listSubDepartmentById, payload);
       const list = response.map(item => ({ ...item, status: !!item.status }));
       yield put({
         type: 'saveList',
         payload: {
           list,
-        },
-      });
-      if (callback) callback();
-    },
-    *move({ payload, callback }, { call, put }) {
-      const { parentId } = payload;
-      yield call(moveDepartment, payload);
-      yield put({
-        type: 'fetchChildrenById',
-        payload: {
-          id: parentId,
-        },
-      });
-      yield put({
-        type: 'fetch',
-      });
-      if (callback) callback();
-    },
-    *fetchById({ payload, callback }, { call, put }) {
-      const { id } = payload;
-      const response = yield call(getDepartmentById, id);
-      const editDepartment = { ...response, status: !!response.status };
-      yield put({
-        type: 'save',
-        payload: {
-          editDepartment,
         },
       });
       if (callback) callback();
@@ -99,14 +72,51 @@ export default {
       });
       if (callback) callback();
     },
-    *deleteBatch({ ids, callback }, { call }) {
-      yield call(deleteBatchDepartment, ids);
+    *fetchById({ payload, callback }, { call, put }) {
+      const { id } = payload;
+      const response = yield call(getDepartmentById, id);
+      const editDepartment = { ...response, status: !!response.status };
+      yield put({
+        type: 'save',
+        payload: {
+          editDepartment,
+        },
+      });
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
       const { parentId } = payload;
       const params = { ...payload, status: +payload.status };
       yield call(updateDepartment, params);
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          id: parentId,
+        },
+      });
+      yield put({
+        type: 'fetch',
+      });
+      if (callback) callback();
+    },
+    *enable({ payload, callback }, { call, put }) {
+      const { id, status, parentId } = payload;
+      const params = { id, status: +status };
+      yield call(enableDepartment, params);
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          id: parentId,
+        },
+      });
+      yield put({
+        type: 'fetch',
+      });
+      if (callback) callback();
+    },
+    *move({ payload, callback }, { call, put }) {
+      const { parentId } = payload;
+      yield call(moveDepartment, payload);
       yield put({
         type: 'fetchChildrenById',
         payload: {
