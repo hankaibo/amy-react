@@ -21,7 +21,7 @@ export async function listSubDepartmentById(payload) {
 
 /**
  * 按主键与方向移动部门。
- * @param params {id,step} id是要操作的节点，step表示上移(1)还是下移(-1)
+ * @param params {sourceId,targetId} 源节点与目标节点
  * @returns {Promise<void>}
  */
 export async function moveDepartment(params) {
