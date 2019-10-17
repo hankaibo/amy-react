@@ -30,15 +30,6 @@ export async function moveDepartment(params) {
 }
 
 /**
- * 按主键查询一条部门数据。
- * @param id
- * @returns {Promise<void>}
- */
-export async function getDepartmentById(id) {
-  return request(`/departments/${id}`);
-}
-
-/**
  * 添加部门。
  * @param params
  * @returns {Promise<void>}
@@ -61,6 +52,15 @@ export async function deleteDepartment(id) {
   return request(`/departments/${id}`, {
     method: 'DELETE',
   });
+}
+
+/**
+ * 按主键查询一条部门数据。
+ * @param id
+ * @returns {Promise<void>}
+ */
+export async function getDepartmentById(id) {
+  return request(`/departments/${id}`);
 }
 
 /**

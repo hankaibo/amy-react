@@ -1,4 +1,5 @@
 import {
+  getDepartmentTree,
   pageUser,
   getUserById,
   addUser,
@@ -9,7 +10,6 @@ import {
   listUserRole,
   grantUserRole,
 } from '../service';
-import { getDepartmentTree } from '../../Department/service';
 
 export default {
   namespace: 'systemUser',
@@ -46,18 +46,6 @@ export default {
         payload: {
           list: newList,
           pagination: { current, pageSize, total },
-        },
-      });
-      if (callback) callback();
-    },
-    *fetchById({ payload, callback }, { call, put }) {
-      const { id } = payload;
-      const response = yield call(getUserById, id);
-      const editUser = { ...response, status: !!response.status };
-      yield put({
-        type: 'saveUser',
-        payload: {
-          editUser,
         },
       });
       if (callback) callback();
@@ -108,8 +96,20 @@ export default {
       });
       if (callback) callback();
     },
+    *fetchById({ payload, callback }, { call, put }) {
+      const { id } = payload;
+      const response = yield call(getUserById, id);
+      const editUser = { ...response, status: !!response.status };
+      yield put({
+        type: 'saveUser',
+        payload: {
+          editUser,
+        },
+      });
+      if (callback) callback();
+    },
     *update({ payload, callback }, { call, put, select }) {
-      const { departmentId } = payload;
+      const { oldDepartmentId } = payload;
       const params = { ...payload, status: +payload.status };
       yield call(updateUser, params);
       const pagination = yield select(state => state.systemUser.pagination);
@@ -117,7 +117,7 @@ export default {
       yield put({
         type: 'fetch',
         payload: {
-          departmentId,
+          departmentId: oldDepartmentId,
           ...pagination,
         },
       });

@@ -2,21 +2,20 @@ import { stringify } from 'qs';
 import request from '@/utils/request';
 
 /**
+ * 获取整棵部门树数据。
+ * @returns {Promise<void>}
+ */
+export async function getDepartmentTree(params) {
+  return request(`/departments?${stringify(params)}`);
+}
+
+/**
  * 按条件查询用户列表数据。
  * @param params
  * @returns {Promise<void>}
  */
 export async function pageUser(params) {
   return request(`/users?${stringify(params)}`);
-}
-
-/**
- * 按主键查询一条用户数据。
- * @param id
- * @returns {Promise<void>}
- */
-export async function getUserById(id) {
-  return request(`/users/${id}`);
 }
 
 /**
@@ -59,6 +58,15 @@ export async function deleteBatchUser(ids) {
 }
 
 /**
+ * 按主键查询一条用户数据。
+ * @param id
+ * @returns {Promise<void>}
+ */
+export async function getUserById(id) {
+  return request(`/users/${id}`);
+}
+
+/**
  * 更新用户。
  * @param params
  * @returns {Promise<void>}
@@ -81,8 +89,8 @@ export async function updateUser(params) {
  */
 export async function enableUser(params) {
   const { id, status } = params;
-  return request(`/users/${id}/status`, {
-    method: 'PUT',
+  return request(`/users/${id}`, {
+    method: 'PATCH',
     data: {
       status,
     },

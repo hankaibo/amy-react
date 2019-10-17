@@ -37,7 +37,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, editDepartment }, lo
             },
           });
         }
-        return function cleanup() {
+        return () => {
           dispatch({
             type: 'systemDepartment/clear',
           });

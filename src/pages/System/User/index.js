@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
 import {
   Row,
@@ -14,29 +14,33 @@ import {
   Icon,
   Table,
 } from 'antd';
+import { isEqual } from 'lodash';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Authorized from '@/utils/Authorized';
 import IconFont from '@/components/IconFont';
+import { getValue } from '@/utils/utils';
 import UserForm from './components/UserForm';
 import UserRoleForm from './components/UserRoleForm';
 import styles from '../System.less';
 
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
-
-const User = props => {
-  const { loading, tree, list, pagination, dispatch } = props;
-
+const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
+  tree,
+  list,
+  pagination,
+  loading: loading.models.systemUser,
+}))(({ loading, tree, list, pagination, dispatch }) => {
   // 【复选框状态属性与函数】
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [department, setDepartment] = useState(null);
 
   // 【首次请求加载部门树与用户列表数据】
   useEffect(() => {
+    // 用户页面默认只查询可用状态的部门。
     dispatch({
       type: 'systemUser/fetchTree',
+      payload: {
+        status: 1,
+      },
     });
     return () => {
       dispatch({
@@ -60,10 +64,11 @@ const User = props => {
       },
       callback: () => {
         setDepartment(info.node.props);
+        setSelectedRowKeys([]);
       },
     });
   };
-  // 【启用禁用】
+  // 【启用禁用用户】
   const toggleStatus = (checked, record) => {
     const { id } = record;
     const { id: departmentId } = department;
@@ -79,21 +84,21 @@ const User = props => {
 
   // 【搜索】
   const handleFormSubmit = () => {
-    message.info('正在开发中');
+    message.info('演示环境，暂未开放。');
   };
 
   // 【批量删除】
   const deleteBatchItem = () => {
-    if (selectedRows.length === 0) return;
+    if (selectedRowKeys.length === 0) return;
     const { id: departmentId } = department;
     dispatch({
       type: 'systemUser/deleteBatch',
       payload: {
-        ids: selectedRows,
+        ids: selectedRowKeys,
         departmentId,
       },
       callback: () => {
-        setSelectedRows([]);
+        setSelectedRowKeys([]);
       },
     });
   };
@@ -118,7 +123,7 @@ const User = props => {
         departmentId,
       },
       callback: () => {
-        setSelectedRows([]);
+        setSelectedRowKeys([]);
         message.success('删除成功');
       },
     });
@@ -171,9 +176,12 @@ const User = props => {
   );
 
   // 【复选框相关操作】
+  const handleRowSelectChange = rowKeys => {
+    setSelectedRowKeys(rowKeys);
+  };
   const rowSelection = {
-    selectedRows,
-    onChange: setSelectedRows,
+    selectedRowKeys,
+    onChange: handleRowSelectChange,
   };
 
   // 【表格列】
@@ -199,10 +207,10 @@ const User = props => {
       title: '性别',
       dataIndex: 'sex',
       filters: [
-        { text: '男', value: '1' },
-        { text: '女', value: '2' },
-        { text: '保密', value: '3' },
-        { text: '中性', value: '4' },
+        { text: '男', value: 1 },
+        { text: '女', value: 2 },
+        { text: '保密', value: 3 },
+        { text: '中性', value: 4 },
       ],
       filterMultiple: false,
     },
@@ -268,7 +276,7 @@ const User = props => {
           >
             <Tree
               showLine
-              switcherIcon={<IconFont type="icon-department" />}
+              switcherIcon={<Icon type="down" />}
               onSelect={handleSelect}
               treeData={tree}
             />
@@ -278,8 +286,8 @@ const User = props => {
           <Card
             title={department ? `【${department.title}】的用户` : '用户列表'}
             bordered={false}
-            style={{ marginTop: 10 }}
             bodyStyle={{ padding: '15px' }}
+            style={{ marginTop: 10 }}
           >
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
@@ -293,7 +301,7 @@ const User = props => {
                 <Authorized authority="system.user.batchDelete" noMatch={null}>
                   <Button
                     type="danger"
-                    disabled={selectedRows.length <= 0}
+                    disabled={selectedRowKeys.length <= 0}
                     title="删除"
                     onClick={handleBatchDelete}
                   >
@@ -303,6 +311,7 @@ const User = props => {
               </div>
               <Table
                 rowKey="id"
+                bordered
                 loading={loading}
                 columns={columns}
                 dataSource={list}
@@ -316,11 +325,10 @@ const User = props => {
       </Row>
     </PageHeaderWrapper>
   );
+});
+
+const areEqual = (prevProps, nextProps) => {
+  return isEqual(prevProps, nextProps);
 };
 
-export default connect(({ systemUser: { tree, list, pagination }, loading }) => ({
-  tree,
-  list,
-  pagination,
-  loading: loading.models.systemUser,
-}))(User);
+export default memo(User, areEqual);

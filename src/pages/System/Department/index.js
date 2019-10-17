@@ -52,14 +52,6 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
     };
   }, [dispatch]);
 
-  // 【启用禁用部门】
-  const toggleState = (checked, record) => {
-    dispatch({
-      type: 'systemDepartment/enable',
-      payload: { ...record, status: checked },
-    });
-  };
-
   // 【获取子部门数据】
   const handleSelect = (selectedKeys, info) => {
     // bug? 当点击靠右时，selectedKeys 为空。
@@ -72,6 +64,14 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       callback: () => {
         setDepartment(info.node.props);
       },
+    });
+  };
+
+  // 【启用禁用部门】
+  const toggleState = (checked, record) => {
+    dispatch({
+      type: 'systemDepartment/enable',
+      payload: { ...record, status: checked },
     });
   };
 
@@ -296,8 +296,8 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
                 loading={loading}
                 columns={columns}
                 dataSource={list}
-                onChange={handleTableChange}
                 pagination={false}
+                onChange={handleTableChange}
               />
             </div>
           </Card>
