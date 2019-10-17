@@ -15,8 +15,8 @@ export async function getDepartmentTree() {
  * @returns {Promise<void>}
  */
 export async function listSubDepartmentById(payload) {
-  const { id, status } = payload;
-  return request(`/departments/${id}/children?${stringify(status)}`);
+  const { id, ...rest } = payload;
+  return request(`/departments/${id}/children?${stringify(rest)}`);
 }
 
 /**
