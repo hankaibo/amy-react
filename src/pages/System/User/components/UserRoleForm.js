@@ -35,6 +35,7 @@ const UserRoleForm = connect(({ systemUser: { roleList, selectedRoleIdList }, lo
             type: 'systemUser/fetchUserRole',
             payload: {
               id,
+              status: 1,
             },
           });
         }

@@ -81,8 +81,8 @@ export async function updateRole(params) {
  */
 export async function enableRole(params) {
   const { id, status } = params;
-  return request(`/roles/${id}/status`, {
-    method: 'PUT',
+  return request(`/roles/${id}`, {
+    method: 'PATCH',
     data: {
       status,
     },

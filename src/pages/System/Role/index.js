@@ -1,24 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
 import { Card, Button, Input, Switch, Divider, Modal, message, Icon, Table } from 'antd';
+import { isEqual } from 'lodash';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Authorized from '@/utils/Authorized';
+import { getValue } from '@/utils/utils';
 import IconFont from '@/components/IconFont';
 import Ellipsis from '@/components/Ellipsis';
 import RoleForm from './components/RoleForm';
 import RoleResourceForm from './components/RoleResourceForm';
 import styles from '../System.less';
 
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
-
-const Role = props => {
-  const { loading, list, pagination, dispatch } = props;
-
+const Role = connect(({ systemRole: { list, pagination }, loading }) => ({
+  list,
+  pagination,
+  loading: loading.models.systemRole,
+}))(({ loading, list, pagination, dispatch }) => {
   // 【复选框状态属性与函数】
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   // 【首次请求加载列表数据】
   useEffect(() => {
@@ -46,19 +45,19 @@ const Role = props => {
 
   // 【搜索】
   const handleFormSubmit = () => {
-    message.info('正在开发中');
+    message.info('演示环境，暂未开放。');
   };
 
   // 【批量删除】
   const deleteBatchItem = () => {
-    if (selectedRows.length === 0) return;
+    if (selectedRowKeys.length === 0) return;
     dispatch({
       type: 'systemRole/deleteBatch',
       payload: {
-        ids: selectedRows,
+        ids: selectedRowKeys,
       },
       callback: () => {
-        setSelectedRows([]);
+        setSelectedRowKeys([]);
       },
     });
   };
@@ -73,26 +72,26 @@ const Role = props => {
   };
 
   // 【删除】
-  const deleteItem = id => {
+  const deleteItem = record => {
+    const { id } = record;
     dispatch({
       type: 'systemRole/delete',
       payload: {
         id,
       },
       callback: () => {
-        setSelectedRows([]);
+        setSelectedRowKeys([]);
         message.success('删除成功');
       },
     });
   };
   const handleDelete = record => {
-    const { id } = record;
     Modal.confirm({
       title: '删除',
       content: '您确定要删除该角色吗？',
       okText: '确认',
       cancelText: '取消',
-      onOk: () => deleteItem(id),
+      onOk: () => deleteItem(record),
     });
   };
 
@@ -132,9 +131,12 @@ const Role = props => {
   );
 
   // 【复选框相关操作】
+  const handleRowSelectChange = rowKeys => {
+    setSelectedRowKeys(rowKeys);
+  };
   const rowSelection = {
-    selectedRows,
-    onChange: setSelectedRows,
+    selectedRowKeys,
+    onChange: handleRowSelectChange,
   };
 
   // 【表格列】
@@ -151,6 +153,7 @@ const Role = props => {
       title: '角色状态',
       dataIndex: 'status',
       filters: [{ text: '禁用', value: 0 }, { text: '启用', value: 1 }],
+      filterMultiple: false,
       render: (text, record) => {
         return <Switch checked={text} onClick={checked => toggleStatus(checked, record)} />;
       },
@@ -211,7 +214,7 @@ const Role = props => {
             <Authorized authority="system.role.batchDelete" noMatch={null}>
               <Button
                 type="danger"
-                disabled={selectedRows.length <= 0}
+                disabled={selectedRowKeys.length <= 0}
                 title="删除"
                 onClick={handleBatchDelete}
               >
@@ -221,6 +224,7 @@ const Role = props => {
           </div>
           <Table
             rowKey="id"
+            bordered
             loading={loading}
             columns={columns}
             dataSource={list}
@@ -232,10 +236,10 @@ const Role = props => {
       </Card>
     </PageHeaderWrapper>
   );
+});
+
+const areEqual = (prevProps, nextProps) => {
+  return isEqual(prevProps, nextProps);
 };
 
-export default connect(({ systemRole: { list, pagination }, loading }) => ({
-  list,
-  pagination,
-  loading: loading.models.systemRole,
-}))(Role);
+export default memo(Role, areEqual);

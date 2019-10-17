@@ -99,10 +99,12 @@ export async function enableUser(params) {
 
 /**
  * 查询用户所有角色。
+ * @param params
  * @returns {Promise<void>}
  */
-export async function listUserRole(id) {
-  return request(`/users/${id}/roles`);
+export async function listUserRole(params) {
+  const { id, ...rest } = params;
+  return request(`/users/${id}/roles?${stringify(rest)}`);
 }
 
 /**

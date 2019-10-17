@@ -139,8 +139,7 @@ export default {
       if (callback) callback();
     },
     *fetchUserRole({ payload, callback }, { call, put }) {
-      const { id } = payload;
-      const response = yield call(listUserRole, id);
+      const response = yield call(listUserRole, payload);
       const { roleList, roleSelectedList } = response;
       const newRoleSelected = roleSelectedList.map(item => item.id);
       yield put({
