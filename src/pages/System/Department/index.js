@@ -186,6 +186,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       payload: params,
     });
   };
+
   // 【表格列】
   const columns = [
     {

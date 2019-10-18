@@ -1,12 +1,12 @@
 import {
   getDepartmentTree,
-  getDepartmentById,
   listSubDepartmentById,
-  moveDepartment,
   addDepartment,
-  deleteDepartment,
+  getDepartmentById,
   updateDepartment,
   enableDepartment,
+  deleteDepartment,
+  moveDepartment,
 } from '../service';
 
 export default {
@@ -58,20 +58,6 @@ export default {
       });
       if (callback) callback();
     },
-    *delete({ payload, callback }, { call, put }) {
-      const { id, parentId } = payload;
-      yield call(deleteDepartment, id);
-      yield put({
-        type: 'fetchChildrenById',
-        payload: {
-          id: parentId,
-        },
-      });
-      yield put({
-        type: 'fetch',
-      });
-      if (callback) callback();
-    },
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getDepartmentById, id);
@@ -103,6 +89,20 @@ export default {
       const { id, status, parentId } = payload;
       const params = { id, status: +status };
       yield call(enableDepartment, params);
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          id: parentId,
+        },
+      });
+      yield put({
+        type: 'fetch',
+      });
+      if (callback) callback();
+    },
+    *delete({ payload, callback }, { call, put }) {
+      const { id, parentId } = payload;
+      yield call(deleteDepartment, id);
       yield put({
         type: 'fetchChildrenById',
         payload: {

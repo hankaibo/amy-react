@@ -20,16 +20,6 @@ export async function listSubDepartmentById(payload) {
 }
 
 /**
- * 按主键与方向移动部门。
- * @param params {sourceId,targetId} 源节点与目标节点
- * @returns {Promise<void>}
- */
-export async function moveDepartment(params) {
-  const { sourceId, targetId } = params;
-  return request.put(`/departments?from=${sourceId}&to=${targetId}`);
-}
-
-/**
  * 添加部门。
  * @param params
  * @returns {Promise<void>}
@@ -40,17 +30,6 @@ export async function addDepartment(params) {
     data: {
       ...params,
     },
-  });
-}
-
-/**
- * 删除部门。
- * @param id
- * @returns {Promise<void>}
- */
-export async function deleteDepartment(id) {
-  return request(`/departments/${id}`, {
-    method: 'DELETE',
   });
 }
 
@@ -91,4 +70,25 @@ export async function enableDepartment(params) {
       status,
     },
   });
+}
+
+/**
+ * 删除部门。
+ * @param id
+ * @returns {Promise<void>}
+ */
+export async function deleteDepartment(id) {
+  return request(`/departments/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+/**
+ * 按主键与方向移动部门。
+ * @param params {sourceId,targetId} 源节点与目标节点
+ * @returns {Promise<void>}
+ */
+export async function moveDepartment(params) {
+  const { sourceId, targetId } = params;
+  return request.put(`/departments?from=${sourceId}&to=${targetId}`);
 }
