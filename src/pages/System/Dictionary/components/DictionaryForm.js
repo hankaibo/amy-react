@@ -125,7 +125,7 @@ const DictionaryForm = connect(({ systemDictionary: { editDictionary }, loading 
           >
             <Form {...formItemLayout}>
               {getFieldDecorator('parentId', {
-                initialValue: parentId || 0,
+                initialValue: parentId,
               })(<Input hidden />)}
               {isEdit && getFieldDecorator('id', {})(<Input hidden />)}
               {parentName && (

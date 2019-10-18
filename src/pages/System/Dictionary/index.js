@@ -69,7 +69,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
     dispatch({
       type: 'systemDictionary/deleteBatch',
       payload: {
-        parentId: parentDictId || 0,
+        parentId: parentDictId,
         ids: selectedRowKeys,
       },
       callback: () => {
@@ -272,4 +272,4 @@ const areEqual = (prevProps, nextProps) => {
   return isEqual(prevProps, nextProps);
 };
 
-export default memo(Dictionary, areEqual());
+export default memo(Dictionary, areEqual);
