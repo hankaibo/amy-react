@@ -11,15 +11,6 @@ export async function pageRole(params) {
 }
 
 /**
- * 按主键查询一条角色数据。
- * @param id
- * @returns {Promise<void>}
- */
-export async function getRoleById(id) {
-  return request(`/roles/${id}`);
-}
-
-/**
  * 添加角色。
  * @param params
  * @returns {Promise<void>}
@@ -34,28 +25,12 @@ export async function addRole(params) {
 }
 
 /**
- * 删除角色。
+ * 按主键查询一条角色数据。
  * @param id
  * @returns {Promise<void>}
  */
-export async function deleteRole(id) {
-  return request(`/roles/${id}`, {
-    method: 'DELETE',
-  });
-}
-
-/**
- * 批量删除角色。
- * @param ids
- * @returns {Promise<void>}
- */
-export async function deleteBatchRole(ids) {
-  return request('/roles', {
-    method: 'DELETE',
-    data: {
-      ids,
-    },
-  });
+export async function getRoleById(id) {
+  return request(`/roles/${id}`);
 }
 
 /**
@@ -85,6 +60,31 @@ export async function enableRole(params) {
     method: 'PATCH',
     data: {
       status,
+    },
+  });
+}
+
+/**
+ * 删除角色。
+ * @param id
+ * @returns {Promise<void>}
+ */
+export async function deleteRole(id) {
+  return request(`/roles/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+/**
+ * 批量删除角色。
+ * @param ids
+ * @returns {Promise<void>}
+ */
+export async function deleteBatchRole(ids) {
+  return request('/roles', {
+    method: 'DELETE',
+    data: {
+      ids,
     },
   });
 }
