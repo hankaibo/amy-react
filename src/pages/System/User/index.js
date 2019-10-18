@@ -23,6 +23,13 @@ import UserForm from './components/UserForm';
 import UserRoleForm from './components/UserRoleForm';
 import styles from '../System.less';
 
+const sexText = {
+  1: '男',
+  2: '女',
+  3: '保密',
+  4: '中性',
+};
+
 const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
   tree,
   list,
@@ -68,6 +75,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       },
     });
   };
+
   // 【启用禁用用户】
   const toggleStatus = (checked, record) => {
     const { id } = record;
@@ -213,6 +221,9 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
         { text: '中性', value: 4 },
       ],
       filterMultiple: false,
+      render: text => {
+        return sexText[text];
+      },
     },
     {
       title: '用户状态',

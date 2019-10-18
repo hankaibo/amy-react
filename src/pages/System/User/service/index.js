@@ -33,31 +33,6 @@ export async function addUser(params) {
 }
 
 /**
- * 删除用户。
- * @param id
- * @returns {Promise<void>}
- */
-export async function deleteUser(id) {
-  return request(`/users/${id}`, {
-    method: 'DELETE',
-  });
-}
-
-/**
- * 批量删除用户。
- * @param ids
- * @returns {Promise<void>}
- */
-export async function deleteBatchUser(ids) {
-  return request('/users', {
-    method: 'DELETE',
-    data: {
-      ids,
-    },
-  });
-}
-
-/**
  * 按主键查询一条用户数据。
  * @param id
  * @returns {Promise<void>}
@@ -93,6 +68,31 @@ export async function enableUser(params) {
     method: 'PATCH',
     data: {
       status,
+    },
+  });
+}
+
+/**
+ * 删除用户。
+ * @param id
+ * @returns {Promise<void>}
+ */
+export async function deleteUser(id) {
+  return request(`/users/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+/**
+ * 批量删除用户。
+ * @param ids
+ * @returns {Promise<void>}
+ */
+export async function deleteBatchUser(ids) {
+  return request('/users', {
+    method: 'DELETE',
+    data: {
+      ids,
     },
   });
 }

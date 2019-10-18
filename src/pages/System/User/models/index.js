@@ -1,12 +1,12 @@
 import {
   getDepartmentTree,
   pageUser,
-  getUserById,
   addUser,
-  deleteUser,
-  deleteBatchUser,
+  getUserById,
   updateUser,
   enableUser,
+  deleteUser,
+  deleteBatchUser,
   listUserRole,
   grantUserRole,
 } from '../service';
@@ -66,36 +66,6 @@ export default {
       });
       if (callback) callback();
     },
-    *delete({ payload, callback }, { call, put, select }) {
-      const { id, departmentId } = payload;
-      yield call(deleteUser, id);
-      const pagination = yield select(state => state.systemUser.pagination);
-      const { current, pageSize } = pagination;
-      yield put({
-        type: 'fetch',
-        payload: {
-          departmentId,
-          current,
-          pageSize,
-        },
-      });
-      if (callback) callback();
-    },
-    *deleteBatch({ payload, callback }, { call, put, select }) {
-      const { ids, departmentId } = payload;
-      yield call(deleteBatchUser, ids);
-      const pagination = yield select(state => state.systemUser.pagination);
-      const { current, pageSize } = pagination;
-      yield put({
-        type: 'fetch',
-        payload: {
-          departmentId,
-          current,
-          pageSize,
-        },
-      });
-      if (callback) callback();
-    },
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getUserById, id);
@@ -134,6 +104,36 @@ export default {
         payload: {
           departmentId,
           ...pagination,
+        },
+      });
+      if (callback) callback();
+    },
+    *delete({ payload, callback }, { call, put, select }) {
+      const { id, departmentId } = payload;
+      yield call(deleteUser, id);
+      const pagination = yield select(state => state.systemUser.pagination);
+      const { current, pageSize } = pagination;
+      yield put({
+        type: 'fetch',
+        payload: {
+          departmentId,
+          current,
+          pageSize,
+        },
+      });
+      if (callback) callback();
+    },
+    *deleteBatch({ payload, callback }, { call, put, select }) {
+      const { ids, departmentId } = payload;
+      yield call(deleteBatchUser, ids);
+      const pagination = yield select(state => state.systemUser.pagination);
+      const { current, pageSize } = pagination;
+      yield put({
+        type: 'fetch',
+        payload: {
+          departmentId,
+          current,
+          pageSize,
         },
       });
       if (callback) callback();
