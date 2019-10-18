@@ -1,15 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Tree, Card, Button, Switch, Divider, Modal, message, Icon, Table } from 'antd';
+import { isEqual } from 'lodash';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Authorized from '@/utils/Authorized';
+import { getValue } from '@/utils/utils';
 import IconFont from '@/components/IconFont';
 import MenuForm from './components/MenuForm';
 import styles from '../System.less';
 
-const Menu = props => {
-  const { loading, tree, list, dispatch } = props;
+const { DirectoryTree } = Tree;
 
+const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
+  tree,
+  list,
+  loading: loading.models.systemMenu,
+}))(({ loading, tree, list, dispatch }) => {
   // 【当前点击的菜单】
   const [menu, setMenu] = useState(null);
 
@@ -17,8 +23,11 @@ const Menu = props => {
   useEffect(() => {
     dispatch({
       type: 'systemMenu/fetch',
+      payload: {
+        status: 1,
+      },
     });
-    return function cleanup() {
+    return () => {
       dispatch({
         type: 'systemMenu/clearTree',
       });
@@ -27,14 +36,6 @@ const Menu = props => {
       });
     };
   }, [dispatch]);
-
-  // 【启用禁用】
-  const toggleState = (checked, record) => {
-    dispatch({
-      type: 'systemMenu/update',
-      payload: { ...record, status: checked },
-    });
-  };
 
   // 【获取子菜单数据】
   const handleSelect = (selectedKeys, info) => {
@@ -51,13 +52,26 @@ const Menu = props => {
     });
   };
 
-  // 【移动】
-  const handleMove = (record, direction) => {
+  // 【启用禁用菜单】
+  const toggleState = (checked, record) => {
+    dispatch({
+      type: 'systemMenu/update',
+      payload: { ...record, status: checked },
+    });
+  };
+
+  // 【移动菜单】
+  const handleMove = (record, index) => {
+    if (list.length <= index || index < 0) {
+      return;
+    }
+    const targetId = list[index].id;
     dispatch({
       type: 'systemMenu/move',
       payload: {
         ...record,
-        direction,
+        sourceId: record.id,
+        targetId,
       },
     });
   };
@@ -86,6 +100,27 @@ const Menu = props => {
     });
   };
 
+  // 【过滤菜单】
+  const handleTableChange = (_, filtersArg) => {
+    const filters = Object.keys(filtersArg).reduce((obj, key) => {
+      const newObj = { ...obj };
+      newObj[key] = getValue(filtersArg[key]);
+      return newObj;
+    }, {});
+
+    const { id } = menu;
+
+    const params = {
+      id,
+      ...filters,
+    };
+
+    dispatch({
+      type: 'systemMenu/fetchChildrenById',
+      payload: params,
+    });
+  };
+
   // 【表格列】
   const columns = [
     {
@@ -102,23 +137,27 @@ const Menu = props => {
       filters: [{ text: '禁用', value: 0 }, { text: '启用', value: 1 }],
       filterMultiple: false,
       render: (text, record) => {
-        return <Switch checked={text} onClick={checked => toggleState(checked, record)} />;
+        return (
+          <Authorized authority="system.menu.status" noMatch={null}>
+            <Switch checked={text} onClick={checked => toggleState(checked, record)} />
+          </Authorized>
+        );
       },
     },
     {
       title: '排序',
-      render: (text, record) => (
-        <>
+      render: (text, record, index) => (
+        <Authorized authority="system.menu.move" noMatch="--">
           <a
-            onClick={() => handleMove(record, 'UP')}
+            onClick={() => handleMove(record, index - 1)}
             style={{ padding: '0 5px', marginRight: '10px' }}
           >
             <Icon type="arrow-up" title="向上" />
           </a>
-          <a onClick={() => handleMove(record, 'DOWN')}>
+          <a onClick={() => handleMove(record, index + 1)}>
             <Icon type="arrow-down" title="向下" />
           </a>
-        </>
+        </Authorized>
       ),
     },
     {
@@ -153,7 +192,7 @@ const Menu = props => {
             bordered={false}
             bodyStyle={{ padding: '15px' }}
           >
-            <Tree treeData={tree} onSelect={handleSelect} />
+            <DirectoryTree treeData={tree} onSelect={handleSelect} />
           </Card>
         </Col>
         <Col xs={24} sm={24} md={24} lg={18} xl={18}>
@@ -173,17 +212,25 @@ const Menu = props => {
                   </MenuForm>
                 </Authorized>
               </div>
-              <Table rowKey="id" loading={loading} columns={columns} dataSource={list} />
+              <Table
+                rowKey="id"
+                bordered
+                loading={loading}
+                columns={columns}
+                dataSource={list}
+                pagination={false}
+                onChange={handleTableChange}
+              />
             </div>
           </Card>
         </Col>
       </Row>
     </PageHeaderWrapper>
   );
+});
+
+const areEqual = (prevProps, nextProps) => {
+  return isEqual(prevProps, nextProps);
 };
 
-export default connect(({ systemMenu: { tree, list }, loading }) => ({
-  tree,
-  list,
-  loading: loading.models.systemMenu,
-}))(Menu);
+export default memo(Menu, areEqual);

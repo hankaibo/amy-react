@@ -10,22 +10,22 @@ export async function getMenuTree() {
 }
 
 /**
- * 按主键查询所有子菜单数据。
+ * 按主键查询所有子按钮数据。
  * @param payload
  * @returns {Promise<void>}
  */
 export async function listChildrenById(payload) {
   const { id, ...rest } = payload;
-  rest.type = 1;
+  rest.type = 2;
   return request(`/resources/${id}/children?${stringify(rest)}`);
 }
 
 /**
- * 添加菜单。
+ * 添加按钮。
  * @param params
  * @returns {Promise<void>}
  */
-export async function addMenu(params) {
+export async function addButton(params) {
   return request('/resources', {
     method: 'POST',
     data: {
@@ -35,20 +35,19 @@ export async function addMenu(params) {
 }
 
 /**
- * 按主键查询一条菜单数据。
+ * 按主键查询一条按钮数据。
  * @param id
  * @returns {Promise<void>}
  */
-export async function getMenuById(id) {
+export async function getButtonById(id) {
   return request(`/resources/${id}`);
 }
-
 /**
- * 更新菜单。
+ * 更新按钮。
  * @param params
  * @returns {Promise<void>}
  */
-export async function updateMenu(params) {
+export async function updateButton(params) {
   const { id } = params;
   return request(`/resources/${id}`, {
     method: 'PUT',
@@ -59,11 +58,11 @@ export async function updateMenu(params) {
 }
 
 /**
- * 启用禁用菜单。
+ * 启用禁用按钮。
  * @param params
  * @return {Promise<void>}
  */
-export async function enableMenu(params) {
+export async function enableButton(params) {
   const { id, status } = params;
   return request(`/resources/${id}`, {
     method: 'PATCH',
@@ -74,11 +73,11 @@ export async function enableMenu(params) {
 }
 
 /**
- * 按主键上移下移菜单。
- * @param params {sourceId,targetId} 源菜单与目标菜单
+ * 按主键上移下移按钮。
+ * @param params {sourceId,targetId} 源按钮与目标按钮
  * @returns {Promise<void>}
  */
-export async function moveMenu(params) {
+export async function moveButton(params) {
   const { sourceId, targetId } = params;
   return request(`/resources?from=${sourceId}&to=${targetId}`, {
     method: 'PUT',
@@ -86,12 +85,26 @@ export async function moveMenu(params) {
 }
 
 /**
- * 删除菜单。
+ * 删除按钮。
  * @param id
  * @returns {Promise<void>}
  */
-export async function deleteMenu(id) {
+export async function deleteButton(id) {
   return request(`/resources/${id}`, {
     method: 'DELETE',
+  });
+}
+
+/**
+ * 批量删除按钮。
+ * @param ids
+ * @returns {Promise<void>}
+ */
+export async function deleteBatchButton(ids) {
+  return request('/resources', {
+    method: 'DELETE',
+    data: {
+      ids,
+    },
   });
 }

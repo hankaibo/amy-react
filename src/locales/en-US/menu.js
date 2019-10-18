@@ -8,7 +8,7 @@ export default {
   'menu.system.user': 'User',
   'menu.system.role': 'Role',
   'menu.system.menu': 'Menu',
-  'menu.system.resource': 'Resource',
+  'menu.system.api': 'API',
   'menu.system.dictionary': 'Dictionary',
   // exception
   'menu.exception': 'Exception',

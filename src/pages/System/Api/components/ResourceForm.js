@@ -1,23 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Modal, InputNumber, Switch, message, Button } from 'antd';
+import { Form, Input, Modal, Switch, message, Radio, TreeSelect, Button } from 'antd';
 
 const FormItem = Form.Item;
-const { TextArea } = Input;
 
-const DictionaryForm = connect(({ systemDictionary: { editDictionary }, loading }) => ({
-  editDictionary,
-  loading: loading.models.systemDictionary,
+const ButtonForm = connect(({ systemApi: { tree, editButton }, loading }) => ({
+  tree,
+  editButton,
+  loading: loading.models.systemApi,
 }))(
-  Form.create({ name: 'dictionaryForm' })(
-    ({ loading, children, isEdit, dictionary, editDictionary, form, dispatch, ...rest }) => {
-      const { location, match } = rest;
-      const {
-        query: { name: parentName },
-      } = location;
-      const {
-        params: { id: parentId },
-      } = match;
+  Form.create({ name: 'buttonForm' })(
+    ({ loading, children, parent, isEdit, btn, editButton, tree, form, dispatch }) => {
       const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
 
       // 【模态框显示隐藏属性】
@@ -32,47 +25,61 @@ const DictionaryForm = connect(({ systemDictionary: { editDictionary }, loading 
         setVisible(false);
       };
 
-      // 【获取要修改用户的数据】
-      // 注：修改前获取用户数据回显表单，如果列表数据齐全，也可直接使用列表传递过来的而不再请求后台接口。
+      // 【获取数据】
       useEffect(() => {
         if (visible && isEdit) {
-          const { id } = dictionary;
+          const { id } = btn;
           dispatch({
-            type: 'systemDictionary/fetchById',
+            type: 'systemApi/fetchById',
             payload: {
               id,
-            },
-            callback: () => {
-              setVisible(true);
             },
           });
         }
         return () => {
           dispatch({
-            type: 'systemDictionary/clear',
+            type: 'systemApi/clear',
           });
         };
-      }, [visible, isEdit, dictionary, dispatch]);
+      }, [visible, isEdit, btn, dispatch]);
 
       // 【回显表单】
       useEffect(() => {
         // 👍 将条件判断放置在 effect 中
         if (visible && isEdit) {
-          if (Object.keys(editDictionary).length > 0) {
-            setFieldsValue(editDictionary);
+          if (Object.keys(editButton).length > 0) {
+            if (parent) {
+              const len = parent.code.length;
+              const data = { ...editButton, code: editButton.code.substring(len + 1) };
+              setFieldsValue(data);
+            } else {
+              setFieldsValue(editButton);
+            }
           }
         }
-      }, [visible, isEdit, editDictionary, setFieldsValue]);
+      }, [visible, isEdit, editButton, parent, setFieldsValue]);
+
+      // 【保证任何时候添加上级菜单都有默认值】
+      useEffect(() => {
+        if (visible) {
+          if (parent) {
+            setFieldsValue({ parentId: parent.id });
+          } else if (tree.length) {
+            setFieldsValue({ parentId: tree[0].id });
+          }
+        }
+      }, [visible, parent, tree, setFieldsValue]);
 
       // 【添加与修改】
       const handleAddOrUpdate = () => {
         validateFields((err, fieldsValue) => {
           if (err) return;
+          const params = { ...fieldsValue, code: `${parent.code}.${fieldsValue.code}` };
 
           if (isEdit) {
             dispatch({
-              type: 'systemDictionary/update',
-              payload: fieldsValue,
+              type: 'systemApi/update',
+              payload: params,
               callback: () => {
                 resetFields();
                 hideModelHandler();
@@ -81,8 +88,8 @@ const DictionaryForm = connect(({ systemDictionary: { editDictionary }, loading 
             });
           } else {
             dispatch({
-              type: 'systemDictionary/add',
-              payload: fieldsValue,
+              type: 'systemApi/add',
+              payload: params,
               callback: () => {
                 resetFields();
                 hideModelHandler();
@@ -113,7 +120,7 @@ const DictionaryForm = connect(({ systemDictionary: { editDictionary }, loading 
             title={isEdit ? '修改' : '新增'}
             visible={visible}
             onOk={handleAddOrUpdate}
-            onCancel={() => hideModelHandler()}
+            onCancel={hideModelHandler}
             footer={[
               <Button key="back" onClick={hideModelHandler}>
                 取消
@@ -124,15 +131,8 @@ const DictionaryForm = connect(({ systemDictionary: { editDictionary }, loading 
             ]}
           >
             <Form {...formItemLayout}>
-              {getFieldDecorator('parentId', {
-                initialValue: parentId || 0,
-              })(<Input hidden />)}
-              {isEdit && getFieldDecorator('id', {})(<Input hidden />)}
-              {parentName && (
-                <FormItem label="父级名称">
-                  <Input value={parentName} disabled />
-                </FormItem>
-              )}
+              {getFieldDecorator('type', { initialValue: 2 })(<Input hidden />)}
+              {isEdit && getFieldDecorator('id')(<Input hidden />)}
               <FormItem label="名称">
                 {getFieldDecorator('name', {
                   rules: [
@@ -143,47 +143,59 @@ const DictionaryForm = connect(({ systemDictionary: { editDictionary }, loading 
                       max: 20,
                     },
                   ],
-                })(<Input placeholder="请输入字典名称" />)}
+                })(<Input />)}
               </FormItem>
               <FormItem label="编码">
                 {getFieldDecorator('code', {
                   rules: [
                     {
                       required: true,
-                      message: '请将编码长度保持在1至20字符之间！',
+                      message: '请将编码长度保持在1至50字符之间！',
                       min: 1,
-                      max: 20,
+                      max: 50,
                     },
                   ],
-                })(<Input placeholder="请输入字典编码" />)}
+                })(<Input addonBefore={parent ? `${parent.code}.` : ''} />)}
               </FormItem>
-              <FormItem label="值">
-                {getFieldDecorator('value', {
+              <FormItem label="URL">
+                {getFieldDecorator('uri', {
                   rules: [
-                    { required: true, message: '请将值长度保持在1至20字符之间！', min: 1, max: 20 },
+                    {
+                      required: true,
+                      message: '请将URL长度保持在3至100字符之间！',
+                      min: 3,
+                      max: 100,
+                    },
                   ],
-                })(<Input placeholder="请输入字典值" />)}
+                })(<Input />)}
               </FormItem>
               <FormItem label="状态">
                 {getFieldDecorator('status', { initialValue: true, valuePropName: 'checked' })(
                   <Switch checkedChildren="开" unCheckedChildren="关" />
                 )}
               </FormItem>
-              <FormItem label="排序">
-                {getFieldDecorator('sort')(
-                  <InputNumber
-                    placeholder="请输入字典排序"
-                    min={0}
-                    max={999}
-                    style={{ width: '100%' }}
-                  />
+              <FormItem label="方法类型">
+                {getFieldDecorator('method', {
+                  rules: [{ required: true, message: '请选择方法类型。' }],
+                })(
+                  <Radio.Group>
+                    <Radio value="GET">GET</Radio>
+                    <Radio value="POST">POST</Radio>
+                    <Radio value="DELETE">DELETE</Radio>
+                    <Radio value="PUT">PUT</Radio>
+                    <Radio value="PATCH">PATCH</Radio>
+                  </Radio.Group>
                 )}
               </FormItem>
-              <FormItem label="描述">
-                {getFieldDecorator('description', {
-                  rules: [{ message: '请将描述长度保持在1至50字符之间！', min: 1, max: 50 }],
-                })(
-                  <TextArea placeholder="请输入字典描述。" autosize={{ minRows: 2, maxRows: 6 }} />
+              <FormItem label="上级菜单">
+                {getFieldDecorator('parentId')(
+                  <TreeSelect
+                    style={{ width: 300 }}
+                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                    treeData={tree}
+                    placeholder="请选择菜单"
+                    treeDefaultExpandAll
+                  />
                 )}
               </FormItem>
             </Form>
@@ -194,4 +206,4 @@ const DictionaryForm = connect(({ systemDictionary: { editDictionary }, loading 
   )
 );
 
-export default DictionaryForm;
+export default ButtonForm;

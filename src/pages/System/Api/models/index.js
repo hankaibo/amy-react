@@ -1,16 +1,17 @@
 import {
-  getResourceTree,
-  getResourceById,
-  getChildrenById,
-  moveResource,
-  addResource,
-  deleteResource,
-  deleteBatchResource,
-  updateResource,
+  getMenuTree,
+  listChildrenById,
+  addButton,
+  getButtonById,
+  updateButton,
+  enableButton,
+  deleteButton,
+  deleteBatchButton,
+  moveButton,
 } from '../service';
 
 export default {
-  namespace: 'systemResource',
+  namespace: 'systemApi',
 
   state: {
     // 菜单树
@@ -18,12 +19,12 @@ export default {
     // 列表
     list: [],
     // 编辑
-    editResource: {},
+    editButton: {},
   },
 
   effects: {
     *fetch({ payload, callback }, { call, put }) {
-      const response = yield call(getResourceTree, payload);
+      const response = yield call(getMenuTree, payload);
       yield put({
         type: 'saveTree',
         payload: {
@@ -33,8 +34,7 @@ export default {
       if (callback) callback();
     },
     *fetchChildrenById({ payload, callback }, { call, put }) {
-      const { id } = payload;
-      const response = yield call(getChildrenById, id);
+      const response = yield call(listChildrenById, payload);
       const list = response.map(item => ({ ...item, status: !!item.status }));
       yield put({
         type: 'saveList',
@@ -44,9 +44,10 @@ export default {
       });
       if (callback) callback();
     },
-    *move({ payload, callback }, { call, put }) {
+    *add({ payload, callback }, { call, put }) {
       const { parentId: id } = payload;
-      yield call(moveResource, payload);
+      const params = { ...payload, status: +payload.status };
+      yield call(addButton, params);
       yield put({
         type: 'fetchChildrenById',
         payload: {
@@ -57,31 +58,43 @@ export default {
     },
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
-      const response = yield call(getResourceById, id);
-      const editResource = { ...response, status: !!response.status };
+      const response = yield call(getButtonById, id);
+      const editButton = { ...response, status: !!response.status };
       yield put({
         type: 'save',
         payload: {
-          editResource,
+          editButton,
         },
       });
       if (callback) callback();
     },
-    *add({ payload, callback }, { call, put }) {
-      const { parentId: id } = payload;
+    *update({ payload, callback }, { call, put }) {
+      const { parentId } = payload;
       const params = { ...payload, status: +payload.status };
-      yield call(addResource, params);
+      yield call(updateButton, params);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          id,
+          id: parentId,
+        },
+      });
+      if (callback) callback();
+    },
+    *enable({ payload, callback }, { call, put }) {
+      const { id, status, parentId } = payload;
+      const params = { id, status: +status };
+      yield call(enableButton, params);
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          id: parentId,
         },
       });
       if (callback) callback();
     },
     *delete({ payload, callback }, { call, put }) {
       const { id, parentId } = payload;
-      yield call(deleteResource, id);
+      yield call(deleteButton, id);
       yield put({
         type: 'fetchChildrenById',
         payload: {
@@ -91,17 +104,16 @@ export default {
       if (callback) callback();
     },
     *deleteBatch({ ids, callback }, { call }) {
-      yield call(deleteBatchResource, ids);
+      yield call(deleteBatchButton, ids);
       if (callback) callback();
     },
-    *update({ payload, callback }, { call, put }) {
-      const { parentId } = payload;
-      const params = { ...payload, status: +payload.status };
-      yield call(updateResource, params);
+    *move({ payload, callback }, { call, put }) {
+      const { parentId: id } = payload;
+      yield call(moveButton, payload);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          id: parentId,
+          id,
         },
       });
       if (callback) callback();
@@ -136,16 +148,16 @@ export default {
       };
     },
     save(state, { payload }) {
-      const { editResource } = payload;
+      const { editButton } = payload;
       return {
         ...state,
-        editResource,
+        editButton,
       };
     },
     clear(state) {
       return {
         ...state,
-        editResource: {},
+        editButton: {},
       };
     },
   },

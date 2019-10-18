@@ -11,15 +11,6 @@ export async function pageDict(params) {
 }
 
 /**
- * 按主键查询一条字典数据。
- * @param id
- * @returns {Promise<void>}
- */
-export async function getDictById(id) {
-  return request(`/dictionaries/${id}`);
-}
-
-/**
  * 添加字典。
  * @param params
  * @returns {Promise<void>}
@@ -34,28 +25,12 @@ export async function addDict(params) {
 }
 
 /**
- * 删除字典。
+ * 按主键查询一条字典数据。
  * @param id
  * @returns {Promise<void>}
  */
-export async function deleteDict(id) {
-  return request(`/dictionaries/${id}`, {
-    method: 'DELETE',
-  });
-}
-
-/**
- * 批量删除字典。
- * @param ids
- * @returns {Promise<void>}
- */
-export async function deleteBatchDict(ids) {
-  return request(`/dictionaries`, {
-    method: 'DELETE',
-    data: {
-      ids,
-    },
-  });
+export async function getDictById(id) {
+  return request(`/dictionaries/${id}`);
 }
 
 /**
@@ -81,10 +56,35 @@ export async function updateDict(params) {
  */
 export async function enableDict(params) {
   const { id, status } = params;
-  return request(`/dictionaries/${id}/status`, {
-    method: 'PUT',
+  return request(`/dictionaries/${id}`, {
+    method: 'PATCH',
     data: {
       status,
+    },
+  });
+}
+
+/**
+ * 删除字典。
+ * @param id
+ * @returns {Promise<void>}
+ */
+export async function deleteDict(id) {
+  return request(`/dictionaries/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+/**
+ * 批量删除字典。
+ * @param ids
+ * @returns {Promise<void>}
+ */
+export async function deleteBatchDict(ids) {
+  return request(`/dictionaries`, {
+    method: 'DELETE',
+    data: {
+      ids,
     },
   });
 }

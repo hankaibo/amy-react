@@ -1,11 +1,11 @@
 import {
   pageDict,
-  getDictById,
   addDict,
-  deleteDict,
-  deleteBatchDict,
+  getDictById,
   updateDict,
   enableDict,
+  deleteDict,
+  deleteBatchDict,
 } from '../service';
 
 export default {
@@ -32,6 +32,21 @@ export default {
       });
       if (callback) callback();
     },
+    *add({ payload, callback }, { call, put, select }) {
+      const { parentId } = payload;
+      const params = { ...payload, status: +payload.status };
+      yield call(addDict, params);
+      const pagination = yield select(state => state.systemDictionary.pagination);
+      delete pagination.total;
+      yield put({
+        type: 'fetch',
+        payload: {
+          parentId,
+          ...pagination,
+        },
+      });
+      if (callback) callback();
+    },
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getDictById, id);
@@ -44,10 +59,25 @@ export default {
       });
       if (callback) callback();
     },
-    *add({ payload, callback }, { call, put, select }) {
+    *update({ payload, callback }, { call, put, select }) {
       const { parentId } = payload;
       const params = { ...payload, status: +payload.status };
-      yield call(addDict, params);
+      yield call(updateDict, params);
+      const pagination = yield select(state => state.systemDictionary.pagination);
+      delete pagination.total;
+      yield put({
+        type: 'fetch',
+        payload: {
+          parentId,
+          ...pagination,
+        },
+      });
+      if (callback) callback();
+    },
+    *enable({ payload, callback }, { call, put, select }) {
+      const { id, parentId, status } = payload;
+      const params = { id, status: +status };
+      yield call(enableDict, params);
       const pagination = yield select(state => state.systemDictionary.pagination);
       delete pagination.total;
       yield put({
@@ -76,36 +106,6 @@ export default {
     *deleteBatch({ payload, callback }, { call, put, select }) {
       const { ids, parentId } = payload;
       yield call(deleteBatchDict, ids);
-      const pagination = yield select(state => state.systemDictionary.pagination);
-      delete pagination.total;
-      yield put({
-        type: 'fetch',
-        payload: {
-          parentId,
-          ...pagination,
-        },
-      });
-      if (callback) callback();
-    },
-    *update({ payload, callback }, { call, put, select }) {
-      const { parentId } = payload;
-      const params = { ...payload, status: +payload.status };
-      yield call(updateDict, params);
-      const pagination = yield select(state => state.systemDictionary.pagination);
-      delete pagination.total;
-      yield put({
-        type: 'fetch',
-        payload: {
-          parentId,
-          ...pagination,
-        },
-      });
-      if (callback) callback();
-    },
-    *enable({ payload, callback }, { call, put, select }) {
-      const { id, parentId, status } = payload;
-      const params = { id, status: +status };
-      yield call(enableDict, params);
       const pagination = yield select(state => state.systemDictionary.pagination);
       delete pagination.total;
       yield put({

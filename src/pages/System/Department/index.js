@@ -199,13 +199,17 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       filters: [{ text: '禁用', value: 0 }, { text: '启用', value: 1 }],
       filterMultiple: false,
       render: (text, record) => {
-        return <Switch checked={text} onClick={checked => toggleState(checked, record)} />;
+        return (
+          <Authorized authority="system.department.status" noMatch="--">
+            <Switch checked={text} onClick={checked => toggleState(checked, record)} />
+          </Authorized>
+        );
       },
     },
     {
       title: '排序',
       render: (text, record, index) => (
-        <>
+        <Authorized authority="system.department.move" noMatch="--">
           <a
             onClick={() => handleMove(record, index - 1)}
             style={{ padding: '0 5px', marginRight: '10px' }}
@@ -215,7 +219,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
           <a onClick={() => handleMove(record, index + 1)}>
             <Icon type="arrow-down" title="向下" />
           </a>
-        </>
+        </Authorized>
       ),
     },
     {

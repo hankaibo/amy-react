@@ -61,9 +61,9 @@ export default [
             dynamic: true,
           },
           {
-            path: '/app/system/resources',
-            name: 'resource',
-            component: './System/Resource',
+            path: '/app/system/apis',
+            name: 'api',
+            component: './System/Api',
             dynamic: true,
           },
           {

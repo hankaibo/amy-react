@@ -1,12 +1,12 @@
 import {
   getMenuTree,
-  getMenuById,
-  getChildrenById,
-  moveMenu,
+  listChildrenById,
   addMenu,
-  deleteMenu,
-  deleteBatchMenu,
+  getMenuById,
   updateMenu,
+  enableMenu,
+  deleteMenu,
+  moveMenu,
 } from '../service';
 
 export default {
@@ -33,8 +33,7 @@ export default {
       if (callback) callback();
     },
     *fetchChildrenById({ payload, callback }, { call, put }) {
-      const { id } = payload;
-      const response = yield call(getChildrenById, id);
+      const response = yield call(listChildrenById, payload);
       const list = response.map(item => ({ ...item, status: !!item.status }));
       yield put({
         type: 'saveList',
@@ -44,9 +43,10 @@ export default {
       });
       if (callback) callback();
     },
-    *move({ payload, callback }, { call, put }) {
+    *add({ payload, callback }, { call, put }) {
       const { parentId: id } = payload;
-      yield call(moveMenu, payload);
+      const params = { ...payload, status: +payload.status };
+      yield call(addMenu, params);
       yield put({
         type: 'fetchChildrenById',
         payload: {
@@ -70,14 +70,29 @@ export default {
       });
       if (callback) callback();
     },
-    *add({ payload, callback }, { call, put }) {
-      const { parentId: id } = payload;
+    *update({ payload, callback }, { call, put }) {
+      const { parentId } = payload;
       const params = { ...payload, status: +payload.status };
-      yield call(addMenu, params);
+      yield call(updateMenu, params);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          id,
+          id: parentId,
+        },
+      });
+      yield put({
+        type: 'fetch',
+      });
+      if (callback) callback();
+    },
+    *enable({ payload, callback }, { call, put }) {
+      const { id, status, parentId } = payload;
+      const params = { id, status: +status };
+      yield call(enableMenu, params);
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          id: parentId,
         },
       });
       yield put({
@@ -99,18 +114,13 @@ export default {
       });
       if (callback) callback();
     },
-    *deleteBatch({ ids, callback }, { call }) {
-      yield call(deleteBatchMenu, ids);
-      if (callback) callback();
-    },
-    *update({ payload, callback }, { call, put }) {
-      const { parentId } = payload;
-      const params = { ...payload, status: +payload.status };
-      yield call(updateMenu, params);
+    *move({ payload, callback }, { call, put }) {
+      const { parentId: id } = payload;
+      yield call(moveMenu, payload);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          id: parentId,
+          id,
         },
       });
       yield put({

@@ -231,7 +231,11 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       filters: [{ text: '禁用', value: 0 }, { text: '启用', value: 1 }],
       filterMultiple: false,
       render: (text, record) => {
-        return <Switch checked={text} onClick={checked => toggleStatus(checked, record)} />;
+        return (
+          <Authorized authority="system.user.status" noMatch="--">
+            <Switch checked={text} onClick={checked => toggleStatus(checked, record)} />
+          </Authorized>
+        );
       },
     },
     {

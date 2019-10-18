@@ -1,68 +1,79 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Tree, Card, Button, Switch, Divider, Modal, message, Icon, Table } from 'antd';
+import { isEqual } from 'lodash';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Authorized from '@/utils/Authorized';
+import { getValue } from '@/utils/utils';
 import IconFont from '@/components/IconFont';
 import ResourceForm from './components/ResourceForm';
 import styles from '../System.less';
 
-const Resource = props => {
-  const { loading, tree, list, dispatch } = props;
+const { DirectoryTree } = Tree;
 
+const Btn = connect(({ systemApi: { tree, list }, loading }) => ({
+  tree,
+  list,
+  loading: loading.models.systemApi,
+}))(({ loading, tree, list, dispatch }) => {
   // 【当前点击的菜单】
-  const [resource, setResource] = useState(null);
+  const [btn, setBtn] = useState(null);
 
   // 【首次请求加载树数据】
   useEffect(() => {
     dispatch({
-      type: 'systemResource/fetch',
+      type: 'systemApi/fetch',
     });
     return function cleanup() {
       dispatch({
-        type: 'systemResource/clearTree',
+        type: 'systemApi/clearTree',
       });
       dispatch({
-        type: 'systemResource/clearList',
+        type: 'systemApi/clearList',
       });
     };
   }, [dispatch]);
-
-  // 【启用禁用】
-  const toggleState = (checked, record) => {
-    dispatch({
-      type: 'systemResource/update',
-      payload: { ...record, status: checked },
-    });
-  };
 
   // 【获取子菜单数据】
   const handleSelect = (selectedKeys, info) => {
     const id = selectedKeys.length === 0 ? info.node.props.id : selectedKeys;
     if (info.node.isLeaf()) {
       dispatch({
-        type: 'systemResource/fetchChildrenById',
+        type: 'systemApi/fetchChildrenById',
         payload: {
           id,
         },
         callback: () => {
-          setResource(info.node.props);
+          setBtn(info.node.props);
         },
       });
     } else {
       dispatch({
-        type: 'systemResource/clearList',
+        type: 'systemApi/clearList',
       });
     }
   };
 
-  // 【移动】
-  const handleMove = (record, direction) => {
+  // 【启用禁用按钮】
+  const toggleState = (checked, record) => {
     dispatch({
-      type: 'systemResource/move',
+      type: 'systemApi/update',
+      payload: { ...record, status: checked },
+    });
+  };
+
+  // 【移动按钮】
+  const handleMove = (record, index) => {
+    if (list.length <= index || index < 0) {
+      return;
+    }
+    const targetId = list[index].id;
+    dispatch({
+      type: 'systemApi/move',
       payload: {
         ...record,
-        direction,
+        sourceId: record.id,
+        targetId,
       },
     });
   };
@@ -71,7 +82,7 @@ const Resource = props => {
   const deleteItem = record => {
     const { id, parentId } = record;
     dispatch({
-      type: 'systemResource/delete',
+      type: 'systemApi/delete',
       payload: {
         id,
         parentId,
@@ -88,6 +99,27 @@ const Resource = props => {
       okText: '确认',
       cancelText: '取消',
       onOk: () => deleteItem(record),
+    });
+  };
+
+  // 【过滤按钮】
+  const handleTableChange = (_, filtersArg) => {
+    const filters = Object.keys(filtersArg).reduce((obj, key) => {
+      const newObj = { ...obj };
+      newObj[key] = getValue(filtersArg[key]);
+      return newObj;
+    }, {});
+
+    const { id } = btn;
+
+    const params = {
+      id,
+      ...filters,
+    };
+
+    dispatch({
+      type: 'systemApi/fetchChildrenById',
+      payload: params,
     });
   };
 
@@ -115,38 +147,42 @@ const Resource = props => {
       filters: [{ text: '禁用', value: 0 }, { text: '启用', value: 1 }],
       filterMultiple: false,
       render: (text, record) => {
-        return <Switch checked={text} onClick={checked => toggleState(checked, record)} />;
+        return (
+          <Authorized authority="system.api.status" noMatch={null}>
+            <Switch checked={text} onClick={checked => toggleState(checked, record)} />
+          </Authorized>
+        );
       },
     },
     {
       title: '排序',
-      render: (text, record) => (
-        <>
+      render: (text, record, index) => (
+        <Authorized authority="system.api.move" noMatch={null}>
           <a
-            onClick={() => handleMove(record, 'UP')}
+            onClick={() => handleMove(record, index - 1)}
             style={{ padding: '0 5px', marginRight: '10px' }}
           >
             <Icon type="arrow-up" title="向上" />
           </a>
-          <a onClick={() => handleMove(record, 'DOWN')}>
+          <a onClick={() => handleMove(record, index + 1)}>
             <Icon type="arrow-down" title="向下" />
           </a>
-        </>
+        </Authorized>
       ),
     },
     {
       title: '操作',
       render: (text, record) => (
         <>
-          <Authorized authority="system.resource.update" noMatch={null}>
-            <ResourceForm isEdit resource={record} parent={resource}>
+          <Authorized authority="system.api.update" noMatch={null}>
+            <ResourceForm isEdit btn={record} parent={btn}>
               <a>
                 <IconFont type="icon-edit" title="编辑" />
               </a>
               <Divider type="vertical" />
             </ResourceForm>
           </Authorized>
-          <Authorized authority="system.resource.delete" noMatch={null}>
+          <Authorized authority="system.api.delete" noMatch={null}>
             <a onClick={() => handleDelete(record)}>
               <IconFont type="icon-delete" title="删除" />
             </a>
@@ -161,42 +197,50 @@ const Resource = props => {
       <Row gutter={8}>
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
           <Card
-            title="资源树"
+            title="菜单树"
             style={{ marginTop: 10 }}
             bordered={false}
             bodyStyle={{ padding: '15px' }}
           >
-            <Tree treeData={tree} onSelect={handleSelect} />
+            <DirectoryTree treeData={tree} onSelect={handleSelect} />
           </Card>
         </Col>
         <Col xs={24} sm={24} md={24} lg={18} xl={18}>
           <Card
-            title={resource ? `[${resource.title}]的资源` : '资源列表'}
+            title={btn ? `[${btn.title}]的接口` : '接口列表'}
             bordered={false}
             bodyStyle={{ padding: '15px' }}
             style={{ marginTop: 10 }}
           >
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
-                <Authorized authority="system.resource.add" noMatch={null}>
-                  <ResourceForm parent={resource}>
+                <Authorized authority="system.api.add" noMatch={null}>
+                  <ResourceForm parent={btn}>
                     <Button type="primary" title="新增">
                       <Icon type="plus" />
                     </Button>
                   </ResourceForm>
                 </Authorized>
               </div>
-              <Table rowKey="id" loading={loading} columns={columns} dataSource={list} />
+              <Table
+                rowKey="id"
+                bordered
+                loading={loading}
+                columns={columns}
+                dataSource={list}
+                pagination={false}
+                onChange={handleTableChange}
+              />
             </div>
           </Card>
         </Col>
       </Row>
     </PageHeaderWrapper>
   );
+});
+
+const areEqual = (prevProps, nextProps) => {
+  return isEqual(prevProps, nextProps);
 };
 
-export default connect(({ systemResource: { tree, list }, loading }) => ({
-  tree,
-  list,
-  loading: loading.models.systemResource,
-}))(Resource);
+export default memo(Btn, areEqual);

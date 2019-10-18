@@ -1,28 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
 import { Card, Button, Input, Divider, Modal, message, Icon, Switch, Table } from 'antd';
+import { isEqual } from 'lodash';
 import Link from 'umi/link';
 import router from 'umi/router';
 import moment from 'moment';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Authorized from '@/utils/Authorized';
+import { getValue } from '@/utils/utils';
 import IconFont from '@/components/IconFont';
 import DictionaryForm from './components/DictionaryForm';
 import styles from '../System.less';
 
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
-
-const Dictionary = props => {
-  const { loading, list, pagination, dispatch, match, location } = props;
+const Dictionary = connect(({ systemDictionary: { list, pagination }, loading }) => ({
+  list,
+  pagination,
+  loading: loading.models.systemDictionary,
+}))(({ loading, list, pagination, dispatch, match, location }) => {
   const {
     params: { id: parentDictId },
   } = match;
 
   // 【复选框状态属性与函数】
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   // 【首次请求加载列表数据】
   useEffect(() => {
@@ -42,7 +42,7 @@ const Dictionary = props => {
         type: 'systemDictionary/clearList',
       });
     };
-  }, [dispatch, parentDictId]);
+  }, [parentDictId, dispatch]);
 
   // 【开启禁用字典状态】
   const toggleState = (checked, record) => {
@@ -60,20 +60,20 @@ const Dictionary = props => {
 
   // 【搜索】
   const handleFormSubmit = () => {
-    message.info('正在开发中……');
+    message.info('演示环境，暂未开放。');
   };
 
   // 【批量删除】
   const deleteBatchItem = () => {
-    if (selectedRows.length === 0) return;
+    if (selectedRowKeys.length === 0) return;
     dispatch({
       type: 'systemDictionary/deleteBatch',
       payload: {
         parentId: parentDictId || 0,
-        ids: selectedRows,
+        ids: selectedRowKeys,
       },
       callback: () => {
-        setSelectedRows([]);
+        selectedRowKeys([]);
       },
     });
   };
@@ -97,7 +97,7 @@ const Dictionary = props => {
         parentId,
       },
       callback: () => {
-        setSelectedRows([]);
+        setSelectedRowKeys([]);
         message.success('删除成功');
       },
     });
@@ -152,9 +152,12 @@ const Dictionary = props => {
   );
 
   // 【复选框相关操作】
+  const handleRowSelectChange = rowKeys => {
+    setSelectedRowKeys(rowKeys);
+  };
   const rowSelection = {
-    selectedRows,
-    onChange: setSelectedRows,
+    selectedRowKeys,
+    onChange: handleRowSelectChange,
   };
 
   // 【表格列】
@@ -188,7 +191,11 @@ const Dictionary = props => {
       filters: [{ text: '禁用', value: 0 }, { text: '启用', value: 1 }],
       filterMultiple: false,
       render: (text, record) => {
-        return <Switch checked={text} onClick={checked => toggleState(checked, record)} />;
+        return (
+          <Authorized authority="system.dictionary.status" noMatch="--">
+            <Switch checked={text} onClick={checked => toggleState(checked, record)} />
+          </Authorized>
+        );
       },
     },
     {
@@ -233,7 +240,7 @@ const Dictionary = props => {
             <Authorized authority="system.dictionary.batchDelete" noMatch={null}>
               <Button
                 type="danger"
-                disabled={selectedRows.length <= 0}
+                disabled={selectedRowKeys.length <= 0}
                 title="删除"
                 onClick={handleBatchDelete}
               >
@@ -259,10 +266,10 @@ const Dictionary = props => {
       </Card>
     </PageHeaderWrapper>
   );
+});
+
+const areEqual = (prevProps, nextProps) => {
+  return isEqual(prevProps, nextProps);
 };
 
-export default connect(({ systemDictionary: { list, pagination }, loading }) => ({
-  list,
-  pagination,
-  loading: loading.models.systemDictionary,
-}))(Dictionary);
+export default memo(Dictionary, areEqual());

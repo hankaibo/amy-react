@@ -194,7 +194,10 @@ export default {
       };
     },
     clearUser(state) {
-      return { ...state, editUser: {} };
+      return {
+        ...state,
+        editUser: {},
+      };
     },
     saveUserRole(state, { payload }) {
       const { roleList, selectedRoleIdList } = payload;
@@ -205,7 +208,11 @@ export default {
       };
     },
     clearUserRole(state) {
-      return { ...state, roleList: [], selectedRoleIdList: [] };
+      return {
+        ...state,
+        roleList: [],
+        selectedRoleIdList: [],
+      };
     },
   },
 };
