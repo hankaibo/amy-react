@@ -63,7 +63,7 @@ class HeaderView extends Component {
       router.push('/account/center');
       return;
     }
-    if (key === 'userinfo') {
+    if (key === 'userInfo') {
       router.push('/account/settings/base');
       return;
     }

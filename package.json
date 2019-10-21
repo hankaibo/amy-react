@@ -35,7 +35,7 @@
     "not ie <= 10"
   ],
   "dependencies": {
-    "antd": "^3.23.6",
+    "antd": "^3.24.2",
     "classnames": "^2.2.6",
     "dva": "^2.4.1",
     "enquire-js": "^0.2.1",
@@ -58,8 +58,8 @@
     "react-fittext": "^1.0.0",
     "react-media": "^1.10.0",
     "resize-observer-polyfill": "^1.5.1",
-    "umi": "^2.10.4",
-    "umi-plugin-react": "^1.12.5",
+    "umi": "^2.10.6",
+    "umi-plugin-react": "^1.12.7",
     "umi-request": "^1.2.8"
   },
   "devDependencies": {
