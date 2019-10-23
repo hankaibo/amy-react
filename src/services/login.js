@@ -1,13 +1,13 @@
 import request from '@/utils/request';
 
-export async function accountLogin(params) {
+export async function login(params) {
   return request('/login', {
     method: 'POST',
     data: params,
   });
 }
 
-export async function accountLogout() {
+export async function logout() {
   return request('/logout', {
     method: 'POST',
   });

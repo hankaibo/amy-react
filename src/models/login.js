@@ -1,6 +1,6 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
-import { accountLogin, accountLogout, getCaptcha } from '@/services/login';
+import { login, logout, getCaptcha } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
@@ -14,7 +14,7 @@ export default {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(accountLogin, payload);
+      const response = yield call(login, payload);
       yield put({
         type: 'changeLoginStatus',
         payload: response,
@@ -52,7 +52,7 @@ export default {
     },
 
     *logout(_, { call, put }) {
-      yield call(accountLogout);
+      yield call(logout);
       yield put({
         type: 'changeLoginStatus',
         payload: {

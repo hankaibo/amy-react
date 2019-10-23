@@ -1,4 +1,11 @@
-import queryNotices from '@/services/notice';
+import {
+  listen,
+  listNotices,
+  // readNotices,
+  // clearNotices,
+  // deleteNotices,
+  // deleteBatchNotices,
+} from '@/services/notice';
 
 export default {
   namespace: 'global',
@@ -10,7 +17,7 @@ export default {
 
   effects: {
     *fetchNotices(_, { call, put, select }) {
-      const data = yield call(queryNotices);
+      const data = yield call(listNotices);
       yield put({
         type: 'saveNotices',
         payload: data,
@@ -85,6 +92,17 @@ export default {
         ...state,
         notices: state.notices.filter(item => item.type !== payload),
       };
+    },
+  },
+
+  subscriptions: {
+    watchWebSocket({ dispatch }) {
+      return listen(data => {
+        dispatch({
+          type: 'saveNotices',
+          payload: data,
+        });
+      });
     },
   },
 };
