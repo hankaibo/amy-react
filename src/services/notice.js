@@ -1,11 +1,28 @@
-import WebSocketAsPromised from 'websocket-as-promised';
+import Sockjs from 'sockjs-client';
+import Stomp from 'stompjs';
 
-const wsp = new WebSocketAsPromised('ws://localhost:8080/myHandler/ID=123');
-wsp.open();
+let client;
 
-// const wsp = new WebSocketAsPromised('wss://echo.websocket.org');
+export function connect() {
+  // 后台配置的 StompEndpoints
+  const socket = new Sockjs('http://127.0.0.1:8080/ws');
+  client = Stomp.over(socket);
+
+  client.connect({ Authorization: localStorage.getItem('jwt') }, data => {
+    console.log('client connect success: ', data);
+  }, error => {
+    console.log('client lost connect: ', error);
+  });
+}
+
+export function disconnect() {
+  if (client) {
+    client.disconnect();
+  }
+}
+
 export async function listen(action) {
-  wsp.onMessage.addListener(data => {
+  client.subscribe('/sub/public', data => {
     // 模拟后台服务器返回的数据
     const mockData = [
       {
@@ -130,7 +147,7 @@ export async function readNotices(payload) {
  * @returns {Promise<void>}
  */
 export async function clearNotices() {
-  wsp.send('all');
+  client.send('destination', {}, 'body');
 }
 
 /**

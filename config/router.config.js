@@ -83,6 +83,12 @@ export default [
             ],
           },
           {
+            path: '/app/system/information',
+            name: 'information',
+            component: './System/Information',
+            dynamic: true,
+          },
+          {
             component: '404',
           },
         ],

@@ -274,6 +274,13 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
               </a>
             </UserRoleForm>
           </Authorized>
+          <Authorized authority="system.user.reset" noMatch={null}>
+            <UserRoleForm user={record}>
+              <a>
+                <IconFont type="icon-reset" title="重置密码" />
+              </a>
+            </UserRoleForm>
+          </Authorized>
         </>
       ),
     },
