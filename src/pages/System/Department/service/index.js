@@ -2,7 +2,7 @@ import { stringify } from 'qs';
 import request from '@/utils/request';
 
 /**
- * 获取整棵部门树数据。
+ * 获取整棵部门树。
  * @returns {Promise<void>}
  */
 export async function getDepartmentTree() {
@@ -64,7 +64,7 @@ export async function updateDepartment(params) {
  */
 export async function enableDepartment(params) {
   const { id, status } = params;
-  return request(`/departments/${id}`, {
+  return request(`/departments/${id}/status`, {
     method: 'PATCH',
     data: {
       status,
