@@ -191,6 +191,11 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
             </a>
             <Divider type="vertical" />
           </Authorized>
+          <Authorized authority="system.information.publish" noMatch={null}>
+            <a onClick={() => handleDelete(record)}>
+              <IconFont type="icon-publish" title="发布" />
+            </a>
+          </Authorized>
         </>
       ),
     },
