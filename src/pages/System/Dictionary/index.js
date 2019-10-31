@@ -212,8 +212,8 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
               <a>
                 <IconFont type="icon-edit" title="编辑" />
               </a>
-              <Divider type="vertical" />
             </DictionaryForm>
+            <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system.dictionary.delete" noMatch={null}>
             <a onClick={() => handleDelete(record)}>

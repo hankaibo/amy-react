@@ -242,8 +242,8 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
               <a>
                 <IconFont type="icon-edit" title="编辑" />
               </a>
-              <Divider type="vertical" />
             </DepartmentForm>
+            <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system.department.delete" noMatch={null}>
             <a onClick={() => handleDelete(record)}>

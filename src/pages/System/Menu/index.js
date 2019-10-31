@@ -169,8 +169,8 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
               <a>
                 <IconFont type="icon-edit" title="编辑" />
               </a>
-              <Divider type="vertical" />
             </MenuForm>
+            <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system.menu.delete" noMatch={null}>
             <a onClick={() => handleDelete(record)}>

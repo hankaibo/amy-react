@@ -273,6 +273,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
                 <IconFont type="icon-role" title="分配角色" />
               </a>
             </UserRoleForm>
+            <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system.user.reset" noMatch={null}>
             <UserRoleForm user={record}>

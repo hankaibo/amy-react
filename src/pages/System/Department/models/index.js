@@ -22,8 +22,8 @@ export default {
   },
 
   effects: {
-    *fetch({ payload, callback }, { call, put }) {
-      const response = yield call(getDepartmentTree, payload);
+    *fetch({ callback }, { call, put }) {
+      const response = yield call(getDepartmentTree);
       yield put({
         type: 'saveTree',
         payload: {

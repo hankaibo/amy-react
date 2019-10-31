@@ -19,7 +19,7 @@ export default {
   },
 
   effects: {
-    * fetch({ payload, callback }, { call, put }) {
+    *fetch({ payload, callback }, { call, put }) {
       const response = yield call(pageInformation, payload);
       const { list, pageNum: current, pageSize, total } = response;
       yield put({
@@ -31,7 +31,7 @@ export default {
       });
       if (callback) callback();
     },
-    * add({ payload, callback }, { call, put, select }) {
+    *add({ payload, callback }, { call, put, select }) {
       yield call(addInformation, payload);
       const pagination = yield select(state => state.systemInformation.pagination);
       delete pagination.total;
@@ -43,7 +43,7 @@ export default {
       });
       if (callback) callback();
     },
-    * fetchById({ payload, callback }, { call, put }) {
+    *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getInformationById, id);
       yield put({
@@ -54,7 +54,7 @@ export default {
       });
       if (callback) callback();
     },
-    * update({ payload, callback }, { call, put, select }) {
+    *update({ payload, callback }, { call, put, select }) {
       yield call(updateInformation, payload);
       const pagination = yield select(state => state.systemInformation.pagination);
       delete pagination.total;
@@ -66,7 +66,7 @@ export default {
       });
       if (callback) callback();
     },
-    * delete({ payload, callback }, { call, put, select }) {
+    *delete({ payload, callback }, { call, put, select }) {
       const { id } = payload;
       yield call(deleteInformation, id);
       const pagination = yield select(state => state.systemInformation.pagination);
@@ -79,7 +79,7 @@ export default {
       });
       if (callback) callback();
     },
-    * deleteBatch({ payload, callback }, { call, put, select }) {
+    *deleteBatch({ payload, callback }, { call, put, select }) {
       const { ids } = payload;
       yield call(deleteBatchInformation, ids);
       const pagination = yield select(state => state.systemInformation.pagination);

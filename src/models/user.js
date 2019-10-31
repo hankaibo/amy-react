@@ -171,7 +171,7 @@ export default {
     *fetchCurrent({ payload }, { call, put }) {
       // 查询登录用户的个人与菜单信息数据
       const response = yield call(queryCurrent);
-      const { menuList, user } = response;
+      const { menuList = [], user = {} } = response;
       // 拿出路由
       const { routes, authority } = payload;
       const routerMap = filterRouters(routes, menuList); // 这边取出实际的路由表

@@ -16,8 +16,8 @@
 ### 使用命令行
 
 ```bash
-$ git clone https://github.com/hankaibo/myantdpro.git fe
-$ cd fe
+$ git clone https://github.com/hankaibo/myantdpro.git myantdpro
+$ cd myantdpro
 $ npm install(npm --registry https://registry.npm.taobao.org install)
 $ npm start         # 访问 http://localhost:8000
 ```

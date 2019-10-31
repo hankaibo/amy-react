@@ -1,7 +1,7 @@
 /* globals workbox */
 /* eslint-disable no-restricted-globals */
 workbox.core.setCacheNameDetails({
-  prefix: 'fe',
+  prefix: 'myantdpro',
   suffix: 'v1',
 });
 // Control all opened tabs ASAP

@@ -79,7 +79,7 @@ export default {
     getLocalIdent: (context, localIdentName, localName) => {
       if (
         context.resourcePath.includes('node_modules') ||
-        context.resourcePath.includes('fe.less') ||
+        context.resourcePath.includes('myantdpro.less') ||
         context.resourcePath.includes('global.less')
       ) {
         return localName;

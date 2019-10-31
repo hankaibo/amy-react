@@ -1,6 +1,6 @@
 {
-  "name": "fe",
-  "short_name": "fe",
+  "name": "My Ant Design Pro",
+  "short_name": "myantdpro",
   "display": "standalone",
   "start_url": "./?utm_source=homescreen",
   "theme_color": "#002140",

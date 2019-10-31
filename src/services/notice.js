@@ -8,11 +8,15 @@ export function connect() {
   const socket = new Sockjs('http://127.0.0.1:8080/ws');
   client = Stomp.over(socket);
 
-  client.connect({ Authorization: localStorage.getItem('jwt') }, data => {
-    console.log('client connect success: ', data);
-  }, error => {
-    console.log('client lost connect: ', error);
-  });
+  client.connect(
+    { Authorization: localStorage.getItem('jwt') },
+    data => {
+      console.log('client connect success: ', data);
+    },
+    error => {
+      console.log('client lost connect: ', error);
+    }
+  );
 }
 
 export function disconnect() {
@@ -22,7 +26,7 @@ export function disconnect() {
 }
 
 export async function listen(action) {
-  client.subscribe('/sub/public', data => {
+  client.subscribe('/sub/public', () => {
     // 模拟后台服务器返回的数据
     const mockData = [
       {
@@ -121,29 +125,26 @@ export async function listen(action) {
         type: 'event',
       },
     ];
-    console.log(data);
     action(mockData);
   });
 }
 
 export async function listNotices() {
-  await wsp.send('message');
-  console.log(wsp.readyState);
+  return null;
 }
 
 /**
  * 读取一条信息，不分已读未读。后台将相关信息返回，并将状态标示为已读。
  * @param payload
- * @returns {Promise<void>}
+ * @returns {Promise<number>}
  */
 export async function readNotices(payload) {
   const { id = Date.now() } = payload;
-  wsp.send(id);
+  return id;
 }
 
 /**
  * 清空所有未读信息。后台将所有信息状态标示为已读。
- * @param payload
  * @returns {Promise<void>}
  */
 export async function clearNotices() {
@@ -153,18 +154,17 @@ export async function clearNotices() {
 /**
  * 根据主键删除一条信息。不分已读未读。
  * @param payload
- * @returns {Promise<void>}
+ * @returns {Promise<string>}
  */
 export async function deleteNotices(payload) {
   const { id = 'test' } = payload;
-  wsp.send(id);
+  return id;
 }
 
 /**
  * 删除所有信息。不分已读未读。
- * @param payload
  * @returns {Promise<void>}
  */
 export async function deleteBatchNotices() {
-  wsp.send('delete all');
+  return null;
 }

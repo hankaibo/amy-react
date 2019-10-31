@@ -51,7 +51,7 @@ const UserLayout = props => {
             <div className={styles.header}>
               <Link to="/">
                 <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>FE</span>
+                <span className={styles.title}>myantdpro</span>
               </Link>
             </div>
           </div>

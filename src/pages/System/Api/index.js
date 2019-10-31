@@ -179,8 +179,8 @@ const Btn = connect(({ systemApi: { tree, list }, loading }) => ({
               <a>
                 <IconFont type="icon-edit" title="编辑" />
               </a>
-              <Divider type="vertical" />
             </ResourceForm>
+            <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system.api.delete" noMatch={null}>
             <a onClick={() => handleDelete(record)}>
