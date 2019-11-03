@@ -44,7 +44,7 @@ export default {
       if (callback) callback();
     },
     *add({ payload, callback }, { call, put }) {
-      const { parentId } = payload;
+      const { oldParentId: parentId } = payload;
       const params = { ...payload, status: +payload.status };
       yield call(addDepartment, params);
       yield put({
@@ -71,7 +71,7 @@ export default {
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
-      const { parentId } = payload;
+      const { oldParentId: parentId } = payload;
       const params = { ...payload, status: +payload.status };
       yield call(updateDepartment, params);
       yield put({

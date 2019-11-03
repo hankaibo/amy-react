@@ -58,13 +58,11 @@
     "react-fittext": "^1.0.0",
     "react-media": "^1.10.0",
     "resize-observer-polyfill": "^1.5.1",
-    "sockjs": "^0.3.19",
     "sockjs-client": "^1.4.0",
     "stompjs": "^2.3.3",
     "umi": "^2.10.6",
     "umi-plugin-react": "^1.12.7",
-    "umi-request": "^1.2.8",
-    "websocket-as-promised": "^0.10.1"
+    "umi-request": "^1.2.8"
   },
   "devDependencies": {
     "antd-pro-merge-less": "^1.0.0",

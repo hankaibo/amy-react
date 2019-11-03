@@ -44,23 +44,25 @@ const DepartmentForm = connect(({ systemDepartment: { tree, editDepartment }, lo
         };
       }, [visible, isEdit, department, dispatch]);
 
-      // 【回显表单】
+      // 【修改时，回显表单】
       useEffect(() => {
         // 👍 将条件判断放置在 effect 中
         if (visible && isEdit) {
           if (Object.keys(editDepartment).length > 0) {
-            setFieldsValue(editDepartment);
+            // 不论是否修改父部门，保证页面停留在原页面下。
+            setFieldsValue({ ...editDepartment, oldParentId: editDepartment.parentId });
           }
         }
       }, [visible, isEdit, editDepartment, setFieldsValue]);
 
-      // 【保证任何时候添加上级菜单都有默认值】
+      // 【新建时，保证任何时候添加上级菜单都有默认值】
+      // 不论是否修改父部门，保证页面停留在原页面下。
       useEffect(() => {
         if (visible) {
           if (department) {
-            setFieldsValue({ parentId: department.id });
+            setFieldsValue({ parentId: department.id, oldParentId: department.id });
           } else if (tree.length) {
-            setFieldsValue({ parentId: tree[0].id });
+            setFieldsValue({ parentId: tree[0].id, oldParentId: tree[0].id });
           }
         }
       }, [visible, department, tree, setFieldsValue]);
@@ -126,6 +128,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, editDepartment }, lo
           >
             <Form {...formItemLayout}>
               {isEdit && getFieldDecorator('id')(<Input hidden />)}
+              {getFieldDecorator('oldParentId')(<Input hidden />)}
               <FormItem label="名称">
                 {getFieldDecorator('name', {
                   rules: [

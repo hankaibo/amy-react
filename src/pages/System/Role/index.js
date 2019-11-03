@@ -23,6 +23,10 @@ const Role = connect(({ systemRole: { list, pagination }, loading }) => ({
   useEffect(() => {
     dispatch({
       type: 'systemRole/fetch',
+      payload: {
+        current: 1,
+        pageSize: 10,
+      },
     });
     return () => {
       dispatch({

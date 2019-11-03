@@ -275,7 +275,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
             </UserRoleForm>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system.user.reset" noMatch={null}>
+          <Authorized authority="system.user.pwd.reset" noMatch={null}>
             <UserRoleForm user={record}>
               <a>
                 <IconFont type="icon-reset" title="重置密码" />

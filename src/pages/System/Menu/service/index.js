@@ -6,7 +6,7 @@ import request from '@/utils/request';
  * @returns {Promise<void>}
  */
 export async function getMenuTree() {
-  return request('/resources?type=');
+  return request('/resources');
 }
 
 /**

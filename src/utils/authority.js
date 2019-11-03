@@ -17,6 +17,6 @@ export function getAuthority(str) {
 }
 
 export function setAuthority(authority) {
-  const feAuthority = typeof authority === 'string' ? authority.split(',') : authority;
-  return localStorage.setItem('myantdpro-authority', JSON.stringify(feAuthority));
+  const myantdproAuthority = typeof authority === 'string' ? authority.split(',') : authority;
+  return localStorage.setItem('myantdpro-authority', JSON.stringify(myantdproAuthority));
 }
