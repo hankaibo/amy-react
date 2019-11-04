@@ -21,6 +21,7 @@ import IconFont from '@/components/IconFont';
 import { getValue } from '@/utils/utils';
 import UserForm from './components/UserForm';
 import UserRoleForm from './components/UserRoleForm';
+import UserPasswordForm from './components/UserPasswordForm';
 import styles from '../System.less';
 
 const sexText = {
@@ -275,12 +276,12 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
             </UserRoleForm>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system.user.pwd.reset" noMatch={null}>
-            <UserRoleForm user={record}>
+          <Authorized authority="system.user.grant" noMatch={null}>
+            <UserPasswordForm user={record}>
               <a>
                 <IconFont type="icon-reset" title="重置密码" />
               </a>
-            </UserRoleForm>
+            </UserPasswordForm>
           </Authorized>
         </>
       ),

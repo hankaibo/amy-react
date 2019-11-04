@@ -5,6 +5,7 @@ import {
   getUserById,
   updateUser,
   enableUser,
+  resetUserPassword,
   deleteUser,
   deleteBatchUser,
   listUserRole,
@@ -106,6 +107,10 @@ export default {
           ...pagination,
         },
       });
+      if (callback) callback();
+    },
+    *reset({ payload, callback }, { call }) {
+      yield call(resetUserPassword, payload);
       if (callback) callback();
     },
     *delete({ payload, callback }, { call, put, select }) {

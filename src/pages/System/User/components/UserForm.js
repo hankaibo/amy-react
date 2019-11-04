@@ -67,7 +67,7 @@ const UserForm = connect(({ systemUser: { tree, editUser }, loading }) => ({
         };
       }, [visible, isEdit, user, dispatch]);
 
-      // 【回显表单】
+      // 【修改时，回显表单】
       useEffect(() => {
         // 👍 将条件判断放置在 effect 中
         if (visible && isEdit) {
@@ -77,7 +77,7 @@ const UserForm = connect(({ systemUser: { tree, editUser }, loading }) => ({
         }
       }, [visible, isEdit, editUser, setFieldsValue]);
 
-      // 【保证任何时候添加上级菜单都有默认值】
+      // 【新建时，保证任何时候添加上级菜单都有默认值】
       // 【使用一个旧部门id，保证修改后还是在本页面】
       //  比如，用户从研究部门修改到测试部门了，这时候是显示研发部门的列表呢，还是显示测试部门的列表？
       // 为了简单方便，添加了一个原属部门的值，保证修改之后，继续刷新原页面。

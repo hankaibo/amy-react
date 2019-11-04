@@ -64,10 +64,26 @@ export async function updateUser(params) {
  */
 export async function enableUser(params) {
   const { id, status } = params;
-  return request(`/users/${id}`, {
+  return request(`/users/${id}/status`, {
     method: 'PATCH',
     data: {
       status,
+    },
+  });
+}
+
+/**
+ * 重置用户密码。
+ *
+ * @param params
+ * @returns {Promise<void>}
+ */
+export async function resetUserPassword(params) {
+  const { id, password } = params;
+  return request(`/users/${id}/password`, {
+    method: 'PATCH',
+    data: {
+      password,
     },
   });
 }
@@ -91,9 +107,7 @@ export async function deleteUser(id) {
 export async function deleteBatchUser(ids) {
   return request('/users', {
     method: 'DELETE',
-    data: {
-      ids,
-    },
+    data: ids,
   });
 }
 
