@@ -141,7 +141,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, editDepartment }, lo
                   ],
                 })(<Input />)}
               </FormItem>
-              <FormItem label="上级部门">
+              <FormItem label="父部门">
                 {getFieldDecorator('parentId', {
                   rules: [{ required: true, message: '请选择一个父部门！' }],
                 })(

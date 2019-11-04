@@ -191,7 +191,10 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   const columns = [
     {
       title: '部门名称',
-      dataIndex: 'title',
+      dataIndex: 'name',
+      render: (text, record) => {
+        return record.name || record.title;
+      },
     },
     {
       title: '部门状态',
@@ -298,9 +301,10 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
               <Table
                 rowKey="id"
                 bordered
+                childrenColumnName="child"
                 loading={loading}
                 columns={columns}
-                dataSource={list}
+                dataSource={list.length === 0 && department === null ? tree : list}
                 pagination={false}
                 onChange={handleTableChange}
               />
