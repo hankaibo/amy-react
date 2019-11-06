@@ -74,12 +74,14 @@ export default {
       const { oldParentId: parentId } = payload;
       const params = { ...payload, status: +payload.status };
       yield call(updateDepartment, params);
-      yield put({
-        type: 'fetchChildrenById',
-        payload: {
-          id: parentId,
-        },
-      });
+      if (parentId) {
+        yield put({
+          type: 'fetchChildrenById',
+          payload: {
+            id: parentId,
+          },
+        });
+      }
       yield put({
         type: 'fetch',
       });

@@ -141,19 +141,21 @@ const DepartmentForm = connect(({ systemDepartment: { tree, editDepartment }, lo
                   ],
                 })(<Input />)}
               </FormItem>
-              <FormItem label="父部门">
-                {getFieldDecorator('parentId', {
-                  rules: [{ required: true, message: '请选择一个父部门！' }],
-                })(
-                  <TreeSelect
-                    style={{ width: '100%' }}
-                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                    treeData={tree}
-                    placeholder="请选择部门"
-                    treeDefaultExpandAll
-                  />
-                )}
-              </FormItem>
+              {isEdit && !editDepartment.parentId ? null : (
+                <FormItem label="父部门">
+                  {getFieldDecorator('parentId', {
+                    rules: [{ required: true, message: '请选择一个父部门！' }],
+                  })(
+                    <TreeSelect
+                      style={{ width: '100%' }}
+                      dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                      treeData={tree}
+                      placeholder="请选择部门"
+                      treeDefaultExpandAll
+                    />
+                  )}
+                </FormItem>
+              )}
               <FormItem label="状态">
                 {getFieldDecorator('status', {
                   rules: [{ required: true }],
