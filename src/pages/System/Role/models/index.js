@@ -1,11 +1,11 @@
 import {
-  pageRole,
+  getRoleTree,
+  listSubRoleById,
   addRole,
   getRoleById,
   updateRole,
   enableRole,
   deleteRole,
-  deleteBatchRole,
   getResourceByRole,
   grantRoleResource,
 } from '../service';
@@ -14,41 +14,52 @@ export default {
   namespace: 'systemRole',
 
   state: {
-    // 列表及分页
+    // 角色树
+    tree: [],
+    // 列表
     list: [],
-    pagination: {},
     // 编辑
     editRole: {},
     // 资源树、选中的Keys、半联动的keys
-    tree: [],
+    resourceTree: [],
     checkedKeys: [],
     halfCheckedKeys: [],
   },
 
   effects: {
-    *fetch({ payload, callback }, { call, put }) {
-      const response = yield call(pageRole, payload);
-      const { list, pageNum: current, pageSize, total } = response;
-      const newList = list.map(item => ({ ...item, status: !!item.status }));
+    *fetch({ callback }, { call, put }) {
+      const response = yield call(getRoleTree);
       yield put({
-        type: 'saveList',
+        type: 'saveTree',
         payload: {
-          list: newList,
-          pagination: { current, pageSize, total },
+          tree: response,
         },
       });
       if (callback) callback();
     },
-    *add({ payload, callback }, { call, put, select }) {
+    *fetchChildrenById({ payload, callback }, { call, put }) {
+      const response = yield call(listSubRoleById, payload);
+      const list = response.map(item => ({ ...item, status: !!item.status }));
+      yield put({
+        type: 'saveList',
+        payload: {
+          list,
+        },
+      });
+      if (callback) callback();
+    },
+    *add({ payload, callback }, { call, put }) {
+      const { oldParentId: parentId } = payload;
       const params = { ...payload, status: +payload.status };
       yield call(addRole, params);
-      const pagination = yield select(state => state.systemRole.pagination);
-      delete pagination.total;
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          id: parentId,
+        },
+      });
       yield put({
         type: 'fetch',
-        payload: {
-          ...pagination,
-        },
       });
       if (callback) callback();
     },
@@ -64,56 +75,49 @@ export default {
       });
       if (callback) callback();
     },
-    *update({ payload, callback }, { call, put, select }) {
+    *update({ payload, callback }, { call, put }) {
+      const { oldParentId: parentId } = payload;
       const params = { ...payload, status: +payload.status };
       yield call(updateRole, params);
-      const pagination = yield select(state => state.systemRole.pagination);
-      delete pagination.total;
+      if (parentId) {
+        yield put({
+          type: 'fetchChildrenById',
+          payload: {
+            id: parentId,
+          },
+        });
+      }
       yield put({
         type: 'fetch',
-        payload: {
-          ...pagination,
-        },
       });
       if (callback) callback();
     },
-    *enable({ payload, callback }, { call, put, select }) {
-      const { id, status } = payload;
+    *enable({ payload, callback }, { call, put }) {
+      const { id, status, parentId } = payload;
       const params = { id, status: +status };
       yield call(enableRole, params);
-      const pagination = yield select(state => state.systemRole.pagination);
-      delete pagination.total;
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          id: parentId,
+        },
+      });
       yield put({
         type: 'fetch',
-        payload: {
-          ...pagination,
-        },
       });
       if (callback) callback();
     },
-    *delete({ payload, callback }, { call, put, select }) {
-      const { id } = payload;
+    *delete({ payload, callback }, { call, put }) {
+      const { id, parentId } = payload;
       yield call(deleteRole, id);
-      const pagination = yield select(state => state.systemRole.pagination);
-      delete pagination.total;
       yield put({
-        type: 'fetch',
+        type: 'fetchChildrenById',
         payload: {
-          ...pagination,
+          id: parentId,
         },
       });
-      if (callback) callback();
-    },
-    *deleteBatch({ payload, callback }, { call, put, select }) {
-      const { ids } = payload;
-      yield call(deleteBatchRole, ids);
-      const pagination = yield select(state => state.systemRole.pagination);
-      delete pagination.total;
       yield put({
         type: 'fetch',
-        payload: {
-          ...pagination,
-        },
       });
       if (callback) callback();
     },
@@ -134,7 +138,7 @@ export default {
       yield put({
         type: 'saveResTree',
         payload: {
-          tree: resTree,
+          resourceTree: resTree,
           checkedKeys: selected.map(item => item.id.toString()),
           halfCheckedKeys: halfSelected.map(item => item.id.toString()),
         },
@@ -148,19 +152,30 @@ export default {
   },
 
   reducers: {
+    saveTree(state, { payload }) {
+      const { tree } = payload;
+      return {
+        ...state,
+        tree,
+      };
+    },
+    clearTree(state) {
+      return {
+        ...state,
+        tree: [],
+      };
+    },
     saveList(state, { payload }) {
-      const { list, pagination } = payload;
+      const { list } = payload;
       return {
         ...state,
         list,
-        pagination,
       };
     },
     clearList(state) {
       return {
         ...state,
         list: [],
-        pagination: {},
       };
     },
     saveRole(state, { payload }) {
@@ -177,10 +192,10 @@ export default {
       };
     },
     saveResTree(state, { payload }) {
-      const { tree, checkedKeys, halfCheckedKeys } = payload;
+      const { resourceTree, checkedKeys, halfCheckedKeys } = payload;
       return {
         ...state,
-        tree,
+        resourceTree,
         checkedKeys,
         halfCheckedKeys,
       };
@@ -188,7 +203,7 @@ export default {
     clearResTree(state) {
       return {
         ...state,
-        tree: [],
+        resourceTree: [],
         checkedKeys: [],
         halfCheckedKeys: [],
       };

@@ -2,12 +2,21 @@ import { stringify } from 'qs';
 import request from '@/utils/request';
 
 /**
- * 按条件查询角色列表数据。
+ * 获取整棵角色树。
+ * @returns {Promise<void>}
+ */
+export async function getRoleTree() {
+  return request('/roles');
+}
+
+/**
+ * 根据父角色主键查询其所有子角色数据。
  * @param params
  * @returns {Promise<void>}
  */
-export async function pageRole(params) {
-  return request(`/roles?${stringify(params)}`);
+export async function listSubRoleById(params) {
+  const { id, ...rest } = params;
+  return request(`/roles/${id}/children?${stringify(rest)}`);
 }
 
 /**
@@ -56,7 +65,7 @@ export async function updateRole(params) {
  */
 export async function enableRole(params) {
   const { id, status } = params;
-  return request(`/roles/${id}`, {
+  return request(`/roles/${id}/status`, {
     method: 'PATCH',
     data: {
       status,
@@ -72,20 +81,6 @@ export async function enableRole(params) {
 export async function deleteRole(id) {
   return request(`/roles/${id}`, {
     method: 'DELETE',
-  });
-}
-
-/**
- * 批量删除角色。
- * @param ids
- * @returns {Promise<void>}
- */
-export async function deleteBatchRole(ids) {
-  return request('/roles', {
-    method: 'DELETE',
-    data: {
-      ids,
-    },
   });
 }
 

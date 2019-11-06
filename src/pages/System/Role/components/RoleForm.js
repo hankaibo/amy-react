@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Modal, Switch, message, Button } from 'antd';
+import { Form, Input, Modal, Switch, TreeSelect, message, Button } from 'antd';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
 
-const RoleForm = connect(({ systemRole: { editRole }, loading }) => ({
+const RoleForm = connect(({ systemRole: { tree, editRole }, loading }) => ({
+  tree,
   editRole,
   loading: loading.models.systemRole,
 }))(
   Form.create({ name: 'roleForm' })(
-    ({ loading, children, isEdit, role, editRole, form, dispatch }) => {
+    ({ loading, children, isEdit, role, editRole, tree, form, dispatch }) => {
       const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
 
       // 【模态框显示隐藏属性】
@@ -48,10 +49,20 @@ const RoleForm = connect(({ systemRole: { editRole }, loading }) => ({
         // 👍 将条件判断放置在 effect 中
         if (visible && isEdit) {
           if (Object.keys(editRole).length > 0) {
-            setFieldsValue(editRole);
+            setFieldsValue({ ...editRole, oldParentId: editRole.parentId });
           }
         }
       }, [visible, isEdit, editRole, setFieldsValue]);
+
+      useEffect(() => {
+        if (visible && !isEdit) {
+          if (role) {
+            setFieldsValue({ parentId: role.id, oldParentId: role.parentId });
+          } else if (tree.length) {
+            setFieldsValue({ parentId: tree[0].id, oldParentId: tree[0].id });
+          }
+        }
+      }, [visible, role, tree, setFieldsValue]);
 
       // 【添加与修改】
       const handleAddOrUpdate = () => {
@@ -114,6 +125,7 @@ const RoleForm = connect(({ systemRole: { editRole }, loading }) => ({
           >
             <Form {...formItemLayout}>
               {isEdit && getFieldDecorator('id')(<Input hidden />)}
+              {getFieldDecorator('oldParentId')(<Input hidden />)}
               <FormItem label="名称">
                 {getFieldDecorator('name', {
                   rules: [
@@ -126,6 +138,21 @@ const RoleForm = connect(({ systemRole: { editRole }, loading }) => ({
                   ],
                 })(<Input />)}
               </FormItem>
+              {isEdit && !editRole.parentId ? null : (
+                <FormItem label="父部门">
+                  {getFieldDecorator('parentId', {
+                    rules: [{ required: true, message: '请选择一个父角色！' }],
+                  })(
+                    <TreeSelect
+                      style={{ width: '100%' }}
+                      dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                      treeData={tree}
+                      placeholder="请选择部门"
+                      treeDefaultExpandAll
+                    />
+                  )}
+                </FormItem>
+              )}
               <FormItem label="编码">
                 {getFieldDecorator('code', {
                   rules: [
@@ -147,7 +174,7 @@ const RoleForm = connect(({ systemRole: { editRole }, loading }) => ({
                 {getFieldDecorator('description', {
                   rules: [{ message: '请将描述长度保持在1至50字符之间！', min: 1, max: 50 }],
                 })(
-                  <TextArea placeholder="请输入角色描述。" autosize={{ minRows: 2, maxRows: 6 }} />
+                  <TextArea placeholder="请输入角色描述。" autoSize={{ minRows: 2, maxRows: 6 }} />
                 )}
               </FormItem>
             </Form>

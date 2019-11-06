@@ -10,8 +10,8 @@ const FormItem = Form.Item;
  * 查询后台时，因为我使用左右树结构，非常方便分离出那些是父节点，expandedKeys只设置子节点的值。
  */
 const RoleResourceForm = connect(
-  ({ systemRole: { tree, checkedKeys, halfCheckedKeys }, loading }) => ({
-    treeData: tree,
+  ({ systemRole: { resourceTree, checkedKeys, halfCheckedKeys }, loading }) => ({
+    treeData: resourceTree,
     resCheckedKeys: checkedKeys,
     halfCheckedKeys,
     loading: loading.models.systemRole,
