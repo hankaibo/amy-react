@@ -58,7 +58,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, editDepartment }, lo
       // 【新建时，保证任何时候添加上级菜单都有默认值】
       // 不论是否修改父部门，保证页面停留在原页面下。
       useEffect(() => {
-        if (visible) {
+        if (visible && !isEdit) {
           if (department) {
             setFieldsValue({ parentId: department.id, oldParentId: department.id });
           } else if (tree.length) {
@@ -167,7 +167,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, editDepartment }, lo
                 {getFieldDecorator('description', {
                   rules: [{ message: '请将描述长度保持在1至50字符之间！', min: 1, max: 50 }],
                 })(
-                  <TextArea placeholder="请输入部门描述。" autosize={{ minRows: 2, maxRows: 6 }} />
+                  <TextArea placeholder="请输入部门描述。" autoSize={{ minRows: 2, maxRows: 6 }} />
                 )}
               </FormItem>
             </Form>

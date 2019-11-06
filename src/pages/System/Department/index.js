@@ -204,7 +204,8 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       render: (text, record) => {
         return (
           <Authorized authority="system.department.status" noMatch="--">
-            <Switch checked={text} onClick={checked => toggleState(checked, record)} />
+            {/* true数据不方便转换status，在这里进行转化。 */}
+            <Switch checked={!!text} onClick={checked => toggleState(checked, record)} />
           </Authorized>
         );
       },
