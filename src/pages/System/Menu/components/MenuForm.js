@@ -164,7 +164,7 @@ const MenuForm = connect(({ systemMenu: { tree, editMenu }, loading }) => ({
                   <Switch checkedChildren="开" unCheckedChildren="关" />
                 )}
               </FormItem>
-              <FormItem label="上级菜单">
+              <FormItem label="父菜单">
                 {getFieldDecorator('parentId')(
                   <TreeSelect
                     style={{ width: 300 }}

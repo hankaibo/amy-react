@@ -23,9 +23,6 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
   useEffect(() => {
     dispatch({
       type: 'systemMenu/fetch',
-      payload: {
-        status: 1,
-      },
     });
     return () => {
       dispatch({

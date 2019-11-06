@@ -139,15 +139,15 @@ const RoleForm = connect(({ systemRole: { tree, editRole }, loading }) => ({
                 })(<Input />)}
               </FormItem>
               {isEdit && !editRole.parentId ? null : (
-                <FormItem label="父部门">
+                <FormItem label="父角色">
                   {getFieldDecorator('parentId', {
-                    rules: [{ required: true, message: '请选择一个父角色！' }],
+                    rules: [{ required: false, message: '请选择一个父角色！' }],
                   })(
                     <TreeSelect
                       style={{ width: '100%' }}
                       dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                       treeData={tree}
-                      placeholder="请选择部门"
+                      placeholder="请选择角色"
                       treeDefaultExpandAll
                     />
                   )}

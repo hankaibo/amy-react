@@ -11,11 +11,11 @@ export async function getDepartmentTree() {
 
 /**
  * 根据父部门主键查询其所有子部门数据。
- * @param payload
+ * @param params
  * @returns {Promise<void>}
  */
-export async function listSubDepartmentById(payload) {
-  const { id, ...rest } = payload;
+export async function listSubDepartmentById(params) {
+  const { id, ...rest } = params;
   return request(`/departments/${id}/children?${stringify(rest)}`);
 }
 

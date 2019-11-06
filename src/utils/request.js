@@ -52,7 +52,7 @@ const request = extend({
 
 request.interceptors.request.use(async (url, options) => {
   const token = localStorage.getItem('jwt');
-  if (token) {
+  if (token && !url.startsWith('/api/v1/login')) {
     const headers = {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
