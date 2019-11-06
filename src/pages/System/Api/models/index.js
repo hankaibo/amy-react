@@ -1,12 +1,12 @@
 import {
   getMenuTree,
   listChildrenById,
-  addButton,
-  getButtonById,
-  updateButton,
-  enableButton,
-  deleteButton,
-  deleteBatchButton,
+  addApi,
+  getApiById,
+  updateApi,
+  enableApi,
+  deleteApi,
+  deleteBatchApi,
   moveButton,
 } from '../service';
 
@@ -19,7 +19,7 @@ export default {
     // 列表
     list: [],
     // 编辑
-    editButton: {},
+    editApi: {},
   },
 
   effects: {
@@ -47,7 +47,7 @@ export default {
     *add({ payload, callback }, { call, put }) {
       const { parentId: id } = payload;
       const params = { ...payload, status: +payload.status };
-      yield call(addButton, params);
+      yield call(addApi, params);
       yield put({
         type: 'fetchChildrenById',
         payload: {
@@ -58,12 +58,12 @@ export default {
     },
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
-      const response = yield call(getButtonById, id);
-      const editButton = { ...response, status: !!response.status };
+      const response = yield call(getApiById, id);
+      const editApi = { ...response, status: !!response.status };
       yield put({
         type: 'save',
         payload: {
-          editButton,
+          editApi,
         },
       });
       if (callback) callback();
@@ -71,7 +71,7 @@ export default {
     *update({ payload, callback }, { call, put }) {
       const { parentId } = payload;
       const params = { ...payload, status: +payload.status };
-      yield call(updateButton, params);
+      yield call(updateApi, params);
       yield put({
         type: 'fetchChildrenById',
         payload: {
@@ -83,7 +83,7 @@ export default {
     *enable({ payload, callback }, { call, put }) {
       const { id, status, parentId } = payload;
       const params = { id, status: +status };
-      yield call(enableButton, params);
+      yield call(enableApi, params);
       yield put({
         type: 'fetchChildrenById',
         payload: {
@@ -94,7 +94,7 @@ export default {
     },
     *delete({ payload, callback }, { call, put }) {
       const { id, parentId } = payload;
-      yield call(deleteButton, id);
+      yield call(deleteApi, id);
       yield put({
         type: 'fetchChildrenById',
         payload: {
@@ -104,7 +104,7 @@ export default {
       if (callback) callback();
     },
     *deleteBatch({ ids, callback }, { call }) {
-      yield call(deleteBatchButton, ids);
+      yield call(deleteBatchApi, ids);
       if (callback) callback();
     },
     *move({ payload, callback }, { call, put }) {
@@ -148,16 +148,16 @@ export default {
       };
     },
     save(state, { payload }) {
-      const { editButton } = payload;
+      const { editApi } = payload;
       return {
         ...state,
-        editButton,
+        editApi,
       };
     },
     clear(state) {
       return {
         ...state,
-        editButton: {},
+        editApi: {},
       };
     },
   },

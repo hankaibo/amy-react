@@ -10,7 +10,7 @@ export async function getMenuTree() {
 }
 
 /**
- * 按主键查询所有子按钮数据。
+ * 按主键查询所有子接口数据。
  * @param payload
  * @returns {Promise<void>}
  */
@@ -21,11 +21,11 @@ export async function listChildrenById(payload) {
 }
 
 /**
- * 添加按钮。
+ * 添加接口。
  * @param params
  * @returns {Promise<void>}
  */
-export async function addButton(params) {
+export async function addApi(params) {
   return request('/resources', {
     method: 'POST',
     data: {
@@ -35,19 +35,19 @@ export async function addButton(params) {
 }
 
 /**
- * 按主键查询一条按钮数据。
+ * 按主键查询一条接口数据。
  * @param id
  * @returns {Promise<void>}
  */
-export async function getButtonById(id) {
+export async function getApiById(id) {
   return request(`/resources/${id}`);
 }
 /**
- * 更新按钮。
+ * 更新接口。
  * @param params
  * @returns {Promise<void>}
  */
-export async function updateButton(params) {
+export async function updateApi(params) {
   const { id } = params;
   return request(`/resources/${id}`, {
     method: 'PUT',
@@ -58,11 +58,11 @@ export async function updateButton(params) {
 }
 
 /**
- * 启用禁用按钮。
+ * 启用禁用接口。
  * @param params
  * @return {Promise<void>}
  */
-export async function enableButton(params) {
+export async function enableApi(params) {
   const { id, status } = params;
   return request(`/resources/${id}`, {
     method: 'PATCH',
@@ -85,22 +85,22 @@ export async function moveButton(params) {
 }
 
 /**
- * 删除按钮。
+ * 删除接口。
  * @param id
  * @returns {Promise<void>}
  */
-export async function deleteButton(id) {
+export async function deleteApi(id) {
   return request(`/resources/${id}`, {
     method: 'DELETE',
   });
 }
 
 /**
- * 批量删除按钮。
+ * 批量删除接口。
  * @param ids
  * @returns {Promise<void>}
  */
-export async function deleteBatchButton(ids) {
+export async function deleteBatchApi(ids) {
   return request('/resources', {
     method: 'DELETE',
     data: {

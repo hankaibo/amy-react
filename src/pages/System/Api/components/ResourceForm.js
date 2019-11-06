@@ -4,13 +4,13 @@ import { Form, Input, Modal, Switch, message, Radio, TreeSelect, Button } from '
 
 const FormItem = Form.Item;
 
-const ButtonForm = connect(({ systemApi: { tree, editButton }, loading }) => ({
+const ApiForm = connect(({ systemApi: { tree, editApi }, loading }) => ({
   tree,
-  editButton,
+  editApi,
   loading: loading.models.systemApi,
 }))(
-  Form.create({ name: 'buttonForm' })(
-    ({ loading, children, parent, isEdit, btn, editButton, tree, form, dispatch }) => {
+  Form.create({ name: 'apiForm' })(
+    ({ loading, children, parent, isEdit, api, editApi, tree, form, dispatch }) => {
       const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
 
       // 【模态框显示隐藏属性】
@@ -28,7 +28,7 @@ const ButtonForm = connect(({ systemApi: { tree, editButton }, loading }) => ({
       // 【获取数据】
       useEffect(() => {
         if (visible && isEdit) {
-          const { id } = btn;
+          const { id } = api;
           dispatch({
             type: 'systemApi/fetchById',
             payload: {
@@ -41,23 +41,23 @@ const ButtonForm = connect(({ systemApi: { tree, editButton }, loading }) => ({
             type: 'systemApi/clear',
           });
         };
-      }, [visible, isEdit, btn, dispatch]);
+      }, [visible, isEdit, api, dispatch]);
 
       // 【回显表单】
       useEffect(() => {
         // 👍 将条件判断放置在 effect 中
         if (visible && isEdit) {
-          if (Object.keys(editButton).length > 0) {
+          if (Object.keys(editApi).length > 0) {
             if (parent) {
               const len = parent.code.length;
-              const data = { ...editButton, code: editButton.code.substring(len + 1) };
+              const data = { ...editApi, code: editApi.code.substring(len + 1) };
               setFieldsValue(data);
             } else {
-              setFieldsValue(editButton);
+              setFieldsValue(editApi);
             }
           }
         }
-      }, [visible, isEdit, editButton, parent, setFieldsValue]);
+      }, [visible, isEdit, editApi, parent, setFieldsValue]);
 
       // 【保证任何时候添加上级菜单都有默认值】
       useEffect(() => {
@@ -187,7 +187,7 @@ const ButtonForm = connect(({ systemApi: { tree, editButton }, loading }) => ({
                   </Radio.Group>
                 )}
               </FormItem>
-              <FormItem label="上级菜单">
+              <FormItem label="父菜单">
                 {getFieldDecorator('parentId')(
                   <TreeSelect
                     style={{ width: 300 }}
@@ -206,4 +206,4 @@ const ButtonForm = connect(({ systemApi: { tree, editButton }, loading }) => ({
   )
 );
 
-export default ButtonForm;
+export default ApiForm;

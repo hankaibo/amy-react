@@ -11,13 +11,13 @@ import styles from '../System.less';
 
 const { DirectoryTree } = Tree;
 
-const Btn = connect(({ systemApi: { tree, list }, loading }) => ({
+const Api = connect(({ systemApi: { tree, list }, loading }) => ({
   tree,
   list,
   loading: loading.models.systemApi,
 }))(({ loading, tree, list, dispatch }) => {
   // 【当前点击的菜单】
-  const [btn, setBtn] = useState(null);
+  const [api, setApi] = useState(null);
 
   // 【首次请求加载树数据】
   useEffect(() => {
@@ -44,7 +44,7 @@ const Btn = connect(({ systemApi: { tree, list }, loading }) => ({
           id,
         },
         callback: () => {
-          setBtn(info.node.props);
+          setApi(info.node.props);
         },
       });
     } else {
@@ -110,7 +110,7 @@ const Btn = connect(({ systemApi: { tree, list }, loading }) => ({
       return newObj;
     }, {});
 
-    const { id } = btn;
+    const { id } = api;
 
     const params = {
       id,
@@ -128,6 +128,9 @@ const Btn = connect(({ systemApi: { tree, list }, loading }) => ({
     {
       title: '接口名称',
       dataIndex: 'title',
+      render: (text, record) => {
+        return record.name || record.title;
+      },
     },
     {
       title: '接口url',
@@ -175,7 +178,7 @@ const Btn = connect(({ systemApi: { tree, list }, loading }) => ({
       render: (text, record) => (
         <>
           <Authorized authority="system.api.update" noMatch={null}>
-            <ResourceForm isEdit btn={record} parent={btn}>
+            <ResourceForm isEdit api={record} parent={api}>
               <a>
                 <IconFont type="icon-edit" title="编辑" />
               </a>
@@ -207,7 +210,7 @@ const Btn = connect(({ systemApi: { tree, list }, loading }) => ({
         </Col>
         <Col xs={24} sm={24} md={24} lg={18} xl={18}>
           <Card
-            title={btn ? `[${btn.title}]的接口` : '接口列表'}
+            title={api ? `[${api.title}]的接口` : '接口列表'}
             bordered={false}
             bodyStyle={{ padding: '15px' }}
             style={{ marginTop: 10 }}
@@ -215,7 +218,7 @@ const Btn = connect(({ systemApi: { tree, list }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system.api.add" noMatch={null}>
-                  <ResourceForm parent={btn}>
+                  <ResourceForm parent={api}>
                     <Button type="primary" title="新增">
                       <Icon type="plus" />
                     </Button>
@@ -243,4 +246,4 @@ const areEqual = (prevProps, nextProps) => {
   return isEqual(prevProps, nextProps);
 };
 
-export default memo(Btn, areEqual);
+export default memo(Api, areEqual);
