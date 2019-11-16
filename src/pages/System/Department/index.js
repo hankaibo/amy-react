@@ -18,6 +18,7 @@ import { isEqual } from 'lodash';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Ellipsis from '@/components/Ellipsis';
 import Authorized from '@/utils/Authorized';
+import NoMatch from '@/components/Authorized/NoMatch';
 import IconFont from '@/components/IconFont';
 import { getPlainNode, getParentKey, getValue } from '@/utils/utils';
 import DepartmentForm from './components/DepartmentForm';
@@ -203,7 +204,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       filterMultiple: false,
       render: (text, record) => {
         return (
-          <Authorized authority="system.department.status" noMatch="--">
+          <Authorized authority="system.department.status" noMatch={NoMatch(!!text)}>
             {/* true数据不方便转换status，在这里进行转化。 */}
             <Switch checked={!!text} onClick={checked => toggleState(checked, record)} />
           </Authorized>

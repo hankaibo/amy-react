@@ -1,96 +1,46 @@
 import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Tree, Card, Button, Modal, Icon, Table, Input, Upload, message } from 'antd';
+import { Row, Col, Tree, Card, Button, Icon, Table, Input, Upload, message } from 'antd';
 import { isEqual } from 'lodash';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Ellipsis from '@/components/Ellipsis';
 import Authorized from '@/utils/Authorized';
+import SwaggerImportForm from './components/SwaggerImportForm';
 import styles from '../../System/System.less';
 
 const { TreeNode } = Tree;
 const { Search } = Input;
 const { Dragger } = Upload;
-const { confirm } = Modal;
 
-const Swagger = connect(({ developSwagger: { tree, list }, loading }) => ({
+const Swagger = connect(({ developSwagger: { tree, list, selectedRowKeys }, loading }) => ({
   tree,
   list,
+  selectedRowKeys,
   loading: loading.models.developSwagger,
-}))(({ loading, tree, list, dispatch }) => {
-  // 【当前点击的部门】
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [swagger, setSwagger] = useState(null);
+}))(({ loading, tree, list, selectedRowKeys, dispatch }) => {
+  const [title, setTitle] = useState(null);
   const [searchValue, setSearchValue] = useState('');
 
-  // 【首次请求加载树数据】
+  // 【清空上传的swagger文件数据】
   useEffect(() => {
     return () => {
       dispatch({
-        type: 'developSwagger/clear',
+        type: 'developSwagger/clearFile',
       });
     };
   }, [dispatch]);
 
-  // 【获取子部门数据】
+  // 【获取子接口数据】
   const handleSelect = (selectedKeys, info) => {
     // bug? 当点击靠右时，selectedKeys 为空。
     const id = selectedKeys.length === 0 ? info.node.props.id : selectedKeys;
     dispatch({
-      type: 'developSwagger/fetchChildrenById',
+      type: 'developSwagger/fetch',
       payload: {
         id,
       },
-      callback: () => {
-        setSwagger(info.node.props);
-      },
     });
-  };
-
-  // 【批量导入】
-  const importBatchItem = () => {
-    if (selectedRowKeys.length === 0) return;
-    dispatch({
-      type: 'systemUser/deleteBatch',
-      payload: {
-        ids: selectedRowKeys,
-      },
-      callback: () => {
-        setSelectedRowKeys([]);
-      },
-    });
-  };
-  const handleBatchImport = () => {
-    Modal.confirm({
-      title: '批量导入',
-      content: '您确定批量导入这些接口吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => importBatchItem(),
-    });
-  };
-
-  // 【导入】
-  const importItem = record => {
-    const { id } = record;
-    dispatch({
-      type: 'systemUser/delete',
-      payload: {
-        id,
-      },
-      callback: () => {
-        setSelectedRowKeys([]);
-        message.success('导入成功');
-      },
-    });
-  };
-  const handleImport = record => {
-    Modal.confirm({
-      title: '导入',
-      content: '您确定要导入该接口吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => importItem(record),
-    });
+    setTitle(selectedKeys);
   };
 
   // 【搜索高亮部门】
@@ -102,13 +52,10 @@ const Swagger = connect(({ developSwagger: { tree, list }, loading }) => ({
   // 【构造树结构，添加高亮支持】
   const loop = data =>
     data.map(item => {
-      const it = { ...item };
-      it.titleValue = it.title;
-      delete it.title;
       const index = item.title.indexOf(searchValue);
       const beforeStr = item.title.substr(0, index);
       const afterStr = item.title.substr(index + searchValue.length);
-      const title =
+      const highTitle =
         index > -1 ? (
           <span>
             {beforeStr}
@@ -120,41 +67,20 @@ const Swagger = connect(({ developSwagger: { tree, list }, loading }) => ({
         );
       if (item.children) {
         return (
-          <TreeNode key={item.key} title={title} {...it}>
+          <TreeNode key={item.key} title={highTitle}>
             {loop(item.children)}
           </TreeNode>
         );
       }
       // 因为返回的是树，为了避免在models里循环就在这里直接使用status了。
-      return <TreeNode key={item.key} title={title} {...it} />;
+      return <TreeNode key={item.key} title={highTitle} />;
     });
 
   // 【上传】
   const props = {
     name: 'swagger',
-    accept: 'application/json,.json',
-    action: 'tmp/',
-    beforeUpload() {
-      if (tree.length) {
-        confirm({
-          title: '你确认要覆盖原内容吗?',
-          content: '请注意，上传文件会覆盖已有的内容。',
-          okText: '确定',
-          okType: 'danger',
-          cancelText: '取消',
-          onOk() {
-            dispatch({
-              type: 'developSwagger/clear',
-            });
-            return true;
-          },
-          onCancel() {
-            return false;
-          },
-        });
-      }
-      return true;
-    },
+    accept: '.json',
+    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
     // 此file非File对象实例，是包装之后的，请注意。
     onChange({ file }) {
       const { status, originFileObj } = file;
@@ -166,7 +92,7 @@ const Swagger = connect(({ developSwagger: { tree, list }, loading }) => ({
         reader.onload = () => {
           const fileContent = JSON.parse(reader.result);
           dispatch({
-            type: 'developSwagger/save',
+            type: 'developSwagger/uploadFile',
             payload: {
               fileContent,
             },
@@ -175,6 +101,11 @@ const Swagger = connect(({ developSwagger: { tree, list }, loading }) => ({
       } else if (status === 'error') {
         message.error(`${file.name} 文件上传失败。`);
       }
+    },
+    onRemove() {
+      dispatch({
+        type: 'developSwagger/clearFile',
+      });
     },
   };
   const mainUpload = (
@@ -190,7 +121,12 @@ const Swagger = connect(({ developSwagger: { tree, list }, loading }) => ({
 
   // 【复选框相关操作】
   const handleRowSelectChange = rowKeys => {
-    setSelectedRowKeys(rowKeys);
+    dispatch({
+      type: 'developSwagger/saveSelected',
+      payload: {
+        rowKeys,
+      },
+    });
   };
   const rowSelection = {
     selectedRowKeys,
@@ -212,7 +148,7 @@ const Swagger = connect(({ developSwagger: { tree, list }, loading }) => ({
     },
     {
       title: '接口url',
-      dataIndex: 'url',
+      dataIndex: 'uri',
       render: text => {
         return (
           <Ellipsis tooltip={text} length={40}>
@@ -233,9 +169,11 @@ const Swagger = connect(({ developSwagger: { tree, list }, loading }) => ({
       title: '操作',
       render: (text, record) => (
         <Authorized authority="develop.swagger.import" noMatch={null}>
-          <a onClick={() => handleImport(record)}>
-            <Icon type="import" />
-          </a>
+          <SwaggerImportForm swagger={[record.id]}>
+            <a>
+              <Icon type="import" />
+            </a>
+          </SwaggerImportForm>
         </Authorized>
       ),
     },
@@ -259,7 +197,7 @@ const Swagger = connect(({ developSwagger: { tree, list }, loading }) => ({
         </Col>
         <Col xs={24} sm={24} md={24} lg={18} xl={18}>
           <Card
-            title={swagger ? `【${swagger.titleValue}】的接口` : '接口列表'}
+            title={title ? `【${title}】` : '【接口列表】'}
             bordered={false}
             bodyStyle={{ padding: '15px' }}
             style={{ marginTop: 10 }}
@@ -267,20 +205,15 @@ const Swagger = connect(({ developSwagger: { tree, list }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="develop.swagger.batchImport" noMatch={null}>
-                  <Button
-                    type="primary"
-                    disabled={selectedRowKeys.length <= 0}
-                    title="导入"
-                    onClick={handleBatchImport}
-                  >
-                    <Icon type="import" />
-                  </Button>
+                  <SwaggerImportForm swagger={selectedRowKeys}>
+                    <Button type="primary" disabled={selectedRowKeys.length <= 0} title="导入">
+                      <Icon type="import" />
+                    </Button>
+                  </SwaggerImportForm>
                 </Authorized>
               </div>
               <Table
-                rowKey="id"
                 bordered
-                childrenColumnName="child"
                 loading={loading}
                 columns={columns}
                 dataSource={list}

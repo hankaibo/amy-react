@@ -191,7 +191,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
         </Col>
         <Col xs={24} sm={24} md={24} lg={18} xl={18}>
           <Card
-            title={role ? `【${role.title}】的角色` : '角色列表'}
+            title={role ? `【${role.title}】的子角色` : '角色列表'}
             style={{ marginTop: 10 }}
             bordered={false}
             bodyStyle={{ padding: '15px' }}

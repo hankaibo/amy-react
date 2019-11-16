@@ -11,6 +11,9 @@ export default {
   'menu.system.api': '接口保护',
   'menu.system.dictionary': '字典管理',
   'menu.system.information': '信息管理',
+  // swagger
+  'menu.develop': '开发管理',
+  'menu.develop.swagger': '接口导入',
   // exception
   'menu.exception': '异常页',
   'menu.exception.not-permission': '403',

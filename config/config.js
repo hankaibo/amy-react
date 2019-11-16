@@ -86,12 +86,12 @@ export default {
       }
       const match = context.resourcePath.match(/src(.*)/);
       if (match && match[1]) {
-        const myAntdProPath = match[1].replace('.less', '');
-        const arr = slash(myAntdProPath)
+        const path = match[1].replace('.less', '');
+        const arr = slash(path)
           .split('/')
           .map(a => a.replace(/([A-Z])/g, '-$1'))
           .map(a => a.toLowerCase());
-        return `antd-pro${arr.join('-')}-${localName}`.replace(/--/g, '-');
+        return `my-antd-pro${arr.join('-')}-${localName}`.replace(/--/g, '-');
       }
       return localName;
     },

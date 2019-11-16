@@ -17,6 +17,7 @@ import {
 import { isEqual } from 'lodash';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Authorized from '@/utils/Authorized';
+import NoMatch from '@/components/Authorized/NoMatch';
 import IconFont from '@/components/IconFont';
 import { getValue } from '@/utils/utils';
 import UserForm from './components/UserForm';
@@ -233,7 +234,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       filterMultiple: false,
       render: (text, record) => {
         return (
-          <Authorized authority="system.user.status" noMatch="--">
+          <Authorized authority="system.user.status" noMatch={NoMatch(text)}>
             <Switch checked={text} onClick={checked => toggleStatus(checked, record)} />
           </Authorized>
         );

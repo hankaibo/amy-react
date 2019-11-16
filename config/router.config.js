@@ -1,5 +1,5 @@
 export default [
-  // /
+  //
   { path: '/', redirect: '/user' },
   // user
   {
@@ -86,6 +86,24 @@ export default [
             path: '/app/system/information',
             name: 'information',
             component: './System/Information',
+            dynamic: true,
+          },
+          {
+            component: '404',
+          },
+        ],
+      },
+      // develop
+      {
+        path: '/app/develop',
+        name: 'develop',
+        icon: 'icon-tool',
+        dynamic: true,
+        routes: [
+          {
+            path: '/app/develop/swaggers',
+            name: 'swagger',
+            component: './Develop/Swagger',
             dynamic: true,
           },
           {

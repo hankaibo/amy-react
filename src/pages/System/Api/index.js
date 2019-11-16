@@ -4,6 +4,7 @@ import { Row, Col, Tree, Card, Button, Switch, Divider, Modal, message, Icon, Ta
 import { isEqual } from 'lodash';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Authorized from '@/utils/Authorized';
+import NoMatch from '@/components/Authorized/NoMatch';
 import { getValue } from '@/utils/utils';
 import IconFont from '@/components/IconFont';
 import ResourceForm from './components/ResourceForm';
@@ -151,7 +152,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
       filterMultiple: false,
       render: (text, record) => {
         return (
-          <Authorized authority="system.api.status" noMatch={null}>
+          <Authorized authority="system.api.status" noMatch={NoMatch(text)}>
             <Switch checked={text} onClick={checked => toggleState(checked, record)} />
           </Authorized>
         );
