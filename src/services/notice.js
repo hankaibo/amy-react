@@ -15,7 +15,7 @@ export function connect() {
     },
     error => {
       console.log('client lost connect: ', error);
-    }
+    },
   );
 }
 

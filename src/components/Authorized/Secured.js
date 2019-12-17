@@ -1,13 +1,12 @@
 import React from 'react';
-import Exception from '../Exception';
-// eslint-disable-next-line import/no-cycle
 import CheckPermissions from './CheckPermissions';
+// eslint-disable-next-line import/no-cycle
 
 /**
  * 默认不能访问任何页面
  * default is "NULL"
  */
-const Exception403 = () => <Exception type="403" />;
+const Exception403 = () => 403;
 
 export const isComponentClass = component => {
   if (!component) return false;

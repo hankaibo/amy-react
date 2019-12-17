@@ -1,7 +1,6 @@
 export default {
   'menu.home': '首頁',
   'menu.login': '登錄',
-  'menu.register': '註冊',
   // system
   'menu.system': '系統配置',
   'menu.system.department': '部門管理',

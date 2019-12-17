@@ -5,7 +5,7 @@ import { isEqual } from 'lodash';
 import Link from 'umi/link';
 import router from 'umi/router';
 import moment from 'moment';
-import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Authorized from '@/utils/Authorized';
 import { getValue } from '@/utils/utils';
 import IconFont from '@/components/IconFont';
@@ -168,7 +168,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       render: (text, record) =>
         // 非子节点可以跳转
         !record.parentId ? (
-          <Link to={`/app/system/dictionaries/${record.id}?name=${text}`}>{text}</Link>
+          <Link to={`/system/dictionaries/${record.id}?name=${text}`}>{text}</Link>
         ) : (
           <span>{text}</span>
         ),
@@ -188,15 +188,16 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
     {
       title: '状态',
       dataIndex: 'status',
-      filters: [{ text: '禁用', value: 0 }, { text: '启用', value: 1 }],
+      filters: [
+        { text: '禁用', value: 0 },
+        { text: '启用', value: 1 },
+      ],
       filterMultiple: false,
-      render: (text, record) => {
-        return (
-          <Authorized authority="system.dictionary.status" noMatch="--">
-            <Switch checked={text} onClick={checked => toggleState(checked, record)} />
-          </Authorized>
-        );
-      },
+      render: (text, record) => (
+        <Authorized authority="system:dictionary:status" noMatch="--">
+          <Switch checked={text} onClick={checked => toggleState(checked, record)} />
+        </Authorized>
+      ),
     },
     {
       title: '添加时间',
@@ -207,7 +208,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       title: '操作',
       render: (text, record) => (
         <>
-          <Authorized authority="system.dictionary.update" noMatch={null}>
+          <Authorized authority="system:dictionary:update" noMatch={null}>
             <DictionaryForm isEdit dictionary={record} match={match} location={location}>
               <a>
                 <IconFont type="icon-edit" title="编辑" />
@@ -215,7 +216,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
             </DictionaryForm>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system.dictionary.delete" noMatch={null}>
+          <Authorized authority="system:dictionary:delete" noMatch={null}>
             <a onClick={() => handleDelete(record)}>
               <IconFont type="icon-delete" title="删除" />
             </a>
@@ -230,14 +231,14 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>
-            <Authorized authority="system.dictionary.add" noMatch={null}>
+            <Authorized authority="system:dictionary:add" noMatch={null}>
               <DictionaryForm match={match} location={location}>
                 <Button type="primary" title="新增">
                   <Icon type="plus" />
                 </Button>
               </DictionaryForm>
             </Authorized>
-            <Authorized authority="system.dictionary.batchDelete" noMatch={null}>
+            <Authorized authority="system:dictionary:batchDelete" noMatch={null}>
               <Button
                 type="danger"
                 disabled={selectedRowKeys.length <= 0}
@@ -269,8 +270,6 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
   );
 });
 
-const areEqual = (prevProps, nextProps) => {
-  return isEqual(prevProps, nextProps);
-};
+const areEqual = (prevProps, nextProps) => isEqual(prevProps, nextProps);
 
 export default memo(Dictionary, areEqual);

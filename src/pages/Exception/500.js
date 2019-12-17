@@ -1,15 +1,26 @@
+import { Button, Result } from 'antd';
+
+import Link from 'umi/link';
 import React from 'react';
 import { formatMessage } from 'umi-plugin-react/locale';
-import Link from 'umi/link';
-import Exception from '@/components/Exception';
 
-const Exception500 = () => (
-  <Exception
-    type="500"
-    desc={formatMessage({ id: 'app.exception.description.500' })}
-    linkElement={Link}
-    backText={formatMessage({ id: 'app.exception.back' })}
+export default () => (
+  <Result
+    status="500"
+    title="500"
+    style={{
+      background: 'none',
+    }}
+    subTitle={formatMessage({
+      id: 'exceptionand500.description.500',
+      defaultMessage: 'Sorry, the server is reporting an error.',
+    })}
+    extra={
+      <Link to="/">
+        <Button type="primary">
+          {formatMessage({ id: 'exceptionand500.exception.back', defaultMessage: 'Back Home' })}
+        </Button>
+      </Link>
+    }
   />
 );
-
-export default Exception500;

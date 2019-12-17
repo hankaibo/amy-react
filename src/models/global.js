@@ -1,6 +1,6 @@
 import { listNotices } from '@/services/notice';
 
-export default {
+const GlobalModel = {
   namespace: 'global',
 
   state: {
@@ -16,7 +16,7 @@ export default {
         payload: data,
       });
       const unreadCount = yield select(
-        state => state.global.notices.filter(item => !item.read).length
+        state => state.global.notices.filter(item => !item.read).length,
       );
       yield put({
         type: 'user/changeNotifyCount',
@@ -33,7 +33,7 @@ export default {
       });
       const count = yield select(state => state.global.notices.length);
       const unreadCount = yield select(
-        state => state.global.notices.filter(item => !item.read).length
+        state => state.global.notices.filter(item => !item.read).length,
       );
       yield put({
         type: 'user/changeNotifyCount',
@@ -51,7 +51,7 @@ export default {
             notice.read = true;
           }
           return notice;
-        })
+        }),
       );
       yield put({
         type: 'saveNotices',
@@ -68,7 +68,7 @@ export default {
   },
 
   reducers: {
-    changeLayoutCollapsed(state, { payload }) {
+    changeLayoutCollapsed(state = { notices: [], collapsed: true }, { payload }) {
       return {
         ...state,
         collapsed: payload,
@@ -76,26 +76,21 @@ export default {
     },
     saveNotices(state, { payload }) {
       return {
+        collapsed: false,
         ...state,
         notices: payload,
       };
     },
-    saveClearedNotices(state, { payload }) {
+    saveClearedNotices(state = { notices: [], collapsed: true }, { payload }) {
       return {
+        collapsed: false,
         ...state,
         notices: state.notices.filter(item => item.type !== payload),
       };
     },
   },
 
-  subscriptions: {
-    // watchWebSocket({ dispatch }) {
-    //   return listen(data => {
-    //     dispatch({
-    //       type: 'saveNotices',
-    //       payload: data,
-    //     });
-    //   });
-    // },
-  },
+  subscriptions: {},
 };
+
+export default GlobalModel;

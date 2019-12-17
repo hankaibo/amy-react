@@ -78,7 +78,7 @@ const UserPasswordForm = connect()(
         </Modal>
       </span>
     );
-  })
+  }),
 );
 
 export default UserPasswordForm;

@@ -166,7 +166,7 @@ const DictionaryForm = connect(({ systemDictionary: { editDictionary }, loading 
               </FormItem>
               <FormItem label="状态">
                 {getFieldDecorator('status', { initialValue: true, valuePropName: 'checked' })(
-                  <Switch checkedChildren="开" unCheckedChildren="关" />
+                  <Switch checkedChildren="开" unCheckedChildren="关" />,
                 )}
               </FormItem>
               <FormItem label="排序">
@@ -176,22 +176,22 @@ const DictionaryForm = connect(({ systemDictionary: { editDictionary }, loading 
                     min={0}
                     max={999}
                     style={{ width: '100%' }}
-                  />
+                  />,
                 )}
               </FormItem>
               <FormItem label="描述">
                 {getFieldDecorator('description', {
                   rules: [{ message: '请将描述长度保持在1至50字符之间！', min: 1, max: 50 }],
                 })(
-                  <TextArea placeholder="请输入字典描述。" autosize={{ minRows: 2, maxRows: 6 }} />
+                  <TextArea placeholder="请输入字典描述。" autosize={{ minRows: 2, maxRows: 6 }} />,
                 )}
               </FormItem>
             </Form>
           </Modal>
         </span>
       );
-    }
-  )
+    },
+  ),
 );
 
 export default DictionaryForm;

@@ -1,15 +1,26 @@
+import { Button, Result } from 'antd';
+
+import Link from 'umi/link';
 import React from 'react';
 import { formatMessage } from 'umi-plugin-react/locale';
-import Link from 'umi/link';
-import Exception from '@/components/Exception';
 
-const Exception404 = () => (
-  <Exception
-    type="404"
-    desc={formatMessage({ id: 'app.exception.description.404' })}
-    linkElement={Link}
-    backText={formatMessage({ id: 'app.exception.back' })}
+export default () => (
+  <Result
+    status="404"
+    title="404"
+    style={{
+      background: 'none',
+    }}
+    subTitle={formatMessage({
+      id: 'exceptionand404.description.404',
+      defaultMessage: "Sorry, you don't have access to this page.",
+    })}
+    extra={
+      <Link to="/">
+        <Button type="primary">
+          {formatMessage({ id: 'exceptionand404.exception.back', defaultMessage: 'Back Home' })}
+        </Button>
+      </Link>
+    }
   />
 );
-
-export default Exception404;

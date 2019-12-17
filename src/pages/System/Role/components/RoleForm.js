@@ -149,7 +149,7 @@ const RoleForm = connect(({ systemRole: { tree, editRole }, loading }) => ({
                       treeData={tree}
                       placeholder="请选择角色"
                       treeDefaultExpandAll
-                    />
+                    />,
                   )}
                 </FormItem>
               )}
@@ -167,22 +167,22 @@ const RoleForm = connect(({ systemRole: { tree, editRole }, loading }) => ({
               </FormItem>
               <FormItem label="状态">
                 {getFieldDecorator('status', { initialValue: true, valuePropName: 'checked' })(
-                  <Switch checkedChildren="开" unCheckedChildren="关" />
+                  <Switch checkedChildren="开" unCheckedChildren="关" />,
                 )}
               </FormItem>
               <FormItem label="描述">
                 {getFieldDecorator('description', {
                   rules: [{ message: '请将描述长度保持在1至50字符之间！', min: 1, max: 50 }],
                 })(
-                  <TextArea placeholder="请输入角色描述。" autoSize={{ minRows: 2, maxRows: 6 }} />
+                  <TextArea placeholder="请输入角色描述。" autoSize={{ minRows: 2, maxRows: 6 }} />,
                 )}
               </FormItem>
             </Form>
           </Modal>
         </span>
       );
-    }
-  )
+    },
+  ),
 );
 
 export default RoleForm;

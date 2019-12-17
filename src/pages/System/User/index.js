@@ -15,7 +15,7 @@ import {
   Table,
 } from 'antd';
 import { isEqual } from 'lodash';
-import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import IconFont from '@/components/IconFont';
@@ -223,22 +223,21 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
         { text: '中性', value: 4 },
       ],
       filterMultiple: false,
-      render: text => {
-        return sexText[text];
-      },
+      render: text => sexText[text],
     },
     {
       title: '用户状态',
       dataIndex: 'status',
-      filters: [{ text: '禁用', value: 0 }, { text: '启用', value: 1 }],
+      filters: [
+        { text: '禁用', value: 0 },
+        { text: '启用', value: 1 },
+      ],
       filterMultiple: false,
-      render: (text, record) => {
-        return (
-          <Authorized authority="system.user.status" noMatch={NoMatch(text)}>
-            <Switch checked={text} onClick={checked => toggleStatus(checked, record)} />
-          </Authorized>
-        );
-      },
+      render: (text, record) => (
+        <Authorized authority="system:user:status" noMatch={NoMatch(text)}>
+          <Switch checked={text} onClick={checked => toggleStatus(checked, record)} />
+        </Authorized>
+      ),
     },
     {
       title: '电话',
@@ -254,8 +253,8 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       title: '操作',
       render: (text, record) => (
         <>
-          {/* Note: system.user.xxx为【资源保护】菜单中用户管理修改接口(system.user.update)的编码名称。必须两者一致才能动态隐藏显示按钮。 */}
-          <Authorized authority="system.user.update" noMatch={null}>
+          {/* Note: system:user:xxx为【资源保护】菜单中用户管理修改接口(system:user:update)的编码名称。必须两者一致才能动态隐藏显示按钮。 */}
+          <Authorized authority="system:user:update" noMatch={null}>
             <UserForm isEdit user={record}>
               <a>
                 <IconFont type="icon-edit" title="编辑" />
@@ -263,13 +262,13 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
             </UserForm>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system.user.delete" noMatch={null}>
+          <Authorized authority="system:user:delete" noMatch={null}>
             <a onClick={() => handleDelete(record)}>
               <IconFont type="icon-delete" title="删除" />
             </a>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system.user.grant" noMatch={null}>
+          <Authorized authority="system:user:grant" noMatch={null}>
             <UserRoleForm user={record}>
               <a>
                 <IconFont type="icon-role" title="分配角色" />
@@ -277,7 +276,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
             </UserRoleForm>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system.user.password.reset" noMatch={null}>
+          <Authorized authority="system:user:password:reset" noMatch={null}>
             <UserPasswordForm user={record}>
               <a>
                 <IconFont type="icon-reset" title="重置密码" />
@@ -290,7 +289,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
   ];
 
   return (
-    <PageHeaderWrapper content={mainSearch}>
+    <PageHeaderWrapper title={false} content={mainSearch}>
       <Row gutter={8}>
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
           <Card
@@ -316,14 +315,14 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
           >
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
-                <Authorized authority="system.user.add" noMatch={null}>
+                <Authorized authority="system:user:add" noMatch={null}>
                   <UserForm user={department ? { departmentId: department.id } : null}>
                     <Button type="primary" title="新增">
                       <Icon type="plus" />
                     </Button>
                   </UserForm>
                 </Authorized>
-                <Authorized authority="system.user.batchDelete" noMatch={null}>
+                <Authorized authority="system:user:batchDelete" noMatch={null}>
                   <Button
                     type="danger"
                     disabled={selectedRowKeys.length <= 0}
@@ -352,8 +351,6 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
   );
 });
 
-const areEqual = (prevProps, nextProps) => {
-  return isEqual(prevProps, nextProps);
-};
+const areEqual = (prevProps, nextProps) => isEqual(prevProps, nextProps);
 
 export default memo(User, areEqual);

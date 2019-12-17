@@ -161,7 +161,7 @@ const MenuForm = connect(({ systemMenu: { tree, editMenu }, loading }) => ({
               </FormItem>
               <FormItem label="状态">
                 {getFieldDecorator('status', { initialValue: true, valuePropName: 'checked' })(
-                  <Switch checkedChildren="开" unCheckedChildren="关" />
+                  <Switch checkedChildren="开" unCheckedChildren="关" />,
                 )}
               </FormItem>
               <FormItem label="父菜单">
@@ -172,15 +172,15 @@ const MenuForm = connect(({ systemMenu: { tree, editMenu }, loading }) => ({
                     treeData={tree}
                     placeholder="请选择菜单"
                     treeDefaultExpandAll
-                  />
+                  />,
                 )}
               </FormItem>
             </Form>
           </Modal>
         </span>
       );
-    }
-  )
+    },
+  ),
 );
 
 export default MenuForm;

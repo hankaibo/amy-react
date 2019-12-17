@@ -228,7 +228,7 @@ const UserForm = connect(({ systemUser: { tree, editUser }, loading }) => ({
                     treeData={tree}
                     placeholder="请选择部门"
                     treeDefaultExpandAll
-                  />
+                  />,
                 )}
               </FormItem>
               <FormItem label="昵称">
@@ -269,15 +269,15 @@ const UserForm = connect(({ systemUser: { tree, editUser }, loading }) => ({
                     <Radio value={2}>女</Radio>
                     <Radio value={3}>保密</Radio>
                     <Radio value={4}>中性</Radio>
-                  </Radio.Group>
+                  </Radio.Group>,
                 )}
               </FormItem>
             </Form>
           </Modal>
         </span>
       );
-    }
-  )
+    },
+  ),
 );
 
 export default UserForm;

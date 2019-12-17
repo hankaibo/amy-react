@@ -1,32 +1,38 @@
-import React from 'react';
 import { Avatar, List } from 'antd';
+
+import React from 'react';
 import classNames from 'classnames';
 import styles from './NoticeList.less';
 
-export default function NoticeList({
+const NoticeList = ({
   data = [],
   onClick,
   onClear,
   title,
-  locale,
+  onViewMore,
   emptyText,
-  emptyImage,
-  onViewMore = null,
   showClear = true,
+  clearText,
+  viewMoreText,
   showViewMore = false,
-}) {
+}) => {
   if (data.length === 0) {
     return (
       <div className={styles.notFound}>
-        {emptyImage ? <img src={emptyImage} alt="not found" /> : null}
-        <div>{emptyText || locale.emptyText}</div>
+        <img
+          src="https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg"
+          alt="not found"
+        />
+        <div>{emptyText}</div>
       </div>
     );
   }
   return (
     <div>
-      <List className={styles.list}>
-        {data.map((item, i) => {
+      <List
+        className={styles.list}
+        dataSource={data}
+        renderItem={(item, i) => {
           const itemCls = classNames(styles.item, {
             [styles.read]: item.read,
           });
@@ -40,7 +46,11 @@ export default function NoticeList({
           ) : null;
 
           return (
-            <List.Item className={itemCls} key={item.key || i} onClick={() => onClick(item)}>
+            <List.Item
+              className={itemCls}
+              key={item.key || i}
+              onClick={() => onClick && onClick(item)}
+            >
               <List.Item.Meta
                 className={styles.meta}
                 avatar={leftIcon}
@@ -52,25 +62,35 @@ export default function NoticeList({
                 }
                 description={
                   <div>
-                    <div className={styles.description} title={item.description}>
-                      {item.description}
-                    </div>
+                    <div className={styles.description}>{item.description}</div>
                     <div className={styles.datetime}>{item.datetime}</div>
                   </div>
                 }
               />
             </List.Item>
           );
-        })}
-      </List>
+        }}
+      />
       <div className={styles.bottomBar}>
         {showClear ? (
           <div onClick={onClear}>
-            {locale.clear} {locale[title] || title}
+            {clearText} {title}
           </div>
         ) : null}
-        {showViewMore ? <div onClick={onViewMore}>{locale.viewMore}</div> : null}
+        {showViewMore ? (
+          <div
+            onClick={e => {
+              if (onViewMore) {
+                onViewMore(e);
+              }
+            }}
+          >
+            {viewMoreText}
+          </div>
+        ) : null}
       </div>
     </div>
   );
-}
+};
+
+export default NoticeList;

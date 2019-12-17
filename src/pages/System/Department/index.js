@@ -15,7 +15,7 @@ import {
   Input,
 } from 'antd';
 import { isEqual } from 'lodash';
-import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Ellipsis from '@/components/Ellipsis';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
@@ -193,28 +193,27 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
     {
       title: '部门名称',
       dataIndex: 'name',
-      render: (text, record) => {
-        return record.name || record.title;
-      },
+      render: (text, record) => record.name || record.title,
     },
     {
       title: '部门状态',
       dataIndex: 'status',
-      filters: [{ text: '禁用', value: 0 }, { text: '启用', value: 1 }],
+      filters: [
+        { text: '禁用', value: 0 },
+        { text: '启用', value: 1 },
+      ],
       filterMultiple: false,
-      render: (text, record) => {
-        return (
-          <Authorized authority="system.department.status" noMatch={NoMatch(!!text)}>
-            {/* true数据不方便转换status，在这里进行转化。 */}
-            <Switch checked={!!text} onClick={checked => toggleState(checked, record)} />
-          </Authorized>
-        );
-      },
+      render: (text, record) => (
+        <Authorized authority="system:department:status" noMatch={NoMatch(!!text)}>
+          {/* true数据不方便转换status，在这里进行转化。 */}
+          <Switch checked={!!text} onClick={checked => toggleState(checked, record)} />
+        </Authorized>
+      ),
     },
     {
       title: '排序',
       render: (text, record, index) => (
-        <Authorized authority="system.department.move" noMatch="--">
+        <Authorized authority="system:department:move" noMatch="--">
           <a
             onClick={() => handleMove(record, index - 1)}
             style={{ padding: '0 5px', marginRight: '10px' }}
@@ -230,19 +229,17 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
     {
       title: '部门备注',
       dataIndex: 'description',
-      render: text => {
-        return (
-          <Ellipsis tooltip={text} length={20}>
-            {text}
-          </Ellipsis>
-        );
-      },
+      render: text => (
+        <Ellipsis tooltip={text} length={20}>
+          {text}
+        </Ellipsis>
+      ),
     },
     {
       title: '操作',
       render: (text, record) => (
         <>
-          <Authorized authority="system.department.update" noMatch={null}>
+          <Authorized authority="system:department:update" noMatch={null}>
             <DepartmentForm isEdit department={record}>
               <a>
                 <IconFont type="icon-edit" title="编辑" />
@@ -250,7 +247,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
             </DepartmentForm>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system.department.delete" noMatch={null}>
+          <Authorized authority="system:department:delete" noMatch={null}>
             <a onClick={() => handleDelete(record)}>
               <IconFont type="icon-delete" title="删除" />
             </a>
@@ -261,7 +258,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   ];
 
   return (
-    <PageHeaderWrapper>
+    <PageHeaderWrapper title={false}>
       <Row gutter={8}>
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
           <Card
@@ -292,7 +289,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
           >
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
-                <Authorized authority="system.department.add" noMatch={null}>
+                <Authorized authority="system:department:add" noMatch={null}>
                   <DepartmentForm department={department}>
                     <Button type="primary" title="新增">
                       <Icon type="plus" />
@@ -318,8 +315,6 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   );
 });
 
-const areEqual = (prevProps, nextProps) => {
-  return isEqual(prevProps, nextProps);
-};
+const areEqual = (prevProps, nextProps) => isEqual(prevProps, nextProps);
 
 export default memo(Department, areEqual);

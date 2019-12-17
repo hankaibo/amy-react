@@ -130,7 +130,7 @@ const InformationForm = connect(({ systemInformation: { editInformation }, loadi
                 {getFieldDecorator('description', {
                   rules: [{ message: '请将描述长度保持在1至150字符之间！', min: 1, max: 150 }],
                 })(
-                  <TextArea placeholder="请输入信息描述。" autosize={{ minRows: 2, maxRows: 6 }} />
+                  <TextArea placeholder="请输入信息描述。" autosize={{ minRows: 2, maxRows: 6 }} />,
                 )}
               </FormItem>
               <FormItem label="类型">
@@ -141,7 +141,7 @@ const InformationForm = connect(({ systemInformation: { editInformation }, loadi
                     <Radio value={1}>通知</Radio>
                     <Radio value={2}>消息</Radio>
                     <Radio value={3}>事件</Radio>
-                  </Radio.Group>
+                  </Radio.Group>,
                 )}
               </FormItem>
               <FormItem label="发送范围">
@@ -152,15 +152,15 @@ const InformationForm = connect(({ systemInformation: { editInformation }, loadi
                     <Radio value={1}>按部门</Radio>
                     <Radio value={2}>按用户</Radio>
                     <Radio value={3}>自定义</Radio>
-                  </Radio.Group>
+                  </Radio.Group>,
                 )}
               </FormItem>
             </Form>
           </Modal>
         </span>
       );
-    }
-  )
+    },
+  ),
 );
 
 export default InformationForm;

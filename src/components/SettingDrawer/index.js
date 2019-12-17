@@ -1,12 +1,13 @@
+import { Alert, Button, Divider, Drawer, Icon, List, Select, Switch, Tooltip, message } from 'antd';
 import React, { Component } from 'react';
-import { Select, message, Drawer, List, Switch, Divider, Icon, Button, Alert, Tooltip } from 'antd';
-import { formatMessage } from 'umi-plugin-react/locale';
+
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { connect } from 'dva';
+import { formatMessage } from 'umi-plugin-react/locale';
 import omit from 'omit.js';
-import styles from './index.less';
 import ThemeColor from './ThemeColor';
 import BlockCheckbox from './BlockCheckbox';
+import styles from './index.less';
 
 const { Option } = Select;
 

@@ -1,10 +1,11 @@
-import React, { useState, useEffect, memo } from 'react';
+import { Button, Card, Col, Icon, Input, Row, Table, Tree, Upload, message } from 'antd';
+import React, { memo, useEffect, useState } from 'react';
+
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
-import { Row, Col, Tree, Card, Button, Icon, Table, Input, Upload, message } from 'antd';
 import { isEqual } from 'lodash';
-import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import Ellipsis from '@/components/Ellipsis';
 import Authorized from '@/utils/Authorized';
+import Ellipsis from '@/components/Ellipsis';
 import SwaggerImportForm from './components/SwaggerImportForm';
 import styles from '../../System/System.less';
 
@@ -22,13 +23,14 @@ const Swagger = connect(({ developSwagger: { tree, list, selectedRowKeys }, load
   const [searchValue, setSearchValue] = useState('');
 
   // 【清空上传的swagger文件数据】
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       dispatch({
         type: 'developSwagger/clearFile',
       });
-    };
-  }, [dispatch]);
+    },
+    [dispatch],
+  );
 
   // 【获取子接口数据】
   const handleSelect = (selectedKeys, info) => {
@@ -138,24 +140,20 @@ const Swagger = connect(({ developSwagger: { tree, list, selectedRowKeys }, load
     {
       title: '接口名称',
       dataIndex: 'name',
-      render: text => {
-        return (
-          <Ellipsis tooltip={text} length={15}>
-            {text}
-          </Ellipsis>
-        );
-      },
+      render: text => (
+        <Ellipsis tooltip={text} length={15}>
+          {text}
+        </Ellipsis>
+      ),
     },
     {
       title: '接口url',
       dataIndex: 'uri',
-      render: text => {
-        return (
-          <Ellipsis tooltip={text} length={40}>
-            {text}
-          </Ellipsis>
-        );
-      },
+      render: text => (
+        <Ellipsis tooltip={text} length={40}>
+          {text}
+        </Ellipsis>
+      ),
     },
     {
       title: '编码',
@@ -168,7 +166,7 @@ const Swagger = connect(({ developSwagger: { tree, list, selectedRowKeys }, load
     {
       title: '操作',
       render: (text, record) => (
-        <Authorized authority="develop.swagger.import" noMatch={null}>
+        <Authorized authority="develop:swagger:import" noMatch={null}>
           <SwaggerImportForm swagger={[record.id]}>
             <a>
               <Icon type="import" />
@@ -180,7 +178,7 @@ const Swagger = connect(({ developSwagger: { tree, list, selectedRowKeys }, load
   ];
 
   return (
-    <PageHeaderWrapper content={mainUpload}>
+    <PageHeaderWrapper title={false} content={mainUpload}>
       <Row gutter={8}>
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
           <Card
@@ -204,7 +202,7 @@ const Swagger = connect(({ developSwagger: { tree, list, selectedRowKeys }, load
           >
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
-                <Authorized authority="develop.swagger.batchImport" noMatch={null}>
+                <Authorized authority="develop:swagger:batchImport" noMatch={null}>
                   <SwaggerImportForm swagger={selectedRowKeys}>
                     <Button type="primary" disabled={selectedRowKeys.length <= 0} title="导入">
                       <Icon type="import" />
@@ -228,8 +226,6 @@ const Swagger = connect(({ developSwagger: { tree, list, selectedRowKeys }, load
   );
 });
 
-const areEqual = (prevProps, nextProps) => {
-  return isEqual(prevProps, nextProps);
-};
+const areEqual = (prevProps, nextProps) => isEqual(prevProps, nextProps);
 
 export default memo(Swagger, areEqual);

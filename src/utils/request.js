@@ -27,16 +27,24 @@ const codeMessage = {
  * 异常处理程序
  */
 const errorHandler = error => {
-  const { response = {}, data } = error;
-  const { status } = response;
-  const errorText = data.message || codeMessage[status] || response.statusText;
+  const { response } = error;
   const KEY_ERROR = 'keyError';
+  if (response && response.status) {
+    const errorText = codeMessage[response.status] || response.statusText;
+    const { status, url } = response;
 
-  notification.error({
-    key: KEY_ERROR,
-    message: `请求错误 ${status}`,
-    description: errorText,
-  });
+    notification.error({
+      key: KEY_ERROR,
+      message: `请求错误 ${status}: ${url}`,
+      description: errorText,
+    });
+  } else if (!response) {
+    notification.error({
+      key: KEY_ERROR,
+      description: '您的网络发生异常，无法连接服务器',
+      message: '网络异常',
+    });
+  }
   throw error;
 };
 
@@ -50,21 +58,21 @@ const request = extend({
   credentials: 'omit', // 默认请求是否带上cookie
 });
 
+/**
+ * 请求拦截器。
+ */
 request.interceptors.request.use(async (url, options) => {
   const token = localStorage.getItem('jwt');
-  if (token && !url.startsWith('/api/v1/login')) {
-    const headers = {
-      Authorization: `Bearer ${token}`,
+  const defaultOptions = { ...options };
+  if (token && !url.startsWith('/optimus/api/v1/auth')) {
+    defaultOptions.headers = {
+      Authorization: `${token}`,
       'Content-Type': 'application/json',
-    };
-    return {
-      url,
-      options: { ...options, headers },
     };
   }
   return {
     url,
-    options: { ...options },
+    options: { ...defaultOptions },
   };
 });
 

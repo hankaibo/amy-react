@@ -15,7 +15,7 @@ const RoleResourceForm = connect(
     resCheckedKeys: checkedKeys,
     halfCheckedKeys,
     loading: loading.models.systemRole,
-  })
+  }),
 )(
   Form.create({ name: 'roleResourceForm' })(
     ({ loading, children, role, treeData, resCheckedKeys, halfCheckedKeys, form, dispatch }) => {
@@ -131,15 +131,15 @@ const RoleResourceForm = connect(
                     onCheck={handleCheck}
                     checkedKeys={checkedKeys}
                     treeData={treeData}
-                  />
+                  />,
                 )}
               </FormItem>
             </Form>
           </Modal>
         </span>
       );
-    }
-  )
+    },
+  ),
 );
 
 export default RoleResourceForm;

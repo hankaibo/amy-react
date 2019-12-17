@@ -1,5 +1,6 @@
+import { Icon, Tooltip } from 'antd';
+
 import React from 'react';
-import { Tooltip, Icon } from 'antd';
 import style from './index.less';
 
 const BlockChecbox = ({ value, onChange, list }) => (

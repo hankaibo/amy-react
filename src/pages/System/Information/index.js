@@ -2,7 +2,7 @@ import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
 import { Card, Button, Input, Tag, Divider, Modal, message, Icon, Table } from 'antd';
 import { isEqual } from 'lodash';
-import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Authorized from '@/utils/Authorized';
 import { getValue } from '@/utils/utils';
 import IconFont from '@/components/IconFont';
@@ -152,22 +152,22 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
     {
       title: '信息描述',
       dataIndex: 'description',
-      render: text => {
-        return (
-          <Ellipsis tooltip={text} length={20}>
-            {text}
-          </Ellipsis>
-        );
-      },
+      render: text => (
+        <Ellipsis tooltip={text} length={20}>
+          {text}
+        </Ellipsis>
+      ),
     },
     {
       title: '信息类型',
       dataIndex: 'type',
-      filters: [{ text: '通知', value: 1 }, { text: '消息', value: 2 }, { text: '事件', value: 3 }],
+      filters: [
+        { text: '通知', value: 1 },
+        { text: '消息', value: 2 },
+        { text: '事件', value: 3 },
+      ],
       filterMultiple: false,
-      render: text => {
-        return getText(text);
-      },
+      render: text => getText(text),
     },
     {
       title: '信息范围',
@@ -177,7 +177,7 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
       title: '操作',
       render: (text, record) => (
         <>
-          <Authorized authority="system.information.update" noMatch={null}>
+          <Authorized authority="system:information:update" noMatch={null}>
             <InformationForm isEdit information={record}>
               <a>
                 <IconFont type="icon-edit" title="编辑" />
@@ -185,13 +185,13 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
             </InformationForm>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system.information.delete" noMatch={null}>
+          <Authorized authority="system:information:delete" noMatch={null}>
             <a onClick={() => handleDelete(record)}>
               <IconFont type="icon-delete" title="删除" />
             </a>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system.information.publish" noMatch={null}>
+          <Authorized authority="system:information:publish" noMatch={null}>
             <a onClick={() => handleDelete(record)}>
               <IconFont type="icon-publish" title="发布" />
             </a>
@@ -202,18 +202,18 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
   ];
 
   return (
-    <PageHeaderWrapper content={mainSearch}>
+    <PageHeaderWrapper title={false} content={mainSearch}>
       <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>
-            <Authorized authority="system.information.add" noMatch={null}>
+            <Authorized authority="system:information:add" noMatch={null}>
               <InformationForm>
                 <Button type="primary" title="新增">
                   <Icon type="plus" />
                 </Button>
               </InformationForm>
             </Authorized>
-            <Authorized authority="system.information.batchDelete" noMatch={null}>
+            <Authorized authority="system:information:batchDelete" noMatch={null}>
               <Button
                 type="danger"
                 disabled={selectedRowKeys.length <= 0}
@@ -240,8 +240,6 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
   );
 });
 
-const areEqual = (prevProps, nextProps) => {
-  return isEqual(prevProps, nextProps);
-};
+const areEqual = (prevProps, nextProps) => isEqual(prevProps, nextProps);
 
 export default memo(Information, areEqual);

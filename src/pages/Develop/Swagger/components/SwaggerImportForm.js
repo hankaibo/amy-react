@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { Button, Form, Modal, Tree, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+
 import { connect } from 'dva';
-import { Form, Tree, Modal, message, Button } from 'antd';
 
 const { DirectoryTree } = Tree;
 const FormItem = Form.Item;
@@ -96,8 +97,8 @@ const SwaggerImportForm = connect(({ developSwagger: { menuTree }, loading }) =>
           </Modal>
         </span>
       );
-    }
-  )
+    },
+  ),
 );
 
 export default SwaggerImportForm;

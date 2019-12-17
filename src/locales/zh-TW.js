@@ -1,13 +1,13 @@
+import component from './zh-TW/component';
 import globalHeader from './zh-TW/globalHeader';
-import exception from './zh-TW/exception';
 import login from './zh-TW/login';
 import menu from './zh-TW/menu';
-import settingDrawer from './zh-TW/settingDrawer';
 import pwa from './zh-TW/pwa';
+import settingDrawer from './zh-TW/settingDrawer';
 
 export default {
   ...globalHeader,
-  ...exception,
+  ...component,
   ...login,
   ...menu,
   ...settingDrawer,

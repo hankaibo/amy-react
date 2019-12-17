@@ -2,7 +2,7 @@ import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Card, Button, Switch, Divider, Modal, message, Icon, Tree, Table } from 'antd';
 import { isEqual } from 'lodash';
-import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Authorized from '@/utils/Authorized';
 import { getValue } from '@/utils/utils';
 import IconFont from '@/components/IconFont';
@@ -109,9 +109,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
   const columns = [
     {
       title: '角色名称',
-      render: (text, record) => {
-        return record.name || record.title;
-      },
+      render: (text, record) => record.name || record.title,
     },
     {
       title: '角色编码',
@@ -120,32 +118,31 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
     {
       title: '角色状态',
       dataIndex: 'status',
-      filters: [{ text: '禁用', value: 0 }, { text: '启用', value: 1 }],
+      filters: [
+        { text: '禁用', value: 0 },
+        { text: '启用', value: 1 },
+      ],
       filterMultiple: false,
-      render: (text, record) => {
-        return (
-          <Authorized authority="system.role.status" noMatch="--">
-            <Switch checked={!!text} onClick={checked => toggleStatus(checked, record)} />
-          </Authorized>
-        );
-      },
+      render: (text, record) => (
+        <Authorized authority="system:role:status" noMatch="--">
+          <Switch checked={!!text} onClick={checked => toggleStatus(checked, record)} />
+        </Authorized>
+      ),
     },
     {
       title: '角色描述',
       dataIndex: 'description',
-      render: text => {
-        return (
-          <Ellipsis tooltip={text} length={20}>
-            {text}
-          </Ellipsis>
-        );
-      },
+      render: text => (
+        <Ellipsis tooltip={text} length={20}>
+          {text}
+        </Ellipsis>
+      ),
     },
     {
       title: '操作',
       render: (text, record) => (
         <>
-          <Authorized authority="system.role.update" noMatch={null}>
+          <Authorized authority="system:role:update" noMatch={null}>
             <RoleForm isEdit role={record}>
               <a>
                 <IconFont type="icon-edit" title="编辑" />
@@ -153,13 +150,13 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
             </RoleForm>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system.role.delete" noMatch={null}>
+          <Authorized authority="system:role:delete" noMatch={null}>
             <a onClick={() => handleDelete(record)}>
               <IconFont type="icon-delete" title="删除" />
             </a>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system.role.grant" noMatch={null}>
+          <Authorized authority="system:role:grant" noMatch={null}>
             <RoleResourceForm role={record}>
               <a>
                 <IconFont type="icon-permission" title="分配资源" />
@@ -172,7 +169,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
   ];
 
   return (
-    <PageHeaderWrapper>
+    <PageHeaderWrapper title={false}>
       <Row gutter={8}>
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
           <Card
@@ -198,7 +195,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
           >
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
-                <Authorized authority="system.role.add" noMatch={null}>
+                <Authorized authority="system:role:add" noMatch={null}>
                   <RoleForm>
                     <Button type="primary" title="新增">
                       <Icon type="plus" />
@@ -224,8 +221,6 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
   );
 });
 
-const areEqual = (prevProps, nextProps) => {
-  return isEqual(prevProps, nextProps);
-};
+const areEqual = (prevProps, nextProps) => isEqual(prevProps, nextProps);
 
 export default memo(Role, areEqual);

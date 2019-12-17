@@ -1,79 +1,90 @@
-import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
-import { Icon, Tabs, Badge, Spin } from 'antd';
+import { Badge, Icon, Spin, Tabs } from 'antd';
+import React, { Component } from 'react';
+
 import classNames from 'classnames';
 import HeaderDropdown from '../HeaderDropdown';
-import List from './NoticeList';
+import NoticeList from './NoticeList';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
 
-class NoticeIcon extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      visible: false,
-    };
-  }
+export default class NoticeIcon extends Component {
+  static defaultProps = {
+    onItemClick: () => {},
+    onPopupVisibleChange: () => {},
+    onTabChange: () => {},
+    onClear: () => {},
+    onViewMore: () => {},
+    loading: false,
+    clearClose: false,
+    emptyImage: 'https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg',
+  };
+
+  state = {
+    visible: false,
+  };
 
   onItemClick = (item, tabProps) => {
     const { onItemClick } = this.props;
-    const { clickClose } = item;
-    onItemClick(item, tabProps);
-    if (clickClose) {
-      this.popover.click();
+    if (onItemClick) {
+      onItemClick(item, tabProps);
     }
   };
 
-  onClear = name => {
-    const { onClear, clearClose } = this.props;
-    onClear(name);
-    if (clearClose) {
-      this.popover.click();
+  onClear = (name, key) => {
+    const { onClear } = this.props;
+    if (onClear) {
+      onClear(name, key);
     }
   };
 
   onTabChange = tabType => {
     const { onTabChange } = this.props;
-    onTabChange(tabType);
+    if (onTabChange) {
+      onTabChange(tabType);
+    }
   };
 
   onViewMore = (tabProps, event) => {
     const { onViewMore } = this.props;
-    onViewMore(tabProps, event);
+    if (onViewMore) {
+      onViewMore(tabProps, event);
+    }
   };
 
   getNotificationBox() {
-    const { children, loading, locale } = this.props;
+    const { children, loading, clearText, viewMoreText } = this.props;
     if (!children) {
       return null;
     }
     const panes = React.Children.map(children, child => {
-      const { list, title, count, emptyText, emptyImage, showClear, showViewMore } = child.props;
+      if (!child) {
+        return null;
+      }
+      const { list, title, count, tabKey, showClear, showViewMore } = child.props;
       const len = list && list.length ? list.length : 0;
       const msgCount = count || count === 0 ? count : len;
-      const localeTitle = locale[title] || title;
-      const tabTitle = msgCount > 0 ? `${localeTitle} (${msgCount})` : localeTitle;
+      const tabTitle = msgCount > 0 ? `${title} (${msgCount})` : title;
       return (
         <TabPane tab={tabTitle} key={title}>
-          <List
+          <NoticeList
+            clearText={clearText}
+            viewMoreText={viewMoreText}
             data={list}
-            emptyImage={emptyImage}
-            emptyText={emptyText}
-            locale={locale}
-            onClear={() => this.onClear(title)}
+            onClear={() => this.onClear(title, tabKey)}
             onClick={item => this.onItemClick(item, child.props)}
             onViewMore={event => this.onViewMore(child.props, event)}
             showClear={showClear}
             showViewMore={showViewMore}
             title={title}
+            {...child.props}
           />
         </TabPane>
       );
     });
     return (
       <>
-        <Spin spinning={loading} delay={0}>
+        <Spin spinning={loading} delay={300}>
           <Tabs className={styles.tabs} onChange={this.onTabChange}>
             {panes}
           </Tabs>
@@ -85,10 +96,10 @@ class NoticeIcon extends PureComponent {
   handleVisibleChange = visible => {
     const { onPopupVisibleChange } = this.props;
     this.setState({ visible });
-    onPopupVisibleChange(visible);
+    if (onPopupVisibleChange) {
+      onPopupVisibleChange(visible);
+    }
   };
-
-  static Tab = TabPane;
 
   render() {
     const { className, count, popupVisible, bell } = this.props;
@@ -110,6 +121,7 @@ class NoticeIcon extends PureComponent {
     if ('popupVisible' in this.props) {
       popoverProps.visible = popupVisible;
     }
+
     return (
       <HeaderDropdown
         placement="bottomRight"
@@ -119,28 +131,9 @@ class NoticeIcon extends PureComponent {
         visible={visible}
         onVisibleChange={this.handleVisibleChange}
         {...popoverProps}
-        ref={node => (this.popover = ReactDOM.findDOMNode(node))} // eslint-disable-line
       >
         {trigger}
       </HeaderDropdown>
     );
   }
 }
-
-NoticeIcon.defaultProps = {
-  onItemClick: () => {},
-  onPopupVisibleChange: () => {},
-  onTabChange: () => {},
-  onClear: () => {},
-  onViewMore: () => {},
-  loading: false,
-  clearClose: false,
-  locale: {
-    emptyText: 'No notifications',
-    clear: 'Clear',
-    viewMore: 'More',
-  },
-  emptyImage: 'https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg',
-};
-
-export default NoticeIcon;

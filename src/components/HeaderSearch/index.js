@@ -1,12 +1,23 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { Input, Icon, AutoComplete } from 'antd';
+import { AutoComplete, Icon, Input } from 'antd';
+import React, { Component } from 'react';
+
 import classNames from 'classnames';
-import Debounce from 'lodash-decorators/debounce';
-import Bind from 'lodash-decorators/bind';
+import debounce from 'lodash/debounce';
 import styles from './index.less';
 
-class HeaderSearch extends PureComponent {
+export default class HeaderSearch extends Component {
+  static defaultProps = {
+    defaultActiveFirstOption: false,
+    onPressEnter: () => {},
+    onSearch: () => {},
+    onChange: () => {},
+    className: '',
+    placeholder: '',
+    dataSource: [],
+    defaultOpen: false,
+    onVisibleChange: () => {},
+  };
+
   static getDerivedStateFromProps(props) {
     if ('open' in props) {
       return {
@@ -16,12 +27,18 @@ class HeaderSearch extends PureComponent {
     return null;
   }
 
+  inputRef = null;
+
   constructor(props) {
     super(props);
     this.state = {
       searchMode: props.defaultOpen,
-      value: '',
+      value: props.defaultValue,
     };
+    this.debouncePressEnter = debounce(this.debouncePressEnter, 500, {
+      leading: true,
+      trailing: false,
+    });
   }
 
   onKeyDown = e => {
@@ -31,13 +48,15 @@ class HeaderSearch extends PureComponent {
   };
 
   onChange = value => {
-    const { onSearch, onChange } = this.props;
-    this.setState({ value });
-    if (onSearch) {
-      onSearch(value);
-    }
-    if (onChange) {
-      onChange(value);
+    if (typeof value === 'string') {
+      const { onSearch, onChange } = this.props;
+      this.setState({ value });
+      if (onSearch) {
+        onSearch(value);
+      }
+      if (onChange) {
+        onChange(value);
+      }
     }
   };
 
@@ -46,8 +65,8 @@ class HeaderSearch extends PureComponent {
     onVisibleChange(true);
     this.setState({ searchMode: true }, () => {
       const { searchMode } = this.state;
-      if (searchMode) {
-        this.input.focus();
+      if (searchMode && this.inputRef) {
+        this.inputRef.focus();
       }
     });
   };
@@ -55,29 +74,23 @@ class HeaderSearch extends PureComponent {
   leaveSearchMode = () => {
     this.setState({
       searchMode: false,
-      value: '',
     });
   };
 
-  // NOTE: 不能小于500，如果长按某键，第一次触发auto repeat的间隔是500ms，小于500会导致触发2次
-  @Bind()
-  @Debounce(500, {
-    leading: true,
-    trailing: false,
-  })
-  debouncePressEnter() {
+  debouncePressEnter = () => {
     const { onPressEnter } = this.props;
     const { value } = this.state;
-    onPressEnter(value);
-  }
+    onPressEnter(value || '');
+  };
 
   render() {
-    const { className, placeholder, open, ...restProps } = this.props;
+    const { className, defaultValue, placeholder, open, ...restProps } = this.props;
     const { searchMode, value } = this.state;
     delete restProps.defaultOpen; // for rc-select not affected
     const inputClass = classNames(styles.input, {
       [styles.show]: searchMode,
     });
+
     return (
       <span
         className={classNames(className, styles.headerSearch)}
@@ -99,8 +112,9 @@ class HeaderSearch extends PureComponent {
         >
           <Input
             ref={node => {
-              this.input = node;
+              this.inputRef = node;
             }}
+            defaultValue={defaultValue}
             aria-label={placeholder}
             placeholder={placeholder}
             onKeyDown={this.onKeyDown}
@@ -111,29 +125,3 @@ class HeaderSearch extends PureComponent {
     );
   }
 }
-
-HeaderSearch.propTypes = {
-  className: PropTypes.string,
-  placeholder: PropTypes.string,
-  onSearch: PropTypes.func,
-  onChange: PropTypes.func,
-  onPressEnter: PropTypes.func,
-  defaultActiveFirstOption: PropTypes.bool,
-  dataSource: PropTypes.array,
-  defaultOpen: PropTypes.bool,
-  onVisibleChange: PropTypes.func,
-};
-
-HeaderSearch.defaultProps = {
-  defaultActiveFirstOption: false,
-  onPressEnter: () => {},
-  onSearch: () => {},
-  onChange: () => {},
-  className: '',
-  placeholder: '',
-  dataSource: [],
-  defaultOpen: false,
-  onVisibleChange: () => {},
-};
-
-export default HeaderSearch;

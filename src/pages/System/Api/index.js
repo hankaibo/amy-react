@@ -2,7 +2,7 @@ import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Tree, Card, Button, Switch, Divider, Modal, message, Icon, Table } from 'antd';
 import { isEqual } from 'lodash';
-import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import { getValue } from '@/utils/utils';
@@ -129,9 +129,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
     {
       title: '接口名称',
       dataIndex: 'title',
-      render: (text, record) => {
-        return record.name || record.title;
-      },
+      render: (text, record) => record.name || record.title,
     },
     {
       title: '接口url',
@@ -148,20 +146,21 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
     {
       title: '接口状态',
       dataIndex: 'status',
-      filters: [{ text: '禁用', value: 0 }, { text: '启用', value: 1 }],
+      filters: [
+        { text: '禁用', value: 0 },
+        { text: '启用', value: 1 },
+      ],
       filterMultiple: false,
-      render: (text, record) => {
-        return (
-          <Authorized authority="system.api.status" noMatch={NoMatch(text)}>
-            <Switch checked={text} onClick={checked => toggleState(checked, record)} />
-          </Authorized>
-        );
-      },
+      render: (text, record) => (
+        <Authorized authority="system:api:status" noMatch={NoMatch(text)}>
+          <Switch checked={text} onClick={checked => toggleState(checked, record)} />
+        </Authorized>
+      ),
     },
     {
       title: '排序',
       render: (text, record, index) => (
-        <Authorized authority="system.api.move" noMatch={null}>
+        <Authorized authority="system:api:move" noMatch={null}>
           <a
             onClick={() => handleMove(record, index - 1)}
             style={{ padding: '0 5px', marginRight: '10px' }}
@@ -178,7 +177,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
       title: '操作',
       render: (text, record) => (
         <>
-          <Authorized authority="system.api.update" noMatch={null}>
+          <Authorized authority="system:api:update" noMatch={null}>
             <ResourceForm isEdit api={record} parent={api}>
               <a>
                 <IconFont type="icon-edit" title="编辑" />
@@ -186,7 +185,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
             </ResourceForm>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system.api.delete" noMatch={null}>
+          <Authorized authority="system:api:delete" noMatch={null}>
             <a onClick={() => handleDelete(record)}>
               <IconFont type="icon-delete" title="删除" />
             </a>
@@ -197,7 +196,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
   ];
 
   return (
-    <PageHeaderWrapper>
+    <PageHeaderWrapper title={false}>
       <Row gutter={8}>
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
           <Card
@@ -218,7 +217,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
           >
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
-                <Authorized authority="system.api.add" noMatch={null}>
+                <Authorized authority="system:api:add" noMatch={null}>
                   <ResourceForm parent={api}>
                     <Button type="primary" title="新增">
                       <Icon type="plus" />
@@ -243,8 +242,6 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
   );
 });
 
-const areEqual = (prevProps, nextProps) => {
-  return isEqual(prevProps, nextProps);
-};
+const areEqual = (prevProps, nextProps) => isEqual(prevProps, nextProps);
 
 export default memo(Api, areEqual);

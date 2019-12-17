@@ -1,11 +1,12 @@
-import { routerRedux } from 'dva/router';
+import router from 'umi/router';
 import { stringify } from 'qs';
-import { login, logout, getCaptcha } from '@/services/login';
-import { setAuthority } from '@/utils/authority';
+import { login, logout } from '@/services/login';
+
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
+import { setAuthority } from '@/utils/authority';
 
-export default {
+const Model = {
   namespace: 'login',
 
   state: {
@@ -31,48 +32,30 @@ export default {
         const redirectUrlParams = new URL(redirect);
         if (redirectUrlParams.origin === urlParams.origin) {
           redirect = redirect.substr(urlParams.origin.length);
-          if (window.routerBase !== '/') {
-            redirect = redirect.replace(window.routerBase, '/');
-          }
           if (redirect.match(/^\/.*#/)) {
             redirect = redirect.substr(redirect.indexOf('#') + 1);
           }
-          if (redirect === '/user/login') {
-            redirect = null;
-          }
         } else {
-          redirect = null;
+          window.location.href = '/';
+          return;
         }
       }
-      yield put(routerRedux.replace(redirect || '/app'));
+      router.replace(redirect || '/');
     },
 
-    *getCaptcha({ payload }, { call }) {
-      yield call(getCaptcha, payload);
-    },
-
-    *logout(_, { call, put }) {
+    *logout(_, { call }) {
       yield call(logout);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: {
-          status: false,
-          data: {},
-        },
-      });
       reloadAuthorized();
       localStorage.clear();
       const { redirect } = getPageQuery();
       // redirect
       if (window.location.pathname !== '/user/login' && !redirect) {
-        yield put(
-          routerRedux.replace({
-            pathname: '/user/login',
-            search: stringify({
-              redirect: window.location.href,
-            }),
-          })
-        );
+        router.replace({
+          pathname: '/user/login',
+          search: stringify({
+            redirect: window.location.href,
+          }),
+        });
       }
     },
   },
@@ -83,8 +66,9 @@ export default {
       return {
         ...state,
         status: payload.status,
-        type: payload.type,
       };
     },
   },
 };
+
+export default Model;

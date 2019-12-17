@@ -1,8 +1,8 @@
+import React from 'react';
 import { Spin } from 'antd';
 import isEqual from 'lodash/isEqual';
-import React from 'react';
-// eslint-disable-next-line import/no-cycle
 import { isComponentClass } from './Secured';
+// eslint-disable-next-line import/no-cycle
 
 export default class PromiseRender extends React.Component {
   constructor(props) {
@@ -34,6 +34,7 @@ export default class PromiseRender extends React.Component {
         this.setState({
           component: ok,
         });
+        return true;
       })
       .catch(() => {
         this.setState({

@@ -1,13 +1,13 @@
+import component from './zh-CN/component';
 import globalHeader from './zh-CN/globalHeader';
-import exception from './zh-CN/exception';
 import login from './zh-CN/login';
 import menu from './zh-CN/menu';
-import settingDrawer from './zh-CN/settingDrawer';
 import pwa from './zh-CN/pwa';
+import settingDrawer from './zh-CN/settingDrawer';
 
 export default {
   ...globalHeader,
-  ...exception,
+  ...component,
   ...login,
   ...menu,
   ...settingDrawer,

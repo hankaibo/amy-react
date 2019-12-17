@@ -108,15 +108,15 @@ const UserRoleForm = connect(({ systemUser: { roleList, selectedRoleIdList }, lo
                         {item.code}
                       </Option>
                     ))}
-                  </Select>
+                  </Select>,
                 )}
               </FormItem>
             </Form>
           </Modal>
         </span>
       );
-    }
-  )
+    },
+  ),
 );
 
 export default UserRoleForm;

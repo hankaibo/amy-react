@@ -5,13 +5,15 @@ import { Form, Input, Modal, Switch, message, TreeSelect, Button } from 'antd';
 const FormItem = Form.Item;
 const { TextArea } = Input;
 
-const DepartmentForm = connect(({ systemDepartment: { tree, editDepartment }, loading }) => ({
-  tree,
-  editDepartment,
-  loading: loading.models.systemDepartment,
-}))(
+const DepartmentForm = connect(
+  ({ systemDepartment: { fragmentTree, editDepartment }, loading }) => ({
+    fragmentTree,
+    editDepartment,
+    loading: loading.models.systemDepartment,
+  }),
+)(
   Form.create({ name: 'departmentForm' })(
-    ({ loading, children, isEdit, department, editDepartment, tree, form, dispatch }) => {
+    ({ loading, children, isEdit, department, editDepartment, fragmentTree, form, dispatch }) => {
       const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
 
       // 【模态框显示隐藏属性】
@@ -37,9 +39,15 @@ const DepartmentForm = connect(({ systemDepartment: { tree, editDepartment }, lo
             },
           });
         }
+        dispatch({
+          type: 'systemDepartment/fetchFragment',
+        });
         return () => {
           dispatch({
             type: 'systemDepartment/clear',
+          });
+          dispatch({
+            type: 'systemDepartment/clearTreeFragment',
           });
         };
       }, [visible, isEdit, department, dispatch]);
@@ -61,11 +69,11 @@ const DepartmentForm = connect(({ systemDepartment: { tree, editDepartment }, lo
         if (visible && !isEdit) {
           if (department) {
             setFieldsValue({ parentId: department.id, oldParentId: department.id });
-          } else if (tree.length) {
-            setFieldsValue({ parentId: tree[0].id, oldParentId: tree[0].id });
+          } else if (fragmentTree.length) {
+            setFieldsValue({ parentId: fragmentTree[0].id, oldParentId: fragmentTree[0].id });
           }
         }
-      }, [visible, department, tree, setFieldsValue]);
+      }, [visible, department, fragmentTree, setFieldsValue]);
 
       // 【添加与修改】
       const handleAddOrUpdate = () => {
@@ -149,10 +157,10 @@ const DepartmentForm = connect(({ systemDepartment: { tree, editDepartment }, lo
                     <TreeSelect
                       style={{ width: '100%' }}
                       dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                      treeData={tree}
+                      treeData={fragmentTree}
                       placeholder="请选择部门"
                       treeDefaultExpandAll
-                    />
+                    />,
                   )}
                 </FormItem>
               )}
@@ -167,15 +175,15 @@ const DepartmentForm = connect(({ systemDepartment: { tree, editDepartment }, lo
                 {getFieldDecorator('description', {
                   rules: [{ message: '请将描述长度保持在1至50字符之间！', min: 1, max: 50 }],
                 })(
-                  <TextArea placeholder="请输入部门描述。" autoSize={{ minRows: 2, maxRows: 6 }} />
+                  <TextArea placeholder="请输入部门描述。" autoSize={{ minRows: 2, maxRows: 6 }} />,
                 )}
               </FormItem>
             </Form>
           </Modal>
         </span>
       );
-    }
-  )
+    },
+  ),
 );
 
 export default DepartmentForm;
