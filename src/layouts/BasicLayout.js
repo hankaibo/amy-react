@@ -5,7 +5,7 @@
  */
 import { Result, Button } from 'antd';
 import ProLayout, { SettingDrawer, DefaultFooter } from '@ant-design/pro-layout';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import Link from 'umi/link';
 import { connect } from 'dva';
@@ -63,14 +63,6 @@ const BasicLayout = props => {
       pathname: '/',
     },
   } = props;
-
-  useEffect(() => {
-    if (dispatch) {
-      dispatch({
-        type: 'user/fetchCurrent',
-      });
-    }
-  }, []);
 
   const handleMenuCollapse = payload => {
     if (dispatch) {

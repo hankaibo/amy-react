@@ -11,13 +11,13 @@ const SettingModel = {
   namespace: 'settings',
   state: defaultSettings,
   reducers: {
-    changeSetting(state, { payload }) {
+    changeSetting(state = defaultSettings, { payload }) {
       const { colorWeak, contentWidth } = payload;
 
       if (state.contentWidth !== contentWidth && window.dispatchEvent) {
         window.dispatchEvent(new Event('resize'));
       }
-      updateColorWeak(colorWeak);
+      updateColorWeak(!!colorWeak);
       return {
         ...state,
         ...payload,

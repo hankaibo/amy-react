@@ -1,25 +1,19 @@
 export default [
   {
-    path: '/',
-    component: '../layouts/BlankLayout',
+    path: '/user',
+    component: '../layouts/UserLayout',
     routes: [
-      // user
-      {
-        path: '/user',
-        component: '../layouts/UserLayout',
-        routes: [
-          { path: '/user', redirect: '/user/login' },
-          { path: '/user/login', name: 'login', component: './Login/Login' },
-          {
-            component: '404',
-          },
-        ],
-      },
-      //
+      { path: '/user', redirect: '/user/login' },
+      { path: '/user/login', name: 'login', component: './Login/Login' },
+    ],
+  },
+  {
+    path: '/',
+    component: '../layouts/SecurityLayout',
+    routes: [
       {
         path: '/',
         component: '../layouts/BasicLayout',
-        Routes: ['src/pages/Authorized'],
         authority: ['system:user:info'],
         routes: [
           // home
@@ -27,7 +21,7 @@ export default [
             path: '/home',
             name: 'home',
             icon: 'home',
-            component: './Home/Home',
+            component: './Home',
           },
           // system
           {
@@ -121,12 +115,17 @@ export default [
             redirect: '/home',
             authority: ['system:user:info'],
           },
-          // 404
           {
-            component: '404',
+            component: './404',
           },
         ],
       },
+      {
+        component: './404',
+      },
     ],
+  },
+  {
+    component: './404',
   },
 ];

@@ -14,6 +14,5 @@ export default {
       mobile: '812345678',
       sex: 1,
     },
-    menuList: ['home', 'root', 'system', 'system.user', 'system.role', 'system.dictionary'],
   },
 };

@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import _ from 'lodash';
 
-const Home = () => (
+const Index = () => (
   <>
     {/* {console.log('使用memo后，home只渲染一次。')} */}
     <h2>Hello! Welcome to My Ant Design Pro!</h2>
@@ -27,4 +27,4 @@ const areEqual = (prevProps, nextProps) =>
   可手动硬编码查看其渲染次数。
   */
   _.isEqual(prevProps, nextProps);
-export default memo(Home, areEqual);
+export default memo(Index, areEqual);
