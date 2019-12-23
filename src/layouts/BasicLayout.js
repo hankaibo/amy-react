@@ -5,7 +5,7 @@
  */
 import { Result, Button } from 'antd';
 import ProLayout, { SettingDrawer, DefaultFooter } from '@ant-design/pro-layout';
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense } from 'react';
 
 import Link from 'umi/link';
 import { connect } from 'dva';
@@ -80,6 +80,24 @@ const BasicLayout = props => {
       });
     }
   };
+
+  const renderSettingDrawer = () => {
+    // Do not render SettingDrawer in production
+    if (process.env.NODE_ENV === 'production') {
+      return null;
+    }
+    return (
+      <SettingDrawer
+        settings={settings}
+        onSettingChange={config =>
+          dispatch({
+            type: 'settings/changeSetting',
+            payload: config,
+          })
+        }
+      />
+    );
+  };
   // get children authority
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
@@ -131,15 +149,7 @@ const BasicLayout = props => {
           {children}
         </Authorized>
       </ProLayout>
-      <SettingDrawer
-        settings={settings}
-        onSettingChange={config =>
-          dispatch({
-            type: 'settings/changeSetting',
-            payload: config,
-          })
-        }
-      />
+      <Suspense fallback={null}>{renderSettingDrawer()}</Suspense>
     </>
   );
 };

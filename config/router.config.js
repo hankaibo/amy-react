@@ -5,6 +5,9 @@ export default [
     routes: [
       { path: '/user', redirect: '/user/login' },
       { path: '/user/login', name: 'login', component: './Login/Login' },
+      {
+        component: './404',
+      },
     ],
   },
   {
@@ -69,6 +72,9 @@ export default [
                 name: 'information',
                 component: './System/Information',
               },
+              {
+                component: './404',
+              },
             ],
           },
           // develop
@@ -82,6 +88,9 @@ export default [
                 name: 'swagger',
                 component: './Develop/Swagger',
                 authority: ['develop:swagger'],
+              },
+              {
+                component: './404',
               },
             ],
           },
@@ -106,6 +115,9 @@ export default [
                 path: '/exception/500',
                 name: 'server-error',
                 component: './Exception/500',
+              },
+              {
+                component: './404',
               },
             ],
           },
