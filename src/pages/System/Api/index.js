@@ -167,8 +167,8 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
           >
             <Icon type="arrow-up" title="向上" />
           </a>
-          <a onClick={() => handleMove(record, index + 1)}>
-            <Icon type="arrow-down" title="向下" />
+          <a>
+            <Icon type="arrow-down" title="向下" onClick={() => handleMove(record, index + 1)} />
           </a>
         </Authorized>
       ),
@@ -179,16 +179,17 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
         <>
           <Authorized authority="system:api:update" noMatch={null}>
             <ResourceForm isEdit api={record} parent={api}>
-              <a>
-                <IconFont type="icon-edit" title="编辑" />
-              </a>
+              <IconFont type="icon-edit" title="编辑" className={styles.icon} />
             </ResourceForm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:api:delete" noMatch={null}>
-            <a onClick={() => handleDelete(record)}>
-              <IconFont type="icon-delete" title="删除" />
-            </a>
+            <IconFont
+              type="icon-delete"
+              title="删除"
+              className={styles.icon}
+              onClick={() => handleDelete(record)}
+            />
           </Authorized>
         </>
       ),

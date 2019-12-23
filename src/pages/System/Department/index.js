@@ -11,6 +11,7 @@ import {
   Modal,
   message,
   Icon,
+  Popconfirm,
   Table,
   Input,
 } from 'antd';
@@ -241,16 +242,19 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
         <>
           <Authorized authority="system:department:update" noMatch={null}>
             <DepartmentForm isEdit department={record}>
-              <a>
-                <IconFont type="icon-edit" title="编辑" />
-              </a>
+              <IconFont type="icon-edit" title="编辑" className={styles.icon} />
             </DepartmentForm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:department:delete" noMatch={null}>
-            <a onClick={() => handleDelete(record)}>
-              <IconFont type="icon-delete" title="删除" />
-            </a>
+            <Popconfirm
+              title="您确定要删除该列表吗？"
+              onConfirm={() => handleDelete(record)}
+              okText="确定"
+              cancelText="取消"
+            >
+              <IconFont type="icon-delete" title="删除" className={styles.icon} />
+            </Popconfirm>
           </Authorized>
         </>
       ),

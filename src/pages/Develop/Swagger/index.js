@@ -168,9 +168,7 @@ const Swagger = connect(({ developSwagger: { tree, list, selectedRowKeys }, load
       render: (text, record) => (
         <Authorized authority="develop:swagger:import" noMatch={null}>
           <SwaggerImportForm swagger={[record.id]}>
-            <a>
-              <Icon type="import" />
-            </a>
+            <Icon type="import" className={styles.icon} />
           </SwaggerImportForm>
         </Authorized>
       ),

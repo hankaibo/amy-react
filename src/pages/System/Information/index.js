@@ -1,6 +1,6 @@
 import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
-import { Card, Button, Input, Tag, Divider, Modal, message, Icon, Table } from 'antd';
+import { Card, Button, Input, Tag, Divider, Modal, message, Icon, Table, Popconfirm } from 'antd';
 import { isEqual } from 'lodash';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Authorized from '@/utils/Authorized';
@@ -179,22 +179,28 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
         <>
           <Authorized authority="system:information:update" noMatch={null}>
             <InformationForm isEdit information={record}>
-              <a>
-                <IconFont type="icon-edit" title="编辑" />
-              </a>
+              <IconFont type="icon-edit" title="编辑" className={styles.icon} />
             </InformationForm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:information:delete" noMatch={null}>
-            <a onClick={() => handleDelete(record)}>
-              <IconFont type="icon-delete" title="删除" />
-            </a>
+            <Popconfirm
+              title="您确定要删除该列表吗？"
+              onConfirm={() => handleDelete(record)}
+              okText="确定"
+              cancelText="取消"
+            >
+              <IconFont type="icon-delete" title="删除" className={styles.icon} />
+            </Popconfirm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:information:publish" noMatch={null}>
-            <a onClick={() => handleDelete(record)}>
-              <IconFont type="icon-publish" title="发布" />
-            </a>
+            <IconFont
+              type="icon-publish"
+              title="发布"
+              className={styles.icon}
+              onClick={() => handleDelete(record)}
+            />
           </Authorized>
         </>
       ),
@@ -214,14 +220,17 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
               </InformationForm>
             </Authorized>
             <Authorized authority="system:information:batchDelete" noMatch={null}>
-              <Button
-                type="danger"
+              <Popconfirm
+                title="您确定要删除该列表吗？"
+                onConfirm={handleBatchDelete}
+                okText="确定"
+                cancelText="取消"
                 disabled={selectedRowKeys.length <= 0}
-                title="删除"
-                onClick={handleBatchDelete}
               >
-                <IconFont type="icon-delete" />
-              </Button>
+                <Button type="danger" disabled={selectedRowKeys.length <= 0} title="删除">
+                  <IconFont type="icon-delete" />
+                </Button>
+              </Popconfirm>
             </Authorized>
           </div>
           <Table

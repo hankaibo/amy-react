@@ -7,6 +7,7 @@ import {
   Card,
   Button,
   Input,
+  Popconfirm,
   Switch,
   Divider,
   Modal,
@@ -256,31 +257,30 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
           {/* Note: system:user:xxx为【资源保护】菜单中用户管理修改接口(system:user:update)的编码名称。必须两者一致才能动态隐藏显示按钮。 */}
           <Authorized authority="system:user:update" noMatch={null}>
             <UserForm isEdit user={record}>
-              <a>
-                <IconFont type="icon-edit" title="编辑" />
-              </a>
+              <IconFont type="icon-edit" title="编辑" className={styles.icon} />
             </UserForm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:user:delete" noMatch={null}>
-            <a onClick={() => handleDelete(record)}>
-              <IconFont type="icon-delete" title="删除" />
-            </a>
+            <Popconfirm
+              title="您确定要删除该用户吗？"
+              onConfirm={() => handleDelete(record)}
+              okText="确定"
+              cancelText="取消"
+            >
+              <IconFont type="icon-delete" title="删除" className={styles.icon} />
+            </Popconfirm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:user:grant" noMatch={null}>
             <UserRoleForm user={record}>
-              <a>
-                <IconFont type="icon-role" title="分配角色" />
-              </a>
+              <IconFont type="icon-role" title="分配角色" className={styles.icon} />
             </UserRoleForm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:user:password:reset" noMatch={null}>
             <UserPasswordForm user={record}>
-              <a>
-                <IconFont type="icon-reset" title="重置密码" />
-              </a>
+              <IconFont type="icon-reset" title="重置密码" className={styles.icon} />
             </UserPasswordForm>
           </Authorized>
         </>
@@ -323,14 +323,17 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
                   </UserForm>
                 </Authorized>
                 <Authorized authority="system:user:batchDelete" noMatch={null}>
-                  <Button
-                    type="danger"
+                  <Popconfirm
+                    title="您确定要删除该列表吗？"
+                    onConfirm={handleBatchDelete}
+                    okText="确定"
+                    cancelText="取消"
                     disabled={selectedRowKeys.length <= 0}
-                    title="删除"
-                    onClick={handleBatchDelete}
                   >
-                    <IconFont type="icon-delete" />
-                  </Button>
+                    <Button type="danger" disabled={selectedRowKeys.length <= 0} title="删除">
+                      <IconFont type="icon-delete" />
+                    </Button>
+                  </Popconfirm>
                 </Authorized>
               </div>
               <Table

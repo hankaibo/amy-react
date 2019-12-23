@@ -1,6 +1,19 @@
 import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Button, Switch, Divider, Modal, message, Icon, Tree, Table } from 'antd';
+import {
+  Row,
+  Col,
+  Card,
+  Button,
+  Switch,
+  Divider,
+  Modal,
+  Popconfirm,
+  message,
+  Icon,
+  Tree,
+  Table,
+} from 'antd';
 import { isEqual } from 'lodash';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Authorized from '@/utils/Authorized';
@@ -144,23 +157,24 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
         <>
           <Authorized authority="system:role:update" noMatch={null}>
             <RoleForm isEdit role={record}>
-              <a>
-                <IconFont type="icon-edit" title="编辑" />
-              </a>
+              <IconFont type="icon-edit" title="编辑" className={styles.icon} />
             </RoleForm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:role:delete" noMatch={null}>
-            <a onClick={() => handleDelete(record)}>
-              <IconFont type="icon-delete" title="删除" />
-            </a>
+            <Popconfirm
+              title="您确定要删除该用户吗？"
+              onConfirm={() => handleDelete(record)}
+              okText="确定"
+              cancelText="取消"
+            >
+              <IconFont type="icon-delete" title="删除" className={styles.icon} />
+            </Popconfirm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:role:grant" noMatch={null}>
             <RoleResourceForm role={record}>
-              <a>
-                <IconFont type="icon-permission" title="分配资源" />
-              </a>
+              <IconFont type="icon-permission" title="分配资源" className={styles.icon} />
             </RoleResourceForm>
           </Authorized>
         </>

@@ -1,6 +1,17 @@
 import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
-import { Card, Button, Input, Divider, Modal, message, Icon, Switch, Table } from 'antd';
+import {
+  Card,
+  Button,
+  Input,
+  Divider,
+  Modal,
+  message,
+  Icon,
+  Switch,
+  Table,
+  Popconfirm,
+} from 'antd';
 import { isEqual } from 'lodash';
 import Link from 'umi/link';
 import router from 'umi/router';
@@ -210,16 +221,19 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
         <>
           <Authorized authority="system:dictionary:update" noMatch={null}>
             <DictionaryForm isEdit dictionary={record} match={match} location={location}>
-              <a>
-                <IconFont type="icon-edit" title="编辑" />
-              </a>
+              <IconFont type="icon-edit" title="编辑" className={styles.icon} />
             </DictionaryForm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:dictionary:delete" noMatch={null}>
-            <a onClick={() => handleDelete(record)}>
-              <IconFont type="icon-delete" title="删除" />
-            </a>
+            <Popconfirm
+              title="您确定要删除该列表吗？"
+              onConfirm={() => handleDelete(record)}
+              okText="确定"
+              cancelText="取消"
+            >
+              <IconFont type="icon-delete" title="删除" className={styles.icon} />
+            </Popconfirm>
           </Authorized>
         </>
       ),
