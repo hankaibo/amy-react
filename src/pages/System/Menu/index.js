@@ -178,7 +178,7 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
         <>
           <Authorized authority="system:menu:update" noMatch={null}>
             <MenuForm isEdit menu={record}>
-              <IconFont type="icon-edit" title="编辑" className={styles.icon} />
+              <IconFont type="icon-edit" title="编辑" className="icon" />
             </MenuForm>
             <Divider type="vertical" />
           </Authorized>
@@ -189,7 +189,7 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
               okText="确定"
               cancelText="取消"
             >
-              <IconFont type="icon-delete" title="删除" className={styles.icon} />
+              <IconFont type="icon-delete" title="删除" className="icon" />
             </Popconfirm>
           </Authorized>
         </>

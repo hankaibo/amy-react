@@ -157,7 +157,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
         <>
           <Authorized authority="system:role:update" noMatch={null}>
             <RoleForm isEdit role={record}>
-              <IconFont type="icon-edit" title="编辑" className={styles.icon} />
+              <IconFont type="icon-edit" title="编辑" className="icon" />
             </RoleForm>
             <Divider type="vertical" />
           </Authorized>
@@ -168,13 +168,13 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
               okText="确定"
               cancelText="取消"
             >
-              <IconFont type="icon-delete" title="删除" className={styles.icon} />
+              <IconFont type="icon-delete" title="删除" className="icon" />
             </Popconfirm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:role:grant" noMatch={null}>
             <RoleResourceForm role={record}>
-              <IconFont type="icon-permission" title="分配资源" className={styles.icon} />
+              <IconFont type="icon-permission" title="分配资源" className="icon" />
             </RoleResourceForm>
           </Authorized>
         </>

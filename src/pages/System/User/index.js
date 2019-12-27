@@ -257,7 +257,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
           {/* Note: system:user:xxx为【资源保护】菜单中用户管理修改接口(system:user:update)的编码名称。必须两者一致才能动态隐藏显示按钮。 */}
           <Authorized authority="system:user:update" noMatch={null}>
             <UserForm isEdit user={record}>
-              <IconFont type="icon-edit" title="编辑" className={styles.icon} />
+              <IconFont type="icon-edit" title="编辑" className="icon" />
             </UserForm>
             <Divider type="vertical" />
           </Authorized>
@@ -268,19 +268,19 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
               okText="确定"
               cancelText="取消"
             >
-              <IconFont type="icon-delete" title="删除" className={styles.icon} />
+              <IconFont type="icon-delete" title="删除" className="icon" />
             </Popconfirm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:user:grant" noMatch={null}>
             <UserRoleForm user={record}>
-              <IconFont type="icon-role" title="分配角色" className={styles.icon} />
+              <IconFont type="icon-role" title="分配角色" className="icon" />
             </UserRoleForm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:user:password:reset" noMatch={null}>
             <UserPasswordForm user={record}>
-              <IconFont type="icon-reset" title="重置密码" className={styles.icon} />
+              <IconFont type="icon-reset" title="重置密码" className="icon" />
             </UserPasswordForm>
           </Authorized>
         </>

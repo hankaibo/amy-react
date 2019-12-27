@@ -18,7 +18,7 @@ export default {
     // 列表
     list: [],
     // 编辑信息
-    editDepartment: {},
+    department: {},
   },
 
   effects: {
@@ -46,7 +46,10 @@ export default {
     *add({ payload, callback }, { call, put }) {
       const { oldParentId: parentId } = payload;
       const params = { ...payload, status: +payload.status };
-      yield call(addDepartment, params);
+      const response = yield call(addDepartment, params);
+      if (response) {
+        return;
+      }
       yield put({
         type: 'fetchChildrenById',
         payload: {
@@ -61,11 +64,11 @@ export default {
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getDepartmentById, id);
-      const editDepartment = { ...response, status: !!response.status };
+      const department = { ...response, status: !!response.status };
       yield put({
         type: 'save',
         payload: {
-          editDepartment,
+          department,
         },
       });
       if (callback) callback();
@@ -73,7 +76,10 @@ export default {
     *update({ payload, callback }, { call, put }) {
       const { oldParentId: parentId } = payload;
       const params = { ...payload, status: +payload.status };
-      yield call(updateDepartment, params);
+      const response = yield call(updateDepartment, params);
+      if (response) {
+        return;
+      }
       if (parentId) {
         yield put({
           type: 'fetchChildrenById',
@@ -90,7 +96,10 @@ export default {
     *enable({ payload, callback }, { call, put }) {
       const { id, status, parentId } = payload;
       const params = { id, status: +status };
-      yield call(enableDepartment, params);
+      const response = yield call(enableDepartment, params);
+      if (response) {
+        return;
+      }
       yield put({
         type: 'fetchChildrenById',
         payload: {
@@ -104,17 +113,19 @@ export default {
     },
     *delete({ payload, callback }, { call, put }) {
       const { id, parentId } = payload;
-      yield call(deleteDepartment, id);
-      yield put({
-        type: 'fetchChildrenById',
-        payload: {
-          id: parentId,
-        },
-      });
-      yield put({
-        type: 'fetch',
-      });
-      if (callback) callback();
+      const response = yield call(deleteDepartment, id);
+      if (response === '') {
+        yield put({
+          type: 'fetchChildrenById',
+          payload: {
+            id: parentId,
+          },
+        });
+        yield put({
+          type: 'fetch',
+        });
+        if (callback) callback();
+      }
     },
     *move({ payload, callback }, { call, put }) {
       const { parentId } = payload;
@@ -160,16 +171,16 @@ export default {
       };
     },
     save(state, { payload }) {
-      const { editDepartment } = payload;
+      const { department } = payload;
       return {
         ...state,
-        editDepartment,
+        department,
       };
     },
     clear(state) {
       return {
         ...state,
-        editDepartment: {},
+        department: {},
       };
     },
   },

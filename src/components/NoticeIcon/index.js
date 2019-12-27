@@ -57,7 +57,8 @@ export default class NoticeIcon extends Component {
     if (!children) {
       return null;
     }
-    const panes = React.Children.map(children, child => {
+    const panes = [];
+    React.Children.forEach(children, child => {
       if (!child) {
         return null;
       }
@@ -65,7 +66,7 @@ export default class NoticeIcon extends Component {
       const len = list && list.length ? list.length : 0;
       const msgCount = count || count === 0 ? count : len;
       const tabTitle = msgCount > 0 ? `${title} (${msgCount})` : title;
-      return (
+      panes.push(
         <TabPane tab={tabTitle} key={title}>
           <NoticeList
             clearText={clearText}
@@ -79,8 +80,9 @@ export default class NoticeIcon extends Component {
             title={title}
             {...child.props}
           />
-        </TabPane>
+        </TabPane>,
       );
+      return null;
     });
     return (
       <>
@@ -106,7 +108,7 @@ export default class NoticeIcon extends Component {
     const { visible } = this.state;
     const noticeButtonClass = classNames(className, styles.noticeButton);
     const notificationBox = this.getNotificationBox();
-    const NoticeBellIcon = bell || <Icon type="bell" className={styles.icon} />;
+    const NoticeBellIcon = bell || <Icon type="bell" className="icon" />;
     const trigger = (
       <span className={classNames(noticeButtonClass, { opened: visible })}>
         <Badge count={count} style={{ boxShadow: 'none' }} className={styles.badge}>

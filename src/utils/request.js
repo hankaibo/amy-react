@@ -28,24 +28,21 @@ const codeMessage = {
  */
 const errorHandler = error => {
   const { response } = error;
-  const KEY_ERROR = 'keyError';
   if (response && response.status) {
-    const errorText = codeMessage[response.status] || response.statusText;
+    const errorText = error.data.message || codeMessage[response.status] || response.statusText;
     const { status, url } = response;
 
     notification.error({
-      key: KEY_ERROR,
       message: `请求错误 ${status}: ${url}`,
       description: errorText,
     });
   } else if (!response) {
     notification.error({
-      key: KEY_ERROR,
       description: '您的网络发生异常，无法连接服务器',
       message: '网络异常',
     });
   }
-  throw error;
+  return response;
 };
 
 /**
@@ -66,7 +63,7 @@ request.interceptors.request.use(async (url, options) => {
   const defaultOptions = { ...options };
   if (token && !url.startsWith('/optimus/api/v1/auth')) {
     defaultOptions.headers = {
-      Authorization: `${token}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     };
   }

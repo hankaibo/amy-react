@@ -179,7 +179,7 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
         <>
           <Authorized authority="system:information:update" noMatch={null}>
             <InformationForm isEdit information={record}>
-              <IconFont type="icon-edit" title="编辑" className={styles.icon} />
+              <IconFont type="icon-edit" title="编辑" className="icon" />
             </InformationForm>
             <Divider type="vertical" />
           </Authorized>
@@ -190,7 +190,7 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
               okText="确定"
               cancelText="取消"
             >
-              <IconFont type="icon-delete" title="删除" className={styles.icon} />
+              <IconFont type="icon-delete" title="删除" className="icon" />
             </Popconfirm>
             <Divider type="vertical" />
           </Authorized>
@@ -198,7 +198,7 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
             <IconFont
               type="icon-publish"
               title="发布"
-              className={styles.icon}
+              className="icon"
               onClick={() => handleDelete(record)}
             />
           </Authorized>

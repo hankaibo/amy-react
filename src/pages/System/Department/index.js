@@ -8,7 +8,6 @@ import {
   Button,
   Switch,
   Divider,
-  Modal,
   message,
   Icon,
   Popconfirm,
@@ -31,13 +30,16 @@ const { Search } = Input;
 const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   tree,
   list,
-  loading: loading.models.systemDepartment,
+  loading: loading.effects['systemDepartment/fetchChildrenById'],
 }))(({ loading, tree, list, dispatch }) => {
   // 【当前点击的部门】
-  const [department, setDepartment] = useState(null);
+  const [currentDepartment, setCurrentDepartment] = useState(null);
+  // 【部门树相关】
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [autoExpandParent, setAutoExpandParent] = useState(true);
+  // 【查询参数】
+  const [params, setParams] = useState({});
 
   // 【首次请求加载树数据】
   useEffect(() => {
@@ -48,25 +50,33 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       dispatch({
         type: 'systemDepartment/clearTree',
       });
+    };
+  }, [dispatch]);
+  // 【查询列表】
+  useEffect(() => {
+    const { id } = params;
+    if (id) {
+      dispatch({
+        type: 'systemDepartment/fetchChildrenById',
+        payload: {
+          ...params,
+        },
+      });
+    }
+    return () => {
       dispatch({
         type: 'systemDepartment/clearList',
       });
     };
-  }, [dispatch]);
+  }, [params, dispatch]);
 
   // 【获取子部门数据】
   const handleSelect = (selectedKeys, info) => {
-    // bug? 当点击靠右时，selectedKeys 为空。
-    const id = selectedKeys.length === 0 ? info.node.props.id : selectedKeys;
-    dispatch({
-      type: 'systemDepartment/fetchChildrenById',
-      payload: {
-        id,
-      },
-      callback: () => {
-        setDepartment(info.node.props);
-      },
-    });
+    if (selectedKeys.length === 1) {
+      const id = selectedKeys[0];
+      setParams({ ...params, id });
+      setCurrentDepartment(info.node.props);
+    }
   };
 
   // 【启用禁用部门】
@@ -145,7 +155,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   };
 
   // 【删除】
-  const deleteItem = record => {
+  const handleDelete = record => {
     const { id, parentId } = record;
     dispatch({
       type: 'systemDepartment/delete',
@@ -158,15 +168,6 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       },
     });
   };
-  const handleDelete = record => {
-    Modal.confirm({
-      title: '删除',
-      content: '您确定要删除该部门吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => deleteItem(record),
-    });
-  };
 
   // 【过滤】
   const handleTableChange = (_, filtersArg) => {
@@ -176,16 +177,12 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       return newObj;
     }, {});
 
-    const { id } = department;
+    const { id } = currentDepartment;
 
-    const params = {
+    setParams({
+      ...params,
       id,
       ...filters,
-    };
-
-    dispatch({
-      type: 'systemDepartment/fetchChildrenById',
-      payload: params,
     });
   };
 
@@ -215,15 +212,19 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       title: '排序',
       render: (text, record, index) => (
         <Authorized authority="system:department:move" noMatch="--">
-          <a
+          <Icon
+            className="icon"
+            type="arrow-up"
+            title="向上"
             onClick={() => handleMove(record, index - 1)}
-            style={{ padding: '0 5px', marginRight: '10px' }}
-          >
-            <Icon type="arrow-up" title="向上" />
-          </a>
-          <a onClick={() => handleMove(record, index + 1)}>
-            <Icon type="arrow-down" title="向下" />
-          </a>
+          />
+          <Divider type="vertical" />
+          <Icon
+            className="icon"
+            type="arrow-down"
+            title="向下"
+            onClick={() => handleMove(record, index + 1)}
+          />
         </Authorized>
       ),
     },
@@ -241,8 +242,8 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       render: (text, record) => (
         <>
           <Authorized authority="system:department:update" noMatch={null}>
-            <DepartmentForm isEdit department={record}>
-              <IconFont type="icon-edit" title="编辑" className={styles.icon} />
+            <DepartmentForm isEdit id={record.id}>
+              <IconFont type="icon-edit" title="编辑" className="icon" />
             </DepartmentForm>
             <Divider type="vertical" />
           </Authorized>
@@ -253,7 +254,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
               okText="确定"
               cancelText="取消"
             >
-              <IconFont type="icon-delete" title="删除" className={styles.icon} />
+              <IconFont type="icon-delete" title="删除" className="icon" />
             </Popconfirm>
           </Authorized>
         </>
@@ -275,10 +276,10 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
             <Tree
               showLine
               switcherIcon={<Icon type="down" />}
-              expandedKeys={expandedKeys}
               autoExpandParent={autoExpandParent}
-              onSelect={handleSelect}
+              expandedKeys={expandedKeys}
               onExpand={handleExpand}
+              onSelect={handleSelect}
             >
               {loop(tree)}
             </Tree>
@@ -286,7 +287,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
         </Col>
         <Col xs={24} sm={24} md={24} lg={18} xl={18}>
           <Card
-            title={department ? `【${department.titleValue}】的子部门` : '部门列表'}
+            title={currentDepartment ? `【${currentDepartment.titleValue}】的子部门` : '部门列表'}
             bordered={false}
             bodyStyle={{ padding: '15px' }}
             style={{ marginTop: 10 }}
@@ -294,7 +295,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:department:add" noMatch={null}>
-                  <DepartmentForm department={department}>
+                  <DepartmentForm id={currentDepartment && currentDepartment.id}>
                     <Button type="primary" title="新增">
                       <Icon type="plus" />
                     </Button>
@@ -307,7 +308,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
                 childrenColumnName="child"
                 loading={loading}
                 columns={columns}
-                dataSource={list.length === 0 && department === null ? tree : list}
+                dataSource={list.length === 0 && currentDepartment === null ? tree : list}
                 pagination={false}
                 onChange={handleTableChange}
               />

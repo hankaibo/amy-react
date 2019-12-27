@@ -5,15 +5,13 @@ import { Form, Input, Modal, Switch, message, TreeSelect, Button } from 'antd';
 const FormItem = Form.Item;
 const { TextArea } = Input;
 
-const DepartmentForm = connect(
-  ({ systemDepartment: { fragmentTree, editDepartment }, loading }) => ({
-    fragmentTree,
-    editDepartment,
-    loading: loading.models.systemDepartment,
-  }),
-)(
+const DepartmentForm = connect(({ systemDepartment: { tree, department }, loading }) => ({
+  tree,
+  department,
+  loading: loading.effects['systemDepartment/fetchById'],
+}))(
   Form.create({ name: 'departmentForm' })(
-    ({ loading, children, isEdit, department, editDepartment, fragmentTree, form, dispatch }) => {
+    ({ loading, children, isEdit, id, department, tree, form, dispatch }) => {
       const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
 
       // 【模态框显示隐藏属性】
@@ -31,7 +29,6 @@ const DepartmentForm = connect(
       // 【获取数据】
       useEffect(() => {
         if (visible && isEdit) {
-          const { id } = department;
           dispatch({
             type: 'systemDepartment/fetchById',
             payload: {
@@ -39,41 +36,44 @@ const DepartmentForm = connect(
             },
           });
         }
-        dispatch({
-          type: 'systemDepartment/fetchFragment',
-        });
         return () => {
           dispatch({
             type: 'systemDepartment/clear',
           });
-          dispatch({
-            type: 'systemDepartment/clearTreeFragment',
-          });
         };
-      }, [visible, isEdit, department, dispatch]);
+      }, [visible, isEdit, id, dispatch]);
 
       // 【修改时，回显表单】
       useEffect(() => {
         // 👍 将条件判断放置在 effect 中
         if (visible && isEdit) {
-          if (Object.keys(editDepartment).length > 0) {
+          if (Object.keys(department).length > 0) {
             // 不论是否修改父部门，保证页面停留在原页面下。
-            setFieldsValue({ ...editDepartment, oldParentId: editDepartment.parentId });
+            const formData = {
+              id: department.id,
+              name: department.name,
+              parentId: department.parentId,
+              status: department.status,
+            };
+            if (!department.parentId) {
+              delete formData.parentId;
+            }
+            setFieldsValue({ ...formData, oldParentId: department.parentId });
           }
         }
-      }, [visible, isEdit, editDepartment, setFieldsValue]);
+      }, [visible, isEdit, department, setFieldsValue]);
 
       // 【新建时，保证任何时候添加上级菜单都有默认值】
       // 不论是否修改父部门，保证页面停留在原页面下。
       useEffect(() => {
         if (visible && !isEdit) {
-          if (department) {
-            setFieldsValue({ parentId: department.id, oldParentId: department.id });
-          } else if (fragmentTree.length) {
-            setFieldsValue({ parentId: fragmentTree[0].id, oldParentId: fragmentTree[0].id });
+          if (id) {
+            setFieldsValue({ parentId: id, oldParentId: id });
+          } else if (tree.length) {
+            setFieldsValue({ parentId: tree[0].id, oldParentId: tree[0].id });
           }
         }
-      }, [visible, department, fragmentTree, setFieldsValue]);
+      }, [visible, isEdit, id, tree, setFieldsValue]);
 
       // 【添加与修改】
       const handleAddOrUpdate = () => {
@@ -149,7 +149,7 @@ const DepartmentForm = connect(
                   ],
                 })(<Input />)}
               </FormItem>
-              {isEdit && !editDepartment.parentId ? null : (
+              {isEdit && !department.parentId ? null : (
                 <FormItem label="父部门">
                   {getFieldDecorator('parentId', {
                     rules: [{ required: true, message: '请选择一个父部门！' }],
@@ -157,7 +157,7 @@ const DepartmentForm = connect(
                     <TreeSelect
                       style={{ width: '100%' }}
                       dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                      treeData={fragmentTree}
+                      treeData={tree}
                       placeholder="请选择部门"
                       treeDefaultExpandAll
                     />,

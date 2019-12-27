@@ -78,14 +78,12 @@ export async function enableDepartment(params) {
  * @returns {Promise<void>}
  */
 export async function deleteDepartment(id) {
-  return request(`/departments/${id}`, {
-    method: 'DELETE',
-  });
+  return request.delete(`/departments/${id}`);
 }
 
 /**
  * 按主键与方向移动部门。
- * @param params {sourceId,targetId} 源节点与目标节点
+ * @param params
  * @returns {Promise<void>}
  */
 export async function moveDepartment(params) {

@@ -221,7 +221,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
         <>
           <Authorized authority="system:dictionary:update" noMatch={null}>
             <DictionaryForm isEdit dictionary={record} match={match} location={location}>
-              <IconFont type="icon-edit" title="编辑" className={styles.icon} />
+              <IconFont type="icon-edit" title="编辑" className="icon" />
             </DictionaryForm>
             <Divider type="vertical" />
           </Authorized>
@@ -232,7 +232,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
               okText="确定"
               cancelText="取消"
             >
-              <IconFont type="icon-delete" title="删除" className={styles.icon} />
+              <IconFont type="icon-delete" title="删除" className="icon" />
             </Popconfirm>
           </Authorized>
         </>
