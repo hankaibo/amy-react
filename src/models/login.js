@@ -9,9 +9,7 @@ import { setAuthority } from '@/utils/authority';
 const Model = {
   namespace: 'login',
 
-  state: {
-    status: undefined,
-  },
+  state: {},
 
   effects: {
     *login({ payload }, { call, put }) {
@@ -65,7 +63,6 @@ const Model = {
       setAuthority(payload.resources);
       return {
         ...state,
-        status: payload.status,
       };
     },
   },
