@@ -27,7 +27,7 @@ const beforeUpload = file => {
 const UserForm = connect(({ systemUser: { tree, editUser }, loading }) => ({
   tree,
   editUser,
-  loading: loading.models.systemUser,
+  loading: loading.effects['systemUser/fetchById'],
 }))(
   Form.create({ name: 'userForm' })(
     ({ loading, children, isEdit, user, editUser, tree, form, dispatch }) => {
@@ -156,7 +156,7 @@ const UserForm = connect(({ systemUser: { tree, editUser }, loading }) => ({
       );
 
       return (
-        <span>
+        <>
           <span onClick={showModalHandler}>{children}</span>
           <Modal
             destroyOnClose
@@ -274,7 +274,7 @@ const UserForm = connect(({ systemUser: { tree, editUser }, loading }) => ({
               </FormItem>
             </Form>
           </Modal>
-        </span>
+        </>
       );
     },
   ),

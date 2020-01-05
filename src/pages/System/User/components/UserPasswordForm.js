@@ -5,7 +5,7 @@ import { Form, Input, Modal, message, Button } from 'antd';
 const FormItem = Form.Item;
 
 const UserPasswordForm = connect()(
-  Form.create({ name: 'userPasswordForm' })(({ children, user, form, dispatch }) => {
+  Form.create({ name: 'userPasswordForm' })(({ children, id, username, form, dispatch }) => {
     const { validateFields, getFieldDecorator, setFieldsValue } = form;
 
     // 【模态框显示隐藏属性】
@@ -22,10 +22,9 @@ const UserPasswordForm = connect()(
 
     useEffect(() => {
       if (visible) {
-        const { id } = user;
         setFieldsValue({ id, password: '123456' });
       }
-    }, [visible, user, setFieldsValue]);
+    }, [visible, id, setFieldsValue]);
 
     // 【重置密码】
     const handleReset = () => {
@@ -43,11 +42,11 @@ const UserPasswordForm = connect()(
     };
 
     return (
-      <span>
+      <>
         <span onClick={showModalHandler}>{children}</span>
         <Modal
           destroyOnClose
-          title={`您确定要重置${user.nickname}的密码吗？`}
+          title={`您确定要重置${username}的密码吗？`}
           visible={visible}
           onOk={handleReset}
           onCancel={hideModelHandler}
@@ -76,7 +75,7 @@ const UserPasswordForm = connect()(
             </FormItem>
           </Form>
         </Modal>
-      </span>
+      </>
     );
   }),
 );

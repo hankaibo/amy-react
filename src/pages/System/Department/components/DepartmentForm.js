@@ -117,7 +117,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
       };
 
       return (
-        <span>
+        <>
           <span onClick={showModalHandler}>{children}</span>
           <Modal
             destroyOnClose
@@ -180,7 +180,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
               </FormItem>
             </Form>
           </Modal>
-        </span>
+        </>
       );
     },
   ),

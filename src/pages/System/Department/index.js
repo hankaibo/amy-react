@@ -52,6 +52,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       });
     };
   }, [dispatch]);
+
   // 【查询列表】
   useEffect(() => {
     const { id } = params;
@@ -109,7 +110,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   };
 
   // 【构造树结构，添加高亮支持】
-  const loop = data =>
+  const loop = (data = []) =>
     data.map(item => {
       const it = { ...item };
       it.titleValue = it.title;

@@ -10,7 +10,6 @@ import {
   Popconfirm,
   Switch,
   Divider,
-  Modal,
   message,
   Icon,
   Table,
@@ -37,13 +36,18 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
   tree,
   list,
   pagination,
-  loading: loading.models.systemUser,
+  loading: loading.effects['systemUser/fetch'],
 }))(({ loading, tree, list, pagination, dispatch }) => {
   // 【复选框状态属性与函数】
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [department, setDepartment] = useState(null);
+  // 列表参数
+  const [params, setParams] = useState({
+    current: pagination.current || 1,
+    pageSize: pagination.pageBreakAfter || 10,
+  });
 
-  // 【首次请求加载部门树与用户列表数据】
+  // 【首次请求加载部门树】
   useEffect(() => {
     // 用户页面默认只查询可用状态的部门。
     dispatch({
@@ -56,27 +60,36 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       dispatch({
         type: 'systemUser/clearTree',
       });
+    };
+  }, [dispatch]);
+
+  // 【查询列表】
+  useEffect(() => {
+    const { departmentId } = params;
+    if (departmentId) {
+      dispatch({
+        type: 'systemUser/fetch',
+        payload: {
+          departmentId,
+          ...params,
+        },
+      });
+    }
+    return () => {
       dispatch({
         type: 'systemUser/clearList',
       });
     };
-  }, [dispatch]);
+  }, [params, dispatch]);
 
   // 【获取部门用户数据】
   const handleSelect = (selectedKeys, info) => {
-    const id = selectedKeys.length === 0 ? info.node.props.id : selectedKeys[0];
-    dispatch({
-      type: 'systemUser/fetch',
-      payload: {
-        departmentId: id,
-        current: 1,
-        pageSize: 10,
-      },
-      callback: () => {
-        setDepartment(info.node.props);
-        setSelectedRowKeys([]);
-      },
-    });
+    if (selectedKeys.length === 1) {
+      const id = selectedKeys[0];
+      setParams({ ...params, departmentId: id });
+      setDepartment(info.node.props);
+      setSelectedRowKeys([]);
+    }
   };
 
   // 【启用禁用用户】
@@ -99,7 +112,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
   };
 
   // 【批量删除】
-  const deleteBatchItem = () => {
+  const handleBatchDelete = () => {
     if (selectedRowKeys.length === 0) return;
     const { id: departmentId } = department;
     dispatch({
@@ -113,18 +126,9 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       },
     });
   };
-  const handleBatchDelete = () => {
-    Modal.confirm({
-      title: '批量删除',
-      content: '您确定批量删除这些用户吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => deleteBatchItem(),
-    });
-  };
 
   // 【删除】
-  const deleteItem = record => {
+  const handleDelete = record => {
     const { id } = record;
     const { id: departmentId } = department;
     dispatch({
@@ -139,15 +143,6 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       },
     });
   };
-  const handleDelete = record => {
-    Modal.confirm({
-      title: '删除',
-      content: '您确定要删除该用户吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => deleteItem(record),
-    });
-  };
 
   // 【分页、过滤】
   const handleTableChange = (page, filtersArg) => {
@@ -159,17 +154,12 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
 
     const { id: departmentId } = department;
     const { current, pageSize } = page;
-
-    const params = {
+    setParams({
+      ...params,
       departmentId,
       current,
       pageSize,
       ...filters,
-    };
-
-    dispatch({
-      type: 'systemUser/fetch',
-      payload: params,
     });
   };
 
@@ -273,13 +263,13 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:user:grant" noMatch={null}>
-            <UserRoleForm user={record}>
+            <UserRoleForm {...{ id: record.id }}>
               <IconFont type="icon-role" title="分配角色" className="icon" />
             </UserRoleForm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:user:password:reset" noMatch={null}>
-            <UserPasswordForm user={record}>
+            <UserPasswordForm {...{ id: record.id, username: record.username }}>
               <IconFont type="icon-reset" title="重置密码" className="icon" />
             </UserPasswordForm>
           </Authorized>

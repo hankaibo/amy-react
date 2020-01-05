@@ -94,9 +94,7 @@ export async function resetUserPassword(params) {
  * @returns {Promise<void>}
  */
 export async function deleteUser(id) {
-  return request(`/users/${id}`, {
-    method: 'DELETE',
-  });
+  return request.delete(`/users/${id}`);
 }
 
 /**
