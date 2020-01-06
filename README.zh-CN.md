@@ -1,44 +1,44 @@
-English | [简体中文](./README.zh-CN.md)
+[English](./README.md) | 简体中文
 
 <h1 align="center">My Ant Design Pro</h1>
 
 <div align="center">
 
-An out-of-box UI solution for enterprise applications as a React boilerplate.
+开箱即用的中台前端解决方案。
 
 </div>
 
-## Features
+## 特性
 
-- :gem: **Neat Design**: Follow [Ant Design specification](http://ant.design/)
-- :triangular_ruler: **Common Templates**: Typical templates for enterprise applications
-- :rocket: **State of The Art Development**: Newest development stack of React/umi/dva/antd
-- :iphone: **Responsive**: Designed for variable screen sizes
-- :art: **Theming**: Customizable theme with simple config
-- :globe_with_meridians: **International**: Built-in i18n solution
-- :gear: **Best Practices**: Solid workflow to make your code healthy
-- :1234: **Mock development**: Easy to use mock development solution
-- :scroll: **Dynamic menu**：Realize dynamic menu and button level authority control
+- :gem: **优雅美观**：基于 Ant Design 体系精心设计
+- :triangular_ruler: **常见设计模式**：提炼自中后台应用的典型页面和场景
+- :rocket: **最新技术栈**：使用 React/umi/dva/antd 等前端前沿技术开发
+- :iphone: **响应式**：针对不同屏幕大小设计
+- :art: **主题**：可配置的主题满足多样化的品牌诉求
+- :globe_with_meridians: **国际化**：内建业界通用的国际化方案
+- :gear: **最佳实践**：良好的工程实践助您持续产出高质量代码
+- :1234: **Mock 数据**：实用的本地数据调试方案
+- :scroll: **动态菜单**：实现动态菜单及按钮级别的权限控制（[后台代码](https://github.com/hankaibo/myspringboot.git)配合）
 
-## Usage
+## 使用
 
 ```bash
 $ git clone https://github.com/hankaibo/myantdpro.git myantdpro
 $ cd myantdpro
-$ npm install(or npm --registry https://registry.npm.taobao.org install)
-$ npm start         # visit http://localhost:8000
+$ npm install(npm --registry https://registry.npm.taobao.org install)
+$ npm start         # 访问 http://localhost:8000
 ```
 
-## Browsers support
+## 支持环境
 
-Modern browsers and IE11.
+现代浏览器及 IE11。
 
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Opera |
 | --- | --- | --- | --- | --- |
 | IE11, Edge | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
 
-## Sponsors
+## 赞助商
 
-Thank you very much, Jetbrains.
+非常感谢 Jetbrains 提供的免费授权。
 
 <a href="https://www.jetbrains.com/" target="_blank"><img src="https://www.jetbrains.com/company/brand/img/logo1.svg" width="100"></a>
