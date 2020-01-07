@@ -2,8 +2,8 @@ import { Badge, Icon, Spin, Tabs } from 'antd';
 import React, { Component } from 'react';
 
 import classNames from 'classnames';
-import HeaderDropdown from '../HeaderDropdown';
 import NoticeList from './NoticeList';
+import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
 const { TabPane } = Tabs;

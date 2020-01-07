@@ -76,8 +76,8 @@ export default {
       }
       const match = context.resourcePath.match(/src(.*)/);
       if (match && match[1]) {
-        const path = match[1].replace('.less', '');
-        const arr = slash(path)
+        const fePath = match[1].replace('.less', '');
+        const arr = slash(fePath)
           .split('/')
           .map(a => a.replace(/([A-Z])/g, '-$1'))
           .map(a => a.toLowerCase());
