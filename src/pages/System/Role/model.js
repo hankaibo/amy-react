@@ -6,6 +6,7 @@ import {
   updateRole,
   enableRole,
   deleteRole,
+  moveRole,
   getResourceByRole,
   grantRoleResource,
 } from './service';
@@ -19,7 +20,7 @@ export default {
     // 列表
     list: [],
     // 编辑
-    editRole: {},
+    role: {},
     // 资源树、选中的Keys、半联动的keys
     resourceTree: [],
     checkedKeys: [],
@@ -51,7 +52,10 @@ export default {
     *add({ payload, callback }, { call, put }) {
       const { oldParentId: parentId } = payload;
       const params = { ...payload, status: +payload.status };
-      yield call(addRole, params);
+      const response = yield call(addRole, params);
+      if (response) {
+        return;
+      }
       yield put({
         type: 'fetchChildrenById',
         payload: {
@@ -66,11 +70,11 @@ export default {
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getRoleById, id);
-      const editRole = { ...response, status: !!response.status };
+      const role = { ...response, status: !!response.status };
       yield put({
-        type: 'saveRole',
+        type: 'save',
         payload: {
-          editRole,
+          role,
         },
       });
       if (callback) callback();
@@ -78,7 +82,10 @@ export default {
     *update({ payload, callback }, { call, put }) {
       const { oldParentId: parentId } = payload;
       const params = { ...payload, status: +payload.status };
-      yield call(updateRole, params);
+      const response = yield call(updateRole, params);
+      if (response) {
+        return;
+      }
       if (parentId) {
         yield put({
           type: 'fetchChildrenById',
@@ -95,7 +102,10 @@ export default {
     *enable({ payload, callback }, { call, put }) {
       const { id, status, parentId } = payload;
       const params = { id, status: +status };
-      yield call(enableRole, params);
+      const response = yield call(enableRole, params);
+      if (response) {
+        return;
+      }
       yield put({
         type: 'fetchChildrenById',
         payload: {
@@ -109,7 +119,24 @@ export default {
     },
     *delete({ payload, callback }, { call, put }) {
       const { id, parentId } = payload;
-      yield call(deleteRole, id);
+      const response = yield call(deleteRole, id);
+      if (response) {
+        return;
+      }
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          id: parentId,
+        },
+      });
+      yield put({
+        type: 'fetch',
+      });
+      if (callback) callback();
+    },
+    *move({ payload, callback }, { call, put }) {
+      const { parentId } = payload;
+      yield call(moveRole, payload);
       yield put({
         type: 'fetchChildrenById',
         payload: {
@@ -178,17 +205,17 @@ export default {
         list: [],
       };
     },
-    saveRole(state, { payload }) {
-      const { editRole } = payload;
+    save(state, { payload }) {
+      const { role } = payload;
       return {
         ...state,
-        editRole,
+        role,
       };
     },
-    clearRole(state) {
+    clear(state) {
       return {
         ...state,
-        editRole: {},
+        role: {},
       };
     },
     saveResTree(state, { payload }) {

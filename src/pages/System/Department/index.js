@@ -250,7 +250,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
           </Authorized>
           <Authorized authority="system:department:delete" noMatch={null}>
             <Popconfirm
-              title="您确定要删除该列表吗？"
+              title="您确定要删除该部门吗？"
               onConfirm={() => handleDelete(record)}
               okText="确定"
               cancelText="取消"

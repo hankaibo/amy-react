@@ -5,13 +5,13 @@ import { Form, Input, Modal, Switch, TreeSelect, message, Button } from 'antd';
 const FormItem = Form.Item;
 const { TextArea } = Input;
 
-const RoleForm = connect(({ systemRole: { tree, editRole }, loading }) => ({
+const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
   tree,
-  editRole,
-  loading: loading.models.systemRole,
+  role,
+  loading: loading.effects['systemRole/fetchById'],
 }))(
   Form.create({ name: 'roleForm' })(
-    ({ loading, children, isEdit, role, editRole, tree, form, dispatch }) => {
+    ({ loading, children, isEdit, id, role, tree, form, dispatch }) => {
       const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
 
       // 【模态框显示隐藏属性】
@@ -29,7 +29,6 @@ const RoleForm = connect(({ systemRole: { tree, editRole }, loading }) => ({
       // 【获取要修改角色的数据】
       useEffect(() => {
         if (visible && isEdit) {
-          const { id } = role;
           dispatch({
             type: 'systemRole/fetchById',
             payload: {
@@ -37,27 +36,31 @@ const RoleForm = connect(({ systemRole: { tree, editRole }, loading }) => ({
             },
           });
         }
-        return function cleanup() {
+        return () => {
           dispatch({
-            type: 'systemRole/clearRole',
+            type: 'systemRole/clear',
           });
         };
-      }, [visible, isEdit, role, dispatch]);
+      }, [visible, isEdit, id, dispatch]);
 
       // 【回显表单】
       useEffect(() => {
         // 👍 将条件判断放置在 effect 中
         if (visible && isEdit) {
-          if (Object.keys(editRole).length > 0) {
-            setFieldsValue({ ...editRole, oldParentId: editRole.parentId });
+          if (Object.keys(role).length > 0) {
+            const formData = { ...role };
+            if (!role.parentId) {
+              delete formData.parentId;
+            }
+            setFieldsValue({ ...formData, oldParentId: role.parentId });
           }
         }
-      }, [visible, isEdit, editRole, setFieldsValue]);
+      }, [visible, isEdit, role, setFieldsValue]);
 
       useEffect(() => {
         if (visible && !isEdit) {
-          if (role) {
-            setFieldsValue({ parentId: role.id, oldParentId: role.parentId });
+          if (id) {
+            setFieldsValue({ parentId: id, oldParentId: id });
           } else if (tree.length) {
             setFieldsValue({ parentId: tree[0].id, oldParentId: tree[0].id });
           }
@@ -106,7 +109,7 @@ const RoleForm = connect(({ systemRole: { tree, editRole }, loading }) => ({
       };
 
       return (
-        <span>
+        <>
           <span onClick={showModalHandler}>{children}</span>
           <Modal
             destroyOnClose
@@ -138,7 +141,7 @@ const RoleForm = connect(({ systemRole: { tree, editRole }, loading }) => ({
                   ],
                 })(<Input />)}
               </FormItem>
-              {isEdit && !editRole.parentId ? null : (
+              {isEdit && !role.parentId ? null : (
                 <FormItem label="父角色">
                   {getFieldDecorator('parentId', {
                     rules: [{ required: false, message: '请选择一个父角色！' }],
@@ -179,7 +182,7 @@ const RoleForm = connect(({ systemRole: { tree, editRole }, loading }) => ({
               </FormItem>
             </Form>
           </Modal>
-        </span>
+        </>
       );
     },
   ),

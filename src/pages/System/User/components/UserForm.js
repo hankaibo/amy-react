@@ -223,7 +223,6 @@ const UserForm = connect(({ systemUser: { tree, editUser }, loading }) => ({
               <FormItem label="所属部门">
                 {getFieldDecorator('departmentId')(
                   <TreeSelect
-                    style={{ width: 300 }}
                     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                     treeData={tree}
                     placeholder="请选择部门"

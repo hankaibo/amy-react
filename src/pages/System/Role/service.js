@@ -65,11 +65,8 @@ export async function updateRole(params) {
  */
 export async function enableRole(params) {
   const { id, status } = params;
-  return request(`/roles/${id}/status`, {
+  return request(`/roles/${id}/status?status=${status}`, {
     method: 'PATCH',
-    data: {
-      status,
-    },
   });
 }
 
@@ -79,9 +76,17 @@ export async function enableRole(params) {
  * @returns {Promise<void>}
  */
 export async function deleteRole(id) {
-  return request(`/roles/${id}`, {
-    method: 'DELETE',
-  });
+  return request.delete(`/roles/${id}`);
+}
+
+/**
+ * 按主键与方向移动角色。
+ * @param params
+ * @returns {Promise<void>}
+ */
+export async function moveRole(params) {
+  const { sourceId, targetId } = params;
+  return request.put(`/roles?from=${sourceId}&to=${targetId}`);
 }
 
 /**

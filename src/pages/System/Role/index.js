@@ -7,7 +7,6 @@ import {
   Button,
   Switch,
   Divider,
-  Modal,
   Popconfirm,
   message,
   Icon,
@@ -27,10 +26,12 @@ import styles from '../System.less';
 const Role = connect(({ systemRole: { tree, list }, loading }) => ({
   tree,
   list,
-  loading: loading.models.systemRole,
+  loading: loading.effects['systemRole/fetchChildrenById'],
 }))(({ loading, tree, list, dispatch }) => {
   // 【当前点击的角色】
-  const [role, setRole] = useState(null);
+  const [currentRole, setCurrentRole] = useState(null);
+  // 【查询参数】
+  const [params, setParams] = useState({});
 
   // 【首次请求加载列表数据】
   useEffect(() => {
@@ -41,25 +42,34 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       dispatch({
         type: 'systemRole/clearTree',
       });
+    };
+  }, [dispatch]);
+
+  // 【查询列表】
+  useEffect(() => {
+    const { id } = params;
+    if (id) {
+      dispatch({
+        type: 'systemRole/fetchChildrenById',
+        payload: {
+          ...params,
+        },
+      });
+    }
+    return () => {
       dispatch({
         type: 'systemRole/clearList',
       });
     };
-  }, [dispatch]);
+  }, [params, dispatch]);
 
   // 【获取子角色数据】
   const handleSelect = (selectedKeys, info) => {
-    // bug? 当点击靠右时，selectedKeys 为空。
-    const id = selectedKeys.length === 0 ? info.node.props.id : selectedKeys;
-    dispatch({
-      type: 'systemRole/fetchChildrenById',
-      payload: {
-        id,
-      },
-      callback: () => {
-        setRole(info.node.props);
-      },
-    });
+    if (selectedKeys.length === 1) {
+      const id = selectedKeys[0];
+      setParams({ ...params, id });
+      setCurrentRole(info.node.props);
+    }
   };
 
   // 【启用禁用】
@@ -73,8 +83,24 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
     });
   };
 
+  // 【移动】
+  const handleMove = (record, index) => {
+    if (list.length <= index || index < 0) {
+      return;
+    }
+    const targetId = list[index].id;
+    dispatch({
+      type: 'systemRole/move',
+      payload: {
+        ...record,
+        sourceId: record.id,
+        targetId,
+      },
+    });
+  };
+
   // 【删除】
-  const deleteItem = record => {
+  const handleDelete = record => {
     const { id, parentId } = record;
     dispatch({
       type: 'systemRole/delete',
@@ -87,15 +113,6 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       },
     });
   };
-  const handleDelete = record => {
-    Modal.confirm({
-      title: '删除',
-      content: '您确定要删除该角色吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => deleteItem(record),
-    });
-  };
 
   // 【过滤】
   const handleTableChange = (_, filtersArg) => {
@@ -105,16 +122,12 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       return newObj;
     }, {});
 
-    const { id } = role;
+    const { id } = currentRole;
 
-    const params = {
+    setParams({
+      ...params,
       id,
       ...filters,
-    };
-
-    dispatch({
-      type: 'systemRole/fetchChildrenById',
-      payload: params,
     });
   };
 
@@ -143,6 +156,26 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       ),
     },
     {
+      title: '排序',
+      render: (text, record, index) => (
+        <Authorized authority="system:role:move" noMatch="--">
+          <Icon
+            className="icon"
+            type="arrow-up"
+            title="向上"
+            onClick={() => handleMove(record, index - 1)}
+          />
+          <Divider type="vertical" />
+          <Icon
+            className="icon"
+            type="arrow-down"
+            title="向下"
+            onClick={() => handleMove(record, index + 1)}
+          />
+        </Authorized>
+      ),
+    },
+    {
       title: '角色描述',
       dataIndex: 'description',
       render: text => (
@@ -156,14 +189,14 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       render: (text, record) => (
         <>
           <Authorized authority="system:role:update" noMatch={null}>
-            <RoleForm isEdit role={record}>
+            <RoleForm isEdit id={record.id}>
               <IconFont type="icon-edit" title="编辑" className="icon" />
             </RoleForm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:role:delete" noMatch={null}>
             <Popconfirm
-              title="您确定要删除该用户吗？"
+              title="您确定要删除该角色吗？"
               onConfirm={() => handleDelete(record)}
               okText="确定"
               cancelText="取消"
@@ -202,7 +235,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
         </Col>
         <Col xs={24} sm={24} md={24} lg={18} xl={18}>
           <Card
-            title={role ? `【${role.title}】的子角色` : '角色列表'}
+            title={currentRole ? `【${currentRole.title}】的子角色` : '角色列表'}
             style={{ marginTop: 10 }}
             bordered={false}
             bodyStyle={{ padding: '15px' }}
@@ -223,7 +256,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
                 childrenColumnName="child"
                 loading={loading}
                 columns={columns}
-                dataSource={list.length === 0 && role === null ? tree : list}
+                dataSource={list.length === 0 && currentRole === null ? tree : list}
                 pagination={false}
                 onChange={handleTableChange}
               />
