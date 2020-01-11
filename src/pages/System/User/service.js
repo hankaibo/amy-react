@@ -64,11 +64,8 @@ export async function updateUser(params) {
  */
 export async function enableUser(params) {
   const { id, status } = params;
-  return request(`/users/${id}/status`, {
+  return request(`/users/${id}/status?status=${status}`, {
     method: 'PATCH',
-    data: {
-      status,
-    },
   });
 }
 
