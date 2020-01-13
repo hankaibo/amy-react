@@ -39,8 +39,8 @@
     "not ie <= 10"
   ],
   "dependencies": {
-    "@ant-design/pro-layout": "^4.10.0",
-    "antd": "^3.26.3",
+    "@ant-design/pro-layout": "^4.10.8",
+    "antd": "^3.26.6",
     "classnames": "^2.2.6",
     "dva": "^2.6.0-beta.19",
     "lodash": "^4.17.15",
@@ -55,8 +55,8 @@
     "react-helmet": "^5.2.1",
     "sockjs-client": "^1.4.0",
     "stompjs": "^2.3.3",
-    "umi": "^2.12.6",
-    "umi-plugin-react": "^1.14.9",
+    "umi": "^2.13.0",
+    "umi-plugin-react": "^1.15.0",
     "umi-request": "^1.2.15"
   },
   "devDependencies": {
@@ -64,14 +64,14 @@
     "chalk": "^3.0.0",
     "check-prettier": "^1.0.3",
     "cross-env": "^6.0.3",
-    "husky": "^3.1.0",
+    "husky": "^4.0.7",
     "import-sort-cli": "^6.0.0",
     "import-sort-parser-babylon": "^6.0.0",
     "import-sort-style-module": "^6.0.0",
     "lint-staged": "^9.5.0",
     "mockjs": "^1.1.0",
     "prettier": "^1.19.1",
-    "stylelint": "^12.0.0"
+    "stylelint": "^13.0.0"
   },
   "engines": {
     "node": ">=10.0.0"

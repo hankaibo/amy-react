@@ -7,7 +7,7 @@ import { Result, Button } from 'antd';
 import ProLayout, { SettingDrawer, DefaultFooter } from '@ant-design/pro-layout';
 import React, { useEffect, Suspense } from 'react';
 
-import Link from 'umi/link';
+import { Link } from 'umi';
 import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
 import RightContent from '@/components/GlobalHeader/RightContent';

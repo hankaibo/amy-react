@@ -13,8 +13,7 @@ import {
   Popconfirm,
 } from 'antd';
 import { isEqual } from 'lodash';
-import Link from 'umi/link';
-import router from 'umi/router';
+import { Link, router } from 'umi';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Authorized from '@/utils/Authorized';

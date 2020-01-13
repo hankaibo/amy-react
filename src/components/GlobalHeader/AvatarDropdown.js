@@ -3,7 +3,7 @@ import { Avatar, Icon, Menu, Spin } from 'antd';
 import { FormattedMessage } from 'umi-plugin-react/locale';
 import React from 'react';
 import { connect } from 'dva';
-import router from 'umi/router';
+import { router } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 

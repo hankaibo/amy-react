@@ -1,6 +1,6 @@
 import { Button, Result } from 'antd';
 
-import Link from 'umi/link';
+import { Link } from 'umi';
 import React from 'react';
 import { formatMessage } from 'umi-plugin-react/locale';
 

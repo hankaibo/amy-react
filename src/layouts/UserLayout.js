@@ -2,7 +2,7 @@
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 
 import { Helmet } from 'react-helmet';
-import Link from 'umi/link';
+import { Link } from 'umi';
 import React from 'react';
 import { connect } from 'dva';
 import SelectLang from '@/components/SelectLang';

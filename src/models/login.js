@@ -1,4 +1,4 @@
-import router from 'umi/router';
+import { router } from 'umi';
 import { stringify } from 'qs';
 import { login, logout } from '@/services/login';
 
