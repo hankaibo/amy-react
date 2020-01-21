@@ -82,9 +82,11 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
 
   // 【启用禁用部门】
   const toggleState = (checked, record) => {
+    const info = { ...record };
+    delete info.children;
     dispatch({
       type: 'systemDepartment/enable',
-      payload: { ...record, status: checked },
+      payload: { ...info, status: checked },
     });
   };
 

@@ -46,7 +46,7 @@ const defaultFooterDom = (
     links={[]}
     copyright={
       <span>
-        2019 <FormattedMessage id="app.copyright" />{' '}
+        <FormattedMessage id="app.copyright" />
       </span>
     }
   />

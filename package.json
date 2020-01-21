@@ -20,11 +20,6 @@
     "start:no-ui": "cross-env UMI_UI=none umi dev",
     "ui": "umi ui"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint-staged"
-    }
-  },
   "lint-staged": {
     "**/*.less": "stylelint --syntax less",
     "**/*.{js,jsx,less,md,json}": [
@@ -39,10 +34,10 @@
     "not ie <= 10"
   ],
   "dependencies": {
-    "@ant-design/pro-layout": "^4.10.8",
-    "antd": "^3.26.6",
+    "@ant-design/pro-layout": "^4.10.10",
+    "antd": "^3.26.7",
     "classnames": "^2.2.6",
-    "dva": "^2.6.0-beta.19",
+    "dva": "^2.4.1",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "omit.js": "^1.0.2",
@@ -55,8 +50,8 @@
     "react-helmet": "^5.2.1",
     "sockjs-client": "^1.4.0",
     "stompjs": "^2.3.3",
-    "umi": "^2.13.0",
-    "umi-plugin-react": "^1.15.0",
+    "umi": "^2.13.2",
+    "umi-plugin-react": "^1.15.2",
     "umi-request": "^1.2.15"
   },
   "devDependencies": {
@@ -64,7 +59,7 @@
     "chalk": "^3.0.0",
     "check-prettier": "^1.0.3",
     "cross-env": "^6.0.3",
-    "husky": "^4.0.7",
+    "husky": "^4.0.10",
     "import-sort-cli": "^6.0.0",
     "import-sort-parser-babylon": "^6.0.0",
     "import-sort-style-module": "^6.0.0",

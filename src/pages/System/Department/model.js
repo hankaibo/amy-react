@@ -96,16 +96,15 @@ export default {
     *enable({ payload, callback }, { call, put }) {
       const { id, status, parentId } = payload;
       const params = { id, status: +status };
-      const response = yield call(enableDepartment, params);
-      if (response) {
-        return;
+      yield call(enableDepartment, params);
+      if (parentId) {
+        yield put({
+          type: 'fetchChildrenById',
+          payload: {
+            id: parentId,
+          },
+        });
       }
-      yield put({
-        type: 'fetchChildrenById',
-        payload: {
-          id: parentId,
-        },
-      });
       yield put({
         type: 'fetch',
       });

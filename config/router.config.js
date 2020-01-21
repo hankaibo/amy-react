@@ -63,9 +63,22 @@ export default [
                 authority: ['system:api'],
               },
               {
-                path: '/system/dictionaries/:id',
-                hideInMenu: true,
-                component: './System/Dictionary',
+                path: '/system/dictionaries',
+                name: 'dictionary',
+                redirect: '/system/dictionaries/index',
+                authority: ['system:dictionary'],
+                routes: [
+                  {
+                    path: '/system/dictionaries/index',
+                    hideInMenu: true,
+                    component: './System/Dictionary',
+                  },
+                  {
+                    path: '/system/dictionaries/:id',
+                    hideInMenu: true,
+                    component: './System/Dictionary',
+                  },
+                ],
               },
               {
                 path: '/system/information',

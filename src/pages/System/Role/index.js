@@ -206,7 +206,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:role:grant" noMatch={null}>
-            <RoleResourceForm role={record}>
+            <RoleResourceForm id={record.id}>
               <IconFont type="icon-permission" title="分配资源" className="icon" />
             </RoleResourceForm>
           </Authorized>

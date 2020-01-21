@@ -23,8 +23,9 @@ export default {
     // 编辑
     editUser: {},
     // 角色列表与已选角色
-    roleList: [],
-    selectedRoleIdList: [],
+    roleTree: [],
+    checkedKeys: [],
+    halfCheckedKeys: [],
   },
 
   effects: {
@@ -143,15 +144,24 @@ export default {
       });
       if (callback) callback();
     },
-    *fetchUserRole({ payload, callback }, { call, put }) {
+    *fetchRoleTree({ payload, callback }, { call, put }) {
       const response = yield call(listUserRole, payload);
       const { roleList, roleSelectedList } = response;
-      const newRoleSelected = roleSelectedList.map(item => item.id);
+      const selected = [];
+      const halfSelected = [];
+      roleSelectedList.forEach(item => {
+        if (item.rgt - item.lft === 1) {
+          selected.push(item);
+        } else {
+          halfSelected.push(item);
+        }
+      });
       yield put({
-        type: 'saveUserRole',
+        type: 'saveRoleTree',
         payload: {
-          roleList,
-          selectedRoleIdList: newRoleSelected,
+          roleTree: roleList,
+          checkedKeys: selected.map(item => item.id.toString()),
+          halfCheckedKeys: halfSelected.map(item => item.id.toString()),
         },
       });
       if (callback) callback();
@@ -204,19 +214,21 @@ export default {
         editUser: {},
       };
     },
-    saveUserRole(state, { payload }) {
-      const { roleList, selectedRoleIdList } = payload;
+    saveRoleTree(state, { payload }) {
+      const { roleTree, checkedKeys, halfCheckedKeys } = payload;
       return {
         ...state,
-        roleList,
-        selectedRoleIdList,
+        roleTree,
+        checkedKeys,
+        halfCheckedKeys,
       };
     },
-    clearUserRole(state) {
+    clearRoleTree(state) {
       return {
         ...state,
-        roleList: [],
-        selectedRoleIdList: [],
+        roleTree: [],
+        checkedKeys: [],
+        halfCheckedKeys: [],
       };
     },
   },

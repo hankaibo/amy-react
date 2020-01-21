@@ -136,7 +136,7 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
   const columns = [
     {
       title: '菜单名称',
-      dataIndex: 'title',
+      dataIndex: 'name',
     },
     {
       title: '菜单编码',

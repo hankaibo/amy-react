@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Form, Select, Modal, message, Button } from 'antd';
+import { Form, Input, Tree, Modal, message, Button } from 'antd';
 import { difference } from '@/utils/utils';
 
 const FormItem = Form.Item;
-const { Option } = Select;
 
-const UserRoleForm = connect(({ systemUser: { roleList, selectedRoleIdList }, loading }) => ({
-  roleList,
-  selectedRoleIdList,
-  loading: loading.effects['systemUser/fetchUserRole'],
-}))(
+const UserRoleForm = connect(
+  ({ systemUser: { roleTree, checkedKeys, halfCheckedKeys }, loading }) => ({
+    treeData: roleTree,
+    roleCheckedKeys: checkedKeys,
+    halfCheckedKeys,
+    loading: loading.effects['systemUser/fetchRoleTree'],
+  }),
+)(
   Form.create({ name: 'userRoleForm' })(
-    ({ loading, children, id, roleList, selectedRoleIdList, form, dispatch }) => {
+    ({ loading, children, id, treeData, roleCheckedKeys, halfCheckedKeys, form, dispatch }) => {
       const { validateFields, getFieldDecorator, setFieldsValue } = form;
 
+      const [expandedKeys, setExpandedKeys] = useState([]);
+      const [checkedKeys, setCheckedKeys] = useState([]);
       // 【模态框显示隐藏属性】
       const [visible, setVisible] = useState(false);
 
@@ -31,7 +35,7 @@ const UserRoleForm = connect(({ systemUser: { roleList, selectedRoleIdList }, lo
       useEffect(() => {
         if (visible) {
           dispatch({
-            type: 'systemUser/fetchUserRole',
+            type: 'systemUser/fetchRoleTree',
             payload: {
               id,
               status: 1,
@@ -40,26 +44,36 @@ const UserRoleForm = connect(({ systemUser: { roleList, selectedRoleIdList }, lo
         }
         return () => {
           dispatch({
-            type: 'systemUser/clearUserRole',
+            type: 'systemUser/clearRoleTree',
           });
         };
       }, [visible, id, dispatch]);
 
       // 【回显树复选择框】
       useEffect(() => {
-        // 👍 将条件判断放置在 effect 中
-        if (visible) {
-          setFieldsValue({ ids: selectedRoleIdList });
-        }
-      }, [visible, selectedRoleIdList, setFieldsValue]);
+        setCheckedKeys(roleCheckedKeys);
+        setExpandedKeys(halfCheckedKeys);
+      }, [roleCheckedKeys, halfCheckedKeys, setFieldsValue]);
+
+      // 【树操作】
+      const onExpand = values => {
+        setExpandedKeys(values);
+      };
+      const handleCheck = (values, event) => {
+        const { halfCheckedKeys: halfValues } = event;
+        setCheckedKeys(values);
+        // 同步到form表单，因为tree组件不是表单组件的一部分，我无法自动同步，需要手动设置一下。
+        setFieldsValue({ ids: [...values, ...halfValues] });
+      };
 
       // 【授权】
       const handleGrant = () => {
         validateFields((err, fieldsValue) => {
           if (err) return;
-          const { ids } = fieldsValue;
-          const plusRole = difference(ids, selectedRoleIdList);
-          const minusRole = difference(selectedRoleIdList, ids);
+          const { id, ids } = fieldsValue;
+          const oldCheckedKeys = [...roleCheckedKeys, ...halfCheckedKeys];
+          const plusRole = difference(ids, oldCheckedKeys);
+          const minusRole = difference(oldCheckedKeys, ids);
 
           dispatch({
             type: 'systemUser/grantUserRole',
@@ -95,15 +109,17 @@ const UserRoleForm = connect(({ systemUser: { roleList, selectedRoleIdList }, lo
             ]}
           >
             <Form>
+              {getFieldDecorator('id')(<Input hidden />)}
               <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 17 }}>
                 {getFieldDecorator('ids')(
-                  <Select mode="multiple" style={{ width: '100%' }} placeholder="请选择">
-                    {roleList.map(item => (
-                      <Option key={item.id} value={item.id}>
-                        {item.code}
-                      </Option>
-                    ))}
-                  </Select>,
+                  <Tree
+                    checkable
+                    onExpand={onExpand}
+                    expandedKeys={expandedKeys}
+                    onCheck={handleCheck}
+                    checkedKeys={checkedKeys}
+                    treeData={treeData}
+                  />,
                 )}
               </FormItem>
             </Form>

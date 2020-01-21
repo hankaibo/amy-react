@@ -14,11 +14,11 @@ const RoleResourceForm = connect(
     treeData: resourceTree,
     resCheckedKeys: checkedKeys,
     halfCheckedKeys,
-    loading: loading.models.systemRole,
+    loading: loading.effects['systemRole/fetchResTree'],
   }),
 )(
   Form.create({ name: 'roleResourceForm' })(
-    ({ loading, children, role, treeData, resCheckedKeys, halfCheckedKeys, form, dispatch }) => {
+    ({ loading, children, id, treeData, resCheckedKeys, halfCheckedKeys, form, dispatch }) => {
       const { validateFields, getFieldDecorator, setFieldsValue } = form;
 
       // https://github.com/ant-design/ant-design/issues/9807
@@ -39,7 +39,6 @@ const RoleResourceForm = connect(
       // 【获取要修改角色的资源】
       useEffect(() => {
         if (visible) {
-          const { id } = role;
           dispatch({
             type: 'systemRole/fetchResTree',
             payload: {
@@ -55,7 +54,7 @@ const RoleResourceForm = connect(
             type: 'systemRole/clearResTree',
           });
         };
-      }, [visible, role, dispatch, setFieldsValue]);
+      }, [visible, id, dispatch, setFieldsValue]);
 
       // 【回显树复选择框】
       useEffect(() => {
@@ -103,7 +102,7 @@ const RoleResourceForm = connect(
       };
 
       return (
-        <span>
+        <>
           <span onClick={showModalHandler}>{children}</span>
           <Modal
             destroyOnClose
@@ -136,7 +135,7 @@ const RoleResourceForm = connect(
               </FormItem>
             </Form>
           </Modal>
-        </span>
+        </>
       );
     },
   ),
