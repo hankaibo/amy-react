@@ -70,7 +70,7 @@ const UserRoleForm = connect(
       const handleGrant = () => {
         validateFields((err, fieldsValue) => {
           if (err) return;
-          const { id, ids } = fieldsValue;
+          const { id: userId, ids } = fieldsValue;
           const oldCheckedKeys = [...roleCheckedKeys, ...halfCheckedKeys];
           const plusRole = difference(ids, oldCheckedKeys);
           const minusRole = difference(oldCheckedKeys, ids);
@@ -78,7 +78,7 @@ const UserRoleForm = connect(
           dispatch({
             type: 'systemUser/grantUserRole',
             payload: {
-              id,
+              id: userId,
               plusRole,
               minusRole,
             },

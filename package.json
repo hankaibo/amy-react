@@ -6,7 +6,7 @@
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "umi build",
-    "format-imports": "cross-env import-sort --write '**/*.{js,jsx}'",
+    "format-imports": "import-sort --write '**/*.{js,jsx}'",
     "lint": "npm run lint:js && npm run lint:style && npm run lint:prettier",
     "lint-staged": "lint-staged",
     "lint-staged:js": "eslint --ext .js,.jsx",
@@ -15,18 +15,26 @@
     "lint:prettier": "check-prettier lint",
     "lint:style": "stylelint --fix \"src/**/*.less\" --syntax less",
     "prettier": "prettier -c --write \"**/*\"",
-    "start": "cross-env PORT=9000 umi dev",
+    "start": "npm dev",
+    "dev": "npm run start:dev",
+    "start:dev": "cross-env PORT=9000 REACT_APP_ENV=dev MOCK=none umi dev",
     "start:no-mock": "cross-env PORT=9000 MOCK=none umi dev",
     "start:no-ui": "cross-env UMI_UI=none umi dev",
+    "start:pre": "cross-env PORT=9000 REACT_APP_ENV=pre MOCK=none umi dev",
+    "start:test": "cross-env PORT=9000 REACT_APP_ENV=test MOCK=none umi dev",
     "ui": "umi ui"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint-staged"
+    }
   },
   "lint-staged": {
     "**/*.less": "stylelint --syntax less",
+    "**/*.{js,jsx}": "npm run lint-staged:js",
     "**/*.{js,jsx,less,md,json}": [
-      "prettier --write",
-      "git add"
-    ],
-    "**/*.{js,jsx}": "npm run lint-staged:js"
+      "prettier --write"
+    ]
   },
   "browserslist": [
     "> 1%",
@@ -34,7 +42,7 @@
     "not ie <= 10"
   ],
   "dependencies": {
-    "@ant-design/pro-layout": "^4.10.10",
+    "@ant-design/pro-layout": "^4.10.13",
     "antd": "^3.26.7",
     "classnames": "^2.2.6",
     "dva": "^2.4.1",
@@ -55,10 +63,10 @@
     "umi-request": "^1.2.15"
   },
   "devDependencies": {
-    "@umijs/fabric": "^2.0.0",
+    "@umijs/fabric": "^2.0.2",
     "chalk": "^3.0.0",
     "check-prettier": "^1.0.3",
-    "cross-env": "^6.0.3",
+    "cross-env": "^7.0.0",
     "husky": "^4.0.10",
     "import-sort-cli": "^6.0.0",
     "import-sort-parser-babylon": "^6.0.0",

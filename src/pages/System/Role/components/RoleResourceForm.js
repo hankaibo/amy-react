@@ -79,16 +79,16 @@ const RoleResourceForm = connect(
       const handleGrant = () => {
         validateFields((err, fieldsValue) => {
           if (err) return;
-          const { id, ids } = fieldsValue;
+          const { id: roleId, ids } = fieldsValue;
           const oldCheckedKeys = [...resCheckedKeys, ...halfCheckedKeys];
           const plusResource = difference(ids, oldCheckedKeys);
           const minusResource = difference(oldCheckedKeys, ids);
 
-          if (id) {
+          if (roleId) {
             dispatch({
               type: 'systemRole/grantRoleResource',
               payload: {
-                id,
+                id: roleId,
                 plusResource,
                 minusResource,
               },

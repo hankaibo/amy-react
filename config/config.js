@@ -3,9 +3,11 @@ import defaultSettings from './defaultSettings';
 import pageRoutes from './router.config';
 import slash from 'slash2';
 // import webpackPlugin from './plugin.config';
+import proxy from './proxy';
 
 const { pwa, primaryColor } = defaultSettings;
 
+const { REACT_APP_ENV } = process.env;
 const plugins = [
   [
     'umi-plugin-react',
@@ -34,7 +36,8 @@ const plugins = [
               importWorkboxFrom: 'local',
             },
           }
-        : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
+        : false,
+      // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
       //   include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch'],
@@ -57,7 +60,7 @@ export default {
     'primary-color': primaryColor,
   },
   define: {
-    // 定义变量
+    REACT_APP_ENV: REACT_APP_ENV || false,
   },
   ignoreMomentLocale: true,
   lessLoaderOptions: {
@@ -89,12 +92,5 @@ export default {
   manifest: {
     basePath: '/',
   },
-  // chainWebpack: webpackPlugin,
-  proxy: {
-    '/api/': {
-      target: 'http://localhost:8080/',
-      changeOrigin: true,
-      // pathRewrite: { '^/api/': '/api/v1/' },
-    },
-  },
+  proxy: proxy[REACT_APP_ENV || 'dev'],
 };

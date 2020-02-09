@@ -1,4 +1,4 @@
-import { Icon, Tooltip } from 'antd';
+import { Icon, Tooltip, Tag } from 'antd';
 
 import React from 'react';
 import { connect } from 'dva';
@@ -7,6 +7,12 @@ import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
 import SelectLang from '../SelectLang';
 import styles from './index.less';
+
+const ENVTagColor = {
+  dev: 'orange',
+  test: 'green',
+  pre: '#87d068',
+};
 
 const GlobalHeaderRight = props => {
   const { theme, layout } = props;
@@ -35,12 +41,8 @@ const GlobalHeaderRight = props => {
             id: 'component.globalHeader.search.example3',
           }),
         ]}
-        onSearch={value => {
-          console.log('input', value);
-        }}
-        onPressEnter={value => {
-          console.log('enter', value);
-        }}
+        onSearch={() => {}}
+        onPressEnter={() => {}}
       />
       <Tooltip
         title={formatMessage({
@@ -57,6 +59,7 @@ const GlobalHeaderRight = props => {
         </a>
       </Tooltip>
       <Avatar />
+      {REACT_APP_ENV && <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>}
       <SelectLang className={styles.action} />
     </div>
   );

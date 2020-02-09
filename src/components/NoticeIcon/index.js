@@ -60,14 +60,14 @@ export default class NoticeIcon extends Component {
     const panes = [];
     React.Children.forEach(children, child => {
       if (!child) {
-        return null;
+        return;
       }
       const { list, title, count, tabKey, showClear, showViewMore } = child.props;
       const len = list && list.length ? list.length : 0;
       const msgCount = count || count === 0 ? count : len;
       const tabTitle = msgCount > 0 ? `${title} (${msgCount})` : title;
       panes.push(
-        <TabPane tab={tabTitle} key={title}>
+        <TabPane tab={tabTitle} key={tabKey}>
           <NoticeList
             clearText={clearText}
             viewMoreText={viewMoreText}
@@ -82,7 +82,6 @@ export default class NoticeIcon extends Component {
           />
         </TabPane>,
       );
-      return null;
     });
     return (
       <>

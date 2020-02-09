@@ -1,6 +1,5 @@
 import React from 'react';
 import CheckPermissions from './CheckPermissions';
-// eslint-disable-next-line import/no-cycle
 
 /**
  * 默认不能访问任何页面
