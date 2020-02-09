@@ -15,11 +15,11 @@
     "lint:prettier": "check-prettier lint",
     "lint:style": "stylelint --fix \"src/**/*.less\" --syntax less",
     "prettier": "prettier -c --write \"**/*\"",
-    "start": "npm dev",
+    "start": "npm run dev",
     "dev": "npm run start:dev",
     "start:dev": "cross-env PORT=9000 REACT_APP_ENV=dev MOCK=none umi dev",
     "start:no-mock": "cross-env PORT=9000 MOCK=none umi dev",
-    "start:no-ui": "cross-env UMI_UI=none umi dev",
+    "start:no-ui": "cross-env PORT=9000 UMI_UI=none umi dev",
     "start:pre": "cross-env PORT=9000 REACT_APP_ENV=pre MOCK=none umi dev",
     "start:test": "cross-env PORT=9000 REACT_APP_ENV=test MOCK=none umi dev",
     "ui": "umi ui"

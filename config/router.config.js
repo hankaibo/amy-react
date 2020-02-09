@@ -65,11 +65,10 @@ export default [
               {
                 path: '/system/dictionaries',
                 name: 'dictionary',
-                redirect: '/system/dictionaries/index',
                 authority: ['system:dictionary'],
                 routes: [
                   {
-                    path: '/system/dictionaries/index',
+                    path: '/system/dictionaries/',
                     hideInMenu: true,
                     component: './System/Dictionary',
                   },
