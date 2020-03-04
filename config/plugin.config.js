@@ -19,7 +19,7 @@ function getModulePackageName(module) {
   return packageName;
 }
 
-export const webpackPlugin = config => {
+const webpackPlugin = config => {
   // optimize chunks
   config.optimization
     // share the same chunks across different modules
@@ -39,6 +39,7 @@ export const webpackPlugin = config => {
                 'gg-editor',
                 'g6',
                 '@antv',
+                'l7',
                 'gg-editor-core',
                 'bizcharts-plugin-slider',
               ].includes(packageName);
@@ -58,3 +59,5 @@ export const webpackPlugin = config => {
       },
     });
 };
+
+export default webpackPlugin;

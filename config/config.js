@@ -1,9 +1,10 @@
 // https://umijs.org/config/
 import defaultSettings from './defaultSettings';
 import pageRoutes from './router.config';
+
 import slash from 'slash2';
-// import webpackPlugin from './plugin.config';
 import proxy from './proxy';
+import webpackPlugin from './plugin.config';
 
 const { pwa, primaryColor } = defaultSettings;
 
@@ -93,4 +94,5 @@ export default {
     basePath: '/',
   },
   proxy: proxy[REACT_APP_ENV || 'dev'],
+  chainWebpack: webpackPlugin,
 };

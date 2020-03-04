@@ -183,7 +183,7 @@ const DictionaryForm = connect(({ systemDictionary: { editDictionary }, loading 
                 {getFieldDecorator('description', {
                   rules: [{ message: '请将描述长度保持在1至50字符之间！', min: 1, max: 50 }],
                 })(
-                  <TextArea placeholder="请输入字典描述。" autosize={{ minRows: 2, maxRows: 6 }} />,
+                  <TextArea placeholder="请输入字典描述。" autoSize={{ minRows: 2, maxRows: 6 }} />,
                 )}
               </FormItem>
             </Form>

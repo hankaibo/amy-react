@@ -1,6 +1,6 @@
-import { Icon, Menu } from 'antd';
-import { formatMessage, getLocale, setLocale } from 'umi-plugin-react/locale';
-
+import { GlobalOutlined } from '@ant-design/icons';
+import { Menu } from 'antd';
+import { getLocale, setLocale } from 'umi-plugin-react/locale';
 import React from 'react';
 import classNames from 'classnames';
 import HeaderDropdown from '../HeaderDropdown';
@@ -9,8 +9,10 @@ import styles from './index.less';
 const SelectLang = props => {
   const { className } = props;
   const selectedLang = getLocale();
+
   const changeLang = ({ key }) => setLocale(key);
-  const locales = ['zh-CN', 'zh-TW', 'en-US'];
+
+  const locales = ['zh-CN', 'zh-TW', 'en-US', 'pt-BR'];
   const languageLabels = {
     'zh-CN': '简体中文',
     'zh-TW': '繁体中文',
@@ -36,7 +38,7 @@ const SelectLang = props => {
   return (
     <HeaderDropdown overlay={langMenu} placement="bottomRight">
       <span className={classNames(styles.dropDown, className)}>
-        <Icon type="global" title={formatMessage({ id: 'navBar.lang' })} />
+        <GlobalOutlined title="语言" />
       </span>
     </HeaderDropdown>
   );

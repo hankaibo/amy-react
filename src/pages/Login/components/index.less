@@ -1,10 +1,17 @@
 @import '~antd/es/style/themes/default.less';
 
-.main {
-  width: 368px;
-  margin: 0 auto;
-  @media screen and (max-width: @screen-sm) {
-    width: 95%;
+.login {
+  :global {
+    .ant-tabs .ant-tabs-bar {
+      margin-bottom: 24px;
+      text-align: center;
+      border-bottom: 0;
+    }
+  }
+
+  .getCaptcha {
+    display: block;
+    width: 100%;
   }
 
   .icon {
@@ -30,10 +37,13 @@
     }
   }
 
-  :global {
-    .antd-pro-login-submit {
-      width: 100%;
-      margin-top: 24px;
-    }
+  .prefixIcon {
+    color: @disabled-color;
+    font-size: @font-size-base;
+  }
+
+  .submit {
+    width: 100%;
+    margin-top: 24px;
   }
 }

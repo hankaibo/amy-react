@@ -11,6 +11,7 @@ import styles from './index.less';
 class NoticeIconView extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
+
     if (dispatch) {
       dispatch({
         type: 'global/fetchNotices',
@@ -21,6 +22,7 @@ class NoticeIconView extends Component {
   changeReadState = clickedItem => {
     const { id } = clickedItem;
     const { dispatch } = this.props;
+
     if (dispatch) {
       dispatch({
         type: 'global/changeNoticeReadState',
@@ -32,6 +34,7 @@ class NoticeIconView extends Component {
   handleNoticeClear = (title, key) => {
     const { dispatch } = this.props;
     message.success(`${formatMessage({ id: 'component.noticeIcon.cleared' })} ${title}`);
+
     if (dispatch) {
       dispatch({
         type: 'global/clearNotices',
@@ -42,17 +45,22 @@ class NoticeIconView extends Component {
 
   getNoticeData = () => {
     const { notices = [] } = this.props;
+
     if (notices.length === 0) {
       return {};
     }
+
     const newNotices = notices.map(notice => {
       const newNotice = { ...notice };
+
       if (newNotice.datetime) {
         newNotice.datetime = moment(notice.datetime).fromNow();
       }
+
       if (newNotice.id) {
         newNotice.key = newNotice.id;
       }
+
       if (newNotice.extra && newNotice.status) {
         const color = {
           todo: '',
@@ -66,6 +74,7 @@ class NoticeIconView extends Component {
           </Tag>
         );
       }
+
       return newNotice;
     });
     return groupBy(newNotices, 'type');
@@ -75,9 +84,11 @@ class NoticeIconView extends Component {
     const unreadMsg = {};
     Object.keys(noticeData).forEach(key => {
       const value = noticeData[key];
+
       if (!unreadMsg[key]) {
         unreadMsg[key] = 0;
       }
+
       if (Array.isArray(value)) {
         unreadMsg[key] = value.filter(item => !item.read).length;
       }
@@ -89,7 +100,6 @@ class NoticeIconView extends Component {
     const { currentUser, fetchingNotices, onNoticeVisibleChange } = this.props;
     const noticeData = this.getNoticeData();
     const unreadMsg = this.getUnreadData(noticeData);
-
     return (
       <NoticeIcon
         className={styles.action}

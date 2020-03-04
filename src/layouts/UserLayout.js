@@ -49,8 +49,8 @@ const UserLayout = props => {
   const { breadcrumb } = getMenuData(routes);
   const title = getPageTitle({
     pathname: location.pathname,
-    breadcrumb,
     formatMessage,
+    breadcrumb,
     ...props,
   });
   return (

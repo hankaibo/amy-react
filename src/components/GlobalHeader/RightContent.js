@@ -1,5 +1,5 @@
-import { Icon, Tooltip, Tag } from 'antd';
-
+import { Tooltip, Tag } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
@@ -30,19 +30,22 @@ const GlobalHeaderRight = props => {
           id: 'component.globalHeader.search',
         })}
         defaultValue="umi ui"
-        dataSource={[
-          formatMessage({
-            id: 'component.globalHeader.search.example1',
-          }),
-          formatMessage({
-            id: 'component.globalHeader.search.example2',
-          }),
-          formatMessage({
-            id: 'component.globalHeader.search.example3',
-          }),
+        options={[
+          { label: <a href="https://umijs.org/zh/guide/umi-ui.html">umi ui</a>, value: 'umi ui' },
+          {
+            label: <a href="next.ant.design">Ant Design</a>,
+            value: 'Ant Design',
+          },
+          {
+            label: <a href="https://protable.ant.design/">Pro Table</a>,
+            value: 'Pro Table',
+          },
+          {
+            label: <a href="https://prolayout.ant.design/">Pro Layout</a>,
+            value: 'Pro Layout',
+          },
         ]}
-        onSearch={() => {}}
-        onPressEnter={() => {}}
+        // onSearch={() => {}}
       />
       <Tooltip
         title={formatMessage({
@@ -55,11 +58,16 @@ const GlobalHeaderRight = props => {
           rel="noopener noreferrer"
           className={styles.action}
         >
-          <Icon type="question-circle-o" />
+          <QuestionCircleOutlined />
+          <QuestionCircleOutlined />
         </a>
       </Tooltip>
       <Avatar />
-      {REACT_APP_ENV && <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>}
+      {REACT_APP_ENV && (
+        <span>
+          <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
+        </span>
+      )}
       <SelectLang className={styles.action} />
     </div>
   );
