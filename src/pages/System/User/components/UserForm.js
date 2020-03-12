@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Modal, Switch, message, Radio, Upload, Icon, TreeSelect, Button } from 'antd';
+import { Form, Icon as LegacyIcon } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Input, Modal, Switch, message, Radio, Upload, TreeSelect, Button } from 'antd';
 
 const FormItem = Form.Item;
 
@@ -164,7 +166,7 @@ const UserForm = connect(({ systemUser: { tree, editUser }, loading }) => ({
       // 【上传按钮】
       const uploadButton = (
         <div>
-          <Icon type={imageLoading ? 'imageLoading' : 'plus'} />
+          <LegacyIcon type={imageLoading ? 'imageLoading' : 'plus'} />
           <div className="ant-upload-text">上传</div>
         </div>
       );
@@ -296,7 +298,7 @@ const UserForm = connect(({ systemUser: { tree, editUser }, loading }) => ({
                 </div>
                 <FormItem {...tailFormItemLayout}>
                   <Button type="dashed" block onClick={() => setExpand(!expand)}>
-                    {expand ? '收缩' : '展开'} <Icon type={expand ? 'up' : 'down'} />
+                    {expand ? '收缩' : '展开'} <LegacyIcon type={expand ? 'up' : 'down'} />
                   </Button>
                 </FormItem>
               </>

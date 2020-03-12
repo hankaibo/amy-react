@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Modal, InputNumber, Switch, message, Button } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Input, Modal, InputNumber, Switch, message, Button } from 'antd';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;

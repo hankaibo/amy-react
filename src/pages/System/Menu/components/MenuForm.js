@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Modal, Switch, message, TreeSelect, Tooltip, Icon, Button } from 'antd';
+import { Form, Icon as LegacyIcon } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Input, Modal, Switch, message, TreeSelect, Tooltip, Button } from 'antd';
 
 const FormItem = Form.Item;
 
@@ -143,7 +145,7 @@ const MenuForm = connect(({ systemMenu: { tree, editMenu }, loading }) => ({
                   <span>
                     <span>编码</span>
                     <Tooltip title="请保证与前台路由组织的name一致，以实现动态菜单功能。">
-                      <Icon type="question-circle-o" />
+                      <LegacyIcon type="question-circle-o" />
                     </Tooltip>
                   </span>
                 }

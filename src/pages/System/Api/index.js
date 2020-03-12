@@ -1,6 +1,7 @@
 import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Tree, Card, Button, Switch, Divider, Modal, message, Icon, Table } from 'antd';
+import { Icon as LegacyIcon } from '@ant-design/compatible';
+import { Row, Col, Tree, Card, Button, Switch, Divider, Modal, message, Table } from 'antd';
 import { isEqual } from 'lodash';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Authorized from '@/utils/Authorized';
@@ -165,10 +166,14 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
             onClick={() => handleMove(record, index - 1)}
             style={{ padding: '0 5px', marginRight: '10px' }}
           >
-            <Icon type="arrow-up" title="向上" />
+            <LegacyIcon type="arrow-up" title="向上" />
           </a>
           <a>
-            <Icon type="arrow-down" title="向下" onClick={() => handleMove(record, index + 1)} />
+            <LegacyIcon
+              type="arrow-down"
+              title="向下"
+              onClick={() => handleMove(record, index + 1)}
+            />
           </a>
         </Authorized>
       ),
@@ -221,7 +226,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
                 <Authorized authority="system:api:add" noMatch={null}>
                   <ResourceForm parent={api}>
                     <Button type="primary" title="新增">
-                      <Icon type="plus" />
+                      <LegacyIcon type="plus" />
                     </Button>
                   </ResourceForm>
                 </Authorized>

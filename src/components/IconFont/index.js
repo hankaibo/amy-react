@@ -1,9 +1,9 @@
-import { Icon } from 'antd';
+import { createFromIconfontCN } from '@ant-design/icons';
 import defaultSettings from '../../../config/defaultSettings';
 
 const { iconfontUrl } = defaultSettings;
 
-const IconFont = Icon.createFromIconfontCN({
+const IconFont = createFromIconfontCN({
   scriptUrl: iconfontUrl,
 });
 // 使用：

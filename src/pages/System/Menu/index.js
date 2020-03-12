@@ -1,5 +1,6 @@
 import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
+import { Icon as LegacyIcon } from '@ant-design/compatible';
 import {
   Row,
   Col,
@@ -10,7 +11,6 @@ import {
   Divider,
   Modal,
   message,
-  Icon,
   Table,
   Popconfirm,
 } from 'antd';
@@ -164,10 +164,10 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
             onClick={() => handleMove(record, index - 1)}
             style={{ padding: '0 5px', marginRight: '10px' }}
           >
-            <Icon type="arrow-up" title="向上" />
+            <LegacyIcon type="arrow-up" title="向上" />
           </a>
           <a onClick={() => handleMove(record, index + 1)}>
-            <Icon type="arrow-down" title="向下" />
+            <LegacyIcon type="arrow-down" title="向下" />
           </a>
         </Authorized>
       ),
@@ -222,7 +222,7 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
                 <Authorized authority="system:menu:add" noMatch={null}>
                   <MenuForm menu={menu}>
                     <Button type="primary" title="新增">
-                      <Icon type="plus" />
+                      <LegacyIcon type="plus" />
                     </Button>
                   </MenuForm>
                 </Authorized>

@@ -1,4 +1,6 @@
-import { Button, Form, Modal, Tree, message } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Modal, Tree, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 import { connect } from 'dva';

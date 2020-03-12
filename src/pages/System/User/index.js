@@ -1,5 +1,6 @@
 import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
+import { Icon as LegacyIcon } from '@ant-design/compatible';
 import {
   Row,
   Col,
@@ -11,7 +12,6 @@ import {
   Switch,
   Divider,
   message,
-  Icon,
   Table,
 } from 'antd';
 import { isEqual } from 'lodash';
@@ -290,7 +290,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
           >
             <Tree
               showLine
-              switcherIcon={<Icon type="down" />}
+              switcherIcon={<LegacyIcon type="down" />}
               onSelect={handleSelect}
               treeData={tree}
             />
@@ -308,7 +308,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
                 <Authorized authority="system:user:add" noMatch={null}>
                   <UserForm user={department ? { departmentId: department.id } : null}>
                     <Button type="primary" title="新增">
-                      <Icon type="plus" />
+                      <LegacyIcon type="plus" />
                     </Button>
                   </UserForm>
                 </Authorized>

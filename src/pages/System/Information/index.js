@@ -1,6 +1,7 @@
 import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
-import { Card, Button, Input, Tag, Divider, Modal, message, Icon, Table, Popconfirm } from 'antd';
+import { Icon as LegacyIcon } from '@ant-design/compatible';
+import { Card, Button, Input, Tag, Divider, Modal, message, Table, Popconfirm } from 'antd';
 import { isEqual } from 'lodash';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Authorized from '@/utils/Authorized';
@@ -215,7 +216,7 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
             <Authorized authority="system:information:add" noMatch={null}>
               <InformationForm>
                 <Button type="primary" title="新增">
-                  <Icon type="plus" />
+                  <LegacyIcon type="plus" />
                 </Button>
               </InformationForm>
             </Authorized>

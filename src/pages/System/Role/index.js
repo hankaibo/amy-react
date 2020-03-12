@@ -1,18 +1,7 @@
 import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
-import {
-  Row,
-  Col,
-  Card,
-  Button,
-  Switch,
-  Divider,
-  Popconfirm,
-  message,
-  Icon,
-  Tree,
-  Table,
-} from 'antd';
+import { Icon as LegacyIcon } from '@ant-design/compatible';
+import { Row, Col, Card, Button, Switch, Divider, Popconfirm, message, Tree, Table } from 'antd';
 import { isEqual } from 'lodash';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Authorized from '@/utils/Authorized';
@@ -159,14 +148,14 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       title: '排序',
       render: (text, record, index) => (
         <Authorized authority="system:role:move" noMatch="--">
-          <Icon
+          <LegacyIcon
             className="icon"
             type="arrow-up"
             title="向上"
             onClick={() => handleMove(record, index - 1)}
           />
           <Divider type="vertical" />
-          <Icon
+          <LegacyIcon
             className="icon"
             type="arrow-down"
             title="向下"
@@ -227,7 +216,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
           >
             <Tree
               showLine
-              switcherIcon={<Icon type="down" />}
+              switcherIcon={<LegacyIcon type="down" />}
               onSelect={handleSelect}
               treeData={tree}
             />
@@ -245,7 +234,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
                 <Authorized authority="system:role:add" noMatch={null}>
                   <RoleForm>
                     <Button type="primary" title="新增">
-                      <Icon type="plus" />
+                      <LegacyIcon type="plus" />
                     </Button>
                   </RoleForm>
                 </Authorized>

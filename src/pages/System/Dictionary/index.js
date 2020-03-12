@@ -1,17 +1,7 @@
 import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
-import {
-  Card,
-  Button,
-  Input,
-  Divider,
-  Modal,
-  message,
-  Icon,
-  Switch,
-  Table,
-  Popconfirm,
-} from 'antd';
+import { Icon as LegacyIcon } from '@ant-design/compatible';
+import { Card, Button, Input, Divider, Modal, message, Switch, Table, Popconfirm } from 'antd';
 import { isEqual } from 'lodash';
 import { Link, router } from 'umi';
 import moment from 'moment';
@@ -247,7 +237,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
             <Authorized authority="system:dictionary:add" noMatch={null}>
               <DictionaryForm match={match} location={location}>
                 <Button type="primary" title="新增">
-                  <Icon type="plus" />
+                  <LegacyIcon type="plus" />
                 </Button>
               </DictionaryForm>
             </Authorized>
@@ -263,7 +253,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
             </Authorized>
             {parentDictId && Object.keys(parentDictId).length > 0 && (
               <Button title="返回" onClick={handleBack}>
-                <Icon type="rollback" />
+                <LegacyIcon type="rollback" />
               </Button>
             )}
           </div>

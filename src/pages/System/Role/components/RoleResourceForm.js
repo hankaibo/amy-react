@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Tree, Modal, message, Button } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Input, Tree, Modal, message, Button } from 'antd';
 import { difference } from '@/utils/utils';
 
 const FormItem = Form.Item;

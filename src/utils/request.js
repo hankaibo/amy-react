@@ -61,7 +61,7 @@ const request = extend({
 request.interceptors.request.use(async (url, options) => {
   const token = localStorage.getItem('jwt');
   const defaultOptions = { ...options };
-  if (token && !url.startsWith('/optimus/api/v1/auth')) {
+  if (token && token !== 'undefined' && !url.startsWith('/api/v1/login')) {
     defaultOptions.headers = {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
@@ -71,6 +71,14 @@ request.interceptors.request.use(async (url, options) => {
     url,
     options: { ...defaultOptions },
   };
+});
+
+/**
+ * 响应拦截器。
+ */
+request.interceptors.response.use(async response => {
+  console.log(response);
+  return response;
 });
 
 export default request;

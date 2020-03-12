@@ -16,7 +16,7 @@ const NoticeList = ({
   viewMoreText,
   showViewMore = false,
 }) => {
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     return (
       <div className={styles.notFound}>
         <img

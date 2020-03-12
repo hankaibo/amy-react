@@ -1,4 +1,5 @@
-import { Button, Card, Col, Icon, Input, Row, Table, Tree, Upload, message } from 'antd';
+import { Icon as LegacyIcon } from '@ant-design/compatible';
+import { Button, Card, Col, Input, Row, Table, Tree, Upload, message } from 'antd';
 import React, { memo, useEffect, useState } from 'react';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -114,7 +115,7 @@ const Swagger = connect(({ developSwagger: { tree, list, selectedRowKeys }, load
     <div style={{ textAlign: 'center' }}>
       <Dragger {...props}>
         <p className="ant-upload-drag-icon">
-          <Icon type="inbox" />
+          <LegacyIcon type="inbox" />
         </p>
         <p className="ant-upload-text">点击或者拖拽swagger json文件至此上传</p>
       </Dragger>
@@ -168,7 +169,7 @@ const Swagger = connect(({ developSwagger: { tree, list, selectedRowKeys }, load
       render: (text, record) => (
         <Authorized authority="develop:swagger:import" noMatch={null}>
           <SwaggerImportForm swagger={[record.id]}>
-            <Icon type="import" className="icon" />
+            <LegacyIcon type="import" className="icon" />
           </SwaggerImportForm>
         </Authorized>
       ),
@@ -186,7 +187,7 @@ const Swagger = connect(({ developSwagger: { tree, list, selectedRowKeys }, load
             bodyStyle={{ padding: '15px' }}
           >
             <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={handleChange} />
-            <Tree showLine switcherIcon={<Icon type="down" />} onSelect={handleSelect}>
+            <Tree showLine switcherIcon={<LegacyIcon type="down" />} onSelect={handleSelect}>
               {loop(tree)}
             </Tree>
           </Card>
@@ -203,7 +204,7 @@ const Swagger = connect(({ developSwagger: { tree, list, selectedRowKeys }, load
                 <Authorized authority="develop:swagger:batchImport" noMatch={null}>
                   <SwaggerImportForm swagger={selectedRowKeys}>
                     <Button type="primary" disabled={selectedRowKeys.length <= 0} title="导入">
-                      <Icon type="import" />
+                      <LegacyIcon type="import" />
                     </Button>
                   </SwaggerImportForm>
                 </Authorized>

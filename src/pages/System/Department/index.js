@@ -1,5 +1,6 @@
 import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'dva';
+import { Icon as LegacyIcon } from '@ant-design/compatible';
 import {
   Row,
   Col,
@@ -9,7 +10,6 @@ import {
   Switch,
   Divider,
   message,
-  Icon,
   Popconfirm,
   Table,
   Input,
@@ -215,14 +215,14 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       title: '排序',
       render: (text, record, index) => (
         <Authorized authority="system:department:move" noMatch="--">
-          <Icon
+          <LegacyIcon
             className="icon"
             type="arrow-up"
             title="向上"
             onClick={() => handleMove(record, index - 1)}
           />
           <Divider type="vertical" />
-          <Icon
+          <LegacyIcon
             className="icon"
             type="arrow-down"
             title="向下"
@@ -278,7 +278,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
             <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={handleChange} />
             <Tree
               showLine
-              switcherIcon={<Icon type="down" />}
+              switcherIcon={<LegacyIcon type="down" />}
               autoExpandParent={autoExpandParent}
               expandedKeys={expandedKeys}
               onExpand={handleExpand}
@@ -300,7 +300,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
                 <Authorized authority="system:department:add" noMatch={null}>
                   <DepartmentForm id={currentDepartment && currentDepartment.id}>
                     <Button type="primary" title="新增">
-                      <Icon type="plus" />
+                      <LegacyIcon type="plus" />
                     </Button>
                   </DepartmentForm>
                 </Authorized>

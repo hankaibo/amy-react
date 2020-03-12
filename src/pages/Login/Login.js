@@ -1,13 +1,10 @@
-import { AlipayCircleOutlined, TaobaoCircleOutlined, WeiboCircleOutlined } from '@ant-design/icons';
-import { Alert, Checkbox } from 'antd';
 import React, { useState } from 'react';
-import { Link } from 'umi';
+import { Form, Input, Button, Alert, Checkbox } from 'antd';
+import { LockTwoTone, UserOutlined } from '@ant-design/icons';
 import { connect } from 'dva';
-import LoginFrom from './components';
-
 import styles from './Login.less';
 
-const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginFrom;
+const FormItem = Form.Item;
 
 const LoginMessage = ({ content }) => (
   <Alert
@@ -22,101 +19,77 @@ const LoginMessage = ({ content }) => (
 
 const Login = props => {
   const { userLogin = {}, submitting } = props;
-  const { status, type: loginType } = userLogin;
+  const { status } = userLogin;
   const [autoLogin, setAutoLogin] = useState(true);
-  const [type, setType] = useState('account');
 
   const handleSubmit = values => {
     const { dispatch } = props;
     dispatch({
       type: 'login/login',
-      payload: { ...values, type },
+      payload: { ...values },
     });
   };
-  return (
-    <div className={styles.main}>
-      <LoginFrom activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
-        <Tab key="account" tab="账户密码登录">
-          {status === 'error' && loginType === 'account' && !submitting && (
-            <LoginMessage content="账户或密码错误（admin/ant.design）" />
-          )}
 
-          <UserName
-            name="userName"
+  return (
+    <div className={styles.login}>
+      <Form
+        form={props.from}
+        onFinish={values => {
+          handleSubmit(values);
+        }}
+      >
+        {status === 'error' && !submitting && (
+          <LoginMessage content="账户或密码错误（admin/123456）" />
+        )}
+        <FormItem
+          name="username"
+          rules={[
+            {
+              required: true,
+              message: '请输入用户名!',
+            },
+          ]}
+        >
+          <Input
+            size="large"
             placeholder="用户名: admin or user"
-            rules={[
-              {
-                required: true,
-                message: '请输入用户名!',
-              },
-            ]}
+            prefix={<UserOutlined style={{ color: '#1890ff' }} className={styles.prefixIcon} />}
           />
-          <Password
-            name="password"
-            placeholder="密码: ant.design"
-            rules={[
-              {
-                required: true,
-                message: '请输入密码！',
-              },
-            ]}
+        </FormItem>
+        <FormItem
+          name="password"
+          rules={[
+            {
+              required: true,
+              message: '请输入密码！',
+            },
+          ]}
+        >
+          <Input
+            type="password"
+            size="large"
+            placeholder="密码: 123456"
+            prefix={<LockTwoTone className={styles.prefixIcon} />}
           />
-        </Tab>
-        <Tab key="mobile" tab="手机号登录">
-          {status === 'error' && loginType === 'mobile' && !submitting && (
-            <LoginMessage content="验证码错误" />
-          )}
-          <Mobile
-            name="mobile"
-            placeholder="手机号"
-            rules={[
-              {
-                required: true,
-                message: '请输入手机号！',
-              },
-              {
-                pattern: /^1\d{10}$/,
-                message: '手机号格式错误！',
-              },
-            ]}
-          />
-          <Captcha
-            name="captcha"
-            placeholder="验证码"
-            countDown={120}
-            getCaptchaButtonText=""
-            getCaptchaSecondText="秒"
-            rules={[
-              {
-                required: true,
-                message: '请输入验证码！',
-              },
-            ]}
-          />
-        </Tab>
+        </FormItem>
         <div>
           <Checkbox checked={autoLogin} onChange={e => setAutoLogin(e.target.checked)}>
             自动登录
           </Checkbox>
-          <a
-            style={{
-              float: 'right',
-            }}
+          <a style={{ float: 'right' }}> 忘记密码 </a>
+        </div>
+        <FormItem>
+          <Button
+            className={styles.submit}
+            size="large"
+            type="primary"
+            htmlType="submit"
+            loading={submitting}
           >
-            忘记密码
-          </a>
-        </div>
-        <Submit loading={submitting}>登录</Submit>
-        <div className={styles.other}>
-          其他登录方式
-          <AlipayCircleOutlined className={styles.icon} />
-          <TaobaoCircleOutlined className={styles.icon} />
-          <WeiboCircleOutlined className={styles.icon} />
-          <Link className={styles.register} to="/user/register">
-            注册账户
-          </Link>
-        </div>
-      </LoginFrom>
+            登录
+          </Button>
+        </FormItem>
+      </Form>
     </div>
   );
 };
