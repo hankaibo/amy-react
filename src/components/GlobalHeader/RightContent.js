@@ -59,7 +59,6 @@ const GlobalHeaderRight = props => {
           className={styles.action}
         >
           <QuestionCircleOutlined />
-          <QuestionCircleOutlined />
         </a>
       </Tooltip>
       <Avatar />

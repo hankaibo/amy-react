@@ -65,8 +65,7 @@ const Login = props => {
             },
           ]}
         >
-          <Input
-            type="password"
+          <Input.Password
             size="large"
             placeholder="密码: 123456"
             prefix={<LockTwoTone className={styles.prefixIcon} />}
