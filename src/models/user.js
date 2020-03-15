@@ -19,11 +19,10 @@ const UserModel = {
     },
     *fetchCurrent(_, { call, put }) {
       const response = yield call(queryCurrent);
-      const { userInfo: currentUser } = response;
       yield put({
         type: 'saveCurrentUser',
         payload: {
-          currentUser,
+          currentUser: response,
         },
       });
     },
