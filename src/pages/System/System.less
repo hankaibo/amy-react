@@ -2,8 +2,9 @@
   .tableListOperator {
     margin-bottom: 16px;
 
-    button {
-      margin-right: 8px;
+    button + button {
+      margin-bottom: 0;
+      margin-left: 8px;
     }
   }
 
@@ -11,5 +12,12 @@
     .ant-table-tbody > tr > td > .ant-divider-vertical:last-child {
       display: none;
     }
+  }
+}
+
+.form {
+  button + button {
+    margin-bottom: 0;
+    margin-left: 8px;
   }
 }

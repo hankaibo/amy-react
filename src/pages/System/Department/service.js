@@ -25,8 +25,7 @@ export async function listSubDepartmentById(params) {
  * @returns {Promise<void>}
  */
 export async function addDepartment(params) {
-  return request('/departments', {
-    method: 'POST',
+  return request.post('/departments', {
     data: {
       ...params,
     },
@@ -49,8 +48,7 @@ export async function getDepartmentById(id) {
  */
 export async function updateDepartment(params) {
   const { id } = params;
-  return request(`/departments/${id}`, {
-    method: 'PUT',
+  return request.put(`/departments/${id}`, {
     data: {
       ...params,
     },
@@ -64,9 +62,7 @@ export async function updateDepartment(params) {
  */
 export async function enableDepartment(params) {
   const { id, status } = params;
-  return request(`/departments/${id}/status?status=${status}`, {
-    method: 'PATCH',
-  });
+  return request.patch(`/departments/${id}/status?status=${status}`);
 }
 
 /**
