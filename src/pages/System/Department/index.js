@@ -49,7 +49,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   //
   const [first, setFirst] = useState(true);
 
-  // 【首次请求加载树数据】
+  // 【首次请求加载部门树】
   useEffect(() => {
     dispatch({
       type: 'systemDepartment/fetch',
@@ -140,11 +140,14 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
 
   // 【启用禁用部门】
   const toggleState = (checked, record) => {
-    const info = { ...record };
-    delete info.children;
+    const { id, parentId } = record;
     dispatch({
       type: 'systemDepartment/enable',
-      payload: { ...info, status: checked },
+      payload: {
+        id,
+        status: checked,
+        parentId,
+      },
     });
   };
 
@@ -284,18 +287,16 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
             bodyStyle={{ padding: '15px' }}
           >
             <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={handleChange} />
-            {Array.isArray(tree) && tree.length > 0 && (
-              <Tree
-                showLine
-                switcherIcon={<DownOutlined />}
-                autoExpandParent={autoExpandParent}
-                expandedKeys={expandedKeys}
-                onExpand={handleExpand}
-                selectedKeys={selectedKeys}
-                onSelect={handleSelect}
-                treeData={loop(tree)}
-              />
-            )}
+            <Tree
+              showLine
+              switcherIcon={<DownOutlined />}
+              autoExpandParent={autoExpandParent}
+              expandedKeys={expandedKeys}
+              onExpand={handleExpand}
+              selectedKeys={selectedKeys}
+              onSelect={handleSelect}
+              treeData={loop(tree)}
+            />
           </Card>
         </Col>
         <Col xs={24} sm={24} md={24} lg={18} xl={18}>

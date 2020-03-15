@@ -3,9 +3,6 @@ import { connect } from 'dva';
 import { Modal, Form, Input, Switch, TreeSelect, Button, message } from 'antd';
 import styles from '../../System.less';
 
-const FormItem = Form.Item;
-const { TextArea } = Input;
-
 const DepartmentForm = connect(({ systemDepartment: { tree, department }, loading }) => ({
   tree,
   department,
@@ -29,7 +26,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
     setVisible(false);
   };
 
-  // 【修改时，获取表单】
+  // 【修改时，获取部门表单数据】
   useEffect(() => {
     if (visible && isEdit) {
       dispatch({
@@ -46,7 +43,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
     };
   }, [visible, isEdit, id, dispatch]);
 
-  // 【修改时，回显表单】
+  // 【修改时，回显部门表单】
   useEffect(() => {
     // 👍 将条件判断放置在 effect 中
     if (visible && isEdit) {
@@ -122,7 +119,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
   };
   const tailLayout = {
     wrapperCol: {
-      xs: { span: 24 },
+      xs: { offset: 0, span: 24 },
       sm: { offset: 5, span: 19 },
     },
   };
@@ -141,14 +138,14 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
         <Form
           {...layout}
           form={form}
-          className={styles.form}
           name="departmentForm"
+          className={styles.form}
           initialValues={{
             status: true,
           }}
           onFinish={handleAddOrUpdate}
         >
-          <FormItem
+          <Form.Item
             label="名称"
             name="name"
             rules={[
@@ -161,36 +158,40 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
             ]}
           >
             <Input />
-          </FormItem>
-          <FormItem
+          </Form.Item>
+          <Form.Item
             label="父部门"
             name="parentId"
             rules={[{ required: true, message: '请选择一个父部门！' }]}
           >
             <TreeSelect
-              style={{ width: '100%' }}
               dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
               treeData={tree}
               placeholder="请选择部门。"
               treeDefaultExpandAll
             />
-          </FormItem>
-          <FormItem label="状态" name="status" rules={[{ required: true }]} valuePropName="checked">
+          </Form.Item>
+          <Form.Item
+            label="状态"
+            name="status"
+            rules={[{ required: true }]}
+            valuePropName="checked"
+          >
             <Switch checkedChildren="开" unCheckedChildren="关" />
-          </FormItem>
-          <FormItem
+          </Form.Item>
+          <Form.Item
             label="描述"
             name="description"
             rules={[{ message: '请将描述长度保持在1至50字符之间！', min: 1, max: 50 }]}
           >
-            <TextArea placeholder="请输入部门描述。" autoSize={{ minRows: 2, maxRows: 6 }} />
-          </FormItem>
-          <FormItem {...tailLayout}>
+            <Input.TextArea placeholder="请输入部门描述。" autoSize={{ minRows: 2, maxRows: 6 }} />
+          </Form.Item>
+          <Form.Item {...tailLayout}>
             <Button onClick={hideModelHandler}>取消</Button>
             <Button type="primary" loading={loading} htmlType="submit">
               确定
             </Button>
-          </FormItem>
+          </Form.Item>
         </Form>
       </Modal>
     </>
