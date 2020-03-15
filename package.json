@@ -43,9 +43,9 @@
   "dependencies": {
     "@ant-design/compatible": "^1.0.1",
     "@ant-design/icons": "^4.0.2",
-    "@ant-design/pro-layout": "^5.0.0",
+    "@ant-design/pro-layout": "^5.0.6",
     "@ant-design/pro-table": "^2.1.4",
-    "antd": "^4.0.0",
+    "antd": "^4.0.3",
     "classnames": "^2.2.6",
     "dva": "^2.4.1",
     "lodash": "^4.17.15",
@@ -60,22 +60,22 @@
     "react-helmet": "^5.2.1",
     "sockjs-client": "^1.4.0",
     "stompjs": "^2.3.3",
-    "umi": "^2.13.2",
-    "umi-plugin-antd-icon-config": "^1.0.3",
-    "umi-plugin-antd-theme": "^1.2.0-0",
-    "umi-plugin-react": "^1.15.2",
+    "umi": "^2.13.4",
+    "umi-plugin-antd-icon-config": "^2.0.0",
+    "umi-plugin-antd-theme": "^2.1.1",
+    "umi-plugin-react": "^1.15.3",
     "umi-request": "^1.2.19",
     "use-merge-value": "^1.0.1"
   },
   "devDependencies": {
-    "@umijs/fabric": "^2.0.3",
+    "@umijs/fabric": "^2.0.4",
     "chalk": "^3.0.0",
-    "cross-env": "^7.0.1",
+    "cross-env": "^7.0.2",
     "husky": "^4.2.3",
     "lint-staged": "^10.0.8",
     "mockjs": "^1.1.0",
     "prettier": "^1.19.1",
-    "stylelint": "^13.2.0"
+    "stylelint": "^13.2.1"
   },
   "engines": {
     "node": ">=10.0.0"
