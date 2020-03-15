@@ -24,8 +24,7 @@ export async function pageUser(params) {
  * @returns {Promise<void>}
  */
 export async function addUser(params) {
-  return request('/users', {
-    method: 'POST',
+  return request.post('/users', {
     data: {
       ...params,
     },
@@ -48,8 +47,7 @@ export async function getUserById(id) {
  */
 export async function updateUser(params) {
   const { id } = params;
-  return request(`/users/${id}`, {
-    method: 'PUT',
+  return request.put(`/users/${id}`, {
     data: {
       ...params,
     },
@@ -64,9 +62,7 @@ export async function updateUser(params) {
  */
 export async function enableUser(params) {
   const { id, status } = params;
-  return request(`/users/${id}/status?status=${status}`, {
-    method: 'PATCH',
-  });
+  return request.patch(`/users/${id}/status?status=${status}`);
 }
 
 /**
@@ -77,8 +73,7 @@ export async function enableUser(params) {
  */
 export async function resetUserPassword(params) {
   const { id, password } = params;
-  return request(`/users/${id}/password`, {
-    method: 'PATCH',
+  return request.patch(`/users/${id}/password`, {
     data: {
       password,
     },
@@ -100,8 +95,7 @@ export async function deleteUser(id) {
  * @returns {Promise<void>}
  */
 export async function deleteBatchUser(ids) {
-  return request('/users', {
-    method: 'DELETE',
+  return request.delete('/users', {
     data: ids,
   });
 }
@@ -124,8 +118,7 @@ export async function listUserRole(params) {
  */
 export async function grantUserRole(params) {
   const { id, ...rest } = params;
-  return request(`/users/${id}/roles`, {
-    method: 'POST',
+  return request.post(`/users/${id}/roles`, {
     data: rest,
   });
 }

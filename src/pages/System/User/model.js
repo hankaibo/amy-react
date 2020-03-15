@@ -21,7 +21,7 @@ export default {
     list: [],
     pagination: {},
     // 编辑
-    editUser: {},
+    user: {},
     // 角色列表与已选角色
     roleTree: [],
     checkedKeys: [],
@@ -71,26 +71,31 @@ export default {
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getUserById, id);
-      const editUser = { ...response, status: !!response.status };
+      const user = {
+        ...response,
+        status: !!response.status,
+        departmentId: response.departmentId.toString(),
+      };
       yield put({
         type: 'saveUser',
         payload: {
-          editUser,
+          user,
         },
       });
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put, select }) {
-      const { oldDepartmentId } = payload;
-      const params = { ...payload, status: +payload.status };
+      const { oldDepartmentId, ...rest } = payload;
+      const params = { ...rest, status: +payload.status };
       yield call(updateUser, params);
       const pagination = yield select(state => state.systemUser.pagination);
-      delete pagination.total;
+      const { current, pageSize } = pagination;
       yield put({
         type: 'fetch',
         payload: {
           departmentId: oldDepartmentId,
-          ...pagination,
+          current,
+          pageSize,
         },
       });
       if (callback) callback();
@@ -100,12 +105,13 @@ export default {
       const params = { id, status: +status };
       yield call(enableUser, params);
       const pagination = yield select(state => state.systemUser.pagination);
-      delete pagination.total;
+      const { current, pageSize } = pagination;
       yield put({
         type: 'fetch',
         payload: {
           departmentId,
-          ...pagination,
+          current,
+          pageSize,
         },
       });
       if (callback) callback();
@@ -202,16 +208,16 @@ export default {
       };
     },
     saveUser(state, { payload }) {
-      const { editUser } = payload;
+      const { user } = payload;
       return {
         ...state,
-        editUser,
+        user,
       };
     },
     clearUser(state) {
       return {
         ...state,
-        editUser: {},
+        user: {},
       };
     },
     saveRoleTree(state, { payload }) {
