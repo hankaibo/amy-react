@@ -10,10 +10,10 @@ export function connect() {
 
   client.connect(
     { Authorization: localStorage.getItem('jwt') },
-    data => {
+    (data) => {
       console.log('client connect success: ', data);
     },
-    error => {
+    (error) => {
       console.log('client lost connect: ', error);
     },
   );

@@ -10,9 +10,6 @@ export default {
   'menu.system.api': '接口保護',
   'menu.system.dictionary': '字典管理',
   'menu.system.information': '信息管理',
-  // swagger
-  'menu.develop': '開發管理',
-  'menu.develop.swagger': '接口導入',
   // exception
   'menu.exception': '異常頁',
   'menu.exception.not-permission': '403',

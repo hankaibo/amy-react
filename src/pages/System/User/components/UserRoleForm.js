@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'dva';
+import { connect } from 'umi';
 import { Modal, Form, Tree, message, Button } from 'antd';
 import { difference } from '@/utils/utils';
 import styles from '@/pages/System/System.less';
@@ -21,7 +21,7 @@ const UserRoleForm = connect(
   const [visible, setVisible] = useState(false);
 
   // 【模态框显示隐藏函数】
-  const showModalHandler = e => {
+  const showModalHandler = (e) => {
     if (e) e.stopPropagation();
     setVisible(true);
   };
@@ -54,7 +54,7 @@ const UserRoleForm = connect(
   }, [roleCheckedKeys, halfCheckedKeys, setFieldsValue]);
 
   // 【树操作】
-  const onExpand = values => {
+  const onExpand = (values) => {
     setExpandedKeys(values);
   };
   const handleCheck = (values, event) => {
@@ -65,7 +65,7 @@ const UserRoleForm = connect(
   };
 
   // 【授权】
-  const handleGrant = values => {
+  const handleGrant = (values) => {
     const { ids } = values;
     const oldCheckedKeys = [...roleCheckedKeys, ...halfCheckedKeys];
     const plusRole = difference(ids, oldCheckedKeys);

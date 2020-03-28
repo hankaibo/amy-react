@@ -16,7 +16,7 @@ const GlobalModel = {
         payload: data,
       });
       const unreadCount = yield select(
-        state => state.global.notices.filter(item => !item.read).length,
+        (state) => state.global.notices.filter((item) => !item.read).length,
       );
       yield put({
         type: 'user/changeNotifyCount',
@@ -31,9 +31,9 @@ const GlobalModel = {
         type: 'saveClearedNotices',
         payload,
       });
-      const count = yield select(state => state.global.notices.length);
+      const count = yield select((state) => state.global.notices.length);
       const unreadCount = yield select(
-        state => state.global.notices.filter(item => !item.read).length,
+        (state) => state.global.notices.filter((item) => !item.read).length,
       );
       yield put({
         type: 'user/changeNotifyCount',
@@ -44,8 +44,8 @@ const GlobalModel = {
       });
     },
     *changeNoticeReadState({ payload }, { put, select }) {
-      const notices = yield select(state =>
-        state.global.notices.map(item => {
+      const notices = yield select((state) =>
+        state.global.notices.map((item) => {
           const notice = { ...item };
           if (notice.id === payload) {
             notice.read = true;
@@ -61,7 +61,7 @@ const GlobalModel = {
         type: 'user/changeNotifyCount',
         payload: {
           totalCount: notices.length,
-          unreadCount: notices.filter(item => !item.read).length,
+          unreadCount: notices.filter((item) => !item.read).length,
         },
       });
     },
@@ -85,7 +85,7 @@ const GlobalModel = {
       return {
         collapsed: false,
         ...state,
-        notices: state.notices.filter(item => item.type !== payload),
+        notices: state.notices.filter((item) => item.type !== payload),
       };
     },
   },

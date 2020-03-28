@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Tag, message } from 'antd';
 
-import { connect } from 'dva';
-import { formatMessage } from 'umi-plugin-react/locale';
+import { connect, injectIntl, formatMessage } from 'umi';
 import groupBy from 'lodash/groupBy';
 import moment from 'moment';
 import NoticeIcon from '../NoticeIcon';
@@ -19,7 +18,7 @@ class NoticeIconView extends Component {
     }
   }
 
-  changeReadState = clickedItem => {
+  changeReadState = (clickedItem) => {
     const { id } = clickedItem;
     const { dispatch } = this.props;
 
@@ -50,7 +49,7 @@ class NoticeIconView extends Component {
       return {};
     }
 
-    const newNotices = notices.map(notice => {
+    const newNotices = notices.map((notice) => {
       const newNotice = { ...notice };
 
       if (newNotice.datetime) {
@@ -80,9 +79,9 @@ class NoticeIconView extends Component {
     return groupBy(newNotices, 'type');
   };
 
-  getUnreadData = noticeData => {
+  getUnreadData = (noticeData) => {
     const unreadMsg = {};
-    Object.keys(noticeData).forEach(key => {
+    Object.keys(noticeData).forEach((key) => {
       const value = noticeData[key];
 
       if (!unreadMsg[key]) {
@@ -90,7 +89,7 @@ class NoticeIconView extends Component {
       }
 
       if (Array.isArray(value)) {
-        unreadMsg[key] = value.filter(item => !item.read).length;
+        unreadMsg[key] = value.filter((item) => !item.read).length;
       }
     });
     return unreadMsg;
@@ -104,7 +103,7 @@ class NoticeIconView extends Component {
       <NoticeIcon
         className={styles.action}
         count={currentUser && currentUser.unreadCount}
-        onItemClick={item => {
+        onItemClick={(item) => {
           this.changeReadState(item);
         }}
         loading={fetchingNotices}
@@ -144,10 +143,12 @@ class NoticeIconView extends Component {
   }
 }
 
-export default connect(({ user, global, loading }) => ({
-  currentUser: user.currentUser,
-  collapsed: global.collapsed,
-  fetchingMoreNotices: loading.effects['global/fetchMoreNotices'],
-  fetchingNotices: loading.effects['global/fetchNotices'],
-  notices: global.notices,
-}))(NoticeIconView);
+export default injectIntl(
+  connect(({ user, global, loading }) => ({
+    currentUser: user.currentUser,
+    collapsed: global.collapsed,
+    fetchingMoreNotices: loading.effects['global/fetchMoreNotices'],
+    fetchingNotices: loading.effects['global/fetchNotices'],
+    notices: global.notices,
+  }))(NoticeIconView),
+);

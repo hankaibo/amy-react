@@ -1,39 +1,13 @@
 ﻿import { DefaultFooter, getMenuData, getPageTitle } from '@ant-design/pro-layout';
-import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
-
-import { Helmet } from 'react-helmet';
-import { Link } from 'umi';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { connect, Link, useIntl } from 'umi';
 import React from 'react';
-import { connect } from 'dva';
 import SelectLang from '@/components/SelectLang';
 import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
 
-const links = [
-  {
-    key: 'help',
-    title: formatMessage({ id: 'layout.user.link.help' }),
-    href: '',
-  },
-  {
-    key: 'privacy',
-    title: formatMessage({ id: 'layout.user.link.privacy' }),
-    href: '',
-  },
-  {
-    key: 'terms',
-    title: formatMessage({ id: 'layout.user.link.terms' }),
-    href: '',
-  },
-];
-
-const copyright = (
-  <span>
-    <FormattedMessage id="app.copyright" />
-  </span>
-);
-
-const UserLayout = props => {
+const UserLayout = (props) => {
+  const { formatMessage } = useIntl();
   const {
     route = {
       routes: [],
@@ -54,7 +28,7 @@ const UserLayout = props => {
     ...props,
   });
   return (
-    <>
+    <HelmetProvider>
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={title} />
@@ -69,18 +43,35 @@ const UserLayout = props => {
             <div className={styles.header}>
               <Link to="/">
                 <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>
-                  <FormattedMessage id="app.logo.name" />
-                </span>
+                <span className={styles.title}>{formatMessage({ id: 'app.logo.name' })}</span>
               </Link>
             </div>
             <div className={styles.desc}>前端脚手架</div>
           </div>
           {children}
         </div>
-        <DefaultFooter links={links} copyright={copyright} />
+        <DefaultFooter
+          links={[
+            {
+              key: 'help',
+              title: formatMessage({ id: 'layout.user.link.help' }),
+              href: '',
+            },
+            {
+              key: 'privacy',
+              title: formatMessage({ id: 'layout.user.link.privacy' }),
+              href: '',
+            },
+            {
+              key: 'terms',
+              title: formatMessage({ id: 'layout.user.link.terms' }),
+              href: '',
+            },
+          ]}
+          copyright={formatMessage({ id: 'app.copyright' })}
+        />
       </div>
-    </>
+    </HelmetProvider>
   );
 };
 

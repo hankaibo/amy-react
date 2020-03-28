@@ -1,8 +1,7 @@
 import { Tooltip, Tag } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import React from 'react';
-import { connect } from 'dva';
-import { formatMessage } from 'umi-plugin-react/locale';
+import { connect, useIntl } from 'umi';
 import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
 import SelectLang from '../SelectLang';
@@ -14,7 +13,8 @@ const ENVTagColor = {
   pre: '#87d068',
 };
 
-const GlobalHeaderRight = props => {
+const GlobalHeaderRight = (props) => {
+  const { formatMessage } = useIntl();
   const { theme, layout } = props;
   let className = styles.right;
 

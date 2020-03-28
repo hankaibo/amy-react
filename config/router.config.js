@@ -89,23 +89,6 @@ export default [
               },
             ],
           },
-          // develop
-          {
-            path: '/develop',
-            name: 'develop',
-            icon: 'icon-tool',
-            routes: [
-              {
-                path: '/develop/swaggers',
-                name: 'swagger',
-                component: './Develop/Swagger',
-                authority: ['develop:swagger'],
-              },
-              {
-                component: './404',
-              },
-            ],
-          },
           // exception
           {
             path: '/exception',

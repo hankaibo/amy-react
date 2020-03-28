@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Alert, Checkbox } from 'antd';
 import { LockTwoTone, UserOutlined } from '@ant-design/icons';
-import { connect } from 'dva';
+import { connect } from 'umi';
 import styles from './Login.less';
 
 const FormItem = Form.Item;
@@ -17,12 +17,12 @@ const LoginMessage = ({ content }) => (
   />
 );
 
-const Login = props => {
+const Login = (props) => {
   const { userLogin = {}, submitting } = props;
   const { status } = userLogin;
   const [autoLogin, setAutoLogin] = useState(true);
 
-  const handleSubmit = values => {
+  const handleSubmit = (values) => {
     const { dispatch } = props;
     dispatch({
       type: 'login/login',
@@ -34,7 +34,7 @@ const Login = props => {
     <div className={styles.login}>
       <Form
         form={props.from}
-        onFinish={values => {
+        onFinish={(values) => {
           handleSubmit(values);
         }}
       >
@@ -72,7 +72,7 @@ const Login = props => {
           />
         </FormItem>
         <div>
-          <Checkbox checked={autoLogin} onChange={e => setAutoLogin(e.target.checked)}>
+          <Checkbox checked={autoLogin} onChange={(e) => setAutoLogin(e.target.checked)}>
             自动登录
           </Checkbox>
           <a style={{ float: 'right' }}> 忘记密码 </a>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo } from 'react';
-import { connect } from 'dva';
+import { connect } from 'umi';
 import {
   Row,
   Col,
@@ -29,8 +29,6 @@ import { getPlainNode, getParentKey, getValue } from '@/utils/utils';
 import DepartmentForm from './components/DepartmentForm';
 import styles from '../System.less';
 
-const { Search } = Input;
-
 const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   tree,
   list,
@@ -46,7 +44,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   const [searchValue, setSearchValue] = useState('');
   // 【查询参数】
   const [params, setParams] = useState({});
-  //
+  // 【首次】
   const [first, setFirst] = useState(true);
 
   // 【首次请求加载部门树】
@@ -91,7 +89,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   }, [first, tree]);
 
   // 【展开部门】
-  const handleExpand = keys => {
+  const handleExpand = (keys) => {
     setExpandedKeys(keys);
     setAutoExpandParent(false);
   };
@@ -107,10 +105,10 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   };
 
   // 【搜索部门并高亮其搜索项】
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { value } = e.target;
     const keys = getPlainNode(tree)
-      .map(item => {
+      .map((item) => {
         if (item.title.indexOf(value) > -1) {
           return getParentKey(item.key, tree);
         }
@@ -152,7 +150,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   };
 
   // 【删除部门】
-  const handleDelete = record => {
+  const handleDelete = (record) => {
     const { id, parentId } = record;
     dispatch({
       type: 'systemDepartment/delete',
@@ -185,7 +183,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
 
   // 【构造树结构，添加高亮支持】
   const loop = (data = []) =>
-    data.map(item => {
+    data.map((item) => {
       const it = { ...item, titleValue: item.title, disabled: !item.status };
       const index = it.title.indexOf(searchValue);
       const beforeStr = it.title.substr(0, index);
@@ -223,7 +221,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       render: (text, record) => (
         <Authorized authority="system:department:status" noMatch={NoMatch(text)}>
           {/* true数据不方便转换status，在这里进行转化。 */}
-          <Switch checked={text} onClick={checked => toggleState(checked, record)} />
+          <Switch checked={text} onClick={(checked) => toggleState(checked, record)} />
         </Authorized>
       ),
     },
@@ -286,7 +284,11 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
             style={{ marginTop: 10 }}
             bodyStyle={{ padding: '15px' }}
           >
-            <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={handleChange} />
+            <Input.Search
+              style={{ marginBottom: 8 }}
+              placeholder="Search"
+              onChange={handleChange}
+            />
             <Tree
               showLine
               switcherIcon={<DownOutlined />}
@@ -295,7 +297,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
               onExpand={handleExpand}
               selectedKeys={selectedKeys}
               onSelect={handleSelect}
-              treeData={loop(tree)}
+              treeData={Array.isArray(tree) && tree.length > 0 ? loop(tree) : []}
             />
           </Card>
         </Col>

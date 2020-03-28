@@ -1,10 +1,10 @@
 import { parse } from 'querystring';
-import pathRegexp from 'path-to-regexp';
+import { pathToRegexp } from 'path-to-regexp';
 
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
 
-export const isUrl = path => reg.test(path);
+export const isUrl = (path) => reg.test(path);
 
 export const getPageQuery = () => parse(window.location.href.split('?')[1]);
 
@@ -16,7 +16,7 @@ export const getPageQuery = () => parse(window.location.href.split('?')[1]);
 export const getAuthorityFromRouter = (router, pathname) => {
   const authority = router.find(
     ({ routes, path = '/' }) =>
-      (path && pathRegexp(path).exec(pathname)) ||
+      (path && pathToRegexp(path).exec(pathname)) ||
       (routes && getAuthorityFromRouter(routes, pathname)),
   );
   if (authority) return authority;
@@ -25,9 +25,9 @@ export const getAuthorityFromRouter = (router, pathname) => {
 
 export const getRouteAuthority = (path, routeData) => {
   let authorities;
-  routeData.forEach(route => {
+  routeData.forEach((route) => {
     // match prefix
-    if (pathRegexp(`${route.path}/(.*)`).test(`${path}/`)) {
+    if (pathToRegexp(`${route.path}/(.*)`).test(`${path}/`)) {
       if (route.authority) {
         authorities = route.authority;
       }
@@ -47,7 +47,7 @@ export const getRouteAuthority = (path, routeData) => {
 // 将一个父子结构的树扁平化为一个数组。
 export function getPlainNode(nodeList) {
   const arr = [];
-  nodeList.forEach(item => {
+  nodeList.forEach((item) => {
     arr.push(item);
     if (item.children) {
       arr.push(...getPlainNode(item.children));
@@ -62,7 +62,7 @@ export function getParentKey(key, tree) {
   for (let i = 0; i < tree.length; i += 1) {
     const node = tree[i];
     if (node.children) {
-      if (node.children.some(item => item.key === key)) {
+      if (node.children.some((item) => item.key === key)) {
         parentKey = node.key;
       } else if (getParentKey(key, node.children)) {
         parentKey = getParentKey(key, node.children);
@@ -73,12 +73,12 @@ export function getParentKey(key, tree) {
 }
 
 // 获取对象的所有值
-export const getValue = obj =>
+export const getValue = (obj) =>
   Object.keys(obj)
-    .map(key => obj[key])
+    .map((key) => obj[key])
     .join(',');
 
 export const difference = (a, b) => {
   const s = new Set(b);
-  return a.filter(x => !s.has(x));
+  return a.filter((x) => !s.has(x));
 };

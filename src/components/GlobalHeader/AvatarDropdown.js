@@ -1,13 +1,12 @@
 import { Avatar, Menu, Spin } from 'antd';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import React from 'react';
-import { connect } from 'dva';
-import { router } from 'umi';
+import { history, connect } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
 class AvatarDropdown extends React.Component {
-  onMenuClick = event => {
+  onMenuClick = (event) => {
     const { key } = event;
 
     if (key === 'logout') {
@@ -22,7 +21,7 @@ class AvatarDropdown extends React.Component {
       return;
     }
 
-    router.push(`/account/${key}`);
+    history.push(`/account/${key}`);
   };
 
   render() {

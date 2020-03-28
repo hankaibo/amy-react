@@ -1,168 +1,172 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'dva';
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
-import { Input, Modal, message, Button, Radio } from 'antd';
+import { connect } from 'umi';
+import { Form, Input, Modal, message, Button, Radio } from 'antd';
+import styles from '@/pages/System/System.less';
 
-const FormItem = Form.Item;
-const { TextArea } = Input;
+const InformationForm = connect(({ systemInformation: { information }, loading }) => ({
+  information,
+  loading: loading.effects['systemInformation/fetchById'],
+}))(({ loading, children, isEdit, id, information, editInformation, dispatch }) => {
+  const [form] = Form.useForm();
+  const { resetFields, setFieldsValue } = form;
 
-const InformationForm = connect(({ systemInformation: { editInformation }, loading }) => ({
-  editInformation,
-  loading: loading.models.systemInformation,
-}))(
-  Form.create({ name: 'informationForm' })(
-    ({ loading, children, isEdit, information, editInformation, form, dispatch }) => {
-      const { validateFields, getFieldDecorator, resetFields, setFieldsValue } = form;
+  // 【模态框显示隐藏属性】
+  const [visible, setVisible] = useState(false);
 
-      // 【模态框显示隐藏属性】
-      const [visible, setVisible] = useState(false);
+  // 【模态框显示隐藏函数】
+  const showModalHandler = (e) => {
+    if (e) e.stopPropagation();
+    setVisible(true);
+  };
+  const hideModelHandler = () => {
+    setVisible(false);
+  };
 
-      // 【模态框显示隐藏函数】
-      const showModalHandler = e => {
-        if (e) e.stopPropagation();
-        setVisible(true);
-      };
-      const hideModelHandler = () => {
-        setVisible(false);
-      };
-
-      // 【获取要修改信息的数据】
-      useEffect(() => {
-        if (visible && isEdit) {
-          const { id } = information;
-          dispatch({
-            type: 'systemInformation/fetchById',
-            payload: {
-              id,
-            },
-          });
-        }
-        return function cleanup() {
-          dispatch({
-            type: 'systemInformation/clearInformation',
-          });
-        };
-      }, [visible, isEdit, information, dispatch]);
-
-      // 【回显表单】
-      useEffect(() => {
-        // 👍 将条件判断放置在 effect 中
-        if (visible && isEdit) {
-          if (Object.keys(editInformation).length > 0) {
-            setFieldsValue(editInformation);
-          }
-        }
-      }, [visible, isEdit, editInformation, setFieldsValue]);
-
-      // 【添加与修改】
-      const handleAddOrUpdate = () => {
-        validateFields((err, fieldsValue) => {
-          if (err) return;
-
-          if (isEdit) {
-            dispatch({
-              type: 'systemInformation/update',
-              payload: fieldsValue,
-              callback: () => {
-                resetFields();
-                hideModelHandler();
-                message.success('修改成功');
-              },
-            });
-          } else {
-            dispatch({
-              type: 'systemInformation/add',
-              payload: fieldsValue,
-              callback: () => {
-                resetFields();
-                hideModelHandler();
-                message.success('添加成功');
-              },
-            });
-          }
-        });
-      };
-
-      // 【表单布局】
-      const formItemLayout = {
-        labelCol: {
-          xs: { span: 24 },
-          sm: { span: 5 },
+  // 【修改时，获取信息表单数据】
+  useEffect(() => {
+    if (visible && isEdit) {
+      dispatch({
+        type: 'systemInformation/fetchById',
+        payload: {
+          id,
         },
-        wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 17 },
-        },
-      };
+      });
+    }
+    return () => {
+      dispatch({
+        type: 'systemInformation/clearInformation',
+      });
+    };
+  }, [visible, isEdit, id, dispatch]);
 
-      return (
-        <span>
-          <span onClick={showModalHandler}>{children}</span>
-          <Modal
-            destroyOnClose
-            title={isEdit ? '修改' : '新增'}
-            visible={visible}
-            onOk={handleAddOrUpdate}
-            onCancel={hideModelHandler}
-            footer={[
-              <Button key="back" onClick={hideModelHandler}>
-                取消
-              </Button>,
-              <Button key="submit" type="primary" loading={loading} onClick={handleAddOrUpdate}>
-                确定
-              </Button>,
+  // 【修改时，回显信息表单】
+  useEffect(() => {
+    // 👍 将条件判断放置在 effect 中
+    if (visible && isEdit) {
+      if (Object.keys(editInformation).length > 0) {
+        setFieldsValue(editInformation);
+      }
+    }
+  }, [visible, isEdit, information, setFieldsValue]);
+
+  // 【添加与修改】
+  const handleAddOrUpdate = (values) => {
+    if (isEdit) {
+      dispatch({
+        type: 'systemInformation/update',
+        payload: {
+          ...values,
+          id,
+        },
+        callback: () => {
+          resetFields();
+          hideModelHandler();
+          message.success('修改信息成功。');
+        },
+      });
+    } else {
+      dispatch({
+        type: 'systemInformation/add',
+        payload: {
+          ...values,
+        },
+        callback: () => {
+          resetFields();
+          hideModelHandler();
+          message.success('添加信息成功。');
+        },
+      });
+    }
+  };
+
+  // 【表单布局】
+  const layout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 5 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 19 },
+    },
+  };
+  const tailLayout = {
+    wrapperCol: {
+      xs: { span: 24, offset: 0 },
+      sm: { span: 19, offset: 5 },
+    },
+  };
+
+  return (
+    <>
+      <span onClick={showModalHandler}>{children}</span>
+      <Modal
+        forceRender
+        destroyOnClose
+        title={isEdit ? '修改' : '新增'}
+        visible={visible}
+        onCancel={hideModelHandler}
+        footer={null}
+      >
+        <Form
+          {...layout}
+          form={form}
+          name="userForm"
+          className={styles.form}
+          initialValues={{
+            status: true,
+          }}
+          onFinish={handleAddOrUpdate}
+        >
+          <Form.Item
+            label="标题"
+            name="title"
+            rules={[
+              {
+                required: true,
+                message: '请将标题长度保持在1至20字符之间！',
+                min: 1,
+                max: 20,
+              },
             ]}
           >
-            <Form {...formItemLayout}>
-              {isEdit && getFieldDecorator('id')(<Input hidden />)}
-              <FormItem label="标题">
-                {getFieldDecorator('title', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请将标题长度保持在1至20字符之间！',
-                      min: 1,
-                      max: 20,
-                    },
-                  ],
-                })(<Input />)}
-              </FormItem>
-              <FormItem label="描述">
-                {getFieldDecorator('description', {
-                  rules: [{ message: '请将描述长度保持在1至150字符之间！', min: 1, max: 150 }],
-                })(
-                  <TextArea placeholder="请输入信息描述。" autoSize={{ minRows: 2, maxRows: 6 }} />,
-                )}
-              </FormItem>
-              <FormItem label="类型">
-                {getFieldDecorator('type', {
-                  rules: [{ required: true, message: '请选择类型！' }],
-                })(
-                  <Radio.Group>
-                    <Radio value={1}>通知</Radio>
-                    <Radio value={2}>消息</Radio>
-                    <Radio value={3}>事件</Radio>
-                  </Radio.Group>,
-                )}
-              </FormItem>
-              <FormItem label="发送范围">
-                {getFieldDecorator('range', {
-                  rules: [{ required: true, message: '请选择范围！' }],
-                })(
-                  <Radio.Group>
-                    <Radio value={1}>按部门</Radio>
-                    <Radio value={2}>按用户</Radio>
-                    <Radio value={3}>自定义</Radio>
-                  </Radio.Group>,
-                )}
-              </FormItem>
-            </Form>
-          </Modal>
-        </span>
-      );
-    },
-  ),
-);
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="描述"
+            name="description"
+            rules={[{ message: '请将描述长度保持在1至150字符之间！', min: 1, max: 150 }]}
+          >
+            <Input.TextArea placeholder="请输入信息描述。" autoSize={{ minRows: 2, maxRows: 6 }} />
+          </Form.Item>
+          <Form.Item label="类型" name="type" rules={[{ required: true, message: '请选择类型！' }]}>
+            <Radio.Group>
+              <Radio value={1}>通知</Radio>
+              <Radio value={2}>消息</Radio>
+              <Radio value={3}>事件</Radio>
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item
+            label="发送范围"
+            name="range"
+            rules={[{ required: true, message: '请选择范围！' }]}
+          >
+            <Radio.Group>
+              <Radio value={1}>按部门</Radio>
+              <Radio value={2}>按用户</Radio>
+              <Radio value={3}>自定义</Radio>
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item {...tailLayout}>
+            <Button onClick={hideModelHandler}>取消</Button>
+            <Button type="primary" loading={loading} htmlType="submit">
+              确定
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
+  );
+});
 
 export default InformationForm;

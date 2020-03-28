@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'dva';
+import { connect } from 'umi';
 import { Modal, Form, Input, Switch, Radio, Upload, TreeSelect, Button, message } from 'antd';
 import { UpOutlined, DownOutlined, UploadOutlined, PlusOutlined } from '@ant-design/icons';
 import styles from '../../System.less';
@@ -12,7 +12,7 @@ const getBase64 = (img, callback) => {
 };
 
 // 【上传前控制判断】
-const beforeUpload = file => {
+const beforeUpload = (file) => {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
   if (!isJpgOrPng) {
     message.error('对不起，只支持jpg与png格式的图片!');
@@ -41,7 +41,7 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
   const [visible, setVisible] = useState(false);
 
   // 【模态框显示隐藏函数】
-  const showModalHandler = e => {
+  const showModalHandler = (e) => {
     if (e) e.stopPropagation();
     setVisible(true);
   };
@@ -77,7 +77,7 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
   }, [visible, isEdit, user, setFieldsValue]);
 
   // 【添加与修改】
-  const handleAddOrUpdate = values => {
+  const handleAddOrUpdate = (values) => {
     if (isEdit) {
       dispatch({
         type: 'systemUser/update',
@@ -109,14 +109,14 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
   };
 
   // 【头像上传】
-  const handleChange = info => {
+  const handleChange = (info) => {
     if (info.file.status === 'uploading') {
       setImageLoading(true);
       return;
     }
     if (info.file.status === 'done') {
       // 模拟一个url
-      getBase64(info.file.originFileObj, imgUrl => {
+      getBase64(info.file.originFileObj, (imgUrl) => {
         setImageUrl(imgUrl);
         setImageLoading(false);
       });

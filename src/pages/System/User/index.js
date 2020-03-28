@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo } from 'react';
-import { connect } from 'dva';
+import { connect } from 'umi';
 import {
   Row,
   Col,
@@ -46,7 +46,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
     current: pagination.current || 1,
     pageSize: pagination.pageSize || 10,
   });
-  //
+  // 【首次】
   const [first, setFirst] = useState(true);
 
   // 【首次请求加载部门树】
@@ -139,8 +139,8 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
     });
   };
 
-  // 【删除】
-  const handleDelete = record => {
+  // 【删除用户】
+  const handleDelete = (record) => {
     const { id } = record;
     const { id: departmentId } = department;
     dispatch({
@@ -159,7 +159,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
   // 【复选框相关操作】
   const rowSelection = {
     selectedRowKeys,
-    onChange: keys => {
+    onChange: (keys) => {
       setSelectedRowKeys(keys);
     },
   };
@@ -224,7 +224,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
         { text: '保密', value: 3 },
       ],
       filterMultiple: false,
-      render: text => sexText[text],
+      render: (text) => sexText[text],
     },
     {
       title: '用户状态',
@@ -236,7 +236,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       filterMultiple: false,
       render: (text, record) => (
         <Authorized authority="system:user:status" noMatch={NoMatch(text)}>
-          <Switch checked={text} onClick={checked => toggleStatus(checked, record)} />
+          <Switch checked={text} onClick={(checked) => toggleStatus(checked, record)} />
         </Authorized>
       ),
     },

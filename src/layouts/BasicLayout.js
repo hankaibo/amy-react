@@ -4,10 +4,8 @@
  * https://github.com/ant-design/ant-design-pro-layout
  */
 import ProLayout, { DefaultFooter, SettingDrawer } from '@ant-design/pro-layout';
-import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
-import React, { useEffect, Suspense } from 'react';
-import { Link } from 'umi';
-import { connect } from 'dva';
+import React, { Suspense } from 'react';
+import { connect, Link, useIntl } from 'umi';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
@@ -30,27 +28,15 @@ const noMatch = (
 /**
  * use Authorized check all menu item
  */
-
-const menuDataRender = menuList =>
-  menuList.map(item => {
+const menuDataRender = (menuList) =>
+  menuList.map((item) => {
     const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
     return Authorized.check(item.authority, localItem, null);
   });
 
-const defaultFooterDom = (
-  <DefaultFooter
-    links={[]}
-    copyright={
-      <span>
-        <FormattedMessage id="app.copyright" />
-      </span>
-    }
-  />
-);
+const BasicLayout = (props) => {
+  const { formatMessage } = useIntl();
 
-const footerRender = () => <> {defaultFooterDom} </>;
-
-const BasicLayout = props => {
   const {
     dispatch,
     children,
@@ -60,15 +46,7 @@ const BasicLayout = props => {
     },
   } = props;
 
-  useEffect(() => {
-    if (dispatch) {
-      dispatch({
-        type: 'user/fetchCurrent',
-      });
-    }
-  }, []);
-
-  const handleMenuCollapse = payload => {
+  const handleMenuCollapse = (payload) => {
     if (dispatch) {
       dispatch({
         type: 'global/changeLayoutCollapsed',
@@ -85,7 +63,7 @@ const BasicLayout = props => {
     return (
       <SettingDrawer
         settings={settings}
-        onSettingChange={config =>
+        onSettingChange={(config) =>
           dispatch({
             type: 'settings/changeSetting',
             payload: config,
@@ -135,8 +113,8 @@ const BasicLayout = props => {
             <span>{route.breadcrumbName}</span>
           );
         }}
-        footerRender={footerRender}
-        menuDataRender={menuDataRender}
+        footerRender={() => <DefaultFooter links={[]} copyright={<span>copyright</span>} />}
+        menuDataRender={Array.isArray(menuDataRender)}
         rightContentRender={() => <RightContent />}
         {...props}
         {...settings}

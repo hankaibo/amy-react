@@ -18,7 +18,7 @@ export default {
     // 列表
     list: [],
     // 编辑信息
-    editMenu: {},
+    menu: {},
   },
 
   effects: {
@@ -34,7 +34,7 @@ export default {
     },
     *fetchChildrenById({ payload, callback }, { call, put }) {
       const response = yield call(listChildrenById, payload);
-      const list = response.map(item => ({ ...item, status: !!item.status }));
+      const list = response.map((item) => ({ ...item, status: !!item.status }));
       yield put({
         type: 'saveList',
         payload: {
@@ -44,7 +44,7 @@ export default {
       if (callback) callback();
     },
     *add({ payload, callback }, { call, put }) {
-      const { parentId: id } = payload;
+      const { oldParentId: id } = payload;
       const params = { ...payload, status: +payload.status };
       yield call(addMenu, params);
       yield put({
@@ -61,25 +61,27 @@ export default {
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getMenuById, id);
-      const editMenu = { ...response, status: !!response.status };
+      const menu = { ...response, status: !!response.status };
       yield put({
         type: 'save',
         payload: {
-          editMenu,
+          menu,
         },
       });
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
-      const { parentId } = payload;
+      const { oldParentId } = payload;
       const params = { ...payload, status: +payload.status };
       yield call(updateMenu, params);
-      yield put({
-        type: 'fetchChildrenById',
-        payload: {
-          id: parentId,
-        },
-      });
+      if (oldParentId) {
+        yield put({
+          type: 'fetchChildrenById',
+          payload: {
+            id: oldParentId,
+          },
+        });
+      }
       yield put({
         type: 'fetch',
       });
@@ -89,12 +91,14 @@ export default {
       const { id, status, parentId } = payload;
       const params = { id, status: +status };
       yield call(enableMenu, params);
-      yield put({
-        type: 'fetchChildrenById',
-        payload: {
-          id: parentId,
-        },
-      });
+      if (parentId) {
+        yield put({
+          type: 'fetchChildrenById',
+          payload: {
+            id: parentId,
+          },
+        });
+      }
       yield put({
         type: 'fetch',
       });
@@ -158,16 +162,16 @@ export default {
       };
     },
     save(state, { payload }) {
-      const { editMenu } = payload;
+      const { menu } = payload;
       return {
         ...state,
-        editMenu,
+        menu,
       };
     },
     clear(state) {
       return {
         ...state,
-        editMenu: {},
+        menu: {},
       };
     },
   },

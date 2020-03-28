@@ -40,7 +40,7 @@ export default {
     },
     *fetchChildrenById({ payload, callback }, { call, put }) {
       const response = yield call(listSubRoleById, payload);
-      const list = response.map(item => ({ ...item, status: !!item.status }));
+      const list = response.map((item) => ({ ...item, status: !!item.status }));
       yield put({
         type: 'saveList',
         payload: {
@@ -102,16 +102,15 @@ export default {
     *enable({ payload, callback }, { call, put }) {
       const { id, status, parentId } = payload;
       const params = { id, status: +status };
-      const response = yield call(enableRole, params);
-      if (response) {
-        return;
+      yield call(enableRole, params);
+      if (parentId) {
+        yield put({
+          type: 'fetchChildrenById',
+          payload: {
+            id: parentId,
+          },
+        });
       }
-      yield put({
-        type: 'fetchChildrenById',
-        payload: {
-          id: parentId,
-        },
-      });
       yield put({
         type: 'fetch',
       });
@@ -119,10 +118,7 @@ export default {
     },
     *delete({ payload, callback }, { call, put }) {
       const { id, parentId } = payload;
-      const response = yield call(deleteRole, id);
-      if (response) {
-        return;
-      }
+      yield call(deleteRole, id);
       yield put({
         type: 'fetchChildrenById',
         payload: {
@@ -155,7 +151,7 @@ export default {
       const selected = [];
       const halfSelected = [];
       // 分离出半联动的父节点
-      resSelected.forEach(item => {
+      resSelected.forEach((item) => {
         if (item.rgt - item.lft === 1) {
           selected.push(item);
         } else {
@@ -166,8 +162,8 @@ export default {
         type: 'saveResTree',
         payload: {
           resourceTree: resTree,
-          checkedKeys: selected.map(item => item.id.toString()),
-          halfCheckedKeys: halfSelected.map(item => item.id.toString()),
+          checkedKeys: selected.map((item) => item.id.toString()),
+          halfCheckedKeys: halfSelected.map((item) => item.id.toString()),
         },
       });
       if (callback) callback();

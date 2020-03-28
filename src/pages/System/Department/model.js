@@ -34,7 +34,7 @@ export default {
     },
     *fetchChildrenById({ payload, callback }, { call, put }) {
       const response = yield call(listSubDepartmentById, payload);
-      const list = response.map(item => ({ ...item, status: !!item.status }));
+      const list = response.map((item) => ({ ...item, status: !!item.status }));
       yield put({
         type: 'saveList',
         payload: {

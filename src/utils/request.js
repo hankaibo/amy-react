@@ -26,7 +26,7 @@ const codeMessage = {
 /**
  * 异常处理程序
  */
-const errorHandler = error => {
+const errorHandler = (error) => {
   const { response } = error;
   if (response && response.status) {
     const errorText = error.data.message || codeMessage[response.status] || response.statusText;
@@ -71,14 +71,6 @@ request.interceptors.request.use(async (url, options) => {
     url,
     options: { ...defaultOptions },
   };
-});
-
-/**
- * 响应拦截器。
- */
-request.interceptors.response.use(async response => {
-  console.log(response);
-  return response;
 });
 
 export default request;

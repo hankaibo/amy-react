@@ -10,9 +10,6 @@ export default {
   'menu.system.api': 'API',
   'menu.system.dictionary': 'Dictionary',
   'menu.system.information': 'Information',
-  // swagger
-  'menu.develop': 'Develop',
-  'menu.develop.swagger': 'Auto Import API',
   // exception
   'menu.exception': 'Exception',
   'menu.exception.not-permission': '403',

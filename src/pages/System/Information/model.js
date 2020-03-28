@@ -33,7 +33,7 @@ export default {
     },
     *add({ payload, callback }, { call, put, select }) {
       yield call(addInformation, payload);
-      const pagination = yield select(state => state.systemInformation.pagination);
+      const pagination = yield select((state) => state.systemInformation.pagination);
       delete pagination.total;
       yield put({
         type: 'fetch',
@@ -56,7 +56,7 @@ export default {
     },
     *update({ payload, callback }, { call, put, select }) {
       yield call(updateInformation, payload);
-      const pagination = yield select(state => state.systemInformation.pagination);
+      const pagination = yield select((state) => state.systemInformation.pagination);
       delete pagination.total;
       yield put({
         type: 'fetch',
@@ -69,7 +69,7 @@ export default {
     *delete({ payload, callback }, { call, put, select }) {
       const { id } = payload;
       yield call(deleteInformation, id);
-      const pagination = yield select(state => state.systemInformation.pagination);
+      const pagination = yield select((state) => state.systemInformation.pagination);
       delete pagination.total;
       yield put({
         type: 'fetch',
@@ -82,7 +82,7 @@ export default {
     *deleteBatch({ payload, callback }, { call, put, select }) {
       const { ids } = payload;
       yield call(deleteBatchInformation, ids);
-      const pagination = yield select(state => state.systemInformation.pagination);
+      const pagination = yield select((state) => state.systemInformation.pagination);
       delete pagination.total;
       yield put({
         type: 'fetch',

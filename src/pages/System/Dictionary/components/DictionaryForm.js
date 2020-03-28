@@ -14,6 +14,7 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
     query: { name: parentName },
   } = location;
   const {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     params: { id: parentId },
   } = match;
   const { resetFields, setFieldsValue } = form;

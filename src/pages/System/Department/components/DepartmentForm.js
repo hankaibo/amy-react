@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'dva';
+import { connect } from 'umi';
 import { Modal, Form, Input, Switch, TreeSelect, Button, message } from 'antd';
+import { isEmpty } from 'lodash';
 import styles from '../../System.less';
 
 const DepartmentForm = connect(({ systemDepartment: { tree, department }, loading }) => ({
@@ -8,7 +9,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
   department,
   loading:
     loading.effects[
-      ('systemDepartment/fetchById', 'systemDepartment/add', 'systemDepartment/delete')
+      ('systemDepartment/fetchById', 'systemDepartment/add', 'systemDepartment/update')
     ],
 }))(({ loading, children, isEdit, id, department, tree, dispatch }) => {
   const [form] = Form.useForm();
@@ -18,7 +19,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
   const [visible, setVisible] = useState(false);
 
   // 【模态框显示隐藏函数】
-  const showModalHandler = e => {
+  const showModalHandler = (e) => {
     if (e) e.stopPropagation();
     setVisible(true);
   };
@@ -47,7 +48,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
   useEffect(() => {
     // 👍 将条件判断放置在 effect 中
     if (visible && isEdit) {
-      if (Object.keys(department).length > 0) {
+      if (!isEmpty(department)) {
         // 不论是否修改父部门，保证页面停留在原页面下。
         const { name, parentId, status, description } = department;
         const formData = {
@@ -72,10 +73,10 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
         setFieldsValue({ parentId: id.toString() });
       }
     }
-  }, [visible, isEdit, id, tree, setFieldsValue]);
+  }, [visible, isEdit, id, setFieldsValue]);
 
   // 【添加与修改】
-  const handleAddOrUpdate = values => {
+  const handleAddOrUpdate = (values) => {
     if (isEdit) {
       dispatch({
         type: 'systemDepartment/update',

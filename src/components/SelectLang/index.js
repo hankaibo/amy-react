@@ -1,12 +1,12 @@
 import { GlobalOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
-import { getLocale, setLocale } from 'umi-plugin-react/locale';
+import { getLocale, setLocale } from 'umi';
 import React from 'react';
 import classNames from 'classnames';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
-const SelectLang = props => {
+const SelectLang = (props) => {
   const { className } = props;
   const selectedLang = getLocale();
 
@@ -25,7 +25,7 @@ const SelectLang = props => {
   };
   const langMenu = (
     <Menu className={styles.menu} selectedKeys={[selectedLang]} onClick={changeLang}>
-      {locales.map(locale => (
+      {locales.map((locale) => (
         <Menu.Item key={locale}>
           <span role="img" aria-label={languageLabels[locale]}>
             {languageIcons[locale]}

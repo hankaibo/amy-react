@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'dva';
+import { connect } from 'umi';
 import { Modal, Form, Input, Button, message } from 'antd';
 
 const UserPasswordForm = connect()(({ children, userId, username, dispatch }) => {
@@ -10,7 +10,7 @@ const UserPasswordForm = connect()(({ children, userId, username, dispatch }) =>
   const [visible, setVisible] = useState(false);
 
   // 【模态框显示隐藏函数】
-  const showModalHandler = e => {
+  const showModalHandler = (e) => {
     if (e) e.stopPropagation();
     setVisible(true);
   };
@@ -25,7 +25,7 @@ const UserPasswordForm = connect()(({ children, userId, username, dispatch }) =>
   }, [visible, userId, setFieldsValue]);
 
   // 【重置密码】
-  const handleReset = values => {
+  const handleReset = (values) => {
     dispatch({
       type: 'systemUser/reset',
       payload: {

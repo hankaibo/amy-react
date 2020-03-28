@@ -5,7 +5,7 @@ let CURRENT = 'NULL';
  * use  authority or getAuthority
  * @param {string|()=>String} currentAuthority
  */
-const renderAuthorize = Authorized => currentAuthority => {
+const renderAuthorize = (Authorized) => (currentAuthority) => {
   if (currentAuthority) {
     if (typeof currentAuthority === 'function') {
       CURRENT = currentAuthority();
@@ -23,4 +23,4 @@ const renderAuthorize = Authorized => currentAuthority => {
 };
 
 export { CURRENT };
-export default Authorized => renderAuthorize(Authorized);
+export default (Authorized) => renderAuthorize(Authorized);

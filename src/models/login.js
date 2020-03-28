@@ -1,4 +1,4 @@
-import { router } from 'umi';
+import { history } from 'umi';
 import { stringify } from 'qs';
 import { login, logout } from '@/services/login';
 
@@ -44,7 +44,7 @@ const Model = {
             return;
           }
         }
-        router.replace(redirect || '/');
+        history.replace(redirect || '/');
       }
     },
 
@@ -55,7 +55,7 @@ const Model = {
       const { redirect } = getPageQuery();
       // redirect
       if (window.location.pathname !== '/user/login' && !redirect) {
-        router.replace({
+        history.replace({
           pathname: '/user/login',
           search: stringify({
             redirect: window.location.href,

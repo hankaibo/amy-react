@@ -1,17 +1,16 @@
 import React, { useState, useEffect, memo } from 'react';
-import { connect } from 'dva';
-import { Icon as LegacyIcon } from '@ant-design/compatible';
-import { Card, Button, Input, Tag, Divider, Modal, message, Table, Popconfirm } from 'antd';
+import { connect } from 'umi';
+import { Card, Button, Input, Tag, Divider, message, Table, Popconfirm } from 'antd';
 import { isEqual } from 'lodash';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import Authorized from '@/utils/Authorized';
 import { getValue } from '@/utils/utils';
 import IconFont from '@/components/IconFont';
-import Ellipsis from '@/components/Ellipsis';
 import InformationForm from './components/InformationForm';
 import styles from '../System.less';
 
-const getText = value => {
+const getText = (value) => {
   switch (value) {
     case 1:
       return <Tag color="#2db7f5">通知</Tag>;
@@ -27,19 +26,21 @@ const getText = value => {
 const Information = connect(({ systemInformation: { list, pagination }, loading }) => ({
   list,
   pagination,
-  loading: loading.models.systemInformation,
+  loading: loading.effects['systemInformation/fetch'],
 }))(({ loading, list, pagination, dispatch }) => {
   // 【复选框状态属性与函数】
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  // 列表参数
+  const [params, setParams] = useState({
+    current: pagination.current || 1,
+    pageSize: pagination.pageSize || 10,
+  });
 
   // 【首次请求加载列表数据】
   useEffect(() => {
     dispatch({
       type: 'systemInformation/fetch',
-      payload: {
-        current: 1,
-        pageSize: 10,
-      },
+      payload: params,
     });
     return () => {
       dispatch({
@@ -54,7 +55,7 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
   };
 
   // 【批量删除】
-  const deleteBatchItem = () => {
+  const handleBatchDelete = () => {
     if (selectedRowKeys.length === 0) return;
     dispatch({
       type: 'systemInformation/deleteBatch',
@@ -63,21 +64,13 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
       },
       callback: () => {
         setSelectedRowKeys([]);
+        message.success('批量删除信息成功。');
       },
-    });
-  };
-  const handleBatchDelete = () => {
-    Modal.confirm({
-      title: '批量删除',
-      content: '您确定批量删除这些信息吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => deleteBatchItem(),
     });
   };
 
   // 【删除】
-  const deleteItem = record => {
+  const handleDelete = (record) => {
     const { id } = record;
     dispatch({
       type: 'systemInformation/delete',
@@ -86,18 +79,17 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
       },
       callback: () => {
         setSelectedRowKeys([]);
-        message.success('删除成功');
+        message.success('删除信息成功。');
       },
     });
   };
-  const handleDelete = record => {
-    Modal.confirm({
-      title: '删除',
-      content: '您确定要删除该信息吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => deleteItem(record),
-    });
+
+  // 【复选框相关操作】
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (keys) => {
+      setSelectedRowKeys(keys);
+    },
   };
 
   // 【分页、过滤】
@@ -110,15 +102,11 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
 
     const { current, pageSize } = page;
 
-    const params = {
+    setParams({
+      ...params,
       current,
       pageSize,
       ...filters,
-    };
-
-    dispatch({
-      type: 'systemInformation/fetch',
-      payload: params,
     });
   };
 
@@ -135,15 +123,6 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
     </div>
   );
 
-  // 【复选框相关操作】
-  const handleRowSelectChange = rowKeys => {
-    setSelectedRowKeys(rowKeys);
-  };
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: handleRowSelectChange,
-  };
-
   // 【表格列】
   const columns = [
     {
@@ -153,11 +132,7 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
     {
       title: '信息描述',
       dataIndex: 'description',
-      render: text => (
-        <Ellipsis tooltip={text} length={20}>
-          {text}
-        </Ellipsis>
-      ),
+      ellipsis: true,
     },
     {
       title: '信息类型',
@@ -168,7 +143,7 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
         { text: '事件', value: 3 },
       ],
       filterMultiple: false,
-      render: text => getText(text),
+      render: (text) => getText(text),
     },
     {
       title: '信息范围',
@@ -179,19 +154,19 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
       render: (text, record) => (
         <>
           <Authorized authority="system:information:update" noMatch={null}>
-            <InformationForm isEdit information={record}>
-              <IconFont type="icon-edit" title="编辑" className="icon" />
+            <InformationForm isEdit id={record.id}>
+              <EditOutlined title="编辑" className="icon" />
             </InformationForm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:information:delete" noMatch={null}>
             <Popconfirm
-              title="您确定要删除该列表吗？"
+              title="您确定要删除该信息吗？"
               onConfirm={() => handleDelete(record)}
               okText="确定"
               cancelText="取消"
             >
-              <IconFont type="icon-delete" title="删除" className="icon" />
+              <DeleteOutlined title="删除" className="icon" />
             </Popconfirm>
             <Divider type="vertical" />
           </Authorized>
@@ -213,23 +188,23 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
       <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>
-            <Authorized authority="system:information:add" noMatch={null}>
+            <Authorized authority="system:user:add" noMatch={null}>
               <InformationForm>
                 <Button type="primary" title="新增">
-                  <LegacyIcon type="plus" />
+                  <PlusOutlined />
                 </Button>
               </InformationForm>
             </Authorized>
             <Authorized authority="system:information:batchDelete" noMatch={null}>
               <Popconfirm
-                title="您确定要删除该列表吗？"
+                title="您确定要删除这些信息吗？"
                 onConfirm={handleBatchDelete}
                 okText="确定"
                 cancelText="取消"
                 disabled={selectedRowKeys.length <= 0}
               >
                 <Button type="danger" disabled={selectedRowKeys.length <= 0} title="删除">
-                  <IconFont type="icon-delete" />
+                  <DeleteOutlined />
                 </Button>
               </Popconfirm>
             </Authorized>

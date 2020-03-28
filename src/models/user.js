@@ -17,7 +17,7 @@ const UserModel = {
         },
       });
     },
-    *fetchCurrent(_, { call, put }) {
+    *fetchCurrent({ callback }, { call, put }) {
       const response = yield call(queryCurrent);
       yield put({
         type: 'saveCurrentUser',
@@ -25,6 +25,7 @@ const UserModel = {
           currentUser: response,
         },
       });
+      if (callback) callback();
     },
   },
 

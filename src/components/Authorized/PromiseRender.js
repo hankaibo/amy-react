@@ -46,13 +46,13 @@ export default class PromiseRender extends React.Component {
   // AuthorizedRoute is already instantiated
   // Authorized  render is already instantiated, children is no instantiated
   // Secured is not instantiated
-  checkIsInstantiation = target => {
+  checkIsInstantiation = (target) => {
     if (isComponentClass(target)) {
       const Target = target;
-      return props => <Target {...props} />;
+      return (props) => <Target {...props} />;
     }
     if (React.isValidElement(target)) {
-      return props => React.cloneElement(target, props);
+      return (props) => React.cloneElement(target, props);
     }
     return () => target;
   };

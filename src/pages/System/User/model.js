@@ -42,7 +42,7 @@ export default {
     *fetch({ payload, callback }, { call, put }) {
       const response = yield call(pageUser, payload);
       const { list, pageNum: current, pageSize, total } = response;
-      const newList = list.map(item => ({ ...item, status: !!item.status }));
+      const newList = list.map((item) => ({ ...item, status: !!item.status }));
       yield put({
         type: 'saveList',
         payload: {
@@ -56,7 +56,7 @@ export default {
       const { departmentId } = payload;
       const params = { ...payload, status: +payload.status };
       yield call(addUser, params);
-      const pagination = yield select(state => state.systemUser.pagination);
+      const pagination = yield select((state) => state.systemUser.pagination);
       const { current, pageSize } = pagination;
       yield put({
         type: 'fetch',
@@ -88,7 +88,7 @@ export default {
       const { oldDepartmentId, ...rest } = payload;
       const params = { ...rest, status: +payload.status };
       yield call(updateUser, params);
-      const pagination = yield select(state => state.systemUser.pagination);
+      const pagination = yield select((state) => state.systemUser.pagination);
       const { current, pageSize } = pagination;
       yield put({
         type: 'fetch',
@@ -104,7 +104,7 @@ export default {
       const { id, status, departmentId } = payload;
       const params = { id, status: +status };
       yield call(enableUser, params);
-      const pagination = yield select(state => state.systemUser.pagination);
+      const pagination = yield select((state) => state.systemUser.pagination);
       const { current, pageSize } = pagination;
       yield put({
         type: 'fetch',
@@ -123,7 +123,7 @@ export default {
     *delete({ payload, callback }, { call, put, select }) {
       const { id, departmentId } = payload;
       yield call(deleteUser, id);
-      const pagination = yield select(state => state.systemUser.pagination);
+      const pagination = yield select((state) => state.systemUser.pagination);
       const { current, pageSize } = pagination;
       yield put({
         type: 'fetch',
@@ -138,7 +138,7 @@ export default {
     *deleteBatch({ payload, callback }, { call, put, select }) {
       const { ids, departmentId } = payload;
       yield call(deleteBatchUser, ids);
-      const pagination = yield select(state => state.systemUser.pagination);
+      const pagination = yield select((state) => state.systemUser.pagination);
       const { current, pageSize } = pagination;
       yield put({
         type: 'fetch',
@@ -155,7 +155,7 @@ export default {
       const { roleList, roleSelectedList } = response;
       const selected = [];
       const halfSelected = [];
-      roleSelectedList.forEach(item => {
+      roleSelectedList.forEach((item) => {
         if (item.rgt - item.lft === 1) {
           selected.push(item);
         } else {
@@ -166,8 +166,8 @@ export default {
         type: 'saveRoleTree',
         payload: {
           roleTree: roleList,
-          checkedKeys: selected.map(item => item.id.toString()),
-          halfCheckedKeys: halfSelected.map(item => item.id.toString()),
+          checkedKeys: selected.map((item) => item.id.toString()),
+          halfCheckedKeys: halfSelected.map((item) => item.id.toString()),
         },
       });
       if (callback) callback();

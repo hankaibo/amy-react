@@ -1,13 +1,20 @@
 import React, { useState, useEffect, memo } from 'react';
-import { connect } from 'dva';
-import { Icon as LegacyIcon } from '@ant-design/compatible';
+import { connect } from 'umi';
 import { Row, Col, Card, Button, Switch, Divider, Popconfirm, message, Tree, Table } from 'antd';
 import { isEqual } from 'lodash';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import {
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+  DownOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  EditOutlined,
+} from '@ant-design/icons';
 import Authorized from '@/utils/Authorized';
+import NoMatch from '@/components/Authorized/NoMatch';
 import { getValue } from '@/utils/utils';
 import IconFont from '@/components/IconFont';
-import Ellipsis from '@/components/Ellipsis';
 import RoleForm from './components/RoleForm';
 import RoleResourceForm from './components/RoleResourceForm';
 import styles from '../System.less';
@@ -21,6 +28,8 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
   const [currentRole, setCurrentRole] = useState(null);
   // 【查询参数】
   const [params, setParams] = useState({});
+  // 【首次】
+  const [first, setFirst] = useState(true);
 
   // 【首次请求加载列表数据】
   useEffect(() => {
@@ -34,7 +43,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
     };
   }, [dispatch]);
 
-  // 【查询列表】
+  // 【查询角色列表】
   useEffect(() => {
     const { id } = params;
     if (id) {
@@ -52,7 +61,16 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
     };
   }, [params, dispatch]);
 
-  // 【获取子角色数据】
+  // 【默认选中、展开、子角色数据、当前角色】
+  useEffect(() => {
+    if (first && Array.isArray(tree) && tree.length) {
+      setParams({ ...params, id: tree[0].id });
+      setCurrentRole({ ...tree[0] });
+      setFirst(false);
+    }
+  }, [first, tree]);
+
+  // 【选择角色并获取其子角色数据】
   const handleSelect = (selectedKeys, info) => {
     if (selectedKeys.length === 1) {
       const id = selectedKeys[0];
@@ -61,18 +79,21 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
     }
   };
 
-  // 【启用禁用】
+  // 【启用禁用角色】
   const toggleStatus = (checked, record) => {
+    const { id } = record;
+    const { id: roleId } = currentRole;
     dispatch({
       type: 'systemRole/enable',
       payload: {
-        ...record,
+        id,
         status: checked,
+        roleId,
       },
     });
   };
 
-  // 【移动】
+  // 【移动角色】
   const handleMove = (record, index) => {
     if (list.length <= index || index < 0) {
       return;
@@ -88,8 +109,8 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
     });
   };
 
-  // 【删除】
-  const handleDelete = record => {
+  // 【删除角色】
+  const handleDelete = (record) => {
     const { id, parentId } = record;
     dispatch({
       type: 'systemRole/delete',
@@ -98,12 +119,12 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
         parentId,
       },
       callback: () => {
-        message.success('删除成功');
+        message.success('删除角色成功。');
       },
     });
   };
 
-  // 【过滤】
+  // 【过滤角色】
   const handleTableChange = (_, filtersArg) => {
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -139,8 +160,8 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       ],
       filterMultiple: false,
       render: (text, record) => (
-        <Authorized authority="system:role:status" noMatch="--">
-          <Switch checked={!!text} onClick={checked => toggleStatus(checked, record)} />
+        <Authorized authority="system:role:status" noMatch={NoMatch(text)}>
+          <Switch checked={text} onClick={(checked) => toggleStatus(checked, record)} />
         </Authorized>
       ),
     },
@@ -148,16 +169,15 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       title: '排序',
       render: (text, record, index) => (
         <Authorized authority="system:role:move" noMatch="--">
-          <LegacyIcon
+          <ArrowUpOutlined
             className="icon"
-            type="arrow-up"
             title="向上"
             onClick={() => handleMove(record, index - 1)}
           />
           <Divider type="vertical" />
-          <LegacyIcon
+          <ArrowDownOutlined
             className="icon"
-            type="arrow-down"
+            type="arrow-downy"
             title="向下"
             onClick={() => handleMove(record, index + 1)}
           />
@@ -167,11 +187,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
     {
       title: '角色描述',
       dataIndex: 'description',
-      render: text => (
-        <Ellipsis tooltip={text} length={20}>
-          {text}
-        </Ellipsis>
-      ),
+      ellipsis: true,
     },
     {
       title: '操作',
@@ -179,7 +195,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
         <>
           <Authorized authority="system:role:update" noMatch={null}>
             <RoleForm isEdit id={record.id}>
-              <IconFont type="icon-edit" title="编辑" className="icon" />
+              <EditOutlined title="编辑" className="icon" />
             </RoleForm>
             <Divider type="vertical" />
           </Authorized>
@@ -190,7 +206,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
               okText="确定"
               cancelText="取消"
             >
-              <IconFont type="icon-delete" title="删除" className="icon" />
+              <DeleteOutlined title="删除" className="icon" />
             </Popconfirm>
             <Divider type="vertical" />
           </Authorized>
@@ -210,31 +226,35 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
           <Card
             title="角色树"
-            style={{ marginTop: 10 }}
             bordered={false}
+            style={{ marginTop: 10 }}
             bodyStyle={{ padding: '15px' }}
           >
-            <Tree
-              showLine
-              switcherIcon={<LegacyIcon type="down" />}
-              onSelect={handleSelect}
-              treeData={tree}
-            />
+            {Array.isArray(tree) && tree.length > 0 && (
+              <Tree
+                showLine
+                switcherIcon={<DownOutlined />}
+                defaultExpandedKeys={[tree[0].key]}
+                defaultSelectedKeys={[tree[0].key]}
+                onSelect={handleSelect}
+                treeData={tree}
+              />
+            )}
           </Card>
         </Col>
         <Col xs={24} sm={24} md={24} lg={18} xl={18}>
           <Card
-            title={currentRole ? `【${currentRole.title}】的子角色` : '角色列表'}
-            style={{ marginTop: 10 }}
+            title={currentRole && `【${currentRole.title}】的子角色`}
             bordered={false}
+            style={{ marginTop: 10 }}
             bodyStyle={{ padding: '15px' }}
           >
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:role:add" noMatch={null}>
-                  <RoleForm>
+                  <RoleForm id={currentRole && currentRole.id.toString()}>
                     <Button type="primary" title="新增">
-                      <LegacyIcon type="plus" />
+                      <PlusOutlined />
                     </Button>
                   </RoleForm>
                 </Authorized>
@@ -245,7 +265,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
                 childrenColumnName="child"
                 loading={loading}
                 columns={columns}
-                dataSource={list.length === 0 && currentRole === null ? tree : list}
+                dataSource={list}
                 pagination={false}
                 onChange={handleTableChange}
               />
