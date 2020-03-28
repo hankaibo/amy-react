@@ -1,7 +1,5 @@
 import React, { useState, useEffect, memo } from 'react';
-import { connect } from 'umi';
-import { Row, Col, Card, Tree, Button, Switch, Divider, Table, Popconfirm, message } from 'antd';
-import { isEqual } from 'lodash';
+import { Row, Col, Card, Tree, Table, Switch, Button, Divider, Popconfirm, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import {
   ArrowUpOutlined,
@@ -10,6 +8,8 @@ import {
   DeleteOutlined,
   EditOutlined,
 } from '@ant-design/icons';
+import { connect } from 'umi';
+import { isArray, isEmpty, isEqual } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import { getValue } from '@/utils/utils';
@@ -23,17 +23,24 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
   list,
   loading: loading.effects['systemMenu/fetch'],
 }))(({ loading, tree, list, dispatch }) => {
-  // 【当前点击的菜单】
+  // 【当前点击选中的菜单】
   const [currentMenu, setCurrentMenu] = useState(null);
   // 【查询参数】
-  const [params, setParams] = useState({});
+  const [params, setParams] = useState({
+    type: 1, // 固定值，数据初始化后不可更改。
+    id: 0,
+    status: null,
+  });
   // 【首次】
   const [first, setFirst] = useState(true);
 
-  // 【首次请求加载树数据】
+  // 【初始化后，加载左侧菜单树数据】
   useEffect(() => {
     dispatch({
       type: 'systemMenu/fetch',
+      payload: {
+        type: 1, // 在这里默认菜单类型为1，接口类型为2。
+      },
     });
     return () => {
       dispatch({
@@ -41,6 +48,15 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
       });
     };
   }, [dispatch]);
+
+  // 【初始化左侧菜单树后，并查询根的子菜单列表数据。】
+  useEffect(() => {
+    if (first && isArray(tree) && !isEmpty(tree)) {
+      setParams({ ...params, id: tree[0].id });
+      setCurrentMenu({ ...tree[0] });
+      setFirst(false);
+    }
+  }, [first, tree]);
 
   // 【查询菜单列表】
   useEffect(() => {
@@ -60,34 +76,25 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
     };
   }, [params, dispatch]);
 
-  // 【默认选中、展开、子菜单数据、当前角色】
-  useEffect(() => {
-    if (first && Array.isArray(tree) && tree.length) {
-      setParams({ ...params, id: tree[0].id });
-      setCurrentMenu({ ...tree[0] });
-      setFirst(false);
-    }
-  }, [first, tree]);
-
   // 【选择菜单并获取其子菜单数据】
-  const handleSelect = (selectedKeys, info) => {
+  const handleSelect = (selectedKeys, { selectedNodes }) => {
     if (selectedKeys.length === 1) {
-      const id = selectedKeys[0];
+      const id = parseInt(selectedKeys[0], 10);
+      setCurrentMenu(selectedNodes[0]);
       setParams({ ...params, id });
-      setCurrentMenu(info.node.props);
     }
   };
 
   // 【启用禁用菜单】
   const toggleState = (checked, record) => {
     const { id } = record;
-    const { id: menuId } = currentMenu;
+    const { id: parentId } = currentMenu;
     dispatch({
       type: 'systemMenu/update',
       payload: {
         id,
         status: checked,
-        menuId,
+        parentId,
       },
     });
   };
@@ -104,6 +111,9 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
         ...record,
         sourceId: record.id,
         targetId,
+      },
+      callback: () => {
+        message.success('移动菜单成功。');
       },
     });
   };
@@ -220,6 +230,8 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
           >
             {Array.isArray(tree) && tree.length > 0 && (
               <DirectoryTree
+                // 默认选中和展开第一项
+                expandAction="doubleClick"
                 defaultExpandedKeys={[tree[0].key]}
                 defaultSelectedKeys={[tree[0].key]}
                 treeData={tree}
@@ -238,7 +250,7 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:menu:add" noMatch={null}>
-                  <MenuForm id={currentMenu && currentMenu.id.toString()}>
+                  <MenuForm id={currentMenu && currentMenu.id}>
                     <Button type="primary" title="新增">
                       <PlusOutlined />
                     </Button>

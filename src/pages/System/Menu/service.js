@@ -5,8 +5,8 @@ import request from '@/utils/request';
  * 查询菜单树数据。
  * @returns {Promise<void>}
  */
-export async function getMenuTree() {
-  return request('/resources?type=1');
+export async function getMenuTree(params = { type: 1 }) {
+  return request(`/resources?${stringify(params)}`);
 }
 
 /**
@@ -16,7 +16,6 @@ export async function getMenuTree() {
  */
 export async function listChildrenById(payload) {
   const { id, ...rest } = payload;
-  rest.type = 1;
   return request(`/resources/${id}/children?${stringify(rest)}`);
 }
 
@@ -26,8 +25,7 @@ export async function listChildrenById(payload) {
  * @returns {Promise<void>}
  */
 export async function addMenu(params) {
-  return request('/resources', {
-    method: 'POST',
+  return request.post('/resources', {
     data: {
       ...params,
     },
@@ -50,8 +48,7 @@ export async function getMenuById(id) {
  */
 export async function updateMenu(params) {
   const { id } = params;
-  return request(`/resources/${id}`, {
-    method: 'PUT',
+  return request.put(`/resources/${id}`, {
     data: {
       ...params,
     },
@@ -65,8 +62,7 @@ export async function updateMenu(params) {
  */
 export async function enableMenu(params) {
   const { id, status } = params;
-  return request(`/resources/${id}`, {
-    method: 'PATCH',
+  return request.patch(`/resources/${id}`, {
     data: {
       status,
     },
@@ -80,9 +76,7 @@ export async function enableMenu(params) {
  */
 export async function moveMenu(params) {
   const { sourceId, targetId } = params;
-  return request(`/resources?from=${sourceId}&to=${targetId}`, {
-    method: 'PUT',
-  });
+  return request.put(`/resources?from=${sourceId}&to=${targetId}`);
 }
 
 /**
@@ -91,7 +85,5 @@ export async function moveMenu(params) {
  * @returns {Promise<void>}
  */
 export async function deleteMenu(id) {
-  return request(`/resources/${id}`, {
-    method: 'DELETE',
-  });
+  return request.delete(`/resources/${id}`);
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
 import { Modal, Form, Input, Switch, TreeSelect, Tooltip, Button, message } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 import styles from '../../System.less';
 
@@ -52,7 +52,7 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
     }
   }, [visible, isEdit, menu, setFieldsValue]);
 
-  // 【保证任何时候添加上级菜单都有默认值】
+  // 【新建时，父菜单默认值】
   useEffect(() => {
     if (visible && !isEdit) {
       if (id) {
@@ -64,12 +64,11 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
   // 【添加与修改菜单】
   const handleAddOrUpdate = (values) => {
     if (isEdit) {
+      Object.assign(values, { id }, { type: 1 });
       dispatch({
         type: 'systemMenu/update',
         payload: {
-          type: 1,
-          ...values,
-          id,
+          values,
           oldParentId: menu.parentId,
         },
         callback: () => {
@@ -79,11 +78,11 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
         },
       });
     } else {
+      Object.assign(values, { type: 1 });
       dispatch({
         type: 'systemMenu/add',
         payload: {
-          type: 1,
-          ...values,
+          values,
           oldParentId: id,
         },
         callback: () => {
