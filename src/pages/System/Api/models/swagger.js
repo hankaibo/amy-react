@@ -1,4 +1,4 @@
-import { getMenuTree, addApi } from './service';
+import { getMenuTree, addApi } from '../services/swagger';
 
 export default {
   namespace: 'developSwagger',
@@ -27,12 +27,12 @@ export default {
       if (callback) callback();
     },
     *importApi({ payload, callback }, { call, put, select }) {
-      const list = yield select(state => state.developSwagger.list);
+      const list = yield select((state) => state.developSwagger.list);
       const { id: parentId, swagger } = payload;
       const arrApi = [];
       list
-        .filter(item => swagger.includes(item.id))
-        .forEach(it => {
+        .filter((item) => swagger.includes(item.id))
+        .forEach((it) => {
           // 后台没有提供批量接口，先单个插入
           const api = {
             type: 2,
@@ -59,11 +59,11 @@ export default {
 
       const safeBasePath = `/${basePath
         .split('/')
-        .filter(item => item)
+        .filter((item) => item)
         .join('/')}`;
       // 将swagger json内容转换为树及列表展示。
       const tree = [];
-      tags.forEach(item => {
+      tags.forEach((item) => {
         tree.push({ key: item.name, title: item.name });
       });
       // 所有接口
@@ -81,7 +81,7 @@ export default {
             uri: `${safeBasePath}${starKey}`,
             code: `${safeBasePath.split('/')[1]}:${starKey
               .split('/')
-              .filter(f => f && f !== '*')
+              .filter((f) => f && f !== '*')
               .join('')}:${k}`,
             method: `${k}`.toUpperCase(),
           };
