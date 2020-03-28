@@ -40,7 +40,7 @@
     "not ie <= 10"
   ],
   "dependencies": {
-    "@ant-design/icons": "^4.0.3",
+    "@ant-design/icons": "^4.0.4",
     "@ant-design/pro-layout": "^5.0.8",
     "antd": "^4.0.4",
     "classnames": "^2.2.6",
@@ -49,7 +49,7 @@
     "omit.js": "^1.0.2",
     "path-to-regexp": "^6.1.0",
     "prop-types": "^15.7.2",
-    "qs": "^6.9.2",
+    "qs": "^6.9.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-helmet-async": "^1.0.4",
@@ -63,7 +63,7 @@
     "@umijs/fabric": "^2.0.5",
     "@umijs/preset-ant-design-pro": "^1.0.1",
     "@umijs/preset-react": "^1.4.8",
-    "@umijs/preset-ui": "^2.0.9",
+    "@umijs/preset-ui": "^2.1.5",
     "chalk": "^3.0.0",
     "cross-env": "^7.0.2",
     "husky": "^4.2.3",
