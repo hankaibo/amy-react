@@ -1,38 +1,36 @@
 import React, { useState, useEffect, memo } from 'react';
-import { connect } from 'dva';
-import { Icon as LegacyIcon } from '@ant-design/compatible';
-import { Card, Button, Input, Divider, Modal, message, Switch, Table, Popconfirm } from 'antd';
-import { isEqual } from 'lodash';
-import { Link, router } from 'umi';
+import { Card, Button, Input, Divider, message, Switch, Table, Popconfirm } from 'antd';
+import { isEqual, isEmpty } from 'lodash';
+import { Link, history, connect } from 'umi';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { RollbackOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import Authorized from '@/utils/Authorized';
 import { getValue } from '@/utils/utils';
-import IconFont from '@/components/IconFont';
 import DictionaryForm from './components/DictionaryForm';
 import styles from '../System.less';
 
 const Dictionary = connect(({ systemDictionary: { list, pagination }, loading }) => ({
   list,
   pagination,
-  loading: loading.models.systemDictionary,
+  loading: loading.effects['systemDictionary/fetch'],
 }))(({ loading, list, pagination, dispatch, match, location }) => {
   const {
     params: { id: parentDictId },
   } = match;
+
+  // 列表参数
+  const [params, setParams] = useState({
+    current: pagination.current || 1,
+    pageSize: pagination.pageSize || 10,
+    parentId: parentDictId,
+  });
 
   // 【复选框状态属性与函数】
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   // 【首次请求加载列表数据】
   useEffect(() => {
-    const params = {
-      current: 1,
-      pageSize: 10,
-    };
-    if (parentDictId) {
-      params.parentId = parentDictId;
-    }
     dispatch({
       type: 'systemDictionary/fetch',
       payload: params,
@@ -52,8 +50,8 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       type: 'systemDictionary/enable',
       payload: {
         id,
-        parentId,
         status: checked,
+        parentId,
       },
     });
   };
@@ -64,7 +62,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
   };
 
   // 【批量删除】
-  const deleteBatchItem = () => {
+  const handleBatchDelete = () => {
     if (selectedRowKeys.length === 0) return;
     dispatch({
       type: 'systemDictionary/deleteBatch',
@@ -73,22 +71,14 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
         ids: selectedRowKeys,
       },
       callback: () => {
-        selectedRowKeys([]);
+        setSelectedRowKeys([]);
+        message.success('批量删除字典成功。');
       },
     });
   };
-  const handleBatchDelete = () => {
-    Modal.confirm({
-      title: '批量删除',
-      content: '您确定批量删除这些列表数据吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => deleteBatchItem(),
-    });
-  };
 
-  // 【删除】
-  const deleteItem = record => {
+  // 【删除字典】
+  const handleDelete = (record) => {
     const { id, parentId } = record;
     dispatch({
       type: 'systemDictionary/delete',
@@ -98,23 +88,22 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       },
       callback: () => {
         setSelectedRowKeys([]);
-        message.success('删除成功');
+        message.success('删除字典成功。');
       },
-    });
-  };
-  const handleDelete = record => {
-    Modal.confirm({
-      title: '删除',
-      content: '您确定要删除该列表吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => deleteItem(record),
     });
   };
 
   // 【返回】
   const handleBack = () => {
-    router.goBack();
+    history.goBack();
+  };
+
+  // 【复选框相关操作】
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (rowKeys) => {
+      setSelectedRowKeys(rowKeys);
+    },
   };
 
   // 【分页、过滤】
@@ -126,15 +115,10 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
     }, {});
 
     const { current, pageSize } = page;
-    const params = {
+    setParams({
       current,
       pageSize,
       ...filters,
-    };
-
-    dispatch({
-      type: 'systemDictionary/fetch',
-      payload: params,
     });
   };
 
@@ -142,7 +126,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
   const mainSearch = (
     <div style={{ textAlign: 'center' }}>
       <Input.Search
-        placeholder="请输入查询条件"
+        placeholder="请输入查询条件。"
         enterButton
         size="large"
         onSearch={handleFormSubmit}
@@ -150,15 +134,6 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       />
     </div>
   );
-
-  // 【复选框相关操作】
-  const handleRowSelectChange = rowKeys => {
-    setSelectedRowKeys(rowKeys);
-  };
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: handleRowSelectChange,
-  };
 
   // 【表格列】
   const columns = [
@@ -195,33 +170,33 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       filterMultiple: false,
       render: (text, record) => (
         <Authorized authority="system:dictionary:status" noMatch="--">
-          <Switch checked={text} onClick={checked => toggleState(checked, record)} />
+          <Switch checked={text} onClick={(checked) => toggleState(checked, record)} />
         </Authorized>
       ),
     },
     {
       title: '添加时间',
       dataIndex: 'createTime',
-      render: text => <span>{text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : ''}</span>,
+      render: (text) => <span>{text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : ''}</span>,
     },
     {
       title: '操作',
       render: (text, record) => (
         <>
           <Authorized authority="system:dictionary:update" noMatch={null}>
-            <DictionaryForm isEdit dictionary={record} match={match} location={location}>
-              <IconFont type="icon-edit" title="编辑" className="icon" />
+            <DictionaryForm isEdit id={record.id} match={match} location={location}>
+              <EditOutlined title="编辑" className="icon" />
             </DictionaryForm>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:dictionary:delete" noMatch={null}>
             <Popconfirm
-              title="您确定要删除该列表吗？"
+              title="您确定要删除该字典吗？"
               onConfirm={() => handleDelete(record)}
               okText="确定"
               cancelText="取消"
             >
-              <IconFont type="icon-delete" title="删除" className="icon" />
+              <DeleteOutlined title="删除" className="icon" />
             </Popconfirm>
           </Authorized>
         </>
@@ -230,30 +205,33 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
   ];
 
   return (
-    <PageHeaderWrapper content={mainSearch}>
+    <PageHeaderWrapper title={false} content={mainSearch}>
       <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>
             <Authorized authority="system:dictionary:add" noMatch={null}>
               <DictionaryForm match={match} location={location}>
                 <Button type="primary" title="新增">
-                  <LegacyIcon type="plus" />
+                  <PlusOutlined />
                 </Button>
               </DictionaryForm>
             </Authorized>
             <Authorized authority="system:dictionary:batchDelete" noMatch={null}>
-              <Button
-                type="danger"
+              <Popconfirm
+                title="您确定要删除这些字典吗？"
+                onConfirm={handleBatchDelete}
+                okText="确定"
+                cancelText="取消"
                 disabled={selectedRowKeys.length <= 0}
-                title="删除"
-                onClick={handleBatchDelete}
               >
-                <IconFont type="icon-delete" />
-              </Button>
+                <Button type="danger" disabled={selectedRowKeys.length <= 0} title="删除">
+                  <DeleteOutlined />
+                </Button>
+              </Popconfirm>
             </Authorized>
-            {parentDictId && Object.keys(parentDictId).length > 0 && (
+            {!isEmpty(parentDictId) && (
               <Button title="返回" onClick={handleBack}>
-                <LegacyIcon type="rollback" />
+                <RollbackOutlined />
               </Button>
             )}
           </div>
