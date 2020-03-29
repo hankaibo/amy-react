@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
 import { Modal, Form, Tree, Button, message } from 'antd';
+import { connect } from 'umi';
+import { isEmpty } from 'lodash';
 import { difference } from '@/utils/utils';
 import styles from '../../System.less';
 
 /**
  * 本实现，将选中的子节点与半包含的父节点都提交到后台。
- * 查询后台时，因为我使用左右树结构，非常方便分离出那些是父节点，expandedKeys只设置子节点的值。
  */
 const RoleResourceForm = connect(
-  ({ systemRole: { resourceTree, checkedKeys, halfCheckedKeys }, loading }) => ({
-    treeData: resourceTree,
+  ({ systemRole: { treeData, checkedKeys, halfCheckedKeys }, loading }) => ({
+    resTreeData: treeData,
     resCheckedKeys: checkedKeys,
-    halfCheckedKeys,
+    resHalfCheckedKeys: halfCheckedKeys,
     loading: loading.effects['systemRole/fetchResTree'],
   }),
-)(({ loading, children, id, treeData, resCheckedKeys, halfCheckedKeys, dispatch }) => {
+)(({ loading, children, id, resTreeData, resCheckedKeys, resHalfCheckedKeys, dispatch }) => {
   const [form] = Form.useForm();
   const { setFieldsValue } = form;
 
@@ -31,6 +31,7 @@ const RoleResourceForm = connect(
     setVisible(true);
   };
   const hideModelHandler = () => {
+    setFieldsValue();
     setVisible(false);
   };
 
@@ -41,9 +42,6 @@ const RoleResourceForm = connect(
         type: 'systemRole/fetchResTree',
         payload: {
           id,
-        },
-        callback: () => {
-          setFieldsValue({ id });
         },
       });
     }
@@ -56,44 +54,44 @@ const RoleResourceForm = connect(
 
   // 【回显树复选择框】
   useEffect(() => {
-    setCheckedKeys(resCheckedKeys);
-    setExpandedKeys(halfCheckedKeys);
-    // 同步到表单
-    setFieldsValue({ ids: resCheckedKeys.concat(halfCheckedKeys) });
-  }, [resCheckedKeys, halfCheckedKeys, setFieldsValue]);
+    if (!isEmpty(resCheckedKeys) || !isEmpty(resHalfCheckedKeys)) {
+      setCheckedKeys(resCheckedKeys);
+      setExpandedKeys(resHalfCheckedKeys);
+      // 同步到表单
+      setFieldsValue({ ids: resCheckedKeys.concat(resHalfCheckedKeys) });
+    }
+  }, [resCheckedKeys, resHalfCheckedKeys, setFieldsValue]);
 
   // 【树操作】
   const onExpand = (values) => {
     setExpandedKeys(values);
   };
   const handleCheck = (values, event) => {
-    const { halfCheckedKeys: halfValues } = event;
+    const { halfCheckedKeys } = event;
     setCheckedKeys(values);
-    // 同步到form表单，因为tree组件不是表单组件的一部分，我无法自动同步，需要手动设置一下。
-    setFieldsValue({ ids: [...values, ...halfValues] });
+    // 同步到form表单，因为tree组件不是表单组件的一部分，无法自动同步，需要手动设置一下。
+    setFieldsValue({ ids: [...values, ...halfCheckedKeys] });
   };
 
   // 【授权】
   const handleGrant = (values) => {
-    const { id: roleId, ids } = values;
-    const oldCheckedKeys = [...resCheckedKeys, ...halfCheckedKeys];
+    const { ids } = values;
+    const oldCheckedKeys = [...resCheckedKeys, ...resHalfCheckedKeys];
     const plusResource = difference(ids, oldCheckedKeys);
     const minusResource = difference(oldCheckedKeys, ids);
 
-    if (roleId) {
-      dispatch({
-        type: 'systemRole/grantRoleResource',
-        payload: {
-          id: roleId,
-          plusResource,
-          minusResource,
-        },
-        callback: () => {
-          hideModelHandler();
-          message.success('分配成功');
-        },
-      });
-    }
+    dispatch({
+      type: 'systemRole/grantRoleResource',
+      payload: {
+        id,
+        plusResource,
+        minusResource,
+      },
+      callback: () => {
+        hideModelHandler();
+        message.success('分配资源成功。');
+      },
+    });
   };
 
   // 【表单布局】
@@ -135,11 +133,11 @@ const RoleResourceForm = connect(
           <Form.Item name="ids">
             <Tree
               checkable
-              onExpand={onExpand}
               expandedKeys={expandedKeys}
-              onCheck={handleCheck}
+              onExpand={onExpand}
               checkedKeys={checkedKeys}
-              treeData={treeData}
+              onCheck={handleCheck}
+              treeData={resTreeData}
             />
           </Form.Item>
           <Form.Item {...tailLayout}>

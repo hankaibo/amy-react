@@ -25,8 +25,7 @@ export async function listSubRoleById(params) {
  * @returns {Promise<void>}
  */
 export async function addRole(params) {
-  return request('/roles', {
-    method: 'POST',
+  return request.post('/roles', {
     data: {
       ...params,
     },
@@ -49,8 +48,7 @@ export async function getRoleById(id) {
  */
 export async function updateRole(params) {
   const { id } = params;
-  return request(`/roles/${id}`, {
-    method: 'PUT',
+  return request.put(`/roles/${id}`, {
     data: {
       ...params,
     },
@@ -65,9 +63,7 @@ export async function updateRole(params) {
  */
 export async function enableRole(params) {
   const { id, status } = params;
-  return request(`/roles/${id}/status?status=${status}`, {
-    method: 'PATCH',
-  });
+  return request.patch(`/roles/${id}/status?${stringify(status)}`);
 }
 
 /**
@@ -105,8 +101,7 @@ export async function getResourceByRole(id) {
  */
 export async function grantRoleResource(params) {
   const { id, ...rest } = params;
-  return request(`/roles/${id}/resources`, {
-    method: 'POST',
+  return request.post(`/roles/${id}/resources`, {
     data: rest,
   });
 }

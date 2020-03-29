@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
 import { Modal, Form, Input, Switch, TreeSelect, Button, message } from 'antd';
+import { connect } from 'umi';
+import { isEmpty } from 'lodash';
 import styles from '../../System.less';
 
 const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
   tree,
   role,
-  loading: loading.effects['systemRole/fetchById'],
+  loading: loading.effects[('systemRole/fetchById', 'systemRole/add', 'systemRole/update')],
 }))(({ loading, children, isEdit, id, role, tree, dispatch }) => {
   const [form] = Form.useForm();
   const { resetFields, setFieldsValue } = form;
@@ -20,6 +21,7 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
     setVisible(true);
   };
   const hideModelHandler = () => {
+    resetFields();
     setVisible(false);
   };
 
@@ -44,12 +46,9 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
   useEffect(() => {
     // 👍 将条件判断放置在 effect 中
     if (visible && isEdit) {
-      if (Object.keys(role).length > 0) {
-        const formData = { ...role };
-        if (!role.parentId) {
-          delete formData.parentId;
-        }
-        setFieldsValue({ ...formData, oldParentId: role.parentId });
+      if (!isEmpty(role)) {
+        const formData = { ...role, parentId: role.parentId.toString() };
+        setFieldsValue(formData);
       }
     }
   }, [visible, isEdit, role, setFieldsValue]);
@@ -66,15 +65,14 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
   // 【添加与修改角色】
   const handleAddOrUpdate = (values) => {
     if (isEdit) {
+      Object.assign(values, { id });
       dispatch({
         type: 'systemRole/update',
         payload: {
-          ...values,
-          id,
+          values,
           oldParentId: role.parentId,
         },
         callback: () => {
-          resetFields();
           hideModelHandler();
           message.success('角色修改成功。');
         },
@@ -83,11 +81,10 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
       dispatch({
         type: 'systemRole/add',
         payload: {
-          ...values,
+          values,
           oldParentId: id,
         },
         callback: () => {
-          resetFields();
           hideModelHandler();
           message.success('角色添加成功。');
         },

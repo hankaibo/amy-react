@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
 import { Modal, Form, Input, Switch, TreeSelect, Button, message } from 'antd';
+import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 import styles from '../../System.less';
 
@@ -56,14 +56,14 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
     }
   }, [visible, isEdit, department, setFieldsValue]);
 
-  // // 【新建时，父部门默认值】
-  // useEffect(() => {
-  //   if (visible && !isEdit) {
-  //     if (id) {
-  //       setFieldsValue({ parentId: id.toString() });
-  //     }
-  //   }
-  // }, [visible, isEdit, id, setFieldsValue]);
+  // 【新建时，父部门默认值】
+  useEffect(() => {
+    if (visible && !isEdit) {
+      if (id) {
+        setFieldsValue({ parentId: id.toString() });
+      }
+    }
+  }, [visible, isEdit, id, setFieldsValue]);
 
   // 【添加与修改】
   const handleAddOrUpdate = (values) => {
@@ -131,7 +131,6 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
           className={styles.form}
           initialValues={{
             status: true,
-            parentId: id && id.toString(),
           }}
           onFinish={handleAddOrUpdate}
         >

@@ -1,7 +1,5 @@
 import React, { useState, useEffect, memo } from 'react';
-import { connect } from 'umi';
-import { Row, Col, Card, Button, Switch, Divider, Popconfirm, message, Tree, Table } from 'antd';
-import { isEqual } from 'lodash';
+import { Row, Col, Card, Tree, Table, Switch, Button, Popconfirm, Divider, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import {
   ArrowUpOutlined,
@@ -10,11 +8,13 @@ import {
   PlusOutlined,
   DeleteOutlined,
   EditOutlined,
+  KeyOutlined,
 } from '@ant-design/icons';
+import { connect } from 'umi';
+import { isEqual, isArray, isEmpty } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import { getValue } from '@/utils/utils';
-import IconFont from '@/components/IconFont';
 import RoleForm from './components/RoleForm';
 import RoleResourceForm from './components/RoleResourceForm';
 import styles from '../System.less';
@@ -27,11 +27,11 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
   // 【当前点击的角色】
   const [currentRole, setCurrentRole] = useState(null);
   // 【查询参数】
-  const [params, setParams] = useState({});
+  const [params, setParams] = useState({ id: null });
   // 【首次】
   const [first, setFirst] = useState(true);
 
-  // 【首次请求加载列表数据】
+  // 【初始化后，加载左侧角色树数据】
   useEffect(() => {
     dispatch({
       type: 'systemRole/fetch',
@@ -42,6 +42,15 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       });
     };
   }, [dispatch]);
+
+  // 【默认子角色数据、当前角色】
+  useEffect(() => {
+    if (first && isArray(tree) && !isEmpty(tree)) {
+      setParams({ ...params, id: tree[0].id });
+      setCurrentRole({ ...tree[0] });
+      setFirst(false);
+    }
+  }, [first, tree]);
 
   // 【查询角色列表】
   useEffect(() => {
@@ -61,34 +70,24 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
     };
   }, [params, dispatch]);
 
-  // 【默认选中、展开、子角色数据、当前角色】
-  useEffect(() => {
-    if (first && Array.isArray(tree) && tree.length) {
-      setParams({ ...params, id: tree[0].id });
-      setCurrentRole({ ...tree[0] });
-      setFirst(false);
-    }
-  }, [first, tree]);
-
   // 【选择角色并获取其子角色数据】
-  const handleSelect = (selectedKeys, info) => {
+  const handleSelect = (selectedKeys, { selectedNodes }) => {
     if (selectedKeys.length === 1) {
       const id = selectedKeys[0];
+      setCurrentRole(selectedNodes[0]);
       setParams({ ...params, id });
-      setCurrentRole(info.node.props);
     }
   };
 
   // 【启用禁用角色】
   const toggleStatus = (checked, record) => {
-    const { id } = record;
-    const { id: roleId } = currentRole;
+    const { id, parentId } = record;
     dispatch({
       type: 'systemRole/enable',
       payload: {
         id,
         status: checked,
-        roleId,
+        parentId,
       },
     });
   };
@@ -105,6 +104,9 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
         ...record,
         sourceId: record.id,
         targetId,
+      },
+      callback: () => {
+        message.success('移动角色成功。');
       },
     });
   };
@@ -145,7 +147,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
   const columns = [
     {
       title: '角色名称',
-      render: (text, record) => record.name || record.title,
+      dataIndex: 'name',
     },
     {
       title: '角色编码',
@@ -160,8 +162,8 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       ],
       filterMultiple: false,
       render: (text, record) => (
-        <Authorized authority="system:role:status" noMatch={NoMatch(text)}>
-          <Switch checked={text} onClick={(checked) => toggleStatus(checked, record)} />
+        <Authorized authority="system:role:status" noMatch={NoMatch(!!text)}>
+          <Switch checked={!!text} onClick={(checked) => toggleStatus(checked, record)} />
         </Authorized>
       ),
     },
@@ -212,7 +214,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
           </Authorized>
           <Authorized authority="system:role:grant" noMatch={null}>
             <RoleResourceForm id={record.id}>
-              <IconFont type="icon-permission" title="分配资源" className="icon" />
+              <KeyOutlined title="分配资源" className="icon" />
             </RoleResourceForm>
           </Authorized>
         </>
@@ -230,7 +232,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
             style={{ marginTop: 10 }}
             bodyStyle={{ padding: '15px' }}
           >
-            {Array.isArray(tree) && tree.length > 0 && (
+            {isArray(tree) && !isEmpty(tree) && (
               <Tree
                 showLine
                 switcherIcon={<DownOutlined />}
@@ -252,7 +254,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:role:add" noMatch={null}>
-                  <RoleForm id={currentRole && currentRole.id.toString()}>
+                  <RoleForm id={currentRole && currentRole.id}>
                     <Button type="primary" title="新增">
                       <PlusOutlined />
                     </Button>
