@@ -73,10 +73,14 @@ export function getParentKey(key, tree) {
 }
 
 // 获取对象的所有值
-export const getValue = (obj) =>
-  Object.keys(obj)
-    .map((key) => obj[key])
-    .join(',');
+export const getValue = (obj) => {
+  if (obj) {
+    return Object.keys(obj)
+      .map((key) => obj[key])
+      .join(',');
+  }
+  return null;
+};
 
 export const difference = (a, b) => {
   const s = new Set(b);

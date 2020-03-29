@@ -1,7 +1,5 @@
 import React, { useState, useEffect, memo } from 'react';
-import { connect } from 'umi';
-import { Row, Col, Tree, Card, Button, Switch, Divider, Popconfirm, message, Table } from 'antd';
-import { isEqual } from 'lodash';
+import { Row, Col, Card, Tree, Table, Switch, Button, Divider, Popconfirm, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import {
   ArrowUpOutlined,
@@ -11,6 +9,8 @@ import {
   EditOutlined,
   ImportOutlined,
 } from '@ant-design/icons';
+import { connect } from 'umi';
+import { isArray, isEmpty, isEqual } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import { getValue } from '@/utils/utils';
@@ -19,23 +19,31 @@ import UploadForm from './components/Upload';
 import styles from '../System.less';
 
 const { DirectoryTree } = Tree;
+const API_TYPE = 2;
 
 const Api = connect(({ systemApi: { tree, list }, loading }) => ({
   tree,
   list,
   loading: loading.effects['systemApi/fetch'],
 }))(({ loading, tree, list, dispatch }) => {
-  // 【当前点击的菜单】
+  // 【当前点击选中的菜单】
   const [currentMenu, setCurrentMenu] = useState(null);
   // 【查询参数】
-  const [params, setParams] = useState({});
+  const [params, setParams] = useState({
+    type: API_TYPE, // 固定值，数据初始化后不可更改。
+    id: 0,
+    status: null,
+  });
   // 【首次】
   const [first, setFirst] = useState(true);
 
-  // 【首次请求加载树数据】
+  // 【初始化后，加载左侧菜单树数据】
   useEffect(() => {
     dispatch({
       type: 'systemApi/fetch',
+      payload: {
+        type: 1, // 在这里默认菜单类型为1，接口类型为2。
+      },
     });
     return () => {
       dispatch({
@@ -43,6 +51,15 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
       });
     };
   }, [dispatch]);
+
+  // 【初始化左侧菜单树后，并查询根的接口列表数据。】
+  useEffect(() => {
+    if (first && isArray(tree) && !isEmpty(tree)) {
+      setParams({ ...params, id: tree[0].id });
+      setCurrentMenu({ ...tree[0] });
+      setFirst(false);
+    }
+  }, [first, tree]);
 
   // 【查询菜单列表】
   useEffect(() => {
@@ -62,34 +79,26 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
     };
   }, [params, dispatch]);
 
-  // 【默认选中、展开、子菜单数据、当前角色】
-  useEffect(() => {
-    if (first && Array.isArray(tree) && tree.length) {
-      setParams({ ...params, id: tree[0].id });
-      setCurrentMenu({ ...tree[0] });
-      setFirst(false);
-    }
-  }, [first, tree]);
-
   // 【选择菜单并获取其子菜单数据】
-  const handleSelect = (selectedKeys, info) => {
+  const handleSelect = (selectedKeys, { selectedNodes }) => {
     if (selectedKeys.length === 1) {
-      const id = selectedKeys[0];
+      const id = parseInt(selectedKeys[0], 10);
+      setCurrentMenu(selectedNodes[0]);
       setParams({ ...params, id });
-      setCurrentMenu(info.node.props);
     }
   };
 
   // 【启用禁用按钮】
   const toggleState = (checked, record) => {
     const { id } = record;
-    const { id: apiId } = currentMenu;
+    const { id: parentId } = currentMenu;
     dispatch({
-      type: 'systemApi/update',
+      type: 'systemApi/enable',
       payload: {
+        type: API_TYPE,
         id,
         status: checked,
-        apiId,
+        parentId,
       },
     });
   };
@@ -107,6 +116,9 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
         sourceId: record.id,
         targetId,
       },
+      callback: () => {
+        message.success('移动接口成功。');
+      },
     });
   };
 
@@ -118,6 +130,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
       payload: {
         id,
         parentId,
+        type: API_TYPE,
       },
       callback: () => {
         message.success('删除接口成功。');
@@ -147,13 +160,14 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
     {
       title: '接口名称',
       dataIndex: 'name',
+      ellipsis: true,
     },
     {
       title: '接口url',
       dataIndex: 'uri',
     },
     {
-      title: '编码',
+      title: '接口编码',
       dataIndex: 'code',
     },
     {
@@ -168,6 +182,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
         { text: '启用', value: 1 },
       ],
       filterMultiple: false,
+      width: 120,
       render: (text, record) => (
         <Authorized authority="system:api:status" noMatch={NoMatch(text)}>
           <Switch checked={text} onClick={(checked) => toggleState(checked, record)} />
@@ -176,6 +191,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
     },
     {
       title: '排序',
+      width: 90,
       render: (text, record, index) => (
         <Authorized authority="system:api:move" noMatch={null}>
           <ArrowUpOutlined
@@ -195,10 +211,12 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
     },
     {
       title: '操作',
+      width: 90,
+      align: 'center',
       render: (text, record) => (
         <>
           <Authorized authority="system:api:update" noMatch={null}>
-            <ApiForm isEdit id={record.id} parent={currentMenu}>
+            <ApiForm isEdit id={record.id}>
               <EditOutlined title="编辑" className="icon" />
             </ApiForm>
             <Divider type="vertical" />
@@ -224,12 +242,13 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
           <Card
             title="菜单树"
-            style={{ marginTop: 10 }}
             bordered={false}
+            style={{ marginTop: 10 }}
             bodyStyle={{ padding: '15px' }}
           >
-            {Array.isArray(tree) && tree.length > 0 && (
+            {isArray(tree) && tree.length > 0 && (
               <DirectoryTree
+                expandAction="doubleClick"
                 defaultExpandedKeys={[tree[0].key]}
                 defaultSelectedKeys={[tree[0].key]}
                 treeData={tree}
@@ -254,7 +273,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
                     </Button>
                   </ApiForm>
                 </Authorized>
-                <Authorized authority="system:api:add" noMatch={null}>
+                <Authorized authority="system:api:import" noMatch={null}>
                   <UploadForm>
                     <Button title="导入">
                       <ImportOutlined />

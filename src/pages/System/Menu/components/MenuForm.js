@@ -22,6 +22,7 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
     setVisible(true);
   };
   const hideModelHandler = () => {
+    resetFields();
     setVisible(false);
   };
 
@@ -72,7 +73,6 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
           oldParentId: menu.parentId,
         },
         callback: () => {
-          resetFields();
           hideModelHandler();
           message.success('修改菜单成功。');
         },
@@ -86,7 +86,6 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
           oldParentId: id,
         },
         callback: () => {
-          resetFields();
           hideModelHandler();
           message.success('添加菜单成功。');
         },
@@ -118,7 +117,7 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
       <Modal
         forceRender
         destroyOnClose
-        title={isEdit ? '修改' : '新增'}
+        title={isEdit ? '修改菜单' : '新增菜单'}
         visible={visible}
         onCancel={hideModelHandler}
         footer={null}

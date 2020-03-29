@@ -17,6 +17,7 @@ import MenuForm from './components/MenuForm';
 import styles from '../System.less';
 
 const { DirectoryTree } = Tree;
+const MENU_TYPE = 1;
 
 const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
   tree,
@@ -27,7 +28,7 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
   const [currentMenu, setCurrentMenu] = useState(null);
   // 【查询参数】
   const [params, setParams] = useState({
-    type: 1, // 固定值，数据初始化后不可更改。
+    type: MENU_TYPE, // 固定值，数据初始化后不可更改。
     id: 0,
     status: null,
   });
@@ -39,7 +40,7 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
     dispatch({
       type: 'systemMenu/fetch',
       payload: {
-        type: 1, // 在这里默认菜单类型为1，接口类型为2。
+        type: MENU_TYPE, // 在这里默认菜单类型为1，接口类型为2。
       },
     });
     return () => {
@@ -90,8 +91,9 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
     const { id } = record;
     const { id: parentId } = currentMenu;
     dispatch({
-      type: 'systemMenu/update',
+      type: 'systemMenu/enable',
       payload: {
+        type: MENU_TYPE,
         id,
         status: checked,
         parentId,
@@ -126,6 +128,7 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
       payload: {
         id,
         parentId,
+        type: MENU_TYPE,
       },
       callback: () => {
         message.success('删除菜单成功。');
@@ -177,7 +180,7 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
     {
       title: '排序',
       render: (text, record, index) => (
-        <Authorized authority="system:menu:move" noMatch="--">
+        <Authorized authority="system:menu:move" noMatch={null}>
           <ArrowUpOutlined
             className="icon"
             title="向上"
@@ -228,10 +231,10 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
             style={{ marginTop: 10 }}
             bodyStyle={{ padding: '15px' }}
           >
-            {Array.isArray(tree) && tree.length > 0 && (
+            {isArray(tree) && tree.length > 0 && (
               <DirectoryTree
-                // 默认选中和展开第一项
                 expandAction="doubleClick"
+                // 默认选中和展开第一项
                 defaultExpandedKeys={[tree[0].key]}
                 defaultSelectedKeys={[tree[0].key]}
                 treeData={tree}

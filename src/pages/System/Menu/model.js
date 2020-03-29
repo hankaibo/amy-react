@@ -9,8 +9,6 @@ import {
   moveMenu,
 } from './service';
 
-const MENU_TYPE = 1;
-
 export default {
   namespace: 'systemMenu',
 
@@ -54,14 +52,14 @@ export default {
           type: 'fetchChildrenById',
           payload: {
             id,
-            type: MENU_TYPE,
+            type: values.type,
           },
         });
       }
       yield put({
         type: 'fetch',
         payload: {
-          type: MENU_TYPE,
+          type: values.type,
         },
       });
       if (callback) callback();
@@ -69,6 +67,10 @@ export default {
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getMenuById, id);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       const menu = { ...response, status: !!response.status };
       yield put({
         type: 'save',
@@ -81,59 +83,61 @@ export default {
     *update({ payload, callback }, { call, put }) {
       const { values, oldParentId: id } = payload;
       const params = { ...values, status: +values.status };
-      yield call(updateMenu, params);
+      const response = yield call(updateMenu, params);
+      const { apierror } = response;
+      if (apierror) return;
       if (id) {
         yield put({
           type: 'fetchChildrenById',
           payload: {
             id,
-            type: MENU_TYPE,
+            type: values.type,
           },
         });
       }
       yield put({
         type: 'fetch',
         payload: {
-          type: MENU_TYPE,
+          type: values.type,
         },
       });
       if (callback) callback();
     },
     *enable({ payload, callback }, { call, put }) {
-      const { id, status, parentId } = payload;
-      const values = { id, status: +status };
+      const { id, status, type, parentId } = payload;
+      const values = { id, status: +status, type };
       yield call(enableMenu, values);
       if (parentId) {
         yield put({
           type: 'fetchChildrenById',
           payload: {
             id: parentId,
-            type: MENU_TYPE,
+            type,
           },
         });
       }
       yield put({
         type: 'fetch',
         payload: {
-          type: MENU_TYPE,
+          type,
         },
       });
       if (callback) callback();
     },
     *delete({ payload, callback }, { call, put }) {
-      const { id, parentId } = payload;
+      const { id, type, parentId } = payload;
       yield call(deleteMenu, id);
       yield put({
         type: 'fetchChildrenById',
         payload: {
           id: parentId,
-          type: MENU_TYPE,
+          type,
         },
       });
       yield put({
         type: 'fetch',
         payload: {
-          type: MENU_TYPE,
+          type,
         },
       });
       if (callback) callback();
@@ -145,13 +149,13 @@ export default {
         type: 'fetchChildrenById',
         payload: {
           id,
-          type: MENU_TYPE,
+          type: payload.type,
         },
       });
       yield put({
         type: 'fetch',
         payload: {
-          type: MENU_TYPE,
+          type: payload.type,
         },
       });
       if (callback) callback();

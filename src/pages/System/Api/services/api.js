@@ -5,18 +5,17 @@ import request from '@/utils/request';
  * 查询菜单树数据。
  * @returns {Promise<void>}
  */
-export async function getMenuTree() {
-  return request('/resources?type=1');
+export async function getMenuTree(params) {
+  return request(`/resources?${stringify(params)}`);
 }
 
 /**
  * 按主键查询所有子接口数据。
- * @param payload
+ * @param params
  * @returns {Promise<void>}
  */
-export async function listChildrenById(payload) {
-  const { id, ...rest } = payload;
-  rest.type = 2;
+export async function listChildrenById(params) {
+  const { id, ...rest } = params;
   return request(`/resources/${id}/children?${stringify(rest)}`);
 }
 
@@ -26,8 +25,7 @@ export async function listChildrenById(payload) {
  * @returns {Promise<void>}
  */
 export async function addApi(params) {
-  return request('/resources', {
-    method: 'POST',
+  return request.post('/resources', {
     data: {
       ...params,
     },
@@ -42,6 +40,7 @@ export async function addApi(params) {
 export async function getApiById(id) {
   return request(`/resources/${id}`);
 }
+
 /**
  * 更新接口。
  * @param params
@@ -49,8 +48,7 @@ export async function getApiById(id) {
  */
 export async function updateApi(params) {
   const { id } = params;
-  return request(`/resources/${id}`, {
-    method: 'PUT',
+  return request.put(`/resources/${id}`, {
     data: {
       ...params,
     },
@@ -63,13 +61,8 @@ export async function updateApi(params) {
  * @return {Promise<void>}
  */
 export async function enableApi(params) {
-  const { id, status } = params;
-  return request(`/resources/${id}`, {
-    method: 'PATCH',
-    data: {
-      status,
-    },
-  });
+  const { id, ...rest } = params;
+  return request.patch(`/resources/${id}?${stringify(rest)}`);
 }
 
 /**
@@ -79,9 +72,7 @@ export async function enableApi(params) {
  */
 export async function moveButton(params) {
   const { sourceId, targetId } = params;
-  return request(`/resources?from=${sourceId}&to=${targetId}`, {
-    method: 'PUT',
-  });
+  return request.put(`/resources?from=${sourceId}&to=${targetId}`);
 }
 
 /**
@@ -90,9 +81,7 @@ export async function moveButton(params) {
  * @returns {Promise<void>}
  */
 export async function deleteApi(id) {
-  return request(`/resources/${id}`, {
-    method: 'DELETE',
-  });
+  return request.delete(`/resources/${id}`);
 }
 
 /**
@@ -101,8 +90,7 @@ export async function deleteApi(id) {
  * @returns {Promise<void>}
  */
 export async function deleteBatchApi(ids) {
-  return request('/resources', {
-    method: 'DELETE',
+  return request.delete('/resources', {
     data: {
       ids,
     },

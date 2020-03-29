@@ -45,15 +45,22 @@ export default {
       if (callback) callback();
     },
     *add({ payload, callback }, { call, put }) {
-      const { oldParentId: id } = payload;
-      const params = { ...payload, status: +payload.status };
-      yield call(addApi, params);
-      yield put({
-        type: 'fetchChildrenById',
-        payload: {
-          id,
-        },
-      });
+      const { values, oldParentId: id } = payload;
+      const params = { ...values, status: +values.status };
+      const response = yield call(addApi, params);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
+      if (id) {
+        yield put({
+          type: 'fetchChildrenById',
+          payload: {
+            id,
+            type: values.type,
+          },
+        });
+      }
       if (callback) callback();
     },
     *fetchById({ payload, callback }, { call, put }) {
@@ -69,40 +76,43 @@ export default {
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
-      const { oldParentId } = payload;
-      const params = { ...payload, status: +payload.status };
+      const { values, oldParentId: id } = payload;
+      const params = { ...values, status: +values.status };
       yield call(updateApi, params);
-      if (oldParentId) {
+      if (id) {
         yield put({
           type: 'fetchChildrenById',
           payload: {
-            id: oldParentId,
+            id,
+            type: values.type,
           },
         });
       }
       if (callback) callback();
     },
     *enable({ payload, callback }, { call, put }) {
-      const { id, status, parentId } = payload;
-      const params = { id, status: +status };
+      const { id, status, type, parentId } = payload;
+      const params = { id, status: +status, type };
       yield call(enableApi, params);
       if (parentId) {
         yield put({
           type: 'fetchChildrenById',
           payload: {
             id: parentId,
+            type,
           },
         });
       }
       if (callback) callback();
     },
     *delete({ payload, callback }, { call, put }) {
-      const { id, parentId } = payload;
+      const { id, type, parentId } = payload;
       yield call(deleteApi, id);
       yield put({
         type: 'fetchChildrenById',
         payload: {
           id: parentId,
+          type,
         },
       });
       if (callback) callback();
@@ -118,6 +128,7 @@ export default {
         type: 'fetchChildrenById',
         payload: {
           id,
+          type: payload.type,
         },
       });
       if (callback) callback();

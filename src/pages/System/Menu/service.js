@@ -11,11 +11,11 @@ export async function getMenuTree(params = { type: 1 }) {
 
 /**
  * 按主键查询所有子菜单数据。
- * @param payload
+ * @param params
  * @returns {Promise<void>}
  */
-export async function listChildrenById(payload) {
-  const { id, ...rest } = payload;
+export async function listChildrenById(params) {
+  const { id, ...rest } = params;
   return request(`/resources/${id}/children?${stringify(rest)}`);
 }
 
@@ -61,12 +61,8 @@ export async function updateMenu(params) {
  * @return {Promise<void>}
  */
 export async function enableMenu(params) {
-  const { id, status } = params;
-  return request.patch(`/resources/${id}`, {
-    data: {
-      status,
-    },
-  });
+  const { id, ...rest } = params;
+  return request.patch(`/resources/${id}?${stringify(rest)}`);
 }
 
 /**

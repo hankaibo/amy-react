@@ -27,9 +27,10 @@ const codeMessage = {
  * 异常处理程序
  */
 const errorHandler = (error) => {
-  const { response } = error;
+  // data为后台接口包含的错误信息。
+  const { response, data } = error;
   if (response && response.status) {
-    const errorText = error.data.message || codeMessage[response.status] || response.statusText;
+    const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
 
     notification.error({
@@ -42,7 +43,12 @@ const errorHandler = (error) => {
       message: '网络异常',
     });
   }
-  return response;
+  // 方式一，直接抛出异常信息，中断请求流程；
+  // 优点是简单，models里不需要再处理错误逻辑了；缺点是太糙，对每个请求不能进行精细化处理。
+  // throw error;
+  // 方式二，返回整个错误信息或者回后台接口自定义错误信息，我使用了后者；
+  // 优缺点与方式一相反。
+  return data;
 };
 
 /**

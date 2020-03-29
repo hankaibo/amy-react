@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Modal, Form, Input, Switch, TreeSelect, Radio, Button, message } from 'antd';
 import { connect } from 'umi';
-import { Form, Input, Modal, Switch, message, Radio, TreeSelect, Button } from 'antd';
 import { isEmpty } from 'lodash';
 import styles from '../../System.less';
 
@@ -21,6 +21,7 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
     setVisible(true);
   };
   const hideModelHandler = () => {
+    resetFields();
     setVisible(false);
   };
 
@@ -46,12 +47,12 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
     // 👍 将条件判断放置在 effect 中
     if (visible && isEdit) {
       if (!isEmpty(api)) {
-        setFieldsValue(api);
+        setFieldsValue({ ...api, parentId: api.parentId.toString() });
       }
     }
   }, [visible, isEdit, api, setFieldsValue]);
 
-  // 【保证任何时候添加上级菜单都有默认值】
+  // 【新建时，父菜单默认值】
   useEffect(() => {
     if (visible && !isEdit) {
       if (id) {
@@ -60,33 +61,30 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
     }
   }, [visible, isEdit, id, setFieldsValue]);
 
-  // 【添加与修改】
+  // 【添加与修改接口】
   const handleAddOrUpdate = (values) => {
     if (isEdit) {
+      Object.assign(values, { id }, { type: 2 });
       dispatch({
         type: 'systemApi/update',
         payload: {
-          type: 2,
-          ...values,
-          id,
+          values,
           oldParentId: api.parentId,
         },
         callback: () => {
-          resetFields();
           hideModelHandler();
           message.success('修改接口成功。');
         },
       });
     } else {
+      Object.assign(values, { type: 2 });
       dispatch({
         type: 'systemApi/add',
         payload: {
-          type: 2,
-          ...values,
+          values,
           oldParentId: id,
         },
         callback: () => {
-          resetFields();
           hideModelHandler();
           message.success('添加接口成功。');
         },
@@ -118,7 +116,7 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
       <Modal
         forceRender
         destroyOnClose
-        title={isEdit ? '修改' : '新增'}
+        title={isEdit ? '修改接口' : '新增接口'}
         visible={visible}
         onCancel={hideModelHandler}
         footer={null}
@@ -126,7 +124,7 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
         <Form
           {...layout}
           form={form}
-          name="menuForm"
+          name="apiForm"
           className={styles.form}
           initialValues={{
             status: true,
@@ -200,7 +198,7 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
             <TreeSelect
               dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
               treeData={tree}
-              placeholder="请选择菜单"
+              placeholder="请选择菜单。"
               treeDefaultExpandAll
             />
           </Form.Item>
