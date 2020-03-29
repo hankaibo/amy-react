@@ -1,5 +1,4 @@
 import React, { useState, useEffect, memo } from 'react';
-import { connect } from 'umi';
 import {
   Row,
   Col,
@@ -13,7 +12,6 @@ import {
   Divider,
   message,
 } from 'antd';
-import { isEqual } from 'lodash';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import {
   ArrowUpOutlined,
@@ -23,6 +21,8 @@ import {
   DeleteOutlined,
   EditOutlined,
 } from '@ant-design/icons';
+import { connect } from 'umi';
+import { isEqual, isArray, isEmpty } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import { getPlainNode, getParentKey, getValue } from '@/utils/utils';
@@ -43,11 +43,11 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   // 【部门树搜索参数】
   const [searchValue, setSearchValue] = useState('');
   // 【查询参数】
-  const [params, setParams] = useState({});
+  const [params, setParams] = useState({ id: null });
   // 【首次】
   const [first, setFirst] = useState(true);
 
-  // 【首次请求加载部门树】
+  // 【初始化后，加载左侧部门树数据】
   useEffect(() => {
     dispatch({
       type: 'systemDepartment/fetch',
@@ -58,6 +58,17 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       });
     };
   }, [dispatch]);
+
+  // 【默认选中、展开、子部门数据、当前部门】
+  useEffect(() => {
+    if (first && isArray(tree) && !isEmpty(tree)) {
+      setSelectedKeys([tree[0].key]);
+      setExpandedKeys([tree[0].key]);
+      setParams({ ...params, id: tree[0].id });
+      setCurrentDepartment({ ...tree[0], titleValue: tree[0].title });
+      setFirst(false);
+    }
+  }, [first, tree]);
 
   // 【查询部门列表】
   useEffect(() => {
@@ -77,17 +88,6 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
     };
   }, [params, dispatch]);
 
-  // 【默认选中、展开、子部门数据、当前部门】
-  useEffect(() => {
-    if (first && Array.isArray(tree) && tree.length) {
-      setSelectedKeys([tree[0].key]);
-      setExpandedKeys([tree[0].key]);
-      setParams({ ...params, id: tree[0].id });
-      setCurrentDepartment({ ...tree[0], titleValue: tree[0].title });
-      setFirst(false);
-    }
-  }, [first, tree]);
-
   // 【展开部门】
   const handleExpand = (keys) => {
     setExpandedKeys(keys);
@@ -95,12 +95,12 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   };
 
   // 【选择部门并获取其子部门数据】
-  const handleSelect = (keys, info) => {
+  const handleSelect = (keys, { selectedNodes }) => {
     if (keys.length === 1) {
       const id = keys[0];
       setSelectedKeys(keys);
+      setCurrentDepartment(selectedNodes[0]);
       setParams({ ...params, id });
-      setCurrentDepartment(info.node.props);
     }
   };
 
@@ -132,6 +132,9 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
         ...record,
         sourceId: record.id,
         targetId,
+      },
+      callback: () => {
+        message.success('移动部门成功。');
       },
     });
   };
@@ -209,6 +212,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
     {
       title: '部门名称',
       dataIndex: 'name',
+      ellipsis: true,
     },
     {
       title: '部门状态',
@@ -219,16 +223,15 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       ],
       filterMultiple: false,
       render: (text, record) => (
-        <Authorized authority="system:department:status" noMatch={NoMatch(text)}>
-          {/* true数据不方便转换status，在这里进行转化。 */}
-          <Switch checked={text} onClick={(checked) => toggleState(checked, record)} />
+        <Authorized authority="system:department:status" noMatch={NoMatch(!!text)}>
+          <Switch checked={!!text} onClick={(checked) => toggleState(checked, record)} />
         </Authorized>
       ),
     },
     {
       title: '排序',
       render: (text, record, index) => (
-        <Authorized authority="system:department:move" noMatch="--">
+        <Authorized authority="system:department:move" noMatch={null}>
           <ArrowUpOutlined
             className="icon"
             title="向上"
@@ -297,7 +300,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
               onExpand={handleExpand}
               selectedKeys={selectedKeys}
               onSelect={handleSelect}
-              treeData={Array.isArray(tree) && tree.length > 0 ? loop(tree) : []}
+              treeData={isArray(tree) && !isEmpty(tree) ? loop(tree) : []}
             />
           </Card>
         </Col>

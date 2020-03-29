@@ -24,6 +24,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
     setVisible(true);
   };
   const hideModelHandler = () => {
+    resetFields();
     setVisible(false);
   };
 
@@ -49,44 +50,32 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
     // 👍 将条件判断放置在 effect 中
     if (visible && isEdit) {
       if (!isEmpty(department)) {
-        // 不论是否修改父部门，保证页面停留在原页面下。
-        const { name, parentId, status, description } = department;
-        const formData = {
-          name,
-          parentId: parentId.toString(),
-          status,
-          description,
-        };
-        if (!department.parentId) {
-          delete formData.parentId;
-        }
-        setFieldsValue({ ...formData });
+        const formData = { ...department, parentId: department.parentId.toString() };
+        setFieldsValue(formData);
       }
     }
   }, [visible, isEdit, department, setFieldsValue]);
 
-  // 【新建时，保证任何时候添加上级菜单都有默认值】
-  // 不论是否修改父部门，保证页面停留在原页面下。
-  useEffect(() => {
-    if (visible && !isEdit) {
-      if (id) {
-        setFieldsValue({ parentId: id.toString() });
-      }
-    }
-  }, [visible, isEdit, id, setFieldsValue]);
+  // // 【新建时，父部门默认值】
+  // useEffect(() => {
+  //   if (visible && !isEdit) {
+  //     if (id) {
+  //       setFieldsValue({ parentId: id.toString() });
+  //     }
+  //   }
+  // }, [visible, isEdit, id, setFieldsValue]);
 
   // 【添加与修改】
   const handleAddOrUpdate = (values) => {
     if (isEdit) {
+      Object.assign(values, { id });
       dispatch({
         type: 'systemDepartment/update',
         payload: {
-          ...values,
-          id,
+          values,
           oldParentId: department.parentId,
         },
         callback: () => {
-          resetFields();
           hideModelHandler();
           message.success('部门修改成功。');
         },
@@ -95,11 +84,10 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
       dispatch({
         type: 'systemDepartment/add',
         payload: {
-          ...values,
+          values,
           oldParentId: id,
         },
         callback: () => {
-          resetFields();
           hideModelHandler();
           message.success('部门添加成功。');
         },
@@ -143,6 +131,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
           className={styles.form}
           initialValues={{
             status: true,
+            parentId: id && id.toString(),
           }}
           onFinish={handleAddOrUpdate}
         >
