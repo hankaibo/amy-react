@@ -25,6 +25,10 @@ export default {
   effects: {
     *fetch({ payload, callback }, { call, put }) {
       const response = yield call(getMenuTree, payload);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       yield put({
         type: 'saveTree',
         payload: {
@@ -35,6 +39,10 @@ export default {
     },
     *fetchChildrenById({ payload, callback }, { call, put }) {
       const response = yield call(listChildrenById, payload);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       const list = response.map((item) => ({ ...item, status: !!item.status }));
       yield put({
         type: 'saveList',
@@ -66,6 +74,10 @@ export default {
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getApiById, id);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       const api = { ...response, status: !!response.status };
       yield put({
         type: 'save',
@@ -78,7 +90,11 @@ export default {
     *update({ payload, callback }, { call, put }) {
       const { values, oldParentId: id } = payload;
       const params = { ...values, status: +values.status };
-      yield call(updateApi, params);
+      const response = yield call(updateApi, params);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       if (id) {
         yield put({
           type: 'fetchChildrenById',
@@ -93,7 +109,11 @@ export default {
     *enable({ payload, callback }, { call, put }) {
       const { id, status, type, parentId } = payload;
       const params = { id, status: +status, type };
-      yield call(enableApi, params);
+      const response = yield call(enableApi, params);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       if (parentId) {
         yield put({
           type: 'fetchChildrenById',
@@ -107,7 +127,11 @@ export default {
     },
     *delete({ payload, callback }, { call, put }) {
       const { id, type, parentId } = payload;
-      yield call(deleteApi, id);
+      const response = yield call(deleteApi, id);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       yield put({
         type: 'fetchChildrenById',
         payload: {
@@ -123,7 +147,11 @@ export default {
     },
     *move({ payload, callback }, { call, put }) {
       const { parentId: id } = payload;
-      yield call(moveButton, payload);
+      const response = yield call(moveButton, payload);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       yield put({
         type: 'fetchChildrenById',
         payload: {

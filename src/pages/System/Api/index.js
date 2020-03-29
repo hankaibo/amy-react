@@ -24,7 +24,7 @@ const API_TYPE = 2;
 const Api = connect(({ systemApi: { tree, list }, loading }) => ({
   tree,
   list,
-  loading: loading.effects['systemApi/fetch'],
+  loading: loading.effects['systemApi/fetchChildrenById'],
 }))(({ loading, tree, list, dispatch }) => {
   // 【当前点击选中的菜单】
   const [currentMenu, setCurrentMenu] = useState(null);
@@ -259,7 +259,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
         </Col>
         <Col xs={24} sm={24} md={24} lg={18} xl={18}>
           <Card
-            title={currentMenu && `[${currentMenu.title}]的接口`}
+            title={currentMenu && `【${currentMenu.title}】的接口`}
             bordered={false}
             bodyStyle={{ padding: '15px' }}
             style={{ marginTop: 10 }}

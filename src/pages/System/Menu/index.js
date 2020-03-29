@@ -22,7 +22,7 @@ const MENU_TYPE = 1;
 const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
   tree,
   list,
-  loading: loading.effects['systemMenu/fetch'],
+  loading: loading.effects['systemMenu/fetchChildrenById'],
 }))(({ loading, tree, list, dispatch }) => {
   // 【当前点击选中的菜单】
   const [currentMenu, setCurrentMenu] = useState(null);
