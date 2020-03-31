@@ -22,8 +22,8 @@ export default {
   },
 
   effects: {
-    *fetch({ callback }, { call, put }) {
-      const response = yield call(getDepartmentTree);
+    *fetch({ payload, callback }, { call, put }) {
+      const response = yield call(getDepartmentTree, payload);
       const { apierror } = response;
       if (apierror) {
         return;
@@ -52,7 +52,7 @@ export default {
       if (callback) callback();
     },
     *add({ payload, callback }, { call, put }) {
-      const { values, oldParentId: parentId } = payload;
+      const { values, searchParams } = payload;
       const params = { ...values, status: +values.status };
       const response = yield call(addDepartment, params);
       const { apierror } = response;
@@ -62,7 +62,7 @@ export default {
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          id: parentId,
+          ...searchParams,
         },
       });
       yield put({
@@ -87,49 +87,45 @@ export default {
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
-      const { values, oldParentId: parentId } = payload;
+      const { values, searchParams } = payload;
       const params = { ...values, status: +values.status };
       const response = yield call(updateDepartment, params);
       const { apierror } = response;
       if (apierror) {
         return;
       }
-      if (parentId) {
-        yield put({
-          type: 'fetchChildrenById',
-          payload: {
-            id: parentId,
-          },
-        });
-      }
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          ...searchParams,
+        },
+      });
       yield put({
         type: 'fetch',
       });
       if (callback) callback();
     },
     *enable({ payload, callback }, { call, put }) {
-      const { id, status, parentId } = payload;
-      const params = { id, status: +status };
-      const response = yield call(enableDepartment, params);
+      const { id, status, searchParams } = payload;
+      const values = { id, status: +status };
+      const response = yield call(enableDepartment, values);
       const { apierror } = response;
       if (apierror) {
         return;
       }
-      if (parentId) {
-        yield put({
-          type: 'fetchChildrenById',
-          payload: {
-            id: parentId,
-          },
-        });
-      }
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          ...searchParams,
+        },
+      });
       yield put({
         type: 'fetch',
       });
       if (callback) callback();
     },
     *delete({ payload, callback }, { call, put }) {
-      const { id, parentId } = payload;
+      const { id, searchParams } = payload;
       const response = yield call(deleteDepartment, id);
       const { apierror } = response;
       if (apierror) {
@@ -138,7 +134,7 @@ export default {
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          id: parentId,
+          ...searchParams,
         },
       });
       yield put({
@@ -147,8 +143,8 @@ export default {
       if (callback) callback();
     },
     *move({ payload, callback }, { call, put }) {
-      const { parentId } = payload;
-      const response = yield call(moveDepartment, payload);
+      const { searchParams, ...values } = payload;
+      const response = yield call(moveDepartment, values);
       const { apierror } = response;
       if (apierror) {
         return;
@@ -156,7 +152,7 @@ export default {
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          id: parentId,
+          ...searchParams,
         },
       });
       yield put({

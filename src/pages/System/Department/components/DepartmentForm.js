@@ -11,7 +11,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
     loading.effects[
       ('systemDepartment/fetchById', 'systemDepartment/add', 'systemDepartment/update')
     ],
-}))(({ loading, children, isEdit, id, department, tree, dispatch }) => {
+}))(({ loading, children, isEdit, id, searchParams, department, tree, dispatch }) => {
   const [form] = Form.useForm();
   const { resetFields, setFieldsValue } = form;
 
@@ -73,7 +73,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
         type: 'systemDepartment/update',
         payload: {
           values,
-          oldParentId: department.parentId,
+          searchParams,
         },
         callback: () => {
           hideModelHandler();
@@ -85,7 +85,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
         type: 'systemDepartment/add',
         payload: {
           values,
-          oldParentId: id,
+          searchParams,
         },
         callback: () => {
           hideModelHandler();

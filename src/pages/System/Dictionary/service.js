@@ -16,8 +16,7 @@ export async function pageDict(params) {
  * @returns {Promise<void>}
  */
 export async function addDict(params) {
-  return request('/dictionaries', {
-    method: 'POST',
+  return request.post('/dictionaries', {
     data: {
       ...params,
     },
@@ -40,8 +39,7 @@ export async function getDictById(id) {
  */
 export async function updateDict(params) {
   const { id } = params;
-  return request(`/dictionaries/${id}`, {
-    method: 'PUT',
+  return request.put(`/dictionaries/${id}`, {
     data: {
       ...params,
     },
@@ -56,12 +54,7 @@ export async function updateDict(params) {
  */
 export async function enableDict(params) {
   const { id, status } = params;
-  return request(`/dictionaries/${id}`, {
-    method: 'PATCH',
-    data: {
-      status,
-    },
-  });
+  return request.patch(`/dictionaries/${id}/status?${stringify({ status })}`);
 }
 
 /**
@@ -70,9 +63,7 @@ export async function enableDict(params) {
  * @returns {Promise<void>}
  */
 export async function deleteDict(id) {
-  return request(`/dictionaries/${id}`, {
-    method: 'DELETE',
-  });
+  return request.delete(`/dictionaries/${id}`);
 }
 
 /**
@@ -81,8 +72,7 @@ export async function deleteDict(id) {
  * @returns {Promise<void>}
  */
 export async function deleteBatchDict(ids) {
-  return request(`/dictionaries`, {
-    method: 'DELETE',
+  return request.delete(`/dictionaries`, {
     data: {
       ids,
     },

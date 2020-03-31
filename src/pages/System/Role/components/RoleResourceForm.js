@@ -94,24 +94,6 @@ const RoleResourceForm = connect(
     });
   };
 
-  // 【表单布局】
-  const layout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 5 },
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 19 },
-    },
-  };
-  const tailLayout = {
-    wrapperCol: {
-      xs: { offset: 0, span: 24 },
-      sm: { offset: 5, span: 19 },
-    },
-  };
-
   return (
     <>
       <span onClick={showModalHandler}>{children}</span>
@@ -123,13 +105,7 @@ const RoleResourceForm = connect(
         onCancel={hideModelHandler}
         footer={null}
       >
-        <Form
-          {...layout}
-          form={form}
-          name="roleResourceForm"
-          className={styles.form}
-          onFinish={handleGrant}
-        >
+        <Form form={form} name="roleResourceForm" className={styles.form} onFinish={handleGrant}>
           <Form.Item name="ids">
             <Tree
               checkable
@@ -140,7 +116,7 @@ const RoleResourceForm = connect(
               treeData={resTreeData}
             />
           </Form.Item>
-          <Form.Item {...tailLayout}>
+          <Form.Item style={{ textAlign: 'right' }}>
             <Button onClick={hideModelHandler}>取消</Button>
             <Button type="primary" loading={loading} htmlType="submit">
               确定

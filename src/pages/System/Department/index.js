@@ -42,8 +42,11 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   const [autoExpandParent, setAutoExpandParent] = useState(false);
   // 【部门树搜索参数】
   const [searchValue, setSearchValue] = useState('');
-  // 【查询参数】
-  const [params, setParams] = useState({ id: null });
+  // 【查询参数，获取table列表的参数】
+  const [params, setParams] = useState({
+    id: null,
+    status: null,
+  });
   // 【首次】
   const [first, setFirst] = useState(true);
 
@@ -129,9 +132,9 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
     dispatch({
       type: 'systemDepartment/move',
       payload: {
-        ...record,
         sourceId: record.id,
         targetId,
+        searchParams: params,
       },
       callback: () => {
         message.success('移动部门成功。');
@@ -141,25 +144,25 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
 
   // 【启用禁用部门】
   const toggleState = (checked, record) => {
-    const { id, parentId } = record;
+    const { id } = record;
     dispatch({
       type: 'systemDepartment/enable',
       payload: {
         id,
         status: checked,
-        parentId,
+        searchParams: params,
       },
     });
   };
 
   // 【删除部门】
   const handleDelete = (record) => {
-    const { id, parentId } = record;
+    const { id } = record;
     dispatch({
       type: 'systemDepartment/delete',
       payload: {
         id,
-        parentId,
+        searchParams: params,
       },
       callback: () => {
         message.success('删除部门成功。');
@@ -187,7 +190,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   // 【构造树结构，添加高亮支持】
   const loop = (data = []) =>
     data.map((item) => {
-      const it = { ...item, titleValue: item.title, disabled: !item.status };
+      const it = { ...item, titleValue: item.title };
       const index = it.title.indexOf(searchValue);
       const beforeStr = it.title.substr(0, index);
       const afterStr = it.title.substr(index + searchValue.length);
@@ -257,7 +260,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       render: (text, record) => (
         <>
           <Authorized authority="system:department:update" noMatch={null}>
-            <DepartmentForm isEdit id={record.id}>
+            <DepartmentForm isEdit id={record.id} searchParams={params}>
               <EditOutlined title="编辑" className="icon" />
             </DepartmentForm>
             <Divider type="vertical" />
@@ -314,7 +317,10 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:department:add" noMatch={null}>
-                  <DepartmentForm id={currentDepartment && currentDepartment.id}>
+                  <DepartmentForm
+                    id={currentDepartment && currentDepartment.id}
+                    searchParams={params}
+                  >
                     <Button type="primary" title="新增">
                       <PlusOutlined />
                     </Button>

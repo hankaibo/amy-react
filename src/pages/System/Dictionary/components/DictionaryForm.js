@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Modal, Form, Input, InputNumber, Switch, Button, message } from 'antd';
 import { connect } from 'umi';
-import { Form, Input, Modal, InputNumber, Switch, message, Button } from 'antd';
 import { isEmpty } from 'lodash';
 import styles from '../../System.less';
 
@@ -9,14 +9,10 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
   loading: loading.effects['systemDictionary/fetchById'],
 }))(({ loading, children, isEdit, id, dictionary, dispatch, ...rest }) => {
   const [form] = Form.useForm();
-  const { location, match } = rest;
+  const { location } = rest;
   const {
     query: { name: parentName },
   } = location;
-  const {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    params: { id: parentId },
-  } = match;
   const { resetFields, setFieldsValue } = form;
 
   // 【模态框显示隐藏属性】
@@ -28,11 +24,11 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
     setVisible(true);
   };
   const hideModelHandler = () => {
+    resetFields();
     setVisible(false);
   };
 
   // 【修改时，获取字典表单数据】
-  // 注：修改前获取字典数据回显表单，如果列表数据齐全，也可直接使用列表传递过来的而不再请求后台接口。
   useEffect(() => {
     if (visible && isEdit) {
       dispatch({
@@ -62,14 +58,13 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
   // 【添加与修改】
   const handleAddOrUpdate = (values) => {
     if (isEdit) {
+      Object.assign(values, { id });
       dispatch({
         type: 'systemDictionary/update',
         payload: {
-          ...values,
-          id,
+          values,
         },
         callback: () => {
-          resetFields();
           hideModelHandler();
           message.success('修改字典成功。');
         },
@@ -78,10 +73,9 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
       dispatch({
         type: 'systemDictionary/add',
         payload: {
-          ...values,
+          values,
         },
         callback: () => {
-          resetFields();
           hideModelHandler();
           message.success('添加字典成功。');
         },
@@ -121,8 +115,11 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
         <Form
           {...layout}
           form={form}
-          name="departmentForm"
+          name="dictionaryForm"
           className={styles.form}
+          initialValues={{
+            status: true,
+          }}
           onFinish={handleAddOrUpdate}
         >
           {parentName && (
@@ -186,10 +183,9 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
             <Input.TextArea placeholder="请输入字典描述。" autoSize={{ minRows: 2, maxRows: 6 }} />
           </Form.Item>
           <Form.Item {...tailLayout}>
-            <Button onClick={hideModelHandler}> 取消 </Button>
+            <Button onClick={hideModelHandler}>取消</Button>
             <Button type="primary" loading={loading} htmlType="submit">
-              {' '}
-              确定{' '}
+              确定
             </Button>
           </Form.Item>
         </Form>

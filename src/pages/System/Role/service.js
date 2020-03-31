@@ -63,7 +63,7 @@ export async function updateRole(params) {
  */
 export async function enableRole(params) {
   const { id, status } = params;
-  return request.patch(`/roles/${id}/status?${stringify(status)}`);
+  return request.patch(`/roles/${id}/status?${stringify({ status })}`);
 }
 
 /**

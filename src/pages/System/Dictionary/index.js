@@ -1,11 +1,12 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Card, Button, Input, Divider, message, Switch, Table, Popconfirm } from 'antd';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { RollbackOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { isEqual, isEmpty } from 'lodash';
 import { Link, history, connect } from 'umi';
 import moment from 'moment';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { RollbackOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import Authorized from '@/utils/Authorized';
+import NoMatch from '@/components/Authorized/NoMatch';
 import { getValue } from '@/utils/utils';
 import DictionaryForm from './components/DictionaryForm';
 import styles from '../System.less';
@@ -22,29 +23,30 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
   // 列表参数
   const [params, setParams] = useState({
     current: pagination.current || 1,
-    pageSize: pagination.pageSize || 10,
+    pageSize: pagination.pageSize || 2,
     parentId: parentDictId,
   });
 
   // 【复选框状态属性与函数】
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-  // 【首次请求加载列表数据】
+  // 【初始化后，加载列表数据】
   useEffect(() => {
     dispatch({
       type: 'systemDictionary/fetch',
-      payload: params,
+      payload: {
+        ...params,
+      },
     });
     return () => {
       dispatch({
         type: 'systemDictionary/clearList',
       });
     };
-  }, [parentDictId, dispatch]);
+  }, [params, dispatch]);
 
   // 【开启禁用字典状态】
   const toggleState = (checked, record) => {
-    // 传递parentId方便刷新
     const { id, parentId } = record;
     dispatch({
       type: 'systemDictionary/enable',
@@ -61,14 +63,14 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
     message.info('演示环境，暂未开放。');
   };
 
-  // 【批量删除】
+  // 【批量删除字典】
   const handleBatchDelete = () => {
     if (selectedRowKeys.length === 0) return;
     dispatch({
       type: 'systemDictionary/deleteBatch',
       payload: {
-        parentId: parentDictId,
         ids: selectedRowKeys,
+        parentId: parentDictId,
       },
       callback: () => {
         setSelectedRowKeys([]);
@@ -116,6 +118,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
 
     const { current, pageSize } = page;
     setParams({
+      ...params,
       current,
       pageSize,
       ...filters,
@@ -169,8 +172,8 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       ],
       filterMultiple: false,
       render: (text, record) => (
-        <Authorized authority="system:dictionary:status" noMatch="--">
-          <Switch checked={text} onClick={(checked) => toggleState(checked, record)} />
+        <Authorized authority="system:dictionary:status" noMatch={NoMatch(!!text)}>
+          <Switch checked={!!text} onClick={(checked) => toggleState(checked, record)} />
         </Authorized>
       ),
     },

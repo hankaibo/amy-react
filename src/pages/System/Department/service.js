@@ -5,8 +5,8 @@ import request from '@/utils/request';
  * 根据状态获取部门树。
  * @returns {Promise<void>}
  */
-export async function getDepartmentTree() {
-  return request('/departments');
+export async function getDepartmentTree(params) {
+  return request(`/departments?${stringify(params)}`);
 }
 
 /**
