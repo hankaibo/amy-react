@@ -15,14 +15,14 @@ export default {
   },
   test: {
     '/api/': {
-      target: 'http://localhost:8080/',
+      target: 'http://58.87.121.239:9001/',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
   },
   pre: {
     '/api/': {
-      target: 'http://58.87.121.239:9001/',
+      target: 'your api',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
