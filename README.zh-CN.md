@@ -26,7 +26,11 @@
 $ git clone https://github.com/hankaibo/myantdpro.git myantdpro
 $ cd myantdpro
 $ npm install(npm --registry https://registry.npm.taobao.org install)
-$ npm start         # 访问 http://localhost:8000
+$ npm start         # 访问 http://localhost:8000（项目本地mock模拟接口）
+  or
+  npm run dev       # 访问 http://localhost:9000（你自己的后台真实接口）
+  or
+  npm run start:pre # 访问 http://localhost:9000（我的在线测试接口）
 ```
 
 ## 支持环境
