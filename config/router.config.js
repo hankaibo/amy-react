@@ -79,11 +79,11 @@ export default [
                   },
                 ],
               },
-              {
-                path: '/system/information',
-                name: 'information',
-                component: './System/Information',
-              },
+              // {
+              //   path: '/system/information',
+              //   name: 'information',
+              //   component: './System/Information',
+              // },
               {
                 component: './404',
               },

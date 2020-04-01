@@ -22,7 +22,7 @@ export default {
   },
   pre: {
     '/api/': {
-      target: 'your pre url',
+      target: 'http://58.87.121.239:9001/',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

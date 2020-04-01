@@ -71,6 +71,7 @@ export default {
         type: 'fetch',
         payload: {
           ...searchParams,
+          current: 1,
         },
       });
       if (callback) callback();

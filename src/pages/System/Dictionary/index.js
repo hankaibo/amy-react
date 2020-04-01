@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo } from 'react';
-import { Card, Button, Input, Divider, message, Switch, Table, Popconfirm } from 'antd';
+import { Card, Table, Input, Switch, Button, Popconfirm, Divider, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { RollbackOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { isEqual, isEmpty } from 'lodash';
@@ -23,8 +23,9 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
   // 列表参数
   const [params, setParams] = useState({
     current: pagination.current || 1,
-    pageSize: pagination.pageSize || 2,
+    pageSize: pagination.pageSize || 10,
     parentId: parentDictId,
+    status: null,
   });
 
   // 【复选框状态属性与函数】
@@ -47,13 +48,13 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
 
   // 【开启禁用字典状态】
   const toggleState = (checked, record) => {
-    const { id, parentId } = record;
+    const { id } = record;
     dispatch({
       type: 'systemDictionary/enable',
       payload: {
         id,
         status: checked,
-        parentId,
+        searchParams: params,
       },
     });
   };
@@ -70,7 +71,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       type: 'systemDictionary/deleteBatch',
       payload: {
         ids: selectedRowKeys,
-        parentId: parentDictId,
+        searchParams: params,
       },
       callback: () => {
         setSelectedRowKeys([]);
@@ -81,12 +82,12 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
 
   // 【删除字典】
   const handleDelete = (record) => {
-    const { id, parentId } = record;
+    const { id } = record;
     dispatch({
       type: 'systemDictionary/delete',
       payload: {
         id,
-        parentId,
+        searchParams: params,
       },
       callback: () => {
         setSelectedRowKeys([]);
@@ -172,8 +173,8 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       ],
       filterMultiple: false,
       render: (text, record) => (
-        <Authorized authority="system:dictionary:status" noMatch={NoMatch(!!text)}>
-          <Switch checked={!!text} onClick={(checked) => toggleState(checked, record)} />
+        <Authorized authority="system:dictionary:status" noMatch={NoMatch(text)}>
+          <Switch checked={text} onClick={(checked) => toggleState(checked, record)} />
         </Authorized>
       ),
     },
@@ -184,10 +185,18 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
     },
     {
       title: '操作',
+      width: 90,
+      fixed: 'right',
       render: (text, record) => (
         <>
           <Authorized authority="system:dictionary:update" noMatch={null}>
-            <DictionaryForm isEdit id={record.id} match={match} location={location}>
+            <DictionaryForm
+              isEdit
+              id={record.id}
+              match={match}
+              location={location}
+              searchParams={params}
+            >
               <EditOutlined title="编辑" className="icon" />
             </DictionaryForm>
             <Divider type="vertical" />
@@ -213,7 +222,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>
             <Authorized authority="system:dictionary:add" noMatch={null}>
-              <DictionaryForm match={match} location={location}>
+              <DictionaryForm match={match} location={location} searchParams={params}>
                 <Button type="primary" title="新增">
                   <PlusOutlined />
                 </Button>

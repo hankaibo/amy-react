@@ -6,13 +6,19 @@ import styles from '../../System.less';
 
 const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) => ({
   dictionary,
-  loading: loading.effects['systemDictionary/fetchById'],
-}))(({ loading, children, isEdit, id, dictionary, dispatch, ...rest }) => {
+  loading:
+    loading.effects[
+      ('systemDictionary/fetchById', 'systemDictionary/add', 'systemDictionary/update')
+    ],
+}))(({ loading, children, isEdit, id, searchParams, dictionary, dispatch, ...rest }) => {
   const [form] = Form.useForm();
-  const { location } = rest;
+  const { location, match } = rest;
   const {
     query: { name: parentName },
   } = location;
+  const {
+    params: { id: parentId },
+  } = match;
   const { resetFields, setFieldsValue } = form;
 
   // 【模态框显示隐藏属性】
@@ -58,11 +64,12 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
   // 【添加与修改】
   const handleAddOrUpdate = (values) => {
     if (isEdit) {
-      Object.assign(values, { id });
+      Object.assign(values, { id }, { parentId });
       dispatch({
         type: 'systemDictionary/update',
         payload: {
           values,
+          searchParams,
         },
         callback: () => {
           hideModelHandler();
@@ -70,10 +77,12 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
         },
       });
     } else {
+      Object.assign(values, { parentId });
       dispatch({
         type: 'systemDictionary/add',
         payload: {
           values,
+          searchParams,
         },
         callback: () => {
           hideModelHandler();

@@ -37,7 +37,7 @@ export default {
       if (callback) callback();
     },
     *add({ payload, callback }, { call, put }) {
-      const { values, parentId } = payload;
+      const { values, searchParams } = payload;
       const params = { ...values, status: +values.status };
       const response = yield call(addDict, params);
       const { apierror } = response;
@@ -47,7 +47,8 @@ export default {
       yield put({
         type: 'fetch',
         payload: {
-          parentId,
+          ...searchParams,
+          current: 1,
         },
       });
       if (callback) callback();
@@ -68,80 +69,64 @@ export default {
       });
       if (callback) callback();
     },
-    *update({ payload, callback }, { call, put, select }) {
-      const { values, parentId } = payload;
+    *update({ payload, callback }, { call, put }) {
+      const { values, searchParams } = payload;
       const params = { ...values, status: +values.status };
       const response = yield call(updateDict, params);
       const { apierror } = response;
       if (apierror) {
         return;
       }
-      const pagination = yield select((state) => state.systemDictionary.pagination);
-      const { current, pageSize } = pagination;
       yield put({
         type: 'fetch',
         payload: {
-          parentId,
-          current,
-          pageSize,
+          ...searchParams,
         },
       });
       if (callback) callback();
     },
-    *enable({ payload, callback }, { call, put, select }) {
-      const { id, parentId, status } = payload;
+    *enable({ payload, callback }, { call, put }) {
+      const { id, status, searchParams } = payload;
       const params = { id, status: +status };
       const response = yield call(enableDict, params);
       const { apierror } = response;
       if (apierror) {
         return;
       }
-      const pagination = yield select((state) => state.systemDictionary.pagination);
-      const { current, pageSize } = pagination;
       yield put({
         type: 'fetch',
         payload: {
-          parentId,
-          current,
-          pageSize,
+          ...searchParams,
         },
       });
       if (callback) callback();
     },
-    *delete({ payload, callback }, { call, put, select }) {
-      const { id, parentId } = payload;
+    *delete({ payload, callback }, { call, put }) {
+      const { id, searchParams } = payload;
       const response = yield call(deleteDict, id);
       const { apierror } = response;
       if (apierror) {
         return;
       }
-      const pagination = yield select((state) => state.systemDictionary.pagination);
-      const { current, pageSize } = pagination;
       yield put({
         type: 'fetch',
         payload: {
-          parentId,
-          current,
-          pageSize,
+          ...searchParams,
         },
       });
       if (callback) callback();
     },
-    *deleteBatch({ payload, callback }, { call, put, select }) {
-      const { ids, parentId } = payload;
+    *deleteBatch({ payload, callback }, { call, put }) {
+      const { ids, searchParams } = payload;
       const response = yield call(deleteBatchDict, ids);
       const { apierror } = response;
       if (apierror) {
         return;
       }
-      const pagination = yield select((state) => state.systemDictionary.pagination);
-      const { current, pageSize } = pagination;
       yield put({
         type: 'fetch',
         payload: {
-          parentId,
-          current,
-          pageSize,
+          ...searchParams,
         },
       });
       if (callback) callback();
