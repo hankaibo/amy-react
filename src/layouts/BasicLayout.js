@@ -34,7 +34,6 @@ const menuDataRender = (menuList) =>
       ...item,
       children: item.children ? menuDataRender(item.children) : [],
     };
-    console.log(item);
     return Authorized.check(item.authority, localItem, null);
   });
 
@@ -117,7 +116,7 @@ const BasicLayout = (props) => {
           );
         }}
         footerRender={() => <DefaultFooter links={[]} copyright={<span>copyright</span>} />}
-        menuDataRender={Array.isArray(menuDataRender)}
+        menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
         {...props}
         {...settings}
