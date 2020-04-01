@@ -26,11 +26,11 @@ An out-of-box UI solution for enterprise applications as a React boilerplate.
 $ git clone https://github.com/hankaibo/myantdpro.git myantdpro
 $ cd myantdpro
 $ npm install(or npm --registry https://registry.npm.taobao.org install)
-$ npm start         # visit http://localhost:8000（local mock api）
+$ npm start         # visit http://localhost:8000（项目本地mock模拟接口）
   or
-  npm run dev       # visit http://localhost:9000（your api）
+  npm run dev       # visit http://localhost:9000（你自己的后台真实接口）
   or
-  npm run start:pre # visit http://localhost:9000（my online api）
+  npm run start:pre # visit http://localhost:9000（我的在线测试接口）
 ```
 
 ## Browsers support

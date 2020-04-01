@@ -146,7 +146,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       dataIndex: 'name',
       render: (text, record) =>
         // 非子节点可以跳转
-        !isEmpty(record.parentId) && record.status ? (
+        !record.parentId ? (
           <Link to={`/system/dictionaries/${record.id}?name=${text}`}>{text}</Link>
         ) : (
           <span>{text}</span>
