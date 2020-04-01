@@ -21,7 +21,7 @@ export default {
     list: [],
     // 编辑
     role: {},
-    // 资源树、选中的Keys、半联动的keys
+    // 资源树、选中keys、半联动的keys
     treeData: [],
     checkedKeys: [],
     halfCheckedKeys: [],
@@ -58,7 +58,7 @@ export default {
       if (callback) callback();
     },
     *add({ payload, callback }, { call, put }) {
-      const { values, oldParentId: parentId } = payload;
+      const { values, searchParams } = payload;
       const params = { ...values, status: +values.status };
       const response = yield call(addRole, params);
       const { apierror } = response;
@@ -68,7 +68,7 @@ export default {
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          id: parentId,
+          ...searchParams,
         },
       });
       yield put({
@@ -93,49 +93,45 @@ export default {
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
-      const { values, oldParentId: parentId } = payload;
+      const { values, searchParams } = payload;
       const params = { ...values, status: +values.status };
       const response = yield call(updateRole, params);
       const { apierror } = response;
       if (apierror) {
         return;
       }
-      if (parentId) {
-        yield put({
-          type: 'fetchChildrenById',
-          payload: {
-            id: parentId,
-          },
-        });
-      }
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          ...searchParams,
+        },
+      });
       yield put({
         type: 'fetch',
       });
       if (callback) callback();
     },
     *enable({ payload, callback }, { call, put }) {
-      const { id, status, parentId } = payload;
+      const { id, status, searchParams } = payload;
       const params = { id, status: +status };
       const response = yield call(enableRole, params);
       const { apierror } = response;
       if (apierror) {
         return;
       }
-      if (parentId) {
-        yield put({
-          type: 'fetchChildrenById',
-          payload: {
-            id: parentId,
-          },
-        });
-      }
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          ...searchParams,
+        },
+      });
       yield put({
         type: 'fetch',
       });
       if (callback) callback();
     },
     *delete({ payload, callback }, { call, put }) {
-      const { id, parentId } = payload;
+      const { id, searchParams } = payload;
       const response = yield call(deleteRole, id);
       const { apierror } = response;
       if (apierror) {
@@ -144,7 +140,7 @@ export default {
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          id: parentId,
+          ...searchParams,
         },
       });
       yield put({
@@ -153,8 +149,8 @@ export default {
       if (callback) callback();
     },
     *move({ payload, callback }, { call, put }) {
-      const { parentId } = payload;
-      const response = yield call(moveRole, payload);
+      const { searchParams, ...values } = payload;
+      const response = yield call(moveRole, values);
       const { apierror } = response;
       if (apierror) {
         return;
@@ -162,7 +158,7 @@ export default {
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          id: parentId,
+          ...searchParams,
         },
       });
       yield put({

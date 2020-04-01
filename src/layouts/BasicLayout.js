@@ -30,7 +30,11 @@ const noMatch = (
  */
 const menuDataRender = (menuList) =>
   menuList.map((item) => {
-    const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
+    const localItem = {
+      ...item,
+      children: item.children ? menuDataRender(item.children) : [],
+    };
+    console.log(item);
     return Authorized.check(item.authority, localItem, null);
   });
 
@@ -92,7 +96,6 @@ const BasicLayout = (props) => {
           if (menuItemProps.isUrl || menuItemProps.children || !menuItemProps.path) {
             return defaultDom;
           }
-
           return <Link to={menuItemProps.path}>{defaultDom}</Link>;
         }}
         breadcrumbRender={(routers = []) => [

@@ -8,7 +8,7 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
   tree,
   api,
   loading: loading.effects[('systemApi/fetchById', 'systemApi/add', 'systemApi/update')],
-}))(({ loading, children, isEdit, id, api, tree, dispatch }) => {
+}))(({ loading, children, isEdit, id, searchParams, api, tree, dispatch }) => {
   const [form] = Form.useForm();
   const { resetFields, setFieldsValue } = form;
 
@@ -69,7 +69,7 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
         type: 'systemApi/update',
         payload: {
           values,
-          oldParentId: api.parentId,
+          searchParams,
         },
         callback: () => {
           hideModelHandler();
@@ -82,7 +82,7 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
         type: 'systemApi/add',
         payload: {
           values,
-          oldParentId: id,
+          searchParams,
         },
         callback: () => {
           hideModelHandler();

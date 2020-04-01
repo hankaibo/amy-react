@@ -4,6 +4,7 @@
   "private": true,
   "description": "前端脚手架",
   "scripts": {
+    "postinstall": "umi g tmp",
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "umi build",
     "lint": "umi g tmp && npm run lint:js && npm run lint:style && npm run lint:prettier",
@@ -40,9 +41,9 @@
     "not ie <= 10"
   ],
   "dependencies": {
-    "@ant-design/icons": "^4.0.4",
+    "@ant-design/icons": "^4.0.5",
     "@ant-design/pro-layout": "^5.0.8",
-    "antd": "^4.0.4",
+    "antd": "4.0.4",
     "classnames": "^2.2.6",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
@@ -55,20 +56,20 @@
     "react-helmet-async": "^1.0.4",
     "sockjs-client": "^1.4.0",
     "stompjs": "^2.3.3",
-    "umi": "^3.0.14",
+    "umi": "^3.0.16",
     "umi-request": "^1.2.19",
     "use-merge-value": "^1.0.1"
   },
   "devDependencies": {
-    "@umijs/fabric": "^2.0.5",
+    "@umijs/fabric": "^2.0.7",
     "@umijs/preset-ant-design-pro": "^1.0.1",
     "@umijs/preset-react": "^1.4.8",
-    "@umijs/preset-ui": "^2.1.5",
+    "@umijs/preset-ui": "^2.1.7",
     "chalk": "^3.0.0",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
     "husky": "^4.2.3",
-    "lint-staged": "^10.0.8",
+    "lint-staged": "^10.1.1",
     "mockjs": "^1.1.0",
     "prettier": "^2.0.1",
     "stylelint": "^13.2.1"

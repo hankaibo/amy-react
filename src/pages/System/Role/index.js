@@ -27,7 +27,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
   // 【当前点击的角色】
   const [currentRole, setCurrentRole] = useState(null);
   // 【查询参数】
-  const [params, setParams] = useState({ id: null });
+  const [params, setParams] = useState({ id: null, status: null });
   // 【首次】
   const [first, setFirst] = useState(true);
 
@@ -81,13 +81,13 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
 
   // 【启用禁用角色】
   const toggleStatus = (checked, record) => {
-    const { id, parentId } = record;
+    const { id } = record;
     dispatch({
       type: 'systemRole/enable',
       payload: {
         id,
         status: checked,
-        parentId,
+        searchParams: params,
       },
     });
   };
@@ -101,9 +101,9 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
     dispatch({
       type: 'systemRole/move',
       payload: {
-        ...record,
         sourceId: record.id,
         targetId,
+        searchParams: params,
       },
       callback: () => {
         message.success('移动角色成功。');
@@ -113,12 +113,12 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
 
   // 【删除角色】
   const handleDelete = (record) => {
-    const { id, parentId } = record;
+    const { id } = record;
     dispatch({
       type: 'systemRole/delete',
       payload: {
         id,
-        parentId,
+        searchParams: params,
       },
       callback: () => {
         message.success('删除角色成功。');
@@ -134,11 +134,8 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       return newObj;
     }, {});
 
-    const { id } = currentRole;
-
     setParams({
       ...params,
-      id,
       ...filters,
     });
   };
@@ -193,10 +190,12 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
     },
     {
       title: '操作',
+      width: 130,
+      fixed: 'right',
       render: (text, record) => (
         <>
           <Authorized authority="system:role:update" noMatch={null}>
-            <RoleForm isEdit id={record.id}>
+            <RoleForm isEdit id={record.id} searchParams={params}>
               <EditOutlined title="编辑" className="icon" />
             </RoleForm>
             <Divider type="vertical" />
@@ -213,7 +212,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:role:grant" noMatch={null}>
-            <RoleResourceForm id={record.id}>
+            <RoleResourceForm id={record.id} disabled={!record.status}>
               <KeyOutlined title="分配资源" className="icon" />
             </RoleResourceForm>
           </Authorized>
@@ -254,7 +253,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:role:add" noMatch={null}>
-                  <RoleForm id={currentRole && currentRole.id}>
+                  <RoleForm id={currentRole && currentRole.id} searchParams={params}>
                     <Button type="primary" title="新增">
                       <PlusOutlined />
                     </Button>

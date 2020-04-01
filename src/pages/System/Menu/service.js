@@ -62,7 +62,7 @@ export async function updateMenu(params) {
  */
 export async function enableMenu(params) {
   const { id, ...rest } = params;
-  return request.patch(`/resources/${id}?${stringify(rest)}`);
+  return request.patch(`/resources/${id}/status?${stringify(rest)}`);
 }
 
 /**

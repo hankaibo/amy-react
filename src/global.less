@@ -33,11 +33,13 @@ ol {
   .ant-table {
     width: 100%;
     overflow-x: auto;
+
     &-thead > tr,
     &-tbody > tr {
       > th,
       > td {
         white-space: pre;
+
         > span {
           display: block;
         }
@@ -50,6 +52,23 @@ ol {
 @media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
   body .ant-design-pro > .ant-layout {
     min-height: 100vh;
+  }
+}
+
+.disabled {
+  display: inline-block;
+  cursor: not-allowed;
+
+  > span {
+    color: @disabled-color;
+    text-shadow: none;
+    background-color: @disabled-bg;
+    box-shadow: none;
+    pointer-events: none;
+
+    > * {
+      pointer-events: none;
+    }
   }
 }
 

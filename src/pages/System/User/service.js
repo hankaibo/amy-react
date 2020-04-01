@@ -62,7 +62,7 @@ export async function updateUser(params) {
  */
 export async function enableUser(params) {
   const { id, status } = params;
-  return request.patch(`/users/${id}/status?status=${status}`);
+  return request.patch(`/users/${id}/status?${stringify({ status })}`);
 }
 
 /**

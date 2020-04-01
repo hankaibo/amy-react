@@ -9,7 +9,7 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
   tree,
   menu,
   loading: loading.effects[('systemMenu/fetchById', 'systemMenu/add', 'systemMenu/update')],
-}))(({ loading, children, isEdit, id, menu, tree, dispatch }) => {
+}))(({ loading, children, isEdit, id, searchParams, menu, tree, dispatch }) => {
   const [form] = Form.useForm();
   const { resetFields, setFieldsValue } = form;
 
@@ -70,7 +70,7 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
         type: 'systemMenu/update',
         payload: {
           values,
-          oldParentId: menu.parentId,
+          searchParams,
         },
         callback: () => {
           hideModelHandler();
@@ -83,7 +83,7 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
         type: 'systemMenu/add',
         payload: {
           values,
-          oldParentId: id,
+          searchParams,
         },
         callback: () => {
           hideModelHandler();

@@ -91,14 +91,12 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
   // 【启用禁用按钮】
   const toggleState = (checked, record) => {
     const { id } = record;
-    const { id: parentId } = currentMenu;
     dispatch({
       type: 'systemApi/enable',
       payload: {
-        type: API_TYPE,
         id,
         status: checked,
-        parentId,
+        searchParams: params,
       },
     });
   };
@@ -112,9 +110,9 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
     dispatch({
       type: 'systemApi/move',
       payload: {
-        ...record,
         sourceId: record.id,
         targetId,
+        searchParams: params,
       },
       callback: () => {
         message.success('移动接口成功。');
@@ -124,13 +122,12 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
 
   // 【删除接口】
   const handleDelete = (record) => {
-    const { id, parentId } = record;
+    const { id } = record;
     dispatch({
       type: 'systemApi/delete',
       payload: {
         id,
-        parentId,
-        type: API_TYPE,
+        searchParams: params,
       },
       callback: () => {
         message.success('删除接口成功。');
@@ -146,11 +143,8 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
       return newObj;
     }, {});
 
-    const { id } = currentMenu;
-
     setParams({
       ...params,
-      id,
       ...filters,
     });
   };
@@ -212,11 +206,11 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
     {
       title: '操作',
       width: 90,
-      align: 'center',
+      fixed: 'right',
       render: (text, record) => (
         <>
           <Authorized authority="system:api:update" noMatch={null}>
-            <ApiForm isEdit id={record.id}>
+            <ApiForm isEdit id={record.id} searchParams={params}>
               <EditOutlined title="编辑" className="icon" />
             </ApiForm>
             <Divider type="vertical" />
@@ -267,7 +261,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:api:add" noMatch={null}>
-                  <ApiForm id={currentMenu && currentMenu.id}>
+                  <ApiForm id={currentMenu && currentMenu.id} searchParams={params}>
                     <Button type="primary" title="新增">
                       <PlusOutlined />
                     </Button>

@@ -1,21 +1,21 @@
 import React, { useState, useEffect, memo } from 'react';
-import { connect } from 'umi';
 import {
   Row,
   Col,
   Card,
   Tree,
   Table,
-  Button,
   Input,
   Switch,
+  Button,
   Popconfirm,
   Divider,
   message,
 } from 'antd';
-import { isEqual } from 'lodash';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
+import { isEqual, isArray, isEmpty } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import IconFont from '@/components/IconFont';
@@ -38,18 +38,21 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
   loading: loading.effects['systemUser/fetch'],
 }))(({ loading, tree, list, pagination, dispatch }) => {
   // 【当前点击的部门】
-  const [department, setDepartment] = useState(null);
+  const [currentDepartment, setCurrentDepartment] = useState(null);
   // 【复选框状态属性与函数】
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   // 列表参数
   const [params, setParams] = useState({
     current: pagination.current || 1,
     pageSize: pagination.pageSize || 10,
+    departmentId: null,
+    sex: null,
+    status: null,
   });
   // 【首次】
   const [first, setFirst] = useState(true);
 
-  // 【首次请求加载部门树】
+  // 【初始化后，加载左侧部门树数据】
   useEffect(() => {
     // 用户页面默认只查询可用状态的部门。
     dispatch({
@@ -65,7 +68,16 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
     };
   }, [dispatch]);
 
-  // 【查询列表】
+  // 【默认部门的用户数据、当前部门】
+  useEffect(() => {
+    if (first && isArray(tree) && !isEmpty(tree)) {
+      setParams({ ...params, departmentId: tree[0].id });
+      setCurrentDepartment({ ...tree[0] });
+      setFirst(false);
+    }
+  }, [first, tree]);
+
+  // 【查询用户列表】
   useEffect(() => {
     const { departmentId } = params;
     if (departmentId) {
@@ -73,7 +85,6 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
         type: 'systemUser/fetch',
         payload: {
           ...params,
-          departmentId,
         },
       });
     }
@@ -84,21 +95,12 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
     };
   }, [params, dispatch]);
 
-  // 【默认选中、展开、子部门数据、当前部门】
-  useEffect(() => {
-    if (first && Array.isArray(tree) && tree.length) {
-      setParams({ ...params, departmentId: tree[0].id });
-      setDepartment({ ...tree[0] });
-      setFirst(false);
-    }
-  }, [first, tree]);
-
   // 【选择部门并获取其用户数据】
-  const handleSelect = (selectedKeys, info) => {
+  const handleSelect = (selectedKeys, { selectedNodes }) => {
     if (selectedKeys.length === 1) {
       const id = selectedKeys[0];
+      setCurrentDepartment(selectedNodes[0]);
       setParams({ ...params, departmentId: id });
-      setDepartment(info.node.props);
       setSelectedRowKeys([]);
     }
   };
@@ -106,13 +108,12 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
   // 【启用禁用用户】
   const toggleStatus = (checked, record) => {
     const { id } = record;
-    const { id: departmentId } = department;
     dispatch({
       type: 'systemUser/enable',
       payload: {
         id,
         status: checked,
-        departmentId,
+        searchParams: params,
       },
     });
   };
@@ -125,12 +126,11 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
   // 【批量删除用户】
   const handleBatchDelete = () => {
     if (selectedRowKeys.length === 0) return;
-    const { id: departmentId } = department;
     dispatch({
       type: 'systemUser/deleteBatch',
       payload: {
         ids: selectedRowKeys,
-        departmentId,
+        searchParams: params,
       },
       callback: () => {
         setSelectedRowKeys([]);
@@ -142,12 +142,11 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
   // 【删除用户】
   const handleDelete = (record) => {
     const { id } = record;
-    const { id: departmentId } = department;
     dispatch({
       type: 'systemUser/delete',
       payload: {
         id,
-        departmentId,
+        searchParams: params,
       },
       callback: () => {
         setSelectedRowKeys([]);
@@ -172,14 +171,12 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       return newObj;
     }, {});
 
-    const { id: departmentId } = department;
     const { current, pageSize } = page;
     setParams({
       ...params,
-      ...filters,
-      departmentId,
       current,
       pageSize,
+      ...filters,
     });
   };
 
@@ -214,7 +211,6 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       title: '邮箱',
       dataIndex: 'email',
     },
-    // TODO 考虑获取字典数据
     {
       title: '性别',
       dataIndex: 'sex',
@@ -252,14 +248,13 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
     },
     {
       title: '操作',
-      width: 150,
+      width: 170,
       fixed: 'right',
-      align: 'center',
       render: (text, record) => (
         <>
           {/* Note: system:user:xxx为【资源保护】菜单中用户管理修改接口(system:user:update)的编码名称。必须两者一致才能动态隐藏显示按钮。 */}
           <Authorized authority="system:user:update" noMatch={null}>
-            <UserForm isEdit id={record.id}>
+            <UserForm isEdit id={record.id} searchParams={params}>
               <EditOutlined title="编辑" className="icon" />
             </UserForm>
             <Divider type="vertical" />
@@ -276,13 +271,13 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:user:grant" noMatch={null}>
-            <UserRoleForm userId={record.id}>
+            <UserRoleForm id={record.id} disabled={!record.status}>
               <IconFont type="icon-role" title="分配角色" className="icon" />
             </UserRoleForm>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system:user:password:reset" noMatch={null}>
-            <UserPasswordForm userId={record.id} username={record.username}>
+          <Authorized authority="system:user:pwd:reset" noMatch={null}>
+            <UserPasswordForm id={record.id} username={record.username}>
               <IconFont type="icon-reset" title="重置密码" className="icon" />
             </UserPasswordForm>
           </Authorized>
@@ -297,11 +292,11 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
           <Card
             title="组织"
-            style={{ marginTop: 10 }}
             bordered={false}
+            style={{ marginTop: 10 }}
             bodyStyle={{ padding: '15px' }}
           >
-            {Array.isArray(tree) && tree.length > 0 && (
+            {isArray(tree) && !isEmpty(tree) && (
               <Tree
                 showLine
                 switcherIcon={<DownOutlined />}
@@ -315,7 +310,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
         </Col>
         <Col xs={24} sm={24} md={24} lg={18} xl={18}>
           <Card
-            title={department && `【${department.title}】的用户`}
+            title={currentDepartment && `【${currentDepartment.title}】的用户`}
             bordered={false}
             style={{ marginTop: 10 }}
             bodyStyle={{ padding: '15px' }}
@@ -323,7 +318,10 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:user:add" noMatch={null}>
-                  <UserForm departmentId={department ? department.id.toString() : null}>
+                  <UserForm
+                    departmentId={currentDepartment ? currentDepartment.id : null}
+                    searchParams={params}
+                  >
                     <Button type="primary" title="新增">
                       <PlusOutlined />
                     </Button>
@@ -352,7 +350,6 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
                 pagination={pagination}
                 rowSelection={rowSelection}
                 onChange={handleTableChange}
-                scroll={{ x: 1500 }}
               />
             </div>
           </Card>

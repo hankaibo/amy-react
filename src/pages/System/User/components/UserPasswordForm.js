@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
 import { Modal, Form, Input, Button, message } from 'antd';
+import { connect } from 'umi';
+import styles from '@/pages/System/System.less';
 
-const UserPasswordForm = connect()(({ children, userId, username, dispatch }) => {
+const UserPasswordForm = connect()(({ children, id, username, dispatch }) => {
   const [form] = Form.useForm();
   const { setFieldsValue } = form;
 
@@ -15,6 +16,7 @@ const UserPasswordForm = connect()(({ children, userId, username, dispatch }) =>
     setVisible(true);
   };
   const hideModelHandler = () => {
+    setFieldsValue();
     setVisible(false);
   };
 
@@ -22,7 +24,7 @@ const UserPasswordForm = connect()(({ children, userId, username, dispatch }) =>
     if (visible) {
       setFieldsValue({ password: '123456' });
     }
-  }, [visible, userId, setFieldsValue]);
+  }, [visible, setFieldsValue]);
 
   // 【重置密码】
   const handleReset = (values) => {
@@ -30,7 +32,7 @@ const UserPasswordForm = connect()(({ children, userId, username, dispatch }) =>
       type: 'systemUser/reset',
       payload: {
         ...values,
-        id: userId,
+        id,
       },
       callback: () => {
         hideModelHandler();
@@ -63,7 +65,7 @@ const UserPasswordForm = connect()(({ children, userId, username, dispatch }) =>
       <Modal
         forceRender
         destroyOnClose
-        title={`您确定要重置${username}的密码吗？`}
+        title={`您确定要重置 ${username} 的密码吗？`}
         visible={visible}
         onCancel={hideModelHandler}
         footer={null}
@@ -72,7 +74,7 @@ const UserPasswordForm = connect()(({ children, userId, username, dispatch }) =>
           {...layout}
           form={form}
           name="userPasswordForm"
-          initialValues={{}}
+          className={styles.form}
           onFinish={handleReset}
         >
           <Form.Item

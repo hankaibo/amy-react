@@ -63,6 +63,7 @@ export default {
         type: 'fetchChildrenById',
         payload: {
           ...searchParams,
+          current: 1,
         },
       });
       yield put({

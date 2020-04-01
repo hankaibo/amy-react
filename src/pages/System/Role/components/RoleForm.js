@@ -8,7 +8,7 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
   tree,
   role,
   loading: loading.effects[('systemRole/fetchById', 'systemRole/add', 'systemRole/update')],
-}))(({ loading, children, isEdit, id, role, tree, dispatch }) => {
+}))(({ loading, children, isEdit, id, searchParams, role, tree, dispatch }) => {
   const [form] = Form.useForm();
   const { resetFields, setFieldsValue } = form;
 
@@ -70,7 +70,7 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
         type: 'systemRole/update',
         payload: {
           values,
-          oldParentId: role.parentId,
+          searchParams,
         },
         callback: () => {
           hideModelHandler();
@@ -82,7 +82,7 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
         type: 'systemRole/add',
         payload: {
           values,
-          oldParentId: id,
+          searchParams,
         },
         callback: () => {
           hideModelHandler();

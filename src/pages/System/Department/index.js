@@ -39,7 +39,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   // 【部门树相关配置】
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
-  const [autoExpandParent, setAutoExpandParent] = useState(false);
+  const [autoExpandParent, setAutoExpandParent] = useState(true);
   // 【部门树搜索参数】
   const [searchValue, setSearchValue] = useState('');
   // 【查询参数，获取table列表的参数】
@@ -91,7 +91,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
     };
   }, [params, dispatch]);
 
-  // 【展开部门】
+  // 【展开收起部门】
   const handleExpand = (keys) => {
     setExpandedKeys(keys);
     setAutoExpandParent(false);
@@ -120,7 +120,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       .filter((item, i, self) => item && self.indexOf(item) === i);
     setExpandedKeys(keys);
     setSearchValue(value);
-    setAutoExpandParent(false);
+    setAutoExpandParent(true);
   };
 
   // 【移动部门】
@@ -178,11 +178,8 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       return newObj;
     }, {});
 
-    const { id } = currentDepartment;
-
     setParams({
       ...params,
-      id,
       ...filters,
     });
   };
@@ -226,8 +223,8 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       ],
       filterMultiple: false,
       render: (text, record) => (
-        <Authorized authority="system:department:status" noMatch={NoMatch(!!text)}>
-          <Switch checked={!!text} onClick={(checked) => toggleState(checked, record)} />
+        <Authorized authority="system:department:status" noMatch={NoMatch(text)}>
+          <Switch checked={text} onClick={(checked) => toggleState(checked, record)} />
         </Authorized>
       ),
     },
@@ -257,6 +254,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
     {
       title: '操作',
       width: 90,
+      fixed: 'right',
       render: (text, record) => (
         <>
           <Authorized authority="system:department:update" noMatch={null}>

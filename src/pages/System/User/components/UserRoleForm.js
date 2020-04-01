@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { Modal, Form, Tree, Button, message } from 'antd';
 import { connect } from 'umi';
-import { Modal, Form, Tree, message, Button } from 'antd';
-import { difference } from '@/utils/utils';
+import { isEmpty } from 'lodash';
+import { difference, getParentKey, getPlainNode } from '@/utils/utils';
 import styles from '@/pages/System/System.less';
 
-const UserRoleForm = connect(
-  ({ systemUser: { roleTree, checkedKeys, halfCheckedKeys }, loading }) => ({
-    treeData: roleTree,
-    roleCheckedKeys: checkedKeys,
-    halfCheckedKeys,
-    loading: loading.effects['systemUser/fetchRoleTree'],
-  }),
-)(({ loading, children, userId, treeData, roleCheckedKeys, halfCheckedKeys, dispatch }) => {
+const UserRoleForm = connect(({ systemUser: { treeData, checkedKeys }, loading }) => ({
+  roleTreeData: treeData,
+  roleCheckedKeys: checkedKeys,
+  loading: loading.effects['systemUser/fetchRoleTree'],
+}))(({ loading, children, disabled, id, roleTreeData, roleCheckedKeys, dispatch }) => {
   const [form] = Form.useForm();
   const { setFieldsValue } = form;
 
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [checkedKeys, setCheckedKeys] = useState([]);
+  const [autoExpandParent, setAutoExpandParent] = useState(false);
   // 【模态框显示隐藏属性】
   const [visible, setVisible] = useState(false);
 
@@ -26,6 +25,7 @@ const UserRoleForm = connect(
     setVisible(true);
   };
   const hideModelHandler = () => {
+    setFieldsValue();
     setVisible(false);
   };
 
@@ -35,7 +35,7 @@ const UserRoleForm = connect(
       dispatch({
         type: 'systemUser/fetchRoleTree',
         payload: {
-          id: userId,
+          id,
           status: 1,
         },
       });
@@ -45,36 +45,50 @@ const UserRoleForm = connect(
         type: 'systemUser/clearRoleTree',
       });
     };
-  }, [visible, userId, dispatch]);
+  }, [visible, id, dispatch]);
 
   // 【回显树复选择框】
   useEffect(() => {
-    setCheckedKeys(roleCheckedKeys);
-    setExpandedKeys(halfCheckedKeys);
-  }, [roleCheckedKeys, halfCheckedKeys, setFieldsValue]);
+    if (!isEmpty(roleCheckedKeys)) {
+      setCheckedKeys(roleCheckedKeys);
+      const keys = getPlainNode(roleTreeData)
+        .map((item) => {
+          if (roleCheckedKeys.includes(item.key)) {
+            return getParentKey(item.key, roleTreeData);
+          }
+          return null;
+        })
+        .filter((item, i, self) => item && self.indexOf(item === i));
+      setExpandedKeys(keys);
+      setAutoExpandParent(true);
+      // 同步到表单
+      setFieldsValue({ ids: roleCheckedKeys });
+    }
+  }, [roleCheckedKeys, setFieldsValue]);
 
   // 【树操作】
   const onExpand = (values) => {
     setExpandedKeys(values);
+    setAutoExpandParent(false);
   };
-  const handleCheck = (values, event) => {
-    const { halfCheckedKeys: halfValues } = event;
-    setCheckedKeys(values);
+  const handleCheck = (values) => {
+    const { checked } = values;
+    setCheckedKeys(checked);
     // 同步到form表单，因为tree组件不是表单组件的一部分，我无法自动同步，需要手动设置一下。
-    setFieldsValue({ ids: [...values, ...halfValues] });
+    setFieldsValue({ ids: [...checked] });
   };
 
   // 【授权】
   const handleGrant = (values) => {
     const { ids } = values;
-    const oldCheckedKeys = [...roleCheckedKeys, ...halfCheckedKeys];
+    const oldCheckedKeys = [...roleCheckedKeys];
     const plusRole = difference(ids, oldCheckedKeys);
     const minusRole = difference(oldCheckedKeys, ids);
 
     dispatch({
       type: 'systemUser/grantUserRole',
       payload: {
-        id: userId,
+        id,
         plusRole,
         minusRole,
       },
@@ -85,27 +99,11 @@ const UserRoleForm = connect(
     });
   };
 
-  // 【表单布局】
-  const layout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 5 },
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 19 },
-    },
-  };
-  const tailLayout = {
-    wrapperCol: {
-      xs: { span: 24, offset: 0 },
-      sm: { span: 19, offset: 5 },
-    },
-  };
-
   return (
     <>
-      <span onClick={showModalHandler}>{children}</span>
+      <span className={disabled ? 'disabled' : ''} onClick={disabled ? null : showModalHandler}>
+        <span>{children}</span>
+      </span>
       <Modal
         forceRender
         destroyOnClose
@@ -114,25 +112,20 @@ const UserRoleForm = connect(
         onCancel={hideModelHandler}
         footer={null}
       >
-        <Form
-          {...layout}
-          form={form}
-          name="userRoleForm"
-          className={styles.form}
-          initialValues={{}}
-          onFinish={handleGrant}
-        >
+        <Form form={form} name="userRoleForm" className={styles.form} onFinish={handleGrant}>
           <Form.Item name="ids">
             <Tree
               checkable
+              checkStrictly
+              autoExpandParent={autoExpandParent}
               expandedKeys={expandedKeys}
               onExpand={onExpand}
               checkedKeys={checkedKeys}
               onCheck={handleCheck}
-              treeData={treeData}
+              treeData={roleTreeData}
             />
           </Form.Item>
-          <Form.Item {...tailLayout}>
+          <Form.Item style={{ textAlign: 'right' }}>
             <Button onClick={hideModelHandler}>取消</Button>
             <Button type="primary" loading={loading} htmlType="submit">
               确定

@@ -22,15 +22,18 @@ export default {
     pagination: {},
     // 编辑
     user: {},
-    // 角色列表与已选角色
-    roleTree: [],
+    // 角色树、选中的keys
+    treeData: [],
     checkedKeys: [],
-    halfCheckedKeys: [],
   },
 
   effects: {
     *fetchTree({ payload, callback }, { call, put }) {
       const response = yield call(getDepartmentTree, payload);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       yield put({
         type: 'saveTree',
         payload: {
@@ -41,6 +44,10 @@ export default {
     },
     *fetch({ payload, callback }, { call, put }) {
       const response = yield call(pageUser, payload);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       const { list, pageNum: current, pageSize, total } = response;
       const newList = list.map((item) => ({ ...item, status: !!item.status }));
       yield put({
@@ -52,18 +59,18 @@ export default {
       });
       if (callback) callback();
     },
-    *add({ payload, callback }, { call, put, select }) {
-      const { departmentId } = payload;
-      const params = { ...payload, status: +payload.status };
-      yield call(addUser, params);
-      const pagination = yield select((state) => state.systemUser.pagination);
-      const { current, pageSize } = pagination;
+    *add({ payload, callback }, { call, put }) {
+      const { values, searchParams } = payload;
+      const params = { ...values, status: +values.status };
+      const response = yield call(addUser, params);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       yield put({
         type: 'fetch',
         payload: {
-          departmentId,
-          current,
-          pageSize,
+          ...searchParams,
         },
       });
       if (callback) callback();
@@ -71,109 +78,115 @@ export default {
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getUserById, id);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       const user = {
         ...response,
         status: !!response.status,
         departmentId: response.departmentId.toString(),
       };
       yield put({
-        type: 'saveUser',
+        type: 'save',
         payload: {
           user,
         },
       });
       if (callback) callback();
     },
-    *update({ payload, callback }, { call, put, select }) {
-      const { oldDepartmentId, ...rest } = payload;
-      const params = { ...rest, status: +payload.status };
-      yield call(updateUser, params);
-      const pagination = yield select((state) => state.systemUser.pagination);
-      const { current, pageSize } = pagination;
+    *update({ payload, callback }, { call, put }) {
+      const { values, searchParams } = payload;
+      const params = { ...values, status: +values.status };
+      const response = yield call(updateUser, params);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       yield put({
         type: 'fetch',
         payload: {
-          departmentId: oldDepartmentId,
-          current,
-          pageSize,
+          ...searchParams,
         },
       });
       if (callback) callback();
     },
-    *enable({ payload, callback }, { call, put, select }) {
-      const { id, status, departmentId } = payload;
+    *enable({ payload, callback }, { call, put }) {
+      const { id, status, searchParams } = payload;
       const params = { id, status: +status };
-      yield call(enableUser, params);
-      const pagination = yield select((state) => state.systemUser.pagination);
-      const { current, pageSize } = pagination;
+      const response = yield call(enableUser, params);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       yield put({
         type: 'fetch',
         payload: {
-          departmentId,
-          current,
-          pageSize,
+          ...searchParams,
         },
       });
       if (callback) callback();
     },
     *reset({ payload, callback }, { call }) {
-      yield call(resetUserPassword, payload);
+      const response = yield call(resetUserPassword, payload);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       if (callback) callback();
     },
-    *delete({ payload, callback }, { call, put, select }) {
-      const { id, departmentId } = payload;
-      yield call(deleteUser, id);
-      const pagination = yield select((state) => state.systemUser.pagination);
-      const { current, pageSize } = pagination;
+    *delete({ payload, callback }, { call, put }) {
+      const { id, searchParams } = payload;
+      const response = yield call(deleteUser, id);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       yield put({
         type: 'fetch',
         payload: {
-          departmentId,
-          current,
-          pageSize,
+          ...searchParams,
         },
       });
       if (callback) callback();
     },
-    *deleteBatch({ payload, callback }, { call, put, select }) {
-      const { ids, departmentId } = payload;
-      yield call(deleteBatchUser, ids);
-      const pagination = yield select((state) => state.systemUser.pagination);
-      const { current, pageSize } = pagination;
+    *deleteBatch({ payload, callback }, { call, put }) {
+      const { ids, searchParams } = payload;
+      const response = yield call(deleteBatchUser, ids);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       yield put({
         type: 'fetch',
         payload: {
-          departmentId,
-          current,
-          pageSize,
+          ...searchParams,
         },
       });
       if (callback) callback();
     },
     *fetchRoleTree({ payload, callback }, { call, put }) {
       const response = yield call(listUserRole, payload);
-      const { roleList, roleSelectedList } = response;
-      const selected = [];
-      const halfSelected = [];
-      roleSelectedList.forEach((item) => {
-        if (item.rgt - item.lft === 1) {
-          selected.push(item);
-        } else {
-          halfSelected.push(item);
-        }
-      });
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
+      const { roleTree, roleSelected } = response;
       yield put({
         type: 'saveRoleTree',
         payload: {
-          roleTree: roleList,
-          checkedKeys: selected.map((item) => item.id.toString()),
-          halfCheckedKeys: halfSelected.map((item) => item.id.toString()),
+          treeData: roleTree,
+          checkedKeys: roleSelected.map((item) => item.id.toString()),
         },
       });
       if (callback) callback();
     },
     *grantUserRole({ payload, callback }, { call }) {
-      yield call(grantUserRole, payload);
+      const response = yield call(grantUserRole, payload);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       if (callback) callback();
     },
   },
@@ -207,34 +220,32 @@ export default {
         pagination: {},
       };
     },
-    saveUser(state, { payload }) {
+    save(state, { payload }) {
       const { user } = payload;
       return {
         ...state,
         user,
       };
     },
-    clearUser(state) {
+    clear(state) {
       return {
         ...state,
         user: {},
       };
     },
     saveRoleTree(state, { payload }) {
-      const { roleTree, checkedKeys, halfCheckedKeys } = payload;
+      const { treeData, checkedKeys } = payload;
       return {
         ...state,
-        roleTree,
+        treeData,
         checkedKeys,
-        halfCheckedKeys,
       };
     },
     clearRoleTree(state) {
       return {
         ...state,
-        roleTree: [],
+        treeData: [],
         checkedKeys: [],
-        halfCheckedKeys: [],
       };
     },
   },

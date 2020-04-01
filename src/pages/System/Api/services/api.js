@@ -62,7 +62,7 @@ export async function updateApi(params) {
  */
 export async function enableApi(params) {
   const { id, ...rest } = params;
-  return request.patch(`/resources/${id}?${stringify(rest)}`);
+  return request.patch(`/resources/${id}/status?${stringify(rest)}`);
 }
 
 /**

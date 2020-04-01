@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
 import { Modal, Form, Input, Switch, Radio, Upload, TreeSelect, Button, message } from 'antd';
+import { connect } from 'umi';
+import { isEmpty } from 'lodash';
 import { UpOutlined, DownOutlined, UploadOutlined, PlusOutlined } from '@ant-design/icons';
 import styles from '../../System.less';
 
@@ -27,8 +28,8 @@ const beforeUpload = (file) => {
 const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
   tree,
   user,
-  loading: loading.effects['systemUser/fetchById'],
-}))(({ loading, children, isEdit, id, departmentId, user, tree, dispatch }) => {
+  loading: loading.effects[('systemUser/fetchById', 'systemUser/add', 'systemUser/update')],
+}))(({ loading, children, isEdit, id, searchParams, user, tree, dispatch }) => {
   const [form] = Form.useForm();
   const { setFieldsValue, resetFields } = form;
 
@@ -46,6 +47,7 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
     setVisible(true);
   };
   const hideModelHandler = () => {
+    resetFields();
     setVisible(false);
   };
 
@@ -61,7 +63,7 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
     }
     return () => {
       dispatch({
-        type: 'systemUser/clearUser',
+        type: 'systemUser/clear',
       });
     };
   }, [visible, isEdit, id, dispatch]);
@@ -70,24 +72,32 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
   useEffect(() => {
     // 👍 将条件判断放置在 effect 中
     if (visible && isEdit) {
-      if (Object.keys(user).length > 0) {
+      if (!isEmpty(user)) {
         setFieldsValue({ ...user });
       }
     }
   }, [visible, isEdit, user, setFieldsValue]);
 
+  // 【新建时】
+  useEffect(() => {
+    if (visible && !isEdit) {
+      if (id) {
+        setFieldsValue({ departmentId: id.toString() });
+      }
+    }
+  }, [visible, isEdit, id, setFieldsValue]);
+
   // 【添加与修改】
   const handleAddOrUpdate = (values) => {
     if (isEdit) {
+      Object.assign(values, { id });
       dispatch({
         type: 'systemUser/update',
         payload: {
-          ...values,
-          id,
-          oldDepartmentId: user.departmentId,
+          values,
+          searchParams,
         },
         callback: () => {
-          resetFields();
           hideModelHandler();
           message.success('修改用户成功。');
         },
@@ -96,11 +106,10 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
       dispatch({
         type: 'systemUser/add',
         payload: {
-          ...values,
-          oldDepartmentId: departmentId,
+          values,
+          searchParams,
         },
         callback: () => {
-          resetFields();
           hideModelHandler();
           message.success('添加用户成功。');
         },
@@ -166,7 +175,7 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
           className={styles.form}
           initialValues={{
             status: true,
-            departmentId,
+            departmentId: searchParams.departmentId,
           }}
           onFinish={handleAddOrUpdate}
         >

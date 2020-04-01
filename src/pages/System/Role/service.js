@@ -3,10 +3,11 @@ import request from '@/utils/request';
 
 /**
  * 获取整棵角色树。
+ * @param params
  * @returns {Promise<void>}
  */
-export async function getRoleTree() {
-  return request('/roles');
+export async function getRoleTree(params) {
+  return request(`/roles?${stringify(params)}`);
 }
 
 /**

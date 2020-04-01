@@ -62,7 +62,7 @@ export async function updateDepartment(params) {
  */
 export async function enableDepartment(params) {
   const { id, status } = params;
-  return request.patch(`/departments/${id}/status?status=${status}`);
+  return request.patch(`/departments/${id}/status?${stringify({ status })}`);
 }
 
 /**

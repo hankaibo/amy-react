@@ -17,7 +17,7 @@ export default {
     tree: [],
     // 列表
     list: [],
-    // 编辑信息
+    // 编辑
     menu: {},
   },
 
@@ -52,22 +52,20 @@ export default {
       if (callback) callback();
     },
     *add({ payload, callback }, { call, put }) {
-      const { values, oldParentId: id } = payload;
+      const { values, searchParams } = payload;
       const params = { ...values, status: +values.status };
       const response = yield call(addMenu, params);
       const { apierror } = response;
       if (apierror) {
         return;
       }
-      if (id) {
-        yield put({
-          type: 'fetchChildrenById',
-          payload: {
-            id,
-            type: values.type,
-          },
-        });
-      }
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          ...searchParams,
+          type: values.type,
+        },
+      });
       yield put({
         type: 'fetch',
         payload: {
@@ -93,22 +91,19 @@ export default {
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
-      const { values, oldParentId: id } = payload;
+      const { values, searchParams } = payload;
       const params = { ...values, status: +values.status };
       const response = yield call(updateMenu, params);
       const { apierror } = response;
       if (apierror) {
         return;
       }
-      if (id) {
-        yield put({
-          type: 'fetchChildrenById',
-          payload: {
-            id,
-            type: values.type,
-          },
-        });
-      }
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          ...searchParams,
+        },
+      });
       yield put({
         type: 'fetch',
         payload: {
@@ -118,32 +113,29 @@ export default {
       if (callback) callback();
     },
     *enable({ payload, callback }, { call, put }) {
-      const { id, status, type, parentId } = payload;
-      const values = { id, status: +status, type };
+      const { id, status, searchParams } = payload;
+      const values = { id, status: +status };
       const response = yield call(enableMenu, values);
       const { apierror } = response;
       if (apierror) {
         return;
       }
-      if (parentId) {
-        yield put({
-          type: 'fetchChildrenById',
-          payload: {
-            id: parentId,
-            type,
-          },
-        });
-      }
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          ...searchParams,
+        },
+      });
       yield put({
         type: 'fetch',
         payload: {
-          type,
+          type: searchParams.type,
         },
       });
       if (callback) callback();
     },
     *delete({ payload, callback }, { call, put }) {
-      const { id, type, parentId } = payload;
+      const { id, searchParams } = payload;
       const response = yield call(deleteMenu, id);
       const { apierror } = response;
       if (apierror) {
@@ -152,21 +144,20 @@ export default {
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          id: parentId,
-          type,
+          ...searchParams,
         },
       });
       yield put({
         type: 'fetch',
         payload: {
-          type,
+          type: searchParams.type,
         },
       });
       if (callback) callback();
     },
     *move({ payload, callback }, { call, put }) {
-      const { parentId: id } = payload;
-      const response = yield call(moveMenu, payload);
+      const { searchParams, ...values } = payload;
+      const response = yield call(moveMenu, values);
       const { apierror } = response;
       if (apierror) {
         return;
@@ -174,14 +165,13 @@ export default {
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          id,
-          type: payload.type,
+          ...searchParams,
         },
       });
       yield put({
         type: 'fetch',
         payload: {
-          type: payload.type,
+          type: searchParams.type,
         },
       });
       if (callback) callback();
