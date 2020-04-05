@@ -157,7 +157,7 @@ export default {
       });
       if (callback) callback();
     },
-    *importBatch({ payload, callback }, { call, select }) {
+    *importBatch({ payload, callback }, { call, put, select }) {
       const { parentId, ids } = payload;
       const list = yield select((state) => state.systemApi.apiList);
       const arrApi = list
@@ -179,6 +179,13 @@ export default {
       if (apierror) {
         return;
       }
+      yield put({
+        type: 'fetchChildrenById',
+        payload: {
+          type: 2,
+          id: parentId,
+        },
+      });
       if (callback) callback();
     },
   },
@@ -238,11 +245,12 @@ export default {
         const starKey = key.replace(/{\w+}/g, '*');
         Object.keys(item).forEach((k, i) => {
           const it = item[k];
+          const uri = starKey.startsWith('/') ? starKey : `${safeBasePath}${starKey}`;
           const o = {
             id: `${index}_${i}`,
             key: `${index}_${i}`,
             name: it.summary,
-            uri: `${safeBasePath}${starKey}`,
+            uri,
             code: `${safeBasePath.split('/')[1]}:${starKey
               .split('/')
               .filter((f) => f && f !== '*')

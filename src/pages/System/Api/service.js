@@ -3,6 +3,7 @@ import request from '@/utils/request';
 
 /**
  * 查询菜单树数据。
+ * @param params
  * @returns {Promise<void>}
  */
 export async function getMenuTree(params) {
