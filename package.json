@@ -1,6 +1,6 @@
 {
   "name": "myantdpro",
-  "version": "4.0.2",
+  "version": "4.1.0",
   "private": true,
   "description": "前端脚手架",
   "scripts": {
@@ -65,7 +65,7 @@
     "@umijs/preset-ant-design-pro": "^1.0.1",
     "@umijs/preset-react": "^1.4.8",
     "@umijs/preset-ui": "^2.1.7",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
     "husky": "^4.2.3",

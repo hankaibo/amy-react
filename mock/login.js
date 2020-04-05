@@ -9,13 +9,13 @@ export default {
           'eyJhbGciOiJIUzUxMiIsInppcCI6IkdaSVAifQ.H4sIAAAAAAAAAIWR3W6DMAyF3yXXUAVBW-j1XiQkpmQDgvKDVk1790EKlT2YdkXOFx_74Hyxd6_ZjTW1qmTOeZo1eZ4WkhepqK7XtMzqqhKyKHklWcK0c3OxNx8wpA7sBHaGLtQzFKrXw1IiPLtl58vlnPOs4gmDz3EFRRmBNR045LDgTLAyMmuMT1rTQ-IezkO_fk5hnnbSQ2Mw2M5Lw-3cwxBefG28aaWl12YQ9kHadtp5AoRSRNfCy_YNOvBA-B2oL4xK_CpRe9eSdj8z0rueaK3zwgeH_5M4I0Bpoz5I-2wO1DcGqtXesi1wP_R1gyPHGxp5eQ7ijgBFjhpFixpFi5pGi0i2ulMWBgJ7Mx08NpmPMJqK6MH6_vWgvIiqv5o8V8S-fwBDljskfQMAAA.CmGJW9FD-BM_Js_hCQIbBMR3Oa6H-bLvP3hrr-Pr1I8XpBOcl8YlLRD-R_8d9951cyw53j93lGMm6xz2kpe04w',
         role: 'admin',
         resources:
+          'test:test:test,' +
           'system:user:info,' +
           'system:department,' +
           'system:user,' +
           'system:role,' +
           'system:menu,' +
           'system:api,' +
-          'develop:swagger,' +
           'system:dictionary,' +
           'system:department:status,' +
           'system:department:move,' +

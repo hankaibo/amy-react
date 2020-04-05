@@ -7,7 +7,7 @@ import {
   PlusOutlined,
   DeleteOutlined,
   EditOutlined,
-  ImportOutlined,
+  UploadOutlined,
 } from '@ant-design/icons';
 import { connect } from 'umi';
 import { isArray, isEmpty, isEqual } from 'lodash';
@@ -15,7 +15,7 @@ import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import { getValue } from '@/utils/utils';
 import ApiForm from './components/ApiForm';
-import UploadForm from './components/Upload';
+import UploadForm from './components/UploadTable';
 import styles from '../System.less';
 
 const { DirectoryTree } = Tree;
@@ -267,10 +267,10 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
                     </Button>
                   </ApiForm>
                 </Authorized>
-                <Authorized authority="system:api:import" noMatch={null}>
+                <Authorized authority="system:api:importBatch" noMatch={null}>
                   <UploadForm>
-                    <Button title="导入">
-                      <ImportOutlined />
+                    <Button title="上传">
+                      <UploadOutlined />
                     </Button>
                   </UploadForm>
                 </Authorized>

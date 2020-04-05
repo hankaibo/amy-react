@@ -96,3 +96,14 @@ export async function deleteBatchApi(ids) {
     },
   });
 }
+
+/**
+ * 批量导入接口。
+ * @param params
+ * @returns {Promise<*>}
+ */
+export async function importBatchApi(params) {
+  return request.post('/resources/batch', {
+    data: [...params],
+  });
+}
