@@ -56,13 +56,13 @@
     "react-helmet-async": "^1.0.4",
     "sockjs-client": "^1.4.0",
     "stompjs": "^2.3.3",
-    "umi": "^3.0.16",
+    "umi": "^3.1.1",
     "umi-request": "^1.2.19",
     "use-merge-value": "^1.0.1"
   },
   "devDependencies": {
     "@umijs/fabric": "^2.0.7",
-    "@umijs/preset-ant-design-pro": "^1.0.1",
+    "@umijs/preset-ant-design-pro": "^1.2.1",
     "@umijs/preset-react": "^1.4.8",
     "@umijs/preset-ui": "^2.1.7",
     "chalk": "^4.0.0",
