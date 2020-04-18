@@ -13,16 +13,9 @@ export default {
       pathRewrite: { '^': '' },
     },
   },
-  test: {
-    '/api/': {
-      target: 'http://58.87.121.239:9001/',
-      changeOrigin: true,
-      pathRewrite: { '^': '' },
-    },
-  },
   pre: {
     '/api/': {
-      target: 'your api',
+      target: 'http://58.87.121.239:9001/',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

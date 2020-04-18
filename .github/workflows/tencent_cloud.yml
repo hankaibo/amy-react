@@ -1,0 +1,37 @@
+name: Deploy to Tencent Cloud ECS
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+
+      - name: Install, Build
+        run: |
+          npm install
+          npm run build
+        env:
+          CI: true
+
+      - name: Deploy
+        uses: easingthemes/ssh-deploy@v2.1.2
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.ThinkPad }}
+          REMOTE_HOST: ${{ secrets.TENCENT_CLOUD_IP }}
+          REMOTE_USER: ${{ secrets.TENCENT_CLOUD_USERNAME }}
+          ARGS: '-avzr --delete'
+          SOURCE: 'dist/'
+          TARGET: ${{ secrets.TENCENT_CLOUD_WD }}
