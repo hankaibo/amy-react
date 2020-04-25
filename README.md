@@ -30,7 +30,7 @@ $ npm start             # visit http://localhost:8000（local mock api）
   or
   npm run dev           # visit http://localhost:9000（your api）
   or
-  npm run start:test    # visit http://localhost:9000（my online api）
+  npm run pre           # visit http://localhost:9000（my online api）
 ```
 
 ## Browsers support

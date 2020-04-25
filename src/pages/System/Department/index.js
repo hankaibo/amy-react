@@ -26,7 +26,7 @@ import { isEqual, isArray, isEmpty } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import { getPlainNode, getParentKey, getValue } from '@/utils/utils';
-import DepartmentForm from './components/DepartmentForm';
+import DepartmentModal from './components/DepartmentModal';
 import styles from '../System.less';
 
 const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
@@ -42,10 +42,10 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   const [autoExpandParent, setAutoExpandParent] = useState(true);
   // 【部门树搜索参数】
   const [searchValue, setSearchValue] = useState('');
-  // 【查询参数，获取table列表的参数】
+  // 【查询参数，获取本部门的所有子部门列表的参数】
   const [params, setParams] = useState({
-    id: null,
-    status: null,
+    id: null, // 父部门id
+    status: null, // 部门状态
   });
   // 【首次】
   const [first, setFirst] = useState(true);
@@ -68,7 +68,9 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       setSelectedKeys([tree[0].key]);
       setExpandedKeys([tree[0].key]);
       setParams({ ...params, id: tree[0].id });
+      // 适配下面取titleValue值。
       setCurrentDepartment({ ...tree[0], titleValue: tree[0].title });
+      // 只有首次加载后设置如上状态。
       setFirst(false);
     }
   }, [first, tree]);
@@ -195,7 +197,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
         index > -1 ? (
           <span>
             {beforeStr}
-            <span style={{ color: '#f50' }}>{searchValue}</span>
+            <span className="selected">{searchValue}</span>
             {afterStr}
           </span>
         ) : (
@@ -222,6 +224,8 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
         { text: '启用', value: 1 },
       ],
       filterMultiple: false,
+      width: 110,
+      align: 'center',
       render: (text, record) => (
         <Authorized authority="system:department:status" noMatch={NoMatch(text)}>
           <Switch checked={text} onClick={(checked) => toggleState(checked, record)} />
@@ -230,6 +234,8 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
     },
     {
       title: '排序',
+      width: 90,
+      align: 'center',
       render: (text, record, index) => (
         <Authorized authority="system:department:move" noMatch={null}>
           <ArrowUpOutlined
@@ -254,13 +260,14 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
     {
       title: '操作',
       width: 90,
+      align: 'center',
       fixed: 'right',
       render: (text, record) => (
         <>
           <Authorized authority="system:department:update" noMatch={null}>
-            <DepartmentForm isEdit id={record.id} searchParams={params}>
+            <DepartmentModal isEdit id={record.id} searchParams={params}>
               <EditOutlined title="编辑" className="icon" />
-            </DepartmentForm>
+            </DepartmentModal>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:department:delete" noMatch={null}>
@@ -315,14 +322,14 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:department:add" noMatch={null}>
-                  <DepartmentForm
+                  <DepartmentModal
                     id={currentDepartment && currentDepartment.id}
                     searchParams={params}
                   >
                     <Button type="primary" title="新增">
                       <PlusOutlined />
                     </Button>
-                  </DepartmentForm>
+                  </DepartmentModal>
                 </Authorized>
               </div>
               <Table

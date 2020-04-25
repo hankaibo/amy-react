@@ -6,6 +6,8 @@
 
 开箱即用的中台前端解决方案。
 
+基于阿里巴巴 Ant Design Pro 精心扩展而来，使用 JavaScript 开发，结合完整后台接口。
+
 </div>
 
 ## 特性
@@ -30,7 +32,7 @@ $ npm start             # 访问 http://localhost:8000（项目本地mock模拟�
   or
   npm run dev           # 访问 http://localhost:9000（你自己的后台真实接口）
   or
-  npm run start:test    # 访问 http://localhost:9000（我的在线测试接口）
+  npm run pre           # 访问 http://localhost:9000（我的在线测试接口）
 ```
 
 ## 支持环境

@@ -78,7 +78,11 @@ export default {
       if (apierror) {
         return;
       }
-      const department = { ...response, status: !!response.status };
+      const department = {
+        ...response,
+        status: !!response.status,
+        parentId: `${response.parentId}`,
+      };
       yield put({
         type: 'save',
         payload: {
