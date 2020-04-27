@@ -19,6 +19,7 @@ import { isEqual, isArray, isEmpty } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import IconFont from '@/components/IconFont';
+import withModal from '@/components/HOCModal';
 import { getValue } from '@/utils/utils';
 import UserForm from './components/UserForm';
 import UserRoleForm from './components/UserRoleForm';
@@ -30,6 +31,9 @@ const sexText = {
   2: '女',
   3: '保密',
 };
+const UserModal = withModal(UserForm);
+const UserRoleModal = withModal(UserRoleForm);
+const UserPasswordModal = withModal(UserPasswordForm);
 
 const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
   tree,
@@ -230,6 +234,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
         { text: '启用', value: 1 },
       ],
       filterMultiple: false,
+      width: 110,
       render: (text, record) => (
         <Authorized authority="system:user:status" noMatch={NoMatch(text)}>
           <Switch checked={text} onClick={(checked) => toggleStatus(checked, record)} />
@@ -248,15 +253,15 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
     },
     {
       title: '操作',
-      width: 170,
+      align: 'center',
       fixed: 'right',
       render: (text, record) => (
         <>
           {/* Note: system:user:xxx为【资源保护】菜单中用户管理修改接口(system:user:update)的编码名称。必须两者一致才能动态隐藏显示按钮。 */}
           <Authorized authority="system:user:update" noMatch={null}>
-            <UserForm isEdit id={record.id} searchParams={params}>
+            <UserModal isEdit id={record.id} searchParams={params}>
               <EditOutlined title="编辑" className="icon" />
-            </UserForm>
+            </UserModal>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:user:delete" noMatch={null}>
@@ -271,15 +276,15 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:user:grant" noMatch={null}>
-            <UserRoleForm id={record.id} disabled={!record.status}>
+            <UserRoleModal id={record.id} disabled={!record.status}>
               <IconFont type="icon-role" title="分配角色" className="icon" />
-            </UserRoleForm>
+            </UserRoleModal>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:user:pwd:reset" noMatch={null}>
-            <UserPasswordForm id={record.id} username={record.username}>
+            <UserPasswordModal id={record.id} username={record.username}>
               <IconFont type="icon-reset" title="重置密码" className="icon" />
-            </UserPasswordForm>
+            </UserPasswordModal>
           </Authorized>
         </>
       ),
@@ -318,14 +323,14 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:user:add" noMatch={null}>
-                  <UserForm
+                  <UserModal
                     departmentId={currentDepartment ? currentDepartment.id : null}
                     searchParams={params}
                   >
                     <Button type="primary" title="新增">
                       <PlusOutlined />
                     </Button>
-                  </UserForm>
+                  </UserModal>
                 </Authorized>
                 <Authorized authority="system:user:batchDelete" noMatch={null}>
                   <Popconfirm
@@ -350,6 +355,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
                 pagination={pagination}
                 rowSelection={rowSelection}
                 onChange={handleTableChange}
+                scroll={{ x: true }}
               />
             </div>
           </Card>

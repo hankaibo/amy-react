@@ -28,144 +28,139 @@ const beforeUpload = (file) => {
 const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
   tree,
   user,
-  loading: loading.effects[('systemUser/fetchById', 'systemUser/add', 'systemUser/update')],
-}))(({ loading, children, isEdit, id, searchParams, user, tree, dispatch }) => {
-  const [form] = Form.useForm();
-  const { setFieldsValue, resetFields } = form;
+  getLoading: loading.effects['systemUser/fetchById'],
+  addLoading: loading.effects['systemUser/add'],
+  updateLoading: loading.effects['systemUser/update'],
+}))(
+  ({
+    getLoading,
+    addLoading,
+    updateLoading,
+    visible,
+    departmentId,
+    isEdit,
+    id,
+    searchParams,
+    user,
+    tree,
+    closeModal,
+    dispatch,
+  }) => {
+    const loading = getLoading || addLoading || updateLoading;
+    const [form] = Form.useForm();
+    const { setFieldsValue, resetFields } = form;
 
-  // 【模拟图片上传的属性】
-  const [imageLoading, setImageLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState(null);
-  // 展开收缩
-  const [expand, setExpand] = useState(false);
-  // 【模态框显示隐藏属性】
-  const [visible, setVisible] = useState(false);
+    // 【模拟图片上传的属性】
+    const [imageLoading, setImageLoading] = useState(false);
+    const [imageUrl, setImageUrl] = useState(null);
+    // 展开收缩
+    const [expand, setExpand] = useState(false);
 
-  // 【模态框显示隐藏函数】
-  const showModalHandler = (e) => {
-    if (e) e.stopPropagation();
-    setVisible(true);
-  };
-  const hideModelHandler = () => {
-    resetFields();
-    setVisible(false);
-  };
+    // 【修改时，获取用户表单数据】
+    useEffect(() => {
+      if (visible && isEdit) {
+        dispatch({
+          type: 'systemUser/fetchById',
+          payload: {
+            id,
+          },
+        });
+      }
+      return () => {
+        dispatch({
+          type: 'systemUser/clear',
+        });
+      };
+    }, [visible, isEdit, id, dispatch]);
 
-  // 【修改时，获取用户表单数据】
-  useEffect(() => {
-    if (visible && isEdit) {
-      dispatch({
-        type: 'systemUser/fetchById',
-        payload: {
-          id,
-        },
-      });
-    }
-    return () => {
-      dispatch({
-        type: 'systemUser/clear',
-      });
+    // 【修改时，回显用户表单】
+    useEffect(() => {
+      // 👍 将条件判断放置在 effect 中
+      if (visible && isEdit) {
+        if (!isEmpty(user)) {
+          setFieldsValue(user);
+        }
+      }
+    }, [visible, isEdit, user, setFieldsValue]);
+
+    // 【添加与修改】
+    const handleAddOrUpdate = (values) => {
+      if (isEdit) {
+        Object.assign(values, { id });
+        dispatch({
+          type: 'systemUser/update',
+          payload: {
+            values,
+            searchParams,
+          },
+          callback: () => {
+            resetFields();
+            closeModal();
+            message.success('修改用户成功。');
+          },
+        });
+      } else {
+        dispatch({
+          type: 'systemUser/add',
+          payload: {
+            values,
+            searchParams,
+          },
+          callback: () => {
+            resetFields();
+            closeModal();
+            message.success('添加用户成功。');
+          },
+        });
+      }
     };
-  }, [visible, isEdit, id, dispatch]);
 
-  // 【修改时，回显用户表单】
-  useEffect(() => {
-    // 👍 将条件判断放置在 effect 中
-    if (visible && isEdit) {
-      if (!isEmpty(user)) {
-        setFieldsValue({ ...user });
+    // 【头像上传】
+    const handleChange = (info) => {
+      if (info.file.status === 'uploading') {
+        setImageLoading(true);
+        return;
       }
-    }
-  }, [visible, isEdit, user, setFieldsValue]);
-
-  // 【新建时】
-  useEffect(() => {
-    if (visible && !isEdit) {
-      if (id) {
-        setFieldsValue({ departmentId: id.toString() });
+      if (info.file.status === 'done') {
+        // 模拟一个url
+        getBase64(info.file.originFileObj, (imgUrl) => {
+          setImageUrl(imgUrl);
+          setImageLoading(false);
+        });
       }
-    }
-  }, [visible, isEdit, id, setFieldsValue]);
+    };
 
-  // 【添加与修改】
-  const handleAddOrUpdate = (values) => {
-    if (isEdit) {
-      Object.assign(values, { id });
-      dispatch({
-        type: 'systemUser/update',
-        payload: {
-          values,
-          searchParams,
-        },
-        callback: () => {
-          hideModelHandler();
-          message.success('修改用户成功。');
-        },
-      });
-    } else {
-      dispatch({
-        type: 'systemUser/add',
-        payload: {
-          values,
-          searchParams,
-        },
-        callback: () => {
-          hideModelHandler();
-          message.success('添加用户成功。');
-        },
-      });
-    }
-  };
+    // 【表单布局】
+    const layout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 5 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 19 },
+      },
+    };
+    const tailLayout = {
+      wrapperCol: {
+        xs: { span: 24, offset: 0 },
+        sm: { span: 19, offset: 5 },
+      },
+    };
+    // 【上传按钮】
+    const uploadButton = (
+      <div>
+        {imageLoading ? <UploadOutlined /> : <PlusOutlined />}
+        <div className="ant-upload-text">上传</div>
+      </div>
+    );
 
-  // 【头像上传】
-  const handleChange = (info) => {
-    if (info.file.status === 'uploading') {
-      setImageLoading(true);
-      return;
-    }
-    if (info.file.status === 'done') {
-      // 模拟一个url
-      getBase64(info.file.originFileObj, (imgUrl) => {
-        setImageUrl(imgUrl);
-        setImageLoading(false);
-      });
-    }
-  };
-
-  // 【表单布局】
-  const layout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 5 },
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 19 },
-    },
-  };
-  const tailLayout = {
-    wrapperCol: {
-      xs: { span: 24, offset: 0 },
-      sm: { span: 19, offset: 5 },
-    },
-  };
-  // 【上传按钮】
-  const uploadButton = (
-    <div>
-      {imageLoading ? <UploadOutlined /> : <PlusOutlined />}
-      <div className="ant-upload-text">上传</div>
-    </div>
-  );
-
-  return (
-    <>
-      <span onClick={showModalHandler}>{children}</span>
+    return (
       <Modal
-        forceRender
         destroyOnClose
         title={isEdit ? '修改' : '新增'}
         visible={visible}
-        onCancel={hideModelHandler}
+        onCancel={closeModal}
         footer={null}
       >
         <Form
@@ -174,8 +169,8 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
           name="userForm"
           className={styles.form}
           initialValues={{
+            departmentId: departmentId && departmentId.toString(),
             status: true,
-            departmentId: searchParams.departmentId,
           }}
           onFinish={handleAddOrUpdate}
         >
@@ -298,15 +293,15 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
             </Form.Item>
           </>
           <Form.Item {...tailLayout}>
-            <Button onClick={hideModelHandler}>取消</Button>
+            <Button onClick={closeModal}>取消</Button>
             <Button type="primary" loading={loading} htmlType="submit">
               确定
             </Button>
           </Form.Item>
         </Form>
       </Modal>
-    </>
-  );
-});
+    );
+  },
+);
 
 export default UserForm;
