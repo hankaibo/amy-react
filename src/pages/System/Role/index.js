@@ -14,10 +14,14 @@ import { connect } from 'umi';
 import { isEqual, isArray, isEmpty } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
+import withModal from '@/components/HOCModal';
 import { getValue } from '@/utils/utils';
 import RoleForm from './components/RoleForm';
 import RoleResourceForm from './components/RoleResourceForm';
 import styles from '../System.less';
+
+const RoleModal = withModal(RoleForm);
+const RoleResourceModal = withModal(RoleResourceForm);
 
 const Role = connect(({ systemRole: { tree, list }, loading }) => ({
   tree,
@@ -195,9 +199,9 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       render: (text, record) => (
         <>
           <Authorized authority="system:role:update" noMatch={null}>
-            <RoleForm isEdit id={record.id} searchParams={params}>
+            <RoleModal isEdit id={record.id} searchParams={params}>
               <EditOutlined title="编辑" className="icon" />
-            </RoleForm>
+            </RoleModal>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:role:delete" noMatch={null}>
@@ -212,9 +216,9 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:role:grant" noMatch={null}>
-            <RoleResourceForm id={record.id} disabled={!record.status}>
+            <RoleResourceModal id={record.id} disabled={!record.status}>
               <KeyOutlined title="分配资源" className="icon" />
-            </RoleResourceForm>
+            </RoleResourceModal>
           </Authorized>
         </>
       ),
@@ -253,11 +257,11 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:role:add" noMatch={null}>
-                  <RoleForm id={currentRole && currentRole.id} searchParams={params}>
+                  <RoleModal id={currentRole && currentRole.id} searchParams={params}>
                     <Button type="primary" title="新增">
                       <PlusOutlined />
                     </Button>
-                  </RoleForm>
+                  </RoleModal>
                 </Authorized>
               </div>
               <Table

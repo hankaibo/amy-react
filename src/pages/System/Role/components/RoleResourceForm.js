@@ -13,37 +13,28 @@ const RoleResourceForm = connect(
     resTreeData: treeData,
     resCheckedKeys: checkedKeys,
     resHalfCheckedKeys: halfCheckedKeys,
-    loading: loading.effects['systemRole/fetchResTree'],
+    getLoading: loading.effects['systemRole/fetchResTree'],
+    grantLoading: loading.effects['systemRole/grantRoleResource'],
   }),
 )(
   ({
-    loading,
-    children,
-    disabled,
+    getLoading,
+    grantLoading,
+    visible,
     id,
     resTreeData,
     resCheckedKeys,
     resHalfCheckedKeys,
+    closeModal,
     dispatch,
   }) => {
+    const loading = getLoading || grantLoading;
     const [form] = Form.useForm();
     const { setFieldsValue } = form;
 
     // https://github.com/ant-design/ant-design/issues/9807
     const [expandedKeys, setExpandedKeys] = useState([]);
     const [checkedKeys, setCheckedKeys] = useState([]);
-    // 【模态框显示隐藏属性】
-    const [visible, setVisible] = useState(false);
-
-    // 【模态框显示隐藏函数】
-    const showModalHandler = (e) => {
-      if (e) e.stopPropagation();
-      setVisible(true);
-    };
-    const hideModelHandler = () => {
-      setFieldsValue();
-      setVisible(false);
-    };
 
     // 【获取要修改角色的资源】
     useEffect(() => {
@@ -97,45 +88,33 @@ const RoleResourceForm = connect(
           minusResource,
         },
         callback: () => {
-          hideModelHandler();
+          closeModal();
           message.success('分配资源成功。');
         },
       });
     };
 
     return (
-      <>
-        <span className={disabled ? 'disabled' : ''} onClick={disabled ? null : showModalHandler}>
-          {children}
-        </span>
-        <Modal
-          forceRender
-          destroyOnClose
-          title="权限配置"
-          visible={visible}
-          onCancel={hideModelHandler}
-          footer={null}
-        >
-          <Form form={form} name="roleResourceForm" className={styles.form} onFinish={handleGrant}>
-            <Form.Item name="ids">
-              <Tree
-                checkable
-                expandedKeys={expandedKeys}
-                onExpand={onExpand}
-                checkedKeys={checkedKeys}
-                onCheck={handleCheck}
-                treeData={resTreeData}
-              />
-            </Form.Item>
-            <Form.Item style={{ textAlign: 'right' }}>
-              <Button onClick={hideModelHandler}>取消</Button>
-              <Button type="primary" loading={loading} htmlType="submit">
-                确定
-              </Button>
-            </Form.Item>
-          </Form>
-        </Modal>
-      </>
+      <Modal destroyOnClose title="权限配置" visible={visible} onCancel={closeModal} footer={null}>
+        <Form form={form} name="roleResourceForm" className={styles.form} onFinish={handleGrant}>
+          <Form.Item name="ids">
+            <Tree
+              checkable
+              expandedKeys={expandedKeys}
+              onExpand={onExpand}
+              checkedKeys={checkedKeys}
+              onCheck={handleCheck}
+              treeData={resTreeData}
+            />
+          </Form.Item>
+          <Form.Item style={{ textAlign: 'right' }}>
+            <Button onClick={closeModal}>取消</Button>
+            <Button type="primary" loading={loading} htmlType="submit">
+              确定
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     );
   },
 );
