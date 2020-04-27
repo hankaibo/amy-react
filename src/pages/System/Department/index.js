@@ -24,10 +24,13 @@ import {
 import { connect } from 'umi';
 import { isEqual, isArray, isEmpty } from 'lodash';
 import Authorized from '@/utils/Authorized';
+import withModal from '@/components/HOCModal';
 import NoMatch from '@/components/Authorized/NoMatch';
 import { getPlainNode, getParentKey, getValue } from '@/utils/utils';
-import DepartmentModal from './components/DepartmentModal';
+import DepartmentForm from './components/DepartmentForm';
 import styles from '../System.less';
+
+const DepartmentModal = withModal(DepartmentForm);
 
 const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   tree,

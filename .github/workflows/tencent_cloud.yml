@@ -28,7 +28,7 @@ jobs:
       - name: Deploy
         uses: easingthemes/ssh-deploy@v2.1.2
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.ThinkPad }}
+          SSH_PRIVATE_KEY: ${{ secrets.TENCENT_CLOUD_KEY }}
           REMOTE_HOST: ${{ secrets.TENCENT_CLOUD_IP }}
           REMOTE_USER: ${{ secrets.TENCENT_CLOUD_USERNAME }}
           ARGS: '-avzr --delete'
