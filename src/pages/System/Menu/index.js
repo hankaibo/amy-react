@@ -12,12 +12,15 @@ import { connect } from 'umi';
 import { isArray, isEmpty, isEqual } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
+import withModal from '@/components/HOCModal';
 import { getValue } from '@/utils/utils';
 import MenuForm from './components/MenuForm';
 import styles from '../System.less';
 
 const { DirectoryTree } = Tree;
 const MENU_TYPE = 1;
+
+const MenuModal = withModal(MenuForm);
 
 const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
   tree,
@@ -197,9 +200,9 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
       render: (text, record) => (
         <>
           <Authorized authority="system:menu:update" noMatch={null}>
-            <MenuForm isEdit id={record.id} searchParams={params}>
+            <MenuModal isEdit id={record.id} searchParams={params}>
               <EditOutlined title="编辑" className="icon" />
-            </MenuForm>
+            </MenuModal>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:menu:delete" noMatch={null}>
@@ -249,11 +252,11 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:menu:add" noMatch={null}>
-                  <MenuForm id={currentMenu && currentMenu.id} searchParams={params}>
+                  <MenuModal id={currentMenu && currentMenu.id} searchParams={params}>
                     <Button type="primary" title="新增">
                       <PlusOutlined />
                     </Button>
-                  </MenuForm>
+                  </MenuModal>
                 </Authorized>
               </div>
               <Table
