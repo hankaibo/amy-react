@@ -1,23 +1,34 @@
+# 工作流程的名字。
 name: Deploy to Tencent Cloud ECS
 
+# 类似事件监听机制，表示什么动作触发工作流程。
+# 当 master 分支有 push 时，即自动执行工作流程。
 on:
   push:
     branches: [master]
 
+# 工作流程的任务。可一个或多个。
 jobs:
+  # 些工作流程的单一任务：部署。
   deploy:
+    # 工作流程任务的名字
     name: Deploy
+    # 运行环境
     runs-on: ubuntu-latest
 
+    # 此任务的步骤
     steps:
+      # 第一步及执行动作，调用官方的 actions/checkout
       - name: Checkout
         uses: actions/checkout@v2
 
+      # 第二步及执行动作，调用官方的 actions/setup-node ，并指定了 node 的版本
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
           node-version: 10
 
+      # 第三步及执行动作
       - name: Install, Build
         run: |
           npm install
@@ -25,12 +36,15 @@ jobs:
         env:
           CI: true
 
+      # 第四步及执行动作，调用第三方的 easingthemes/ssh-deploy 完成远程部署
+      # 注意，环境参数根据调用的第三方不同而不同，具体参数请参考第三方说明
+      # ARGS 参数请参考：https://man.linuxde.net/rsync 中的 rsync 说明
       - name: Deploy
         uses: easingthemes/ssh-deploy@v2.1.2
         env:
           SSH_PRIVATE_KEY: ${{ secrets.TENCENT_CLOUD_KEY }}
           REMOTE_HOST: ${{ secrets.TENCENT_CLOUD_IP }}
           REMOTE_USER: ${{ secrets.TENCENT_CLOUD_USERNAME }}
-          ARGS: '-avzr --delete'
+          ARGS: '-avz'
           SOURCE: 'dist/'
           TARGET: ${{ secrets.TENCENT_CLOUD_WD }}
