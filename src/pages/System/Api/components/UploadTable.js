@@ -2,8 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Modal, Card, Table, Input, Upload, Button, message } from 'antd';
 import { UploadOutlined, ImportOutlined, EditOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
+import withModal from '@/components/HOCModal';
 import ImportForm from './ImportForm';
 import styles from '../../System.less';
+
+const ImportModal = withModal(ImportForm);
 
 const addOrUpdate = (arr, obj) => {
   const newArr = [...arr];
@@ -19,12 +22,10 @@ const addOrUpdate = (arr, obj) => {
 
 const UploadTable = connect(({ systemApi: { apiList } }) => ({
   apiList,
-}))(({ loading, children, apiList, dispatch }) => {
+}))(({ visible, apiList, closeModal, dispatch }) => {
   // 【自定义列属性】
   const inputTextRef = useRef(null);
   const [column, setColumn] = useState([]);
-  // 【模态框显示隐藏属性】
-  const [visible, setVisible] = useState(false);
   // 【复选框状态属性与函数】
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
@@ -33,19 +34,12 @@ const UploadTable = connect(({ systemApi: { apiList } }) => ({
       type: 'systemApi/updateFile',
       payload: [...column],
     });
+    return () => {
+      dispatch({
+        type: 'systemApi/clearFile',
+      });
+    };
   }, [column]);
-
-  // 【模态框显示隐藏函数】
-  const showModalHandler = (e) => {
-    if (e) e.stopPropagation();
-    setVisible(true);
-  };
-  const hideModelHandler = () => {
-    dispatch({
-      type: 'systemApi/clearFile',
-    });
-    setVisible(false);
-  };
 
   // 【上传】
   const props = {
@@ -160,48 +154,44 @@ const UploadTable = connect(({ systemApi: { apiList } }) => ({
   ];
 
   return (
-    <>
-      <span onClick={showModalHandler}>{children}</span>
-      <Modal
-        width={800}
-        destroyOnClose
-        title="上传"
-        visible={visible}
-        onCancel={hideModelHandler}
-        footer={null}
-      >
-        <Card bordered={false} bodyStyle={{ padding: 0 }}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListOperator}>
-              <Upload {...props}>
-                <Button title="上传">
-                  <UploadOutlined />
-                </Button>
-              </Upload>
-              <ImportForm
-                ids={selectedRowKeys}
-                className={styles.import}
-                onClean={() => setSelectedRowKeys([])}
-              >
-                <Button type="primary" disabled={selectedRowKeys.length <= 0} title="导入">
-                  <ImportOutlined />
-                </Button>
-              </ImportForm>
-            </div>
-            <Table
-              key="key"
-              bordered
-              size="small"
-              loading={loading}
-              columns={columns}
-              dataSource={apiList}
-              pagination={false}
-              rowSelection={rowSelection}
-            />
+    <Modal
+      width={800}
+      title="上传"
+      destroyOnClose
+      visible={visible}
+      onCancel={closeModal}
+      footer={null}
+    >
+      <Card bordered={false} bodyStyle={{ padding: 0 }}>
+        <div className={styles.tableList}>
+          <div className={styles.tableListOperator}>
+            <Upload {...props}>
+              <Button title="上传">
+                <UploadOutlined />
+              </Button>
+            </Upload>
+            <ImportModal
+              ids={selectedRowKeys}
+              className={styles.import}
+              onClean={() => setSelectedRowKeys([])}
+            >
+              <Button type="primary" disabled={selectedRowKeys.length <= 0} title="导入">
+                <ImportOutlined />
+              </Button>
+            </ImportModal>
           </div>
-        </Card>
-      </Modal>
-    </>
+          <Table
+            key="key"
+            bordered
+            size="small"
+            columns={columns}
+            dataSource={apiList}
+            pagination={false}
+            rowSelection={rowSelection}
+          />
+        </div>
+      </Card>
+    </Modal>
   );
 });
 

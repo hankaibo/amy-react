@@ -13,6 +13,7 @@ import { connect } from 'umi';
 import { isArray, isEmpty, isEqual } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
+import withModal from '@/components/HOCModal';
 import { getValue } from '@/utils/utils';
 import ApiForm from './components/ApiForm';
 import UploadForm from './components/UploadTable';
@@ -20,6 +21,9 @@ import styles from '../System.less';
 
 const { DirectoryTree } = Tree;
 const API_TYPE = 2;
+
+const ApiModal = withModal(ApiForm);
+const UploadModal = withModal(UploadForm);
 
 const Api = connect(({ systemApi: { tree, list }, loading }) => ({
   tree,
@@ -159,10 +163,12 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
     {
       title: '接口url',
       dataIndex: 'uri',
+      ellipsis: true,
     },
     {
       title: '接口编码',
       dataIndex: 'code',
+      ellipsis: true,
     },
     {
       title: '方法类型',
@@ -210,9 +216,9 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
       render: (text, record) => (
         <>
           <Authorized authority="system:api:update" noMatch={null}>
-            <ApiForm isEdit id={record.id} searchParams={params}>
+            <ApiModal isEdit id={record.id} searchParams={params}>
               <EditOutlined title="编辑" className="icon" />
-            </ApiForm>
+            </ApiModal>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:api:delete" noMatch={null}>
@@ -261,18 +267,18 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:api:add" noMatch={null}>
-                  <ApiForm id={currentMenu && currentMenu.id} searchParams={params}>
+                  <ApiModal id={currentMenu && currentMenu.id} searchParams={params}>
                     <Button type="primary" title="新增">
                       <PlusOutlined />
                     </Button>
-                  </ApiForm>
+                  </ApiModal>
                 </Authorized>
                 <Authorized authority="system:api:importBatch" noMatch={null}>
-                  <UploadForm>
+                  <UploadModal>
                     <Button title="上传">
                       <UploadOutlined />
                     </Button>
-                  </UploadForm>
+                  </UploadModal>
                 </Authorized>
               </div>
               <Table

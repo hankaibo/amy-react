@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Modal, Form, Input, Switch, TreeSelect, Radio, Button, message } from 'antd';
 import { connect } from 'umi';
 import { isEmpty } from 'lodash';
@@ -7,118 +7,111 @@ import styles from '../../System.less';
 const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
   tree,
   api,
-  loading: loading.effects[('systemApi/fetchById', 'systemApi/add', 'systemApi/update')],
-}))(({ loading, children, isEdit, id, searchParams, api, tree, dispatch }) => {
-  const [form] = Form.useForm();
-  const { resetFields, setFieldsValue } = form;
+  getLoading: loading.effects['systemApi/fetchById'],
+  addLoading: loading.effects['systemApi/add'],
+  updateLoading: loading.effects['systemApi/update'],
+}))(
+  ({
+    getLoading,
+    addLoading,
+    updateLoading,
+    visible,
+    isEdit,
+    id,
+    searchParams,
+    api,
+    tree,
+    closeModal,
+    dispatch,
+  }) => {
+    const loading = getLoading || addLoading || updateLoading;
+    const [form] = Form.useForm();
+    const { resetFields, setFieldsValue } = form;
 
-  // 【模态框显示隐藏属性】
-  const [visible, setVisible] = useState(false);
+    // 【修改时，获取接口数据】
+    useEffect(() => {
+      if (visible && isEdit) {
+        dispatch({
+          type: 'systemApi/fetchById',
+          payload: {
+            id,
+          },
+        });
+      }
+      return () => {
+        dispatch({
+          type: 'systemApi/clear',
+        });
+      };
+    }, [visible, isEdit, id, dispatch]);
 
-  // 【模态框显示隐藏函数】
-  const showModalHandler = (e) => {
-    if (e) e.stopPropagation();
-    setVisible(true);
-  };
-  const hideModelHandler = () => {
-    resetFields();
-    setVisible(false);
-  };
+    // 【修改时，回显接口表单】
+    useEffect(() => {
+      // 👍 将条件判断放置在 effect 中
+      if (visible && isEdit) {
+        if (!isEmpty(api)) {
+          setFieldsValue({ ...api, parentId: api.parentId.toString() });
+        }
+      }
+    }, [visible, isEdit, api, setFieldsValue]);
 
-  // 【修改时，获取接口数据】
-  useEffect(() => {
-    if (visible && isEdit) {
-      dispatch({
-        type: 'systemApi/fetchById',
-        payload: {
-          id,
-        },
-      });
-    }
-    return () => {
-      dispatch({
-        type: 'systemApi/clear',
-      });
+    // 【添加与修改接口】
+    const handleAddOrUpdate = (values) => {
+      if (isEdit) {
+        Object.assign(values, { id }, { type: 2 });
+        dispatch({
+          type: 'systemApi/update',
+          payload: {
+            values,
+            searchParams,
+          },
+          callback: () => {
+            resetFields();
+            closeModal();
+            message.success('修改接口成功。');
+          },
+        });
+      } else {
+        Object.assign(values, { type: 2 });
+        dispatch({
+          type: 'systemApi/add',
+          payload: {
+            values,
+            searchParams,
+          },
+          callback: () => {
+            resetFields();
+            closeModal();
+            message.success('添加接口成功。');
+          },
+        });
+      }
     };
-  }, [visible, isEdit, id, dispatch]);
 
-  // 【修改时，回显接口表单】
-  useEffect(() => {
-    // 👍 将条件判断放置在 effect 中
-    if (visible && isEdit) {
-      if (!isEmpty(api)) {
-        setFieldsValue({ ...api, parentId: api.parentId.toString() });
-      }
-    }
-  }, [visible, isEdit, api, setFieldsValue]);
+    // 【表单布局】
+    const layout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 5 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 19 },
+      },
+    };
+    const tailLayout = {
+      wrapperCol: {
+        xs: { offset: 0, span: 24 },
+        sm: { offset: 5, span: 19 },
+      },
+    };
 
-  // 【新建时，父菜单默认值】
-  useEffect(() => {
-    if (visible && !isEdit) {
-      if (id) {
-        setFieldsValue({ parentId: id.toString() });
-      }
-    }
-  }, [visible, isEdit, id, setFieldsValue]);
-
-  // 【添加与修改接口】
-  const handleAddOrUpdate = (values) => {
-    if (isEdit) {
-      Object.assign(values, { id }, { type: 2 });
-      dispatch({
-        type: 'systemApi/update',
-        payload: {
-          values,
-          searchParams,
-        },
-        callback: () => {
-          hideModelHandler();
-          message.success('修改接口成功。');
-        },
-      });
-    } else {
-      Object.assign(values, { type: 2 });
-      dispatch({
-        type: 'systemApi/add',
-        payload: {
-          values,
-          searchParams,
-        },
-        callback: () => {
-          hideModelHandler();
-          message.success('添加接口成功。');
-        },
-      });
-    }
-  };
-
-  // 【表单布局】
-  const layout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 5 },
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 19 },
-    },
-  };
-  const tailLayout = {
-    wrapperCol: {
-      xs: { offset: 0, span: 24 },
-      sm: { offset: 5, span: 19 },
-    },
-  };
-
-  return (
-    <>
-      <span onClick={showModalHandler}>{children}</span>
+    return (
       <Modal
-        forceRender
         destroyOnClose
         title={isEdit ? '修改接口' : '新增接口'}
         visible={visible}
-        onCancel={hideModelHandler}
+        onCancel={closeModal}
         footer={null}
       >
         <Form
@@ -127,6 +120,7 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
           name="apiForm"
           className={styles.form}
           initialValues={{
+            parentId: id.toString(),
             status: true,
           }}
           onFinish={handleAddOrUpdate}
@@ -203,15 +197,15 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
             />
           </Form.Item>
           <Form.Item {...tailLayout}>
-            <Button onClick={hideModelHandler}>取消</Button>
+            <Button onClick={closeModal}>取消</Button>
             <Button type="primary" loading={loading} htmlType="submit">
               确定
             </Button>
           </Form.Item>
         </Form>
       </Modal>
-    </>
-  );
-});
+    );
+  },
+);
 
 export default ApiForm;
