@@ -3,6 +3,7 @@ import {
   addInformation,
   getInformationById,
   updateInformation,
+  enableInformation,
   deleteInformation,
   deleteBatchInformation,
 } from './service';
@@ -15,30 +16,39 @@ export default {
     list: [],
     pagination: {},
     // 编辑
-    editInformation: {},
+    information: {},
   },
 
   effects: {
     *fetch({ payload, callback }, { call, put }) {
       const response = yield call(pageInformation, payload);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       const { list, pageNum: current, pageSize, total } = response;
       yield put({
         type: 'saveList',
         payload: {
-          list,
+          list: list.map((item) => ({ ...item, status: !!item.status })),
           pagination: { current, pageSize, total },
         },
       });
       if (callback) callback();
     },
-    *add({ payload, callback }, { call, put, select }) {
-      yield call(addInformation, payload);
-      const pagination = yield select((state) => state.systemInformation.pagination);
-      delete pagination.total;
+    *add({ payload, callback }, { call, put }) {
+      const { values, searchParams } = payload;
+      const params = { ...values, status: +values.status };
+      const response = yield call(addInformation, params);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       yield put({
         type: 'fetch',
         payload: {
-          ...pagination,
+          ...searchParams,
+          current: 1,
         },
       });
       if (callback) callback();
@@ -46,48 +56,77 @@ export default {
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getInformationById, id);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
+      const information = { ...response, status: !!response.status };
       yield put({
         type: 'saveInformation',
         payload: {
-          editInformation: response,
+          information,
         },
       });
       if (callback) callback();
     },
-    *update({ payload, callback }, { call, put, select }) {
-      yield call(updateInformation, payload);
-      const pagination = yield select((state) => state.systemInformation.pagination);
-      delete pagination.total;
+    *update({ payload, callback }, { call, put }) {
+      const { values, searchParams } = payload;
+      const params = { ...values, status: +values.status };
+      const response = yield call(updateInformation, params);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       yield put({
         type: 'fetch',
         payload: {
-          ...pagination,
+          ...searchParams,
         },
       });
       if (callback) callback();
     },
-    *delete({ payload, callback }, { call, put, select }) {
-      const { id } = payload;
-      yield call(deleteInformation, id);
-      const pagination = yield select((state) => state.systemInformation.pagination);
-      delete pagination.total;
+    *enable({ payload, callback }, { call, put }) {
+      const { id, status, searchParams } = payload;
+      const params = { id, status: +status };
+      const response = yield call(enableInformation, params);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       yield put({
         type: 'fetch',
         payload: {
-          ...pagination,
+          ...searchParams,
         },
       });
       if (callback) callback();
     },
-    *deleteBatch({ payload, callback }, { call, put, select }) {
-      const { ids } = payload;
-      yield call(deleteBatchInformation, ids);
-      const pagination = yield select((state) => state.systemInformation.pagination);
-      delete pagination.total;
+    *delete({ payload, callback }, { call, put }) {
+      const { id, searchParams } = payload;
+      const response = yield call(deleteInformation, id);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       yield put({
         type: 'fetch',
         payload: {
-          ...pagination,
+          ...searchParams,
+        },
+      });
+      if (callback) callback();
+    },
+    *deleteBatch({ payload, callback }, { call, put }) {
+      const { ids, searchParams } = payload;
+      const response = yield call(deleteBatchInformation, ids);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
+      yield put({
+        type: 'fetch',
+        payload: {
+          ...searchParams,
         },
       });
       if (callback) callback();
@@ -111,16 +150,16 @@ export default {
       };
     },
     saveInformation(state, { payload }) {
-      const { editInformation } = payload;
+      const { information } = payload;
       return {
         ...state,
-        editInformation,
+        information,
       };
     },
     clearInformation(state) {
       return {
         ...state,
-        editInformation: {},
+        information: {},
       };
     },
   },

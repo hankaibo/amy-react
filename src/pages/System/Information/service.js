@@ -16,8 +16,7 @@ export async function pageInformation(params) {
  * @returns {Promise<void>}
  */
 export async function addInformation(params) {
-  return request('/information', {
-    method: 'POST',
+  return request.post('/information', {
     data: {
       ...params,
     },
@@ -40,12 +39,22 @@ export async function getInformationById(id) {
  */
 export async function updateInformation(params) {
   const { id } = params;
-  return request(`/information/${id}`, {
-    method: 'PUT',
+  return request.put(`/information/${id}`, {
     data: {
       ...params,
     },
   });
+}
+
+/**
+ * 启用禁用信息。
+ *
+ * @param params
+ * @returns {Promise<void>}
+ */
+export async function enableInformation(params) {
+  const { id, status } = params;
+  return request.patch(`/information/${id}/status?${stringify({ status })}`);
 }
 
 /**
@@ -54,9 +63,7 @@ export async function updateInformation(params) {
  * @returns {Promise<void>}
  */
 export async function deleteInformation(id) {
-  return request(`/information/${id}`, {
-    method: 'DELETE',
-  });
+  return request.delete(`/information/${id}`);
 }
 
 /**
@@ -65,8 +72,7 @@ export async function deleteInformation(id) {
  * @returns {Promise<void>}
  */
 export async function deleteBatchInformation(ids) {
-  return request('/information', {
-    method: 'DELETE',
+  return request.delete('/information', {
     data: {
       ids,
     },

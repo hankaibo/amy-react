@@ -1,111 +1,113 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
+import React, { useEffect } from 'react';
 import { Form, Input, Modal, message, Button, Radio } from 'antd';
-import styles from '@/pages/System/System.less';
+import { connect } from 'umi';
+import styles from '../../System.less';
 
 const InformationForm = connect(({ systemInformation: { information }, loading }) => ({
   information,
-  loading: loading.effects['systemInformation/fetchById'],
-}))(({ loading, children, isEdit, id, information, editInformation, dispatch }) => {
-  const [form] = Form.useForm();
-  const { resetFields, setFieldsValue } = form;
+  getLoading: loading.effects['systemInformation/fetchById'],
+  addLoading: loading.effects['systemInformation/add'],
+  updateLoading: loading.effects['systemInformation/update'],
+}))(
+  ({
+    getLoading,
+    addLoading,
+    updateLoading,
+    visible,
+    isEdit,
+    id,
+    searchParams,
+    information,
+    closeModal,
+    dispatch,
+  }) => {
+    const loading = getLoading || addLoading || updateLoading;
+    const [form] = Form.useForm();
+    const { resetFields, setFieldsValue } = form;
 
-  // 【模态框显示隐藏属性】
-  const [visible, setVisible] = useState(false);
-
-  // 【模态框显示隐藏函数】
-  const showModalHandler = (e) => {
-    if (e) e.stopPropagation();
-    setVisible(true);
-  };
-  const hideModelHandler = () => {
-    setVisible(false);
-  };
-
-  // 【修改时，获取信息表单数据】
-  useEffect(() => {
-    if (visible && isEdit) {
-      dispatch({
-        type: 'systemInformation/fetchById',
-        payload: {
-          id,
-        },
-      });
-    }
-    return () => {
-      dispatch({
-        type: 'systemInformation/clearInformation',
-      });
-    };
-  }, [visible, isEdit, id, dispatch]);
-
-  // 【修改时，回显信息表单】
-  useEffect(() => {
-    // 👍 将条件判断放置在 effect 中
-    if (visible && isEdit) {
-      if (Object.keys(editInformation).length > 0) {
-        setFieldsValue(editInformation);
+    // 【修改时，获取信息表单数据】
+    useEffect(() => {
+      if (visible && isEdit) {
+        dispatch({
+          type: 'systemInformation/fetchById',
+          payload: {
+            id,
+          },
+        });
       }
-    }
-  }, [visible, isEdit, information, setFieldsValue]);
+      return () => {
+        dispatch({
+          type: 'systemInformation/clearInformation',
+        });
+      };
+    }, [visible, isEdit, id, dispatch]);
 
-  // 【添加与修改】
-  const handleAddOrUpdate = (values) => {
-    if (isEdit) {
-      dispatch({
-        type: 'systemInformation/update',
-        payload: {
-          ...values,
-          id,
-        },
-        callback: () => {
-          resetFields();
-          hideModelHandler();
-          message.success('修改信息成功。');
-        },
-      });
-    } else {
-      dispatch({
-        type: 'systemInformation/add',
-        payload: {
-          ...values,
-        },
-        callback: () => {
-          resetFields();
-          hideModelHandler();
-          message.success('添加信息成功。');
-        },
-      });
-    }
-  };
+    // 【修改时，回显信息表单】
+    useEffect(() => {
+      // 👍 将条件判断放置在 effect 中
+      if (visible && isEdit) {
+        if (Object.keys(information).length > 0) {
+          setFieldsValue(information);
+        }
+      }
+    }, [visible, isEdit, information, setFieldsValue]);
 
-  // 【表单布局】
-  const layout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 5 },
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 19 },
-    },
-  };
-  const tailLayout = {
-    wrapperCol: {
-      xs: { span: 24, offset: 0 },
-      sm: { span: 19, offset: 5 },
-    },
-  };
+    // 【添加与修改】
+    const handleAddOrUpdate = (values) => {
+      if (isEdit) {
+        Object.assign(values, { id });
+        dispatch({
+          type: 'systemInformation/update',
+          payload: {
+            values,
+            searchParams,
+          },
+          callback: () => {
+            resetFields();
+            closeModal();
+            message.success('修改信息成功。');
+          },
+        });
+      } else {
+        dispatch({
+          type: 'systemInformation/add',
+          payload: {
+            values,
+            searchParams,
+          },
+          callback: () => {
+            resetFields();
+            closeModal();
+            message.success('添加信息成功。');
+          },
+        });
+      }
+    };
 
-  return (
-    <>
-      <span onClick={showModalHandler}>{children}</span>
+    // 【表单布局】
+    const layout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 5 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 19 },
+      },
+    };
+    const tailLayout = {
+      wrapperCol: {
+        xs: { span: 24, offset: 0 },
+        sm: { span: 19, offset: 5 },
+      },
+    };
+
+    return (
       <Modal
-        forceRender
         destroyOnClose
         title={isEdit ? '修改' : '新增'}
         visible={visible}
-        onCancel={hideModelHandler}
+        onCancel={closeModal}
         footer={null}
       >
         <Form
@@ -158,15 +160,15 @@ const InformationForm = connect(({ systemInformation: { information }, loading }
             </Radio.Group>
           </Form.Item>
           <Form.Item {...tailLayout}>
-            <Button onClick={hideModelHandler}>取消</Button>
+            <Button onClick={closeModal}>取消</Button>
             <Button type="primary" loading={loading} htmlType="submit">
               确定
             </Button>
           </Form.Item>
         </Form>
       </Modal>
-    </>
-  );
-});
+    );
+  },
+);
 
 export default InformationForm;

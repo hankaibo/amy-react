@@ -1,14 +1,18 @@
 import React, { useState, useEffect, memo } from 'react';
-import { connect } from 'umi';
-import { Card, Button, Input, Tag, Divider, message, Table, Popconfirm } from 'antd';
-import { isEqual } from 'lodash';
+import { Card, Table, Input, Switch, Tag, Button, Popconfirm, Divider, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
+import { isEqual } from 'lodash';
 import Authorized from '@/utils/Authorized';
+import NoMatch from '@/components/Authorized/NoMatch';
+import withModal from '@/components/HOCModal';
 import { getValue } from '@/utils/utils';
 import IconFont from '@/components/IconFont';
 import InformationForm from './components/InformationForm';
 import styles from '../System.less';
+
+const InformationModal = withModal(InformationForm);
 
 const getText = (value) => {
   switch (value) {
@@ -36,31 +40,47 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
     pageSize: pagination.pageSize || 10,
   });
 
-  // 【首次请求加载列表数据】
+  // 【初始化后，加载列表数据】
   useEffect(() => {
     dispatch({
       type: 'systemInformation/fetch',
-      payload: params,
+      payload: {
+        ...params,
+      },
     });
     return () => {
       dispatch({
         type: 'systemInformation/clearList',
       });
     };
-  }, [dispatch]);
+  }, [params, dispatch]);
+
+  // 【开启禁用 信息状态】
+  const toggleState = (checked, record) => {
+    const { id } = record;
+    dispatch({
+      type: 'systemInformation/enable',
+      payload: {
+        id,
+        status: checked,
+        searchParams: params,
+      },
+    });
+  };
 
   // 【搜索】
   const handleFormSubmit = () => {
     message.info('演示环境，暂未开放。');
   };
 
-  // 【批量删除】
+  // 【批量删除信息】
   const handleBatchDelete = () => {
     if (selectedRowKeys.length === 0) return;
     dispatch({
       type: 'systemInformation/deleteBatch',
       payload: {
         ids: selectedRowKeys,
+        searchParams: params,
       },
       callback: () => {
         setSelectedRowKeys([]);
@@ -69,13 +89,14 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
     });
   };
 
-  // 【删除】
+  // 【删除信息】
   const handleDelete = (record) => {
     const { id } = record;
     dispatch({
       type: 'systemInformation/delete',
       payload: {
         id,
+        searchParams: params,
       },
       callback: () => {
         setSelectedRowKeys([]);
@@ -126,13 +147,16 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
   // 【表格列】
   const columns = [
     {
-      title: '信息标题',
-      dataIndex: 'title',
+      title: '发信人',
+      dataIndex: 'sendName',
     },
     {
-      title: '信息描述',
-      dataIndex: 'description',
-      ellipsis: true,
+      title: '收信人',
+      dataIndex: 'receiveName',
+    },
+    {
+      title: '信息标题',
+      dataIndex: 'title',
     },
     {
       title: '信息类型',
@@ -146,17 +170,38 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
       render: (text) => getText(text),
     },
     {
-      title: '信息范围',
-      dataIndex: 'type',
+      title: '状态',
+      dataIndex: 'status',
+      filters: [
+        { text: '禁用', value: 0 },
+        { text: '启用', value: 1 },
+      ],
+      filterMultiple: false,
+      render: (text, record) => (
+        <Authorized authority="system:information:status" noMatch={NoMatch(text)}>
+          <Switch checked={text} onClick={(checked) => toggleState(checked, record)} />
+        </Authorized>
+      ),
+    },
+    {
+      title: '是否发布',
+      dataIndex: 'publish',
+      ellipsis: true,
+    },
+    {
+      title: '发布时间',
+      dataIndex: 'publishTime',
     },
     {
       title: '操作',
+      width: 120,
+      fixed: 'right',
       render: (text, record) => (
         <>
           <Authorized authority="system:information:update" noMatch={null}>
-            <InformationForm isEdit id={record.id}>
+            <InformationModal isEdit id={record.id} searchParams={params}>
               <EditOutlined title="编辑" className="icon" />
-            </InformationForm>
+            </InformationModal>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:information:delete" noMatch={null}>
@@ -188,12 +233,12 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
       <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>
-            <Authorized authority="system:user:add" noMatch={null}>
-              <InformationForm>
+            <Authorized authority="system:information:add" noMatch={null}>
+              <InformationModal>
                 <Button type="primary" title="新增">
                   <PlusOutlined />
                 </Button>
-              </InformationForm>
+              </InformationModal>
             </Authorized>
             <Authorized authority="system:information:batchDelete" noMatch={null}>
               <Popconfirm
