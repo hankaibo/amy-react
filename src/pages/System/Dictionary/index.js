@@ -7,9 +7,12 @@ import { Link, history, connect } from 'umi';
 import moment from 'moment';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
+import withModal from '@/components/HOCModal';
 import { getValue } from '@/utils/utils';
 import DictionaryForm from './components/DictionaryForm';
 import styles from '../System.less';
+
+const DictionaryModal = withModal(DictionaryForm);
 
 const Dictionary = connect(({ systemDictionary: { list, pagination }, loading }) => ({
   list,
@@ -190,7 +193,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       render: (text, record) => (
         <>
           <Authorized authority="system:dictionary:update" noMatch={null}>
-            <DictionaryForm
+            <DictionaryModal
               isEdit
               id={record.id}
               match={match}
@@ -198,7 +201,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
               searchParams={params}
             >
               <EditOutlined title="编辑" className="icon" />
-            </DictionaryForm>
+            </DictionaryModal>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:dictionary:delete" noMatch={null}>
@@ -222,11 +225,11 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>
             <Authorized authority="system:dictionary:add" noMatch={null}>
-              <DictionaryForm match={match} location={location} searchParams={params}>
+              <DictionaryModal match={match} location={location} searchParams={params}>
                 <Button type="primary" title="新增">
                   <PlusOutlined />
                 </Button>
-              </DictionaryForm>
+              </DictionaryModal>
             </Authorized>
             <Authorized authority="system:dictionary:batchDelete" noMatch={null}>
               <Popconfirm
