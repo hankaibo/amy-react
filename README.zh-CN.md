@@ -6,7 +6,7 @@
 
 开箱即用的中台前端解决方案。
 
-基于阿里巴巴 Ant Design Pro 精心扩展而来，使用 JavaScript 开发，结合完整后台接口。
+基于阿里巴巴 Ant Design Pro 精心扩展而来，使用 JavaScript 开发，使用真实后台接口。
 
 </div>
 
@@ -27,7 +27,7 @@
 ```bash
 $ git clone https://github.com/hankaibo/myantdpro.git myantdpro
 $ cd myantdpro
-$ npm install(npm --registry https://registry.npm.taobao.org install)
+$ npm install (npm --registry https://registry.npm.taobao.org install)
 $ npm start             # 访问 http://localhost:8000（项目本地mock模拟接口）
   or
   npm run dev           # 访问 http://localhost:9000（你自己的后台真实接口）

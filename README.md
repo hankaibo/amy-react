@@ -6,6 +6,8 @@ English | [简体中文](./README.zh-CN.md)
 
 An out-of-box UI solution for enterprise applications as a React boilerplate.
 
+Based on Ant Design Pro, it is meticulously extended, developed with JavaScript, and uses a real background interface.
+
 </div>
 
 ## Features
@@ -25,7 +27,7 @@ An out-of-box UI solution for enterprise applications as a React boilerplate.
 ```bash
 $ git clone https://github.com/hankaibo/myantdpro.git myantdpro
 $ cd myantdpro
-$ npm install(or npm --registry https://registry.npm.taobao.org install)
+$ npm install (or npm --registry https://registry.npm.taobao.org install)
 $ npm start             # visit http://localhost:8000（local mock api）
   or
   npm run dev           # visit http://localhost:9000（your api）
