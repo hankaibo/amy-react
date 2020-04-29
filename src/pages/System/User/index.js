@@ -13,7 +13,7 @@ import {
   message,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { DownOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import { isEqual, isArray, isEmpty } from 'lodash';
 import Authorized from '@/utils/Authorized';
@@ -304,7 +304,6 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
             {isArray(tree) && !isEmpty(tree) && (
               <Tree
                 showLine
-                switcherIcon={<DownOutlined />}
                 defaultExpandedKeys={[tree[0].key]}
                 defaultSelectedKeys={[tree[0].key]}
                 onSelect={handleSelect}

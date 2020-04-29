@@ -16,7 +16,6 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import {
   ArrowUpOutlined,
   ArrowDownOutlined,
-  DownOutlined,
   PlusOutlined,
   DeleteOutlined,
   EditOutlined,
@@ -305,7 +304,6 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
             />
             <Tree
               showLine
-              switcherIcon={<DownOutlined />}
               autoExpandParent={autoExpandParent}
               expandedKeys={expandedKeys}
               onExpand={handleExpand}

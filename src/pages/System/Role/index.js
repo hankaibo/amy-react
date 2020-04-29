@@ -4,7 +4,6 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import {
   ArrowUpOutlined,
   ArrowDownOutlined,
-  DownOutlined,
   PlusOutlined,
   DeleteOutlined,
   EditOutlined,
@@ -238,7 +237,6 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
             {isArray(tree) && !isEmpty(tree) && (
               <Tree
                 showLine
-                switcherIcon={<DownOutlined />}
                 defaultExpandedKeys={[tree[0].key]}
                 defaultSelectedKeys={[tree[0].key]}
                 onSelect={handleSelect}
