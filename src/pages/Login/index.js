@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Input, Button, Alert, Checkbox } from 'antd';
 import { LockTwoTone, UserOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
-import styles from './Login.less';
+import styles from './index.less';
 
 const FormItem = Form.Item;
 
