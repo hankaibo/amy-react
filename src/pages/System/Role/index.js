@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Tree, Table, Switch, Button, Popconfirm, Divider, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import {
@@ -10,11 +10,10 @@ import {
   KeyOutlined,
 } from '@ant-design/icons';
 import { connect } from 'umi';
-import { isEqual, isArray, isEmpty } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import withModal from '@/components/HOCModal';
-import { getValue } from '@/utils/utils';
+import { getValue, isArray, isEmpty } from '@/utils/utils';
 import RoleForm from './components/RoleForm';
 import RoleResourceForm from './components/RoleResourceForm';
 import styles from '../System.less';
@@ -280,6 +279,4 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
   );
 });
 
-const areEqual = (prevProps, nextProps) => isEqual(prevProps, nextProps);
-
-export default memo(Role, areEqual);
+export default Role;

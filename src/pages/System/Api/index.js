@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Tree, Table, Switch, Button, Divider, Popconfirm, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import {
@@ -10,11 +10,10 @@ import {
   UploadOutlined,
 } from '@ant-design/icons';
 import { connect } from 'umi';
-import { isArray, isEmpty, isEqual } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import withModal from '@/components/HOCModal';
-import { getValue } from '@/utils/utils';
+import { getValue, isArray, isEmpty } from '@/utils/utils';
 import ApiForm from './components/ApiForm';
 import UploadForm from './components/UploadTable';
 import styles from '../System.less';
@@ -298,6 +297,4 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
   );
 });
 
-const areEqual = (prevProps, nextProps) => isEqual(prevProps, nextProps);
-
-export default memo(Api, areEqual);
+export default Api;

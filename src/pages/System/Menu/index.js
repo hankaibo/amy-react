@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Tree, Table, Switch, Button, Divider, Popconfirm, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import {
@@ -9,11 +9,10 @@ import {
   EditOutlined,
 } from '@ant-design/icons';
 import { connect } from 'umi';
-import { isArray, isEmpty, isEqual } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import withModal from '@/components/HOCModal';
-import { getValue } from '@/utils/utils';
+import { getValue, isArray, isEmpty } from '@/utils/utils';
 import MenuForm from './components/MenuForm';
 import styles from '../System.less';
 
@@ -276,6 +275,4 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
   );
 });
 
-const areEqual = (prevProps, nextProps) => isEqual(prevProps, nextProps);
-
-export default memo(Menu, areEqual);
+export default Menu;

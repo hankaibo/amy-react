@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Tree, Button, message } from 'antd';
 import { connect } from 'umi';
-import { isEmpty } from 'lodash';
-import { difference } from '@/utils/utils';
+import { difference, isEmpty } from '@/utils/utils';
 import styles from '../../System.less';
 
 /**

@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Tag, message } from 'antd';
-
 import { connect, injectIntl, formatMessage } from 'umi';
-import groupBy from 'lodash/groupBy';
 import moment from 'moment';
 import NoticeIcon from '../NoticeIcon';
 import styles from './index.less';
@@ -76,7 +74,10 @@ class NoticeIconView extends Component {
 
       return newNotice;
     });
-    return groupBy(newNotices, 'type');
+    return newNotices.reduce((acc, cur, idx, src, k = cur.type) => {
+      (acc[k] || (acc[k] = [])).push(cur);
+      return acc;
+    }, {});
   };
 
   getUnreadData = (noticeData) => {

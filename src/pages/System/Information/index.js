@@ -1,9 +1,8 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Table, Input, Switch, Tag, Button, Popconfirm, Divider, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
-import { isEqual } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import withModal from '@/components/HOCModal';
@@ -270,6 +269,4 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
   );
 });
 
-const areEqual = (prevProps, nextProps) => isEqual(prevProps, nextProps);
-
-export default memo(Information, areEqual);
+export default Information;

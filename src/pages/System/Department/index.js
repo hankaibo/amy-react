@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Row,
   Col,
@@ -21,11 +21,10 @@ import {
   EditOutlined,
 } from '@ant-design/icons';
 import { connect } from 'umi';
-import { isEqual, isArray, isEmpty } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import withModal from '@/components/HOCModal';
 import NoMatch from '@/components/Authorized/NoMatch';
-import { getPlainNode, getParentKey, getValue } from '@/utils/utils';
+import { getPlainNode, getParentKey, getValue, isArray, isEmpty } from '@/utils/utils';
 import DepartmentForm from './components/DepartmentForm';
 import styles from '../System.less';
 
@@ -351,6 +350,4 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   );
 });
 
-const areEqual = (prevProps, nextProps) => isEqual(prevProps, nextProps);
-
-export default memo(Department, areEqual);
+export default Department;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Spin } from 'antd';
-import isEqual from 'lodash/isEqual';
+import isEqual from 'lodash.isequal';
 import { isComponentClass } from './Secured';
 // eslint-disable-next-line import/no-cycle
 

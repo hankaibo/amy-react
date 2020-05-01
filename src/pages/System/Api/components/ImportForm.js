@@ -1,7 +1,7 @@
 import { Modal, Form, Tree, Button, message } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
-import { isEmpty } from 'lodash';
+import { isEmpty } from '@/utils/utils';
 import styles from '@/pages/System/System.less';
 
 const { DirectoryTree } = Tree;

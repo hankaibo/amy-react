@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Modal, Form, Input, Switch, TreeSelect, Tooltip, Button, message } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
-import { isEmpty } from 'lodash';
+import { isEmpty } from '@/utils/utils';
 import styles from '../../System.less';
 
 const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Switch, Radio, Upload, TreeSelect, Button, message } from 'antd';
 import { connect } from 'umi';
-import { isEmpty } from 'lodash';
+import { isEmpty } from '@/utils/utils';
 import { UpOutlined, DownOutlined, UploadOutlined, PlusOutlined } from '@ant-design/icons';
 import styles from '../../System.less';
 

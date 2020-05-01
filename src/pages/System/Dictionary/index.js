@@ -1,14 +1,13 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Table, Input, Switch, Button, Popconfirm, Divider, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { RollbackOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { isEqual, isEmpty } from 'lodash';
 import { Link, history, connect } from 'umi';
 import moment from 'moment';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import withModal from '@/components/HOCModal';
-import { getValue } from '@/utils/utils';
+import { getValue, isEmpty } from '@/utils/utils';
 import DictionaryForm from './components/DictionaryForm';
 import styles from '../System.less';
 
@@ -266,6 +265,4 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
   );
 });
 
-const areEqual = (prevProps, nextProps) => isEqual(prevProps, nextProps);
-
-export default memo(Dictionary, areEqual);
+export default Dictionary;

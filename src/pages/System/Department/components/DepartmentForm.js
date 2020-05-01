@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Modal, Form, Input, Switch, TreeSelect, Button, message } from 'antd';
 import { connect } from 'umi';
-import { isEmpty } from 'lodash';
+import { isEmpty } from '@/utils/utils';
 import styles from '../../System.less';
 
 const DepartmentForm = connect(({ systemDepartment: { tree, department }, loading }) => ({

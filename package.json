@@ -42,10 +42,10 @@
   "dependencies": {
     "@ant-design/icons": "^4.1.0",
     "@ant-design/pro-layout": "^5.0.10",
-    "antd": "4.1.5",
+    "antd": "4.2.0",
     "classnames": "^2.2.6",
-    "lodash": "^4.17.15",
-    "moment": "^2.24.0",
+    "lodash.isequal": "^4.5.0",
+    "moment": "2.24.0",
     "omit.js": "^1.0.2",
     "path-to-regexp": "^6.1.0",
     "prop-types": "^15.7.2",
@@ -68,7 +68,7 @@
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
     "husky": "^4.2.5",
-    "lint-staged": "^10.1.7",
+    "lint-staged": "^10.2.2",
     "mockjs": "^1.1.0",
     "prettier": "^2.0.5",
     "stylelint": "^13.3.3"

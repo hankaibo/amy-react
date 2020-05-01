@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Row,
   Col,
@@ -15,12 +15,11 @@ import {
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
-import { isEqual, isArray, isEmpty } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import IconFont from '@/components/IconFont';
 import withModal from '@/components/HOCModal';
-import { getValue } from '@/utils/utils';
+import { getValue, isArray, isEmpty } from '@/utils/utils';
 import UserForm from './components/UserForm';
 import UserRoleForm from './components/UserRoleForm';
 import UserPasswordForm from './components/UserPasswordForm';
@@ -364,6 +363,4 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
   );
 });
 
-const areEqual = (prevProps, nextProps) => isEqual(prevProps, nextProps);
-
-export default memo(User, areEqual);
+export default User;

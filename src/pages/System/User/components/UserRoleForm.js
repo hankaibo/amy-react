@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Tree, Button, message } from 'antd';
 import { connect } from 'umi';
-import { isEmpty } from 'lodash';
-import { difference, getParentKey, getPlainNode } from '@/utils/utils';
+import { difference, getParentKey, getPlainNode, isEmpty } from '@/utils/utils';
 import styles from '@/pages/System/System.less';
 
 const UserRoleForm = connect(({ systemUser: { treeData, checkedKeys }, loading }) => ({

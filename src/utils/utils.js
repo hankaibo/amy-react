@@ -86,3 +86,8 @@ export const difference = (a, b) => {
   const s = new Set(b);
   return a.filter((x) => !s.has(x));
 };
+
+// 仿lodash
+export const isArray = (obj) => Array.isArray(obj);
+export const isEmpty = (obj) =>
+  [Object, Array].includes((obj || {}).constructor) && !Object.entries(obj || {}).length;
