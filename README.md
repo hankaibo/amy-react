@@ -28,11 +28,11 @@ Based on Ant Design Pro, it is meticulously extended, developed with JavaScript,
 $ git clone https://github.com/hankaibo/myantdpro.git myantdpro
 $ cd myantdpro
 $ npm install (or npm --registry https://registry.npm.taobao.org install)
-$ npm start             # visit http://localhost:8000（local mock api）
+$ npm start             # visit http://localhost:8000(local mock api)
   or
-  npm run dev           # visit http://localhost:9000（your api）
+  npm run dev           # visit http://localhost:9000(your api)
   or
-  npm run pre           # visit http://localhost:9000（my online api）
+  npm run pre           # visit http://localhost:9000(my online api)
 ```
 
 ## Browsers support
