@@ -17,10 +17,18 @@ export default {
     pagination: {},
     // 编辑
     dictionary: {},
+    // 过滤参数
+    filter: {},
   },
 
   effects: {
     *fetch({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'saveFilter',
+        payload: {
+          ...payload,
+        },
+      });
       const response = yield call(pageDict, payload);
       const { apierror } = response;
       if (apierror) {
@@ -36,18 +44,18 @@ export default {
       });
       if (callback) callback();
     },
-    *add({ payload, callback }, { call, put }) {
-      const { values, searchParams } = payload;
-      const params = { ...values, status: +values.status };
-      const response = yield call(addDict, params);
+    *add({ payload, callback }, { call, put, select }) {
+      const values = { ...payload, status: +payload.status };
+      const response = yield call(addDict, values);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemDictionary.filter);
       yield put({
         type: 'fetch',
         payload: {
-          ...searchParams,
+          ...filter,
           current: 1,
         },
       });
@@ -69,64 +77,67 @@ export default {
       });
       if (callback) callback();
     },
-    *update({ payload, callback }, { call, put }) {
-      const { values, searchParams } = payload;
-      const params = { ...values, status: +values.status };
-      const response = yield call(updateDict, params);
+    *update({ payload, callback }, { call, put, select }) {
+      const values = { ...payload, status: +payload.status };
+      const response = yield call(updateDict, values);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemDictionary.filter);
       yield put({
         type: 'fetch',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       if (callback) callback();
     },
-    *enable({ payload, callback }, { call, put }) {
-      const { id, status, searchParams } = payload;
+    *enable({ payload, callback }, { call, put, select }) {
+      const { id, status } = payload;
       const params = { id, status: +status };
       const response = yield call(enableDict, params);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemDictionary.filter);
       yield put({
         type: 'fetch',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       if (callback) callback();
     },
-    *delete({ payload, callback }, { call, put }) {
-      const { id, searchParams } = payload;
+    *delete({ payload, callback }, { call, put, select }) {
+      const { id } = payload;
       const response = yield call(deleteDict, id);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemDictionary.filter);
       yield put({
         type: 'fetch',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       if (callback) callback();
     },
-    *deleteBatch({ payload, callback }, { call, put }) {
-      const { ids, searchParams } = payload;
+    *deleteBatch({ payload, callback }, { call, put, select }) {
+      const { ids } = payload;
       const response = yield call(deleteBatchDict, ids);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemDictionary.filter);
       yield put({
         type: 'fetch',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       if (callback) callback();
@@ -134,6 +145,14 @@ export default {
   },
 
   reducers: {
+    saveFilter(state, { payload }) {
+      return {
+        ...state,
+        filter: {
+          ...payload,
+        },
+      };
+    },
     saveList(state, { payload }) {
       const { list, pagination } = payload;
       return {
@@ -147,6 +166,7 @@ export default {
         ...state,
         list: [],
         pagination: {},
+        filter: {},
       };
     },
     save(state, { payload }) {

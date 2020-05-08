@@ -17,7 +17,6 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
     visible,
     isEdit,
     id,
-    searchParams,
     dictionary,
     closeModal,
     dispatch,
@@ -64,12 +63,12 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
     // 【添加与修改】
     const handleAddOrUpdate = (values) => {
       if (isEdit) {
-        Object.assign(values, { id }, { parentId });
         dispatch({
           type: 'systemDictionary/update',
           payload: {
-            values,
-            searchParams,
+            ...values,
+            id,
+            parentId,
           },
           callback: () => {
             resetFields();
@@ -78,12 +77,11 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
           },
         });
       } else {
-        Object.assign(values, { parentId });
         dispatch({
           type: 'systemDictionary/add',
           payload: {
-            values,
-            searchParams,
+            ...values,
+            parentId,
           },
           callback: () => {
             resetFields();

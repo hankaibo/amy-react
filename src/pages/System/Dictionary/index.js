@@ -28,6 +28,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
     pageSize: pagination.pageSize || 10,
     parentId: parentDictId,
     status: null,
+    name: null,
   });
 
   // 【复选框状态属性与函数】
@@ -56,7 +57,6 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       payload: {
         id,
         status: checked,
-        searchParams: params,
       },
     });
   };
@@ -73,7 +73,6 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       type: 'systemDictionary/deleteBatch',
       payload: {
         ids: selectedRowKeys,
-        searchParams: params,
       },
       callback: () => {
         setSelectedRowKeys([]);
@@ -89,7 +88,6 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       type: 'systemDictionary/delete',
       payload: {
         id,
-        searchParams: params,
       },
       callback: () => {
         setSelectedRowKeys([]);
@@ -192,13 +190,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       render: (text, record) => (
         <>
           <Authorized authority="system:dictionary:update" noMatch={null}>
-            <DictionaryModal
-              isEdit
-              id={record.id}
-              match={match}
-              location={location}
-              searchParams={params}
-            >
+            <DictionaryModal isEdit id={record.id} match={match} location={location}>
               <EditOutlined title="编辑" className="icon" />
             </DictionaryModal>
             <Divider type="vertical" />
@@ -224,7 +216,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>
             <Authorized authority="system:dictionary:add" noMatch={null}>
-              <DictionaryModal match={match} location={location} searchParams={params}>
+              <DictionaryModal match={match} location={location}>
                 <Button type="primary" title="新增">
                   <PlusOutlined />
                 </Button>
