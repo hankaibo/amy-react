@@ -24,6 +24,8 @@ export default {
     // 上传接口列表
     apiList: [],
     apiListBackup: [],
+    // 过滤参数
+    filter: {},
   },
 
   effects: {
@@ -42,6 +44,12 @@ export default {
       if (callback) callback();
     },
     *fetchChildrenById({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'saveFilter',
+        payload: {
+          ...payload,
+        },
+      });
       const response = yield call(listChildrenById, payload);
       const { apierror } = response;
       if (apierror) {
@@ -56,19 +64,18 @@ export default {
       });
       if (callback) callback();
     },
-    *add({ payload, callback }, { call, put }) {
-      const { values, searchParams } = payload;
-      const params = { ...values, status: +values.status };
-      const response = yield call(addApi, params);
+    *add({ payload, callback }, { call, put, select }) {
+      const values = { ...payload, status: +payload.status };
+      const response = yield call(addApi, values);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemApi.filter);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          ...searchParams,
-          type: values.type,
+          ...filter,
         },
       });
 
@@ -90,50 +97,52 @@ export default {
       });
       if (callback) callback();
     },
-    *update({ payload, callback }, { call, put }) {
-      const { values, searchParams } = payload;
-      const params = { ...values, status: +values.status };
-      const response = yield call(updateApi, params);
+    *update({ payload, callback }, { call, put, select }) {
+      const values = { ...payload, status: +payload.status };
+      const response = yield call(updateApi, values);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemApi.filter);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       if (callback) callback();
     },
-    *enable({ payload, callback }, { call, put }) {
-      const { id, status, searchParams } = payload;
+    *enable({ payload, callback }, { call, put, select }) {
+      const { id, status } = payload;
       const values = { id, status: +status };
       const response = yield call(enableApi, values);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemApi.filter);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
 
       if (callback) callback();
     },
-    *delete({ payload, callback }, { call, put }) {
-      const { id, searchParams } = payload;
+    *delete({ payload, callback }, { call, put, select }) {
+      const { id } = payload;
       const response = yield call(deleteApi, id);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemApi.filter);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       if (callback) callback();
@@ -142,17 +151,18 @@ export default {
       yield call(deleteBatchApi, ids);
       if (callback) callback();
     },
-    *move({ payload, callback }, { call, put }) {
+    *move({ payload, callback }, { call, put, select }) {
       const { searchParams, ...values } = payload;
       const response = yield call(moveButton, values);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemApi.filter);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       if (callback) callback();
@@ -191,6 +201,14 @@ export default {
   },
 
   reducers: {
+    saveFilter(state, { payload }) {
+      return {
+        ...state,
+        filter: {
+          ...payload,
+        },
+      };
+    },
     saveTree(state, { payload }) {
       const { tree } = payload;
       return {
@@ -215,6 +233,7 @@ export default {
       return {
         ...state,
         list: [],
+        filter: {},
       };
     },
     save(state, { payload }) {

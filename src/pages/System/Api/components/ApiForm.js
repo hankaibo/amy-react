@@ -18,7 +18,6 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
     visible,
     isEdit,
     id,
-    searchParams,
     api,
     tree,
     closeModal,
@@ -58,12 +57,12 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
     // 【添加与修改接口】
     const handleAddOrUpdate = (values) => {
       if (isEdit) {
-        Object.assign(values, { id }, { type: 2 });
         dispatch({
           type: 'systemApi/update',
           payload: {
-            values,
-            searchParams,
+            ...values,
+            id,
+            type: 2,
           },
           callback: () => {
             resetFields();
@@ -72,12 +71,11 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
           },
         });
       } else {
-        Object.assign(values, { type: 2 });
         dispatch({
           type: 'systemApi/add',
           payload: {
-            values,
-            searchParams,
+            ...values,
+            type: 2,
           },
           callback: () => {
             resetFields();
