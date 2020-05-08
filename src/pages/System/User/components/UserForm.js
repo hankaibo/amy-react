@@ -40,7 +40,6 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
     departmentId,
     isEdit,
     id,
-    searchParams,
     user,
     tree,
     closeModal,
@@ -86,12 +85,11 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
     // 【添加与修改】
     const handleAddOrUpdate = (values) => {
       if (isEdit) {
-        Object.assign(values, { id });
         dispatch({
           type: 'systemUser/update',
           payload: {
-            values,
-            searchParams,
+            ...values,
+            id,
           },
           callback: () => {
             resetFields();
@@ -103,8 +101,7 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
         dispatch({
           type: 'systemUser/add',
           payload: {
-            values,
-            searchParams,
+            ...values,
           },
           callback: () => {
             resetFields();

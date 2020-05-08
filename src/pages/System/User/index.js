@@ -116,7 +116,6 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       payload: {
         id,
         status: checked,
-        searchParams: params,
       },
     });
   };
@@ -133,7 +132,6 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       type: 'systemUser/deleteBatch',
       payload: {
         ids: selectedRowKeys,
-        searchParams: params,
       },
       callback: () => {
         setSelectedRowKeys([]);
@@ -149,7 +147,6 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       type: 'systemUser/delete',
       payload: {
         id,
-        searchParams: params,
       },
       callback: () => {
         setSelectedRowKeys([]);
@@ -258,7 +255,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
         <>
           {/* Note: system:user:xxx为【资源保护】菜单中用户管理修改接口(system:user:update)的编码名称。必须两者一致才能动态隐藏显示按钮。 */}
           <Authorized authority="system:user:update" noMatch={null}>
-            <UserModal isEdit id={record.id} searchParams={params}>
+            <UserModal isEdit id={record.id}>
               <EditOutlined title="编辑" className="icon" />
             </UserModal>
             <Divider type="vertical" />
@@ -321,10 +318,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:user:add" noMatch={null}>
-                  <UserModal
-                    departmentId={currentDepartment ? currentDepartment.id : null}
-                    searchParams={params}
-                  >
+                  <UserModal departmentId={currentDepartment ? currentDepartment.id : null}>
                     <Button type="primary" title="新增">
                       <PlusOutlined />
                     </Button>
