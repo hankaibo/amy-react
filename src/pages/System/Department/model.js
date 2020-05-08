@@ -185,11 +185,6 @@ export default {
         },
       };
     },
-    clearFilter(state) {
-      return {
-        ...state,
-      };
-    },
     saveTree(state, { payload }) {
       const { tree } = payload;
       return {
@@ -214,6 +209,7 @@ export default {
       return {
         ...state,
         list: [],
+        filter: {},
       };
     },
     save(state, { payload }) {
