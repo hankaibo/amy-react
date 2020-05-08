@@ -137,7 +137,6 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       payload: {
         sourceId: record.id,
         targetId,
-        searchParams: params,
       },
       callback: () => {
         message.success('移动部门成功。');
@@ -153,7 +152,6 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       payload: {
         id,
         status: checked,
-        searchParams: params,
       },
     });
   };
@@ -165,7 +163,6 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       type: 'systemDepartment/delete',
       payload: {
         id,
-        searchParams: params,
       },
       callback: () => {
         message.success('删除部门成功。');
@@ -266,7 +263,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       render: (text, record) => (
         <>
           <Authorized authority="system:department:update" noMatch={null}>
-            <DepartmentModal isEdit id={record.id} searchParams={params}>
+            <DepartmentModal isEdit id={record.id}>
               <EditOutlined title="编辑" className="icon" />
             </DepartmentModal>
             <Divider type="vertical" />
@@ -322,10 +319,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:department:add" noMatch={null}>
-                  <DepartmentModal
-                    id={currentDepartment && currentDepartment.id}
-                    searchParams={params}
-                  >
+                  <DepartmentModal id={currentDepartment && currentDepartment.id}>
                     <Button type="primary" title="新增">
                       <PlusOutlined />
                     </Button>

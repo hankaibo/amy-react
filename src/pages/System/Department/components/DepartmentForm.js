@@ -19,7 +19,6 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
     visible,
     isEdit,
     id,
-    searchParams,
     department,
     tree,
     closeModal,
@@ -65,8 +64,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
         dispatch({
           type: 'systemDepartment/update',
           payload: {
-            values,
-            searchParams,
+            ...values,
           },
           callback: () => {
             resetFields();
@@ -78,8 +76,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
         dispatch({
           type: 'systemDepartment/add',
           payload: {
-            values,
-            searchParams,
+            ...values,
           },
           callback: () => {
             resetFields();
