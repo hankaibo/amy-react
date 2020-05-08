@@ -19,6 +19,8 @@ export default {
     list: [],
     // 编辑
     menu: {},
+    // 过滤参数
+    filter: {},
   },
 
   effects: {
@@ -37,6 +39,12 @@ export default {
       if (callback) callback();
     },
     *fetchChildrenById({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'saveFilter',
+        payload: {
+          ...payload,
+        },
+      });
       const response = yield call(listChildrenById, payload);
       const { apierror } = response;
       if (apierror) {
@@ -51,19 +59,18 @@ export default {
       });
       if (callback) callback();
     },
-    *add({ payload, callback }, { call, put }) {
-      const { values, searchParams } = payload;
-      const params = { ...values, status: +values.status };
-      const response = yield call(addMenu, params);
+    *add({ payload, callback }, { call, put, select }) {
+      const values = { ...payload, status: +payload.status };
+      const response = yield call(addMenu, values);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemMenu.filter);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          ...searchParams,
-          type: values.type,
+          ...filter,
         },
       });
       yield put({
@@ -90,18 +97,18 @@ export default {
       });
       if (callback) callback();
     },
-    *update({ payload, callback }, { call, put }) {
-      const { values, searchParams } = payload;
-      const params = { ...values, status: +values.status };
-      const response = yield call(updateMenu, params);
+    *update({ payload, callback }, { call, put, select }) {
+      const values = { ...payload, status: +payload.status };
+      const response = yield call(updateMenu, values);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemMenu.filter);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       yield put({
@@ -112,66 +119,68 @@ export default {
       });
       if (callback) callback();
     },
-    *enable({ payload, callback }, { call, put }) {
-      const { id, status, searchParams } = payload;
+    *enable({ payload, callback }, { call, put, select }) {
+      const { id, status } = payload;
       const values = { id, status: +status };
       const response = yield call(enableMenu, values);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemMenu.filter);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       yield put({
         type: 'fetch',
         payload: {
-          type: searchParams.type,
+          type: filter.type,
         },
       });
       if (callback) callback();
     },
-    *delete({ payload, callback }, { call, put }) {
-      const { id, searchParams } = payload;
+    *delete({ payload, callback }, { call, put, select }) {
+      const { id } = payload;
       const response = yield call(deleteMenu, id);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemMenu.filter);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       yield put({
         type: 'fetch',
         payload: {
-          type: searchParams.type,
+          type: filter.type,
         },
       });
       if (callback) callback();
     },
-    *move({ payload, callback }, { call, put }) {
-      const { searchParams, ...values } = payload;
-      const response = yield call(moveMenu, values);
+    *move({ payload, callback }, { call, put, select }) {
+      const response = yield call(moveMenu, payload);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemMenu.filter);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       yield put({
         type: 'fetch',
         payload: {
-          type: searchParams.type,
+          type: filter.type,
         },
       });
       if (callback) callback();
@@ -179,6 +188,14 @@ export default {
   },
 
   reducers: {
+    saveFilter(state, { payload }) {
+      return {
+        ...state,
+        filter: {
+          ...payload,
+        },
+      };
+    },
     saveTree(state, { payload }) {
       const { tree } = payload;
       return {
@@ -203,6 +220,7 @@ export default {
       return {
         ...state,
         list: [],
+        filter: {},
       };
     },
     save(state, { payload }) {

@@ -96,7 +96,6 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
       payload: {
         id,
         status: checked,
-        searchParams: params,
       },
     });
   };
@@ -112,7 +111,6 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
       payload: {
         sourceId: record.id,
         targetId,
-        searchParams: params,
       },
       callback: () => {
         message.success('移动菜单成功。');
@@ -127,7 +125,6 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
       type: 'systemMenu/delete',
       payload: {
         id,
-        searchParams: params,
       },
       callback: () => {
         message.success('删除菜单成功。');
@@ -199,7 +196,7 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
       render: (text, record) => (
         <>
           <Authorized authority="system:menu:update" noMatch={null}>
-            <MenuModal isEdit id={record.id} searchParams={params}>
+            <MenuModal isEdit id={record.id}>
               <EditOutlined title="编辑" className="icon" />
             </MenuModal>
             <Divider type="vertical" />
@@ -251,7 +248,7 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:menu:add" noMatch={null}>
-                  <MenuModal id={currentMenu && currentMenu.id} searchParams={params}>
+                  <MenuModal id={currentMenu && currentMenu.id}>
                     <Button type="primary" title="新增">
                       <PlusOutlined />
                     </Button>

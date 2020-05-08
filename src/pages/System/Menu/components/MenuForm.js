@@ -19,7 +19,6 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
     visible,
     isEdit,
     id,
-    searchParams,
     menu,
     tree,
     closeModal,
@@ -59,12 +58,12 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
     // 【添加与修改菜单】
     const handleAddOrUpdate = (values) => {
       if (isEdit) {
-        Object.assign(values, { id }, { type: 1 });
         dispatch({
           type: 'systemMenu/update',
           payload: {
-            values,
-            searchParams,
+            ...values,
+            id,
+            type: 1,
           },
           callback: () => {
             resetFields();
@@ -73,12 +72,11 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
           },
         });
       } else {
-        Object.assign(values, { type: 1 });
         dispatch({
           type: 'systemMenu/add',
           payload: {
-            values,
-            searchParams,
+            ...values,
+            type: 1,
           },
           callback: () => {
             resetFields();
