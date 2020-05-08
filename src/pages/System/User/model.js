@@ -212,11 +212,6 @@ export default {
         },
       };
     },
-    clearFilter(state) {
-      return {
-        ...state,
-      };
-    },
     saveTree(state, { payload }) {
       const { tree } = payload;
       return {
@@ -243,6 +238,7 @@ export default {
         ...state,
         list: [],
         pagination: {},
+        filter: {},
       };
     },
     save(state, { payload }) {
