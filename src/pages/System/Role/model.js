@@ -25,6 +25,8 @@ export default {
     treeData: [],
     checkedKeys: [],
     halfCheckedKeys: [],
+    // 过滤参数
+    filter: {},
   },
 
   effects: {
@@ -43,6 +45,12 @@ export default {
       if (callback) callback();
     },
     *fetchChildrenById({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'saveFilter',
+        payload: {
+          ...payload,
+        },
+      });
       const response = yield call(listSubRoleById, payload);
       const { apierror } = response;
       if (apierror) {
@@ -57,18 +65,18 @@ export default {
       });
       if (callback) callback();
     },
-    *add({ payload, callback }, { call, put }) {
-      const { values, searchParams } = payload;
-      const params = { ...values, status: +values.status };
-      const response = yield call(addRole, params);
+    *add({ payload, callback }, { call, put, select }) {
+      const values = { ...payload, status: +payload.status };
+      const response = yield call(addRole, values);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemRole.filter);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       yield put({
@@ -92,18 +100,18 @@ export default {
       });
       if (callback) callback();
     },
-    *update({ payload, callback }, { call, put }) {
-      const { values, searchParams } = payload;
-      const params = { ...values, status: +values.status };
-      const response = yield call(updateRole, params);
+    *update({ payload, callback }, { call, put, select }) {
+      const values = { ...payload, status: +payload.status };
+      const response = yield call(updateRole, values);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemRole.filter);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       yield put({
@@ -111,18 +119,19 @@ export default {
       });
       if (callback) callback();
     },
-    *enable({ payload, callback }, { call, put }) {
-      const { id, status, searchParams } = payload;
+    *enable({ payload, callback }, { call, put, select }) {
+      const { id, status } = payload;
       const params = { id, status: +status };
       const response = yield call(enableRole, params);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemRole.filter);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       yield put({
@@ -130,17 +139,18 @@ export default {
       });
       if (callback) callback();
     },
-    *delete({ payload, callback }, { call, put }) {
-      const { id, searchParams } = payload;
+    *delete({ payload, callback }, { call, put, select }) {
+      const { id } = payload;
       const response = yield call(deleteRole, id);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemRole.filter);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       yield put({
@@ -148,17 +158,17 @@ export default {
       });
       if (callback) callback();
     },
-    *move({ payload, callback }, { call, put }) {
-      const { searchParams, ...values } = payload;
-      const response = yield call(moveRole, values);
+    *move({ payload, callback }, { call, put, select }) {
+      const response = yield call(moveRole, payload);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.systemRole.filter);
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       yield put({
@@ -205,6 +215,14 @@ export default {
   },
 
   reducers: {
+    saveFilter(state, { payload }) {
+      return {
+        ...state,
+        filter: {
+          ...payload,
+        },
+      };
+    },
     saveTree(state, { payload }) {
       const { tree } = payload;
       return {
@@ -229,6 +247,7 @@ export default {
       return {
         ...state,
         list: [],
+        filter: {},
       };
     },
     save(state, { payload }) {

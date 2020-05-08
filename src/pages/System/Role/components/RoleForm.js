@@ -18,7 +18,6 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
     visible,
     isEdit,
     id,
-    searchParams,
     role,
     tree,
     closeModal,
@@ -59,12 +58,11 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
     // 【添加与修改角色】
     const handleAddOrUpdate = (values) => {
       if (isEdit) {
-        Object.assign(values, { id });
         dispatch({
           type: 'systemRole/update',
           payload: {
-            values,
-            searchParams,
+            ...values,
+            id,
           },
           callback: () => {
             resetFields();
@@ -76,8 +74,7 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
         dispatch({
           type: 'systemRole/add',
           payload: {
-            values,
-            searchParams,
+            ...values,
           },
           callback: () => {
             resetFields();

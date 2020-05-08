@@ -89,7 +89,6 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       payload: {
         id,
         status: checked,
-        searchParams: params,
       },
     });
   };
@@ -105,7 +104,6 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       payload: {
         sourceId: record.id,
         targetId,
-        searchParams: params,
       },
       callback: () => {
         message.success('移动角色成功。');
@@ -120,7 +118,6 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       type: 'systemRole/delete',
       payload: {
         id,
-        searchParams: params,
       },
       callback: () => {
         message.success('删除角色成功。');
@@ -197,7 +194,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       render: (text, record) => (
         <>
           <Authorized authority="system:role:update" noMatch={null}>
-            <RoleModal isEdit id={record.id} searchParams={params}>
+            <RoleModal isEdit id={record.id}>
               <EditOutlined title="编辑" className="icon" />
             </RoleModal>
             <Divider type="vertical" />
@@ -254,7 +251,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
             <div className={styles.tableList}>
               <div className={styles.tableListOperator}>
                 <Authorized authority="system:role:add" noMatch={null}>
-                  <RoleModal id={currentRole && currentRole.id} searchParams={params}>
+                  <RoleModal id={currentRole && currentRole.id}>
                     <Button type="primary" title="新增">
                       <PlusOutlined />
                     </Button>
