@@ -54,9 +54,67 @@
 }
 
 .logo {
-  height: 44px;
-  margin-right: 16px;
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 40px;
   vertical-align: top;
+  filter: contrast(150%) brightness(110%);
+}
+
+.h {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  z-index: 1;
+  width: 30px;
+  height: 10px;
+  background: #0ebeff;
+
+  &::before {
+    position: absolute;
+    top: -10px;
+    left: 0;
+    width: 30px;
+    height: 30px;
+    border: 10px solid #24f6f0;
+    border-top: none;
+    border-bottom: none;
+    content: '';
+  }
+}
+
+.h:last-child {
+  top: 24px;
+  left: 4px;
+  z-index: 100;
+  background: #fe2d52;
+  mix-blend-mode: lighten;
+  animation: moveLeft 3s;
+
+  &::before {
+    position: absolute;
+    top: -10px;
+    left: 0;
+    width: 30px;
+    height: 30px;
+    border: 10px solid #fe2d52;
+    border-top: none;
+    border-bottom: none;
+    content: '';
+  }
+}
+
+@keyframes moveLeft {
+  0% {
+    transform: translate(1000px);
+  }
+  50% {
+    transform: translate(0);
+  }
+  100% {
+    transform: translate(0);
+  }
 }
 
 .title {

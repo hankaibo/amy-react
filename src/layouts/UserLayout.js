@@ -3,7 +3,6 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { connect, Link, useIntl } from 'umi';
 import React from 'react';
 import SelectLang from '@/components/SelectLang';
-import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
 
 const UserLayout = (props) => {
@@ -42,7 +41,11 @@ const UserLayout = (props) => {
           <div className={styles.top}>
             <div className={styles.header}>
               <Link to="/">
-                <img alt="logo" className={styles.logo} src={logo} />
+                <div className={styles.logo}>
+                  <div className={styles.h} />
+                  <div className={styles.h} />
+                </div>
+                {/* <img alt="logo" className={styles.logo} src={logo} /> */}
                 <span className={styles.title}>{formatMessage({ id: 'app.logo.name' })}</span>
               </Link>
             </div>
