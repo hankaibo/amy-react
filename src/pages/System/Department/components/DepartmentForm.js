@@ -60,11 +60,11 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
     // 【添加与修改】
     const handleAddOrUpdate = (values) => {
       if (isEdit) {
-        Object.assign(values, { id });
         dispatch({
           type: 'systemDepartment/update',
           payload: {
             ...values,
+            id,
           },
           callback: () => {
             resetFields();

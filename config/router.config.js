@@ -23,48 +23,54 @@ export default [
           {
             path: '/home',
             name: 'home',
-            icon: 'home',
+            icon: 'HomeOutlined',
             component: './Home',
           },
           // system
           {
             path: '/system',
             name: 'system',
-            icon: 'setting',
+            icon: 'SettingOutlined',
             routes: [
               {
                 path: '/system/departments',
                 name: 'department',
+                icon: 'ApartmentOutlined',
                 component: './System/Department',
                 authority: ['system:department'],
               },
               {
                 path: '/system/users',
                 name: 'user',
+                icon: 'TeamOutlined',
                 component: './System/User',
                 authority: ['system:user'],
               },
               {
                 path: '/system/roles',
                 name: 'role',
+                icon: 'UsergroupAddOutlined',
                 component: './System/Role',
                 authority: ['system:role'],
               },
               {
                 path: '/system/menus',
                 name: 'menu',
+                icon: 'MenuOutlined',
                 component: './System/Menu',
                 authority: ['system:menu'],
               },
               {
                 path: '/system/apis',
                 name: 'api',
+                icon: 'ApiOutlined',
                 component: './System/Api',
                 authority: ['system:api'],
               },
               {
                 path: '/system/dictionaries',
                 name: 'dictionary',
+                icon: 'BookOutlined',
                 authority: ['system:dictionary'],
                 routes: [
                   {
@@ -82,6 +88,7 @@ export default [
               {
                 path: '/system/information',
                 name: 'information',
+                icon: 'MessageOutlined',
                 component: './System/Information',
                 authority: ['system:information'],
               },
