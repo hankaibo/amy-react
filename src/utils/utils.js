@@ -91,3 +91,27 @@ export const difference = (a, b) => {
 export const isArray = (obj) => Array.isArray(obj);
 export const isEmpty = (obj) =>
   [Object, Array].includes((obj || {}).constructor) && !Object.entries(obj || {}).length;
+
+// localstorage 简单封装
+export const getItem = (key, defaultValue) => {
+  const data = localStorage.getItem(key);
+  if (!data) return defaultValue;
+
+  let val = '';
+  try {
+    val = JSON.parse(data);
+  } catch (e) {
+    val = data;
+  }
+
+  return val !== undefined ? val : defaultValue;
+};
+
+export const setItem = (key, value) => {
+  if (value === undefined) {
+    return localStorage.removeItem(key);
+  }
+
+  localStorage.setItem(key, JSON.stringify(value));
+  return value;
+};

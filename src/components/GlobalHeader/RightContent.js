@@ -2,6 +2,7 @@ import { Tooltip, Tag } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import React from 'react';
 import { connect, useIntl } from 'umi';
+import classNames from 'classnames';
 import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
 import SelectLang from '../SelectLang';
@@ -25,7 +26,7 @@ const GlobalHeaderRight = (props) => {
   return (
     <div className={className}>
       <HeaderSearch
-        className={`${styles.action} ${styles.search}`}
+        className={classNames(`${styles.action} ${styles.search}`, 'steps-search')}
         placeholder={formatMessage({
           id: 'component.globalHeader.search',
         })}
@@ -56,18 +57,18 @@ const GlobalHeaderRight = (props) => {
           target="_blank"
           href="https://hankaibo.github.io/myantdpro-docs/"
           rel="noopener noreferrer"
-          className={styles.action}
+          className={classNames(styles.action, 'steps-reference')}
         >
           <QuestionCircleOutlined />
         </a>
       </Tooltip>
       <Avatar />
       {REACT_APP_ENV && (
-        <span>
+        <span className="steps-env">
           <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
         </span>
       )}
-      <SelectLang className={styles.action} />
+      <SelectLang className={classNames(styles.action, 'steps-language')} />
     </div>
   );
 };

@@ -44,6 +44,8 @@
     "@ant-design/pro-layout": "^5.0.12",
     "antd": "4.2.2",
     "classnames": "^2.2.6",
+    "intro.js": "^2.9.3",
+    "intro.js-react": "^0.2.0",
     "lodash.isequal": "^4.5.0",
     "moment": "^2.25.3",
     "omit.js": "^1.0.2",

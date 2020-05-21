@@ -2,6 +2,7 @@ import { Avatar, Menu, Spin } from 'antd';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import React from 'react';
 import { history, connect } from 'umi';
+import classNames from 'classnames';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
@@ -51,7 +52,7 @@ class AvatarDropdown extends React.Component {
     );
     return currentUser && currentUser.username ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
-        <span className={`${styles.action} ${styles.account}`}>
+        <span className={classNames(`${styles.action} ${styles.account}`, 'steps-avatar')}>
           <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
           <span className={styles.name}>{currentUser.username}</span>
         </span>
