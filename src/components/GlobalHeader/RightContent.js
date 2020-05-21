@@ -54,7 +54,7 @@ const GlobalHeaderRight = (props) => {
       >
         <a
           target="_blank"
-          href="https://pro.ant.design/docs/getting-started"
+          href="https://hankaibo.github.io/myantdpro-docs/"
           rel="noopener noreferrer"
           className={styles.action}
         >
