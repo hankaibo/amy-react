@@ -76,15 +76,15 @@ const GlobalModel = {
     },
     saveNotices(state, { payload }) {
       return {
-        collapsed: false,
         ...state,
+        collapsed: false,
         notices: payload,
       };
     },
     saveClearedNotices(state = { notices: [], collapsed: true }, { payload }) {
       return {
-        collapsed: false,
         ...state,
+        collapsed: false,
         notices: state.notices.filter((item) => item.type !== payload),
       };
     },

@@ -37,6 +37,7 @@ const NoticeIcon = (props) => {
       panes.push(
         <TabPane tab={tabTitle} key={tabKey}>
           <NoticeList
+            {...child.props}
             clearText={clearText}
             viewMoreText={viewMoreText}
             data={list}
@@ -46,7 +47,6 @@ const NoticeIcon = (props) => {
             showClear={showClear}
             showViewMore={showViewMore}
             title={title}
-            {...child.props}
           />
         </TabPane>,
       );

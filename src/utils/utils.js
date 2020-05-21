@@ -15,8 +15,8 @@ export const getPageQuery = () => parse(window.location.href.split('?')[1]);
  */
 export const getAuthorityFromRouter = (router, pathname) => {
   const authority = router.find(
-    ({ routes, path = '/' }) =>
-      (path && pathToRegexp(path).exec(pathname)) ||
+    ({ routes, path = '/', target = '_self' }) =>
+      (path && target !== '_blank' && pathToRegexp(path).exec(pathname)) ||
       (routes && getAuthorityFromRouter(routes, pathname)),
   );
   if (authority) return authority;
