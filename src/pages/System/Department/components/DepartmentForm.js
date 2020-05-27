@@ -146,7 +146,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
           name="description"
           rules={[{ message: '请将描述长度保持在1至50字符之间！', min: 1, max: 150 }]}
         >
-          <Input.TextArea placeholder="请输入部门描述。" autoSize={{ minRows: 2, maxRows: 6 }} />
+          <Input.TextArea placeholder="请输入部门描述。" autoSize={{ minRows: 3, maxRows: 6 }} />
         </Form.Item>
         <Form.Item {...tailLayout}>
           <Button onClick={closeModal}>取消</Button>
