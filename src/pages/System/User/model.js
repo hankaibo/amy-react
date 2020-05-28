@@ -94,7 +94,7 @@ export default {
       const user = {
         ...response,
         status: !!response.status,
-        departmentId: response.departmentId.toString(),
+        departmentIdList: response.departmentIdList.map((item) => item.toString()),
       };
       yield put({
         type: 'save',
@@ -146,8 +146,8 @@ export default {
       if (callback) callback();
     },
     *delete({ payload, callback }, { call, put, select }) {
-      const { id } = payload;
-      const response = yield call(deleteUser, id);
+      const { id, departmentId } = payload;
+      const response = yield call(deleteUser, id, departmentId);
       const { apierror } = response;
       if (apierror) {
         return;
@@ -162,8 +162,8 @@ export default {
       if (callback) callback();
     },
     *deleteBatch({ payload, callback }, { call, put, select }) {
-      const { ids } = payload;
-      const response = yield call(deleteBatchUser, ids);
+      const { ids, departmentId } = payload;
+      const response = yield call(deleteBatchUser, ids, departmentId);
       const { apierror } = response;
       if (apierror) {
         return;

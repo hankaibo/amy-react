@@ -132,6 +132,8 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       type: 'systemUser/deleteBatch',
       payload: {
         ids: selectedRowKeys,
+        // 多部门用户，所以带上部门id
+        departmentId: params.departmentId,
       },
       callback: () => {
         setSelectedRowKeys([]);
@@ -147,6 +149,8 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       type: 'systemUser/delete',
       payload: {
         id,
+        // 多部门用户，所以带上部门id
+        departmentId: params.departmentId,
       },
       callback: () => {
         setSelectedRowKeys([]);

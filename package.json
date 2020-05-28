@@ -43,6 +43,7 @@
     "@ant-design/icons": "^4.1.0",
     "@ant-design/pro-layout": "^5.0.12",
     "antd": "4.2.2",
+    "antd-img-crop": "^3.2.0",
     "classnames": "^2.2.6",
     "intro.js": "^2.9.3",
     "intro.js-react": "^0.2.0",

@@ -46,10 +46,15 @@ export async function getUserById(id) {
  * @returns {Promise<void>}
  */
 export async function updateUser(params) {
-  const { id } = params;
+  const { id, plusDepartmentIds, minusDepartmentIds, ...rest } = params;
   return request.put(`/users/${id}`, {
     data: {
-      ...params,
+      user: {
+        id,
+        ...rest,
+      },
+      plusDepartmentIds,
+      minusDepartmentIds,
     },
   });
 }
@@ -83,20 +88,29 @@ export async function resetUserPassword(params) {
 /**
  * 删除用户。
  * @param id
+ * @param departmentId
  * @returns {Promise<void>}
  */
-export async function deleteUser(id) {
-  return request.delete(`/users/${id}`);
+export async function deleteUser(id, departmentId) {
+  return request.delete(`/users/${id}`, {
+    data: {
+      departmentId,
+    },
+  });
 }
 
 /**
  * 批量删除用户。
  * @param ids
+ * @param departmentId
  * @returns {Promise<void>}
  */
-export async function deleteBatchUser(ids) {
+export async function deleteBatchUser(ids, departmentId) {
   return request.delete('/users', {
-    data: ids,
+    data: {
+      ids,
+      departmentId,
+    },
   });
 }
 

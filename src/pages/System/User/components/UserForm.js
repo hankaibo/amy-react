@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Switch, Radio, Upload, TreeSelect, Button, message } from 'antd';
+import ImgCrop from 'antd-img-crop';
 import { connect } from 'umi';
-import { isEmpty } from '@/utils/utils';
-import { UpOutlined, DownOutlined, UploadOutlined, PlusOutlined } from '@ant-design/icons';
+import { difference, isEmpty } from '@/utils/utils';
+import { UpOutlined, DownOutlined, UploadOutlined } from '@ant-design/icons';
 import styles from '../../System.less';
-
-// 【模拟上传图片相关函数】
-const getBase64 = (img, callback) => {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
-};
 
 // 【上传前控制判断】
 const beforeUpload = (file) => {
@@ -36,11 +30,10 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
   const [form] = Form.useForm();
   const { setFieldsValue, resetFields } = form;
 
-  // 【模拟图片上传的属性】
-  const [imageLoading, setImageLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState(null);
   // 展开收缩
   const [expand, setExpand] = useState(false);
+  // 上传文件列表
+  const [fileList, setFileList] = useState([]);
 
   // 【修改时，获取用户表单数据】
   useEffect(() => {
@@ -53,9 +46,11 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
       });
     }
     return () => {
-      dispatch({
-        type: 'systemUser/clear',
-      });
+      if (isEdit) {
+        dispatch({
+          type: 'systemUser/clear',
+        });
+      }
     };
   }, [visible, isEdit, id, dispatch]);
 
@@ -72,11 +67,17 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
   // 【添加与修改】
   const handleAddOrUpdate = (values) => {
     if (isEdit) {
+      const { departmentIdList } = values;
+      const { departmentIdList: oldDepartmentIdList } = user;
+      const plusDepartmentIds = difference(departmentIdList, oldDepartmentIdList);
+      const minusDepartmentIds = difference(oldDepartmentIdList, departmentIdList);
       dispatch({
         type: 'systemUser/update',
         payload: {
           ...values,
           id,
+          plusDepartmentIds,
+          minusDepartmentIds,
         },
         callback: () => {
           resetFields();
@@ -100,18 +101,42 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
   };
 
   // 【头像上传】
-  const handleChange = (info) => {
-    if (info.file.status === 'uploading') {
-      setImageLoading(true);
+  const onChange = ({ file, fileList: newFileList }) => {
+    setFileList(newFileList);
+    if (file.status === 'uploading') {
       return;
     }
-    if (info.file.status === 'done') {
-      // 模拟一个url
-      getBase64(info.file.originFileObj, (imgUrl) => {
-        setImageUrl(imgUrl);
-        setImageLoading(false);
+    if (file.status === 'done') {
+      setFieldsValue({ avatar: file.response });
+    }
+  };
+  // 【图片预览】
+  const onPreview = async (file) => {
+    let src = file.url;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj);
+        reader.onload = () => resolve(reader.result);
       });
     }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow.document.write(image.outerHTML);
+  };
+  // 【上传属性】
+  const fileProps = {
+    action: '/api/v1/users/upload',
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+    },
+    listType: 'picture-card',
+    showUploadList: true,
+    fileList,
+    beforeUpload,
+    onChange,
+    onPreview,
   };
 
   // 【表单布局】
@@ -131,13 +156,6 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
       sm: { span: 19, offset: 5 },
     },
   };
-  // 【上传按钮】
-  const uploadButton = (
-    <div>
-      {imageLoading ? <UploadOutlined /> : <PlusOutlined />}
-      <div className="ant-upload-text">上传</div>
-    </div>
-  );
 
   return (
     <Modal
@@ -153,27 +171,15 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
         name="userForm"
         className={styles.form}
         initialValues={{
-          departmentId: departmentId && departmentId.toString(),
+          departmentIdList: departmentId && [departmentId.toString()],
           status: true,
         }}
         onFinish={handleAddOrUpdate}
       >
         <Form.Item label="头像" name="avatar">
-          <Upload
-            listType="picture-card"
-            className="avatar-uploader"
-            showUploadList={false}
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-            beforeUpload={beforeUpload}
-            onChange={handleChange}
-          >
-            {imageUrl ? (
-              <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />
-            ) : (
-              uploadButton
-            )}
-          </Upload>
-          演示环境，不保存上传的图片。
+          <ImgCrop rotate aspect={140 / 140}>
+            <Upload {...fileProps}>{fileList.length < 1 && <UploadOutlined />}</Upload>
+          </ImgCrop>
         </Form.Item>
         <Form.Item
           label="名称"
@@ -207,12 +213,15 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
         )}
         <Form.Item
           label="所属部门"
-          name="departmentId"
+          name="departmentIdList"
           rules={[{ required: true, message: '请选择一个部门！' }]}
         >
           <TreeSelect
+            showSearch
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
             treeData={tree}
+            allowClear
+            multiple
             placeholder="请选择部门。"
             treeDefaultExpandAll
           />
