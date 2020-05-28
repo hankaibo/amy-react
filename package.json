@@ -42,13 +42,13 @@
   "dependencies": {
     "@ant-design/icons": "^4.1.0",
     "@ant-design/pro-layout": "^5.0.12",
-    "antd": "4.2.2",
+    "antd": "4.2.5",
     "antd-img-crop": "^3.2.0",
     "classnames": "^2.2.6",
     "intro.js": "^2.9.3",
     "intro.js-react": "^0.2.0",
     "lodash.isequal": "^4.5.0",
-    "moment": "^2.25.3",
+    "moment": "^2.26.0",
     "omit.js": "^1.0.2",
     "path-to-regexp": "^6.1.0",
     "prop-types": "^15.7.2",
@@ -58,23 +58,23 @@
     "react-helmet-async": "^1.0.6",
     "sockjs-client": "^1.4.0",
     "stompjs": "^2.3.3",
-    "umi": "^3.1.4",
-    "umi-request": "^1.2.19",
+    "umi": "^3.2.2",
+    "umi-request": "^1.3.3",
     "use-merge-value": "^1.0.1"
   },
   "devDependencies": {
     "@umijs/fabric": "^2.0.8",
     "@umijs/preset-ant-design-pro": "^1.2.2",
-    "@umijs/preset-react": "^1.4.22",
-    "@umijs/preset-ui": "^2.1.13",
+    "@umijs/preset-react": "^1.5.5",
+    "@umijs/preset-ui": "^2.1.14",
     "chalk": "^4.0.0",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
     "husky": "^4.2.5",
-    "lint-staged": "^10.2.2",
+    "lint-staged": "^10.2.6",
     "mockjs": "^1.1.0",
     "prettier": "^2.0.5",
-    "stylelint": "^13.3.3"
+    "stylelint": "^13.5.0"
   },
   "engines": {
     "node": ">=10.0.0"
