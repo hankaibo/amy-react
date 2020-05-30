@@ -162,8 +162,7 @@ export default {
       if (callback) callback();
     },
     *deleteBatch({ payload, callback }, { call, put, select }) {
-      const { ids, departmentId } = payload;
-      const response = yield call(deleteBatchUser, ids, departmentId);
+      const response = yield call(deleteBatchUser, payload);
       const { apierror } = response;
       if (apierror) {
         return;

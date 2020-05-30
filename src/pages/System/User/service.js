@@ -101,15 +101,13 @@ export async function deleteUser(id, departmentId) {
 
 /**
  * 批量删除用户。
- * @param ids
- * @param departmentId
+ * @param params
  * @returns {Promise<void>}
  */
-export async function deleteBatchUser(ids, departmentId) {
+export async function deleteBatchUser(params) {
   return request.delete('/users', {
     data: {
-      ids,
-      departmentId,
+      ...params,
     },
   });
 }

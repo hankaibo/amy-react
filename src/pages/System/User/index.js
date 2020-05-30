@@ -131,7 +131,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
     dispatch({
       type: 'systemUser/deleteBatch',
       payload: {
-        ids: selectedRowKeys,
+        userIdList: selectedRowKeys,
         // 多部门用户，所以带上部门id
         departmentId: params.departmentId,
       },
