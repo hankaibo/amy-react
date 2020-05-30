@@ -75,16 +75,19 @@ const RoleResourceForm = connect(
     // 【授权】
     const handleGrant = (values) => {
       const { ids } = values;
+      if (!ids) {
+        closeModal();
+      }
       const oldCheckedKeys = [...resCheckedKeys, ...resHalfCheckedKeys];
-      const plusResource = difference(ids, oldCheckedKeys);
-      const minusResource = difference(oldCheckedKeys, ids);
+      const plusResourceIdList = difference(ids, oldCheckedKeys);
+      const minusResourceIdList = difference(oldCheckedKeys, ids);
 
       dispatch({
         type: 'systemRole/grantRoleResource',
         payload: {
           id,
-          plusResource,
-          minusResource,
+          plusResourceIdList,
+          minusResourceIdList,
         },
         callback: () => {
           closeModal();
