@@ -69,16 +69,19 @@ const UserRoleForm = connect(({ systemUser: { treeData, checkedKeys }, loading }
   // 【授权】
   const handleGrant = (values) => {
     const { ids } = values;
+    if (!ids) {
+      closeModal();
+    }
     const oldCheckedKeys = [...roleCheckedKeys];
-    const plusRole = difference(ids, oldCheckedKeys);
-    const minusRole = difference(oldCheckedKeys, ids);
+    const plusRoleIds = difference(ids, oldCheckedKeys);
+    const minusRoleIds = difference(oldCheckedKeys, ids);
 
     dispatch({
       type: 'systemUser/grantUserRole',
       payload: {
         id,
-        plusRole,
-        minusRole,
+        plusRoleIds,
+        minusRoleIds,
       },
       callback: () => {
         resetFields();

@@ -77,10 +77,10 @@ export async function enableUser(params) {
  * @returns {Promise<void>}
  */
 export async function resetUserPassword(params) {
-  const { id, password } = params;
+  const { id, newPassword } = params;
   return request.patch(`/users/${id}/password`, {
     data: {
-      password,
+      newPassword,
     },
   });
 }

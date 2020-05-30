@@ -61,7 +61,7 @@ const UserPasswordForm = connect()(({ visible, id, username, closeModal, dispatc
       >
         <Form.Item
           label="新密码"
-          name="password"
+          name="newPassword"
           rules={[
             {
               required: true,
