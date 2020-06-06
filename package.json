@@ -71,7 +71,7 @@
     "@umijs/preset-ui": "^2.1.14",
     "chalk": "^4.0.0",
     "cross-env": "^7.0.2",
-    "eslint": "7.1.0",
+    "eslint": "^7.1.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.9",
     "mockjs": "^1.1.0",
