@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect, connect } from 'umi';
+import { Redirect, connect, history } from 'umi';
 import { stringify } from 'querystring';
 import { PageLoading } from '@ant-design/pro-layout';
+import { getItem } from '@/utils/utils';
 
 const SecurityLayout = connect(({ user: { currentUser }, loading }) => ({
   currentUser,
@@ -11,9 +12,14 @@ const SecurityLayout = connect(({ user: { currentUser }, loading }) => ({
 
   useEffect(() => {
     setIsReady(true);
-    dispatch({
-      type: 'user/fetchCurrent',
-    });
+    // 首先判断是否有token，有则尝试直接进入；否则进入登录页面。
+    if (getItem('jwt')) {
+      dispatch({
+        type: 'user/fetchCurrent',
+      });
+    } else {
+      history.push('/user/login');
+    }
   }, []);
 
   // You can replace it to your authentication rule (such as check token exists)

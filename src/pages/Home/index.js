@@ -27,12 +27,6 @@ const Home = () => {
         tooltipClass: 'myTooltipClass',
       },
       {
-        element: '.steps-env',
-        intro: '当前运行环境',
-        position: 'left',
-        tooltipClass: 'myTooltipClass',
-      },
-      {
         element: '.steps-language',
         intro: '国际化',
         position: 'left',

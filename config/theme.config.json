@@ -1,0 +1,21 @@
+{
+  "theme": [
+    {
+      "theme": "dark",
+      "fileName": "dark.css"
+    },
+    {
+      "key": "purple",
+      "theme": "dark",
+      "fileName": "dark-purple.css",
+      "modifyVars": {
+        "@primary-color": "#722ED1"
+      }
+    }
+  ],
+  "min": true,
+  "isModule": true,
+  "ignoreAntd": false,
+  "ignoreProLayout": false,
+  "cache": true
+}

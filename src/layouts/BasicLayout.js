@@ -32,7 +32,7 @@ const menuDataRender = (menuList) =>
   menuList.map((item) => {
     const localItem = {
       ...item,
-      children: item.children ? menuDataRender(item.children) : [],
+      children: item.children ? menuDataRender(item.children) : undefined,
     };
     return Authorized.check(item.authority, localItem, null);
   });
@@ -92,7 +92,7 @@ const BasicLayout = (props) => {
         )}
         onCollapse={handleMenuCollapse}
         menuItemRender={(menuItemProps, defaultDom) => {
-          if (menuItemProps.isUrl || menuItemProps.children || !menuItemProps.path) {
+          if (menuItemProps.isUrl || !menuItemProps.path) {
             return defaultDom;
           }
           return <Link to={menuItemProps.path}>{defaultDom}</Link>;

@@ -1,7 +1,6 @@
 import React from 'react';
-import { Popover, Tooltip, Tag } from 'antd';
+import { Tag, Tooltip } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { SketchPicker } from 'react-color';
 import { connect, useIntl } from 'umi';
 import classNames from 'classnames';
 import Avatar from './AvatarDropdown';
@@ -17,22 +16,12 @@ const ENVTagColor = {
 
 const GlobalHeaderRight = (props) => {
   const { formatMessage } = useIntl();
-  const { theme, layout, primaryColor } = props;
+  const { theme, layout } = props;
   let className = styles.right;
 
   if (theme === 'dark' && layout === 'topmenu') {
     className = `${styles.right}  ${styles.dark}`;
   }
-
-  // 动态主题切换
-  const handleChangeComplete = (color) => {
-    window.less.modifyVars({
-      '@primary-color': color.hex || primaryColor,
-    });
-  };
-  const colorContent = (
-    <SketchPicker color={primaryColor} onChangeComplete={handleChangeComplete} />
-  );
 
   return (
     <div className={className}>
@@ -59,9 +48,6 @@ const GlobalHeaderRight = (props) => {
         ]}
         // onSearch={() => {}}
       />
-      <Popover content={colorContent} title="Title">
-        <Tag color={primaryColor}>{primaryColor}</Tag>
-      </Popover>
       <Tooltip
         title={formatMessage({
           id: 'component.globalHeader.help',
@@ -78,7 +64,7 @@ const GlobalHeaderRight = (props) => {
       </Tooltip>
       <Avatar />
       {REACT_APP_ENV && (
-        <span className="steps-env">
+        <span>
           <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
         </span>
       )}
@@ -90,5 +76,4 @@ const GlobalHeaderRight = (props) => {
 export default connect(({ settings }) => ({
   theme: settings.navTheme,
   layout: settings.layout,
-  primaryColor: settings.primaryColor,
 }))(GlobalHeaderRight);

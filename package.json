@@ -7,8 +7,7 @@
   "scripts": {
     "postinstall": "umi g tmp",
     "analyze": "cross-env ANALYZE=1 umi build",
-    "build": "npm run color && umi build",
-    "color": "node color.js",
+    "build": "umi build",
     "lint": "umi g tmp && npm run lint:js && npm run lint:style && npm run lint:prettier",
     "lint:prettier": "prettier --check \"**/*\" --end-of-line auto",
     "lint-staged": "lint-staged",
@@ -17,11 +16,11 @@
     "lint:js": "eslint --cache --ext .js,.jsx --format=pretty ./src",
     "lint:style": "stylelint --fix \"src/**/*.less\" --syntax less",
     "prettier": "prettier -c --write \"**/*\"",
-    "start": "npm run color && umi dev",
+    "start": "umi dev",
     "dev": "npm run start:dev",
     "pre": "npm run start:pre",
-    "start:dev": "npm run color && cross-env PORT=9000 REACT_APP_ENV=dev MOCK=none UMI_UI=none umi dev",
-    "start:pre": "npm run color && cross-env PORT=9000 REACT_APP_ENV=pre MOCK=none UMI_UI=none umi dev"
+    "start:dev": "cross-env PORT=9000 REACT_APP_ENV=dev MOCK=none UMI_UI=none umi dev",
+    "start:pre": "cross-env PORT=9000 REACT_APP_ENV=pre MOCK=none UMI_UI=none umi dev"
   },
   "husky": {
     "hooks": {
@@ -42,10 +41,9 @@
   ],
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
-    "@ant-design/pro-layout": "^5.0.12",
-    "antd": "4.3.0",
+    "@ant-design/pro-layout": "^5.0.14",
+    "antd": "4.3.1",
     "antd-img-crop": "^3.3.0",
-    "antd-theme-generator": "^1.2.3",
     "classnames": "^2.2.6",
     "intro.js": "^2.9.3",
     "intro.js-react": "^0.2.0",
@@ -62,22 +60,23 @@
     "sockjs-client": "^1.4.0",
     "stompjs": "^2.3.3",
     "umi": "^3.2.3",
+    "umi-plugin-antd-theme": "^2.1.2",
     "umi-request": "^1.3.3",
-    "use-merge-value": "^1.0.1"
+    "use-merge-value": "^1.0.2"
   },
   "devDependencies": {
-    "@umijs/fabric": "^2.0.9",
+    "@umijs/fabric": "^2.1.0",
     "@umijs/preset-ant-design-pro": "^1.2.2",
-    "@umijs/preset-react": "^1.5.5",
+    "@umijs/preset-react": "^1.5.6",
     "@umijs/preset-ui": "^2.1.14",
     "chalk": "^4.0.0",
     "cross-env": "^7.0.2",
-    "eslint": "^6.8.0",
+    "eslint": "7.1.0",
     "husky": "^4.2.5",
-    "lint-staged": "^10.2.7",
+    "lint-staged": "^10.2.9",
     "mockjs": "^1.1.0",
     "prettier": "^2.0.5",
-    "stylelint": "^13.5.0"
+    "stylelint": "^13.6.0"
   },
   "engines": {
     "node": ">=10.0.0"
