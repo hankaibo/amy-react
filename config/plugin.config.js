@@ -34,22 +34,14 @@ const webpackPlugin = (config) => {
           test: (module) => {
             const packageName = getModulePackageName(module) || '';
             if (packageName) {
-              return [
-                'bizcharts',
-                'gg-editor',
-                'g6',
-                '@antv',
-                'l7',
-                'gg-editor-core',
-                'bizcharts-plugin-slider',
-              ].includes(packageName);
+              return ['@ant-design'].includes(packageName);
             }
             return false;
           },
           name(module) {
             const packageName = getModulePackageName(module);
             if (packageName) {
-              if (['bizcharts', '@antv_data-set'].indexOf(packageName) >= 0) {
+              if (['echarts', 'd3'].indexOf(packageName) >= 0) {
                 return 'viz'; // visualization package
               }
             }
