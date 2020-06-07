@@ -13,11 +13,16 @@ import {
   message,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  UserSwitchOutlined,
+  ReloadOutlined,
+} from '@ant-design/icons';
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
-import IconFont from '@/components/IconFont';
 import withModal from '@/components/HOCModal';
 import { getValue, isArray, isEmpty } from '@/utils/utils';
 import UserForm from './components/UserForm';
@@ -277,13 +282,13 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
           </Authorized>
           <Authorized authority="system:user:grant" noMatch={null}>
             <UserRoleModal id={record.id} disabled={!record.status}>
-              <IconFont type="icon-role" title="分配角色" className="icon" />
+              <UserSwitchOutlined title="分配角色" className="icon" />
             </UserRoleModal>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:user:pwd:reset" noMatch={null}>
             <UserPasswordModal id={record.id} username={record.username}>
-              <IconFont type="icon-reset" title="重置密码" className="icon" />
+              <ReloadOutlined title="重置密码" className="icon" />
             </UserPasswordModal>
           </Authorized>
         </>

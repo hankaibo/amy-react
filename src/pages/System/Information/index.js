@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Table, Input, Switch, Tag, Button, Popconfirm, Divider, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, EditOutlined, CalendarOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import withModal from '@/components/HOCModal';
 import { getValue } from '@/utils/utils';
-import IconFont from '@/components/IconFont';
 import InformationForm from './components/InformationForm';
 import styles from '../System.less';
 
@@ -215,12 +214,7 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:information:publish" noMatch={null}>
-            <IconFont
-              type="icon-publish"
-              title="发布"
-              className="icon"
-              onClick={() => handleDelete(record)}
-            />
+            <CalendarOutlined title="发布" className="icon" onClick={() => handleDelete(record)} />
           </Authorized>
         </>
       ),
