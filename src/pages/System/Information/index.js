@@ -68,7 +68,7 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
 
   // 【搜索】
   const handleFormSubmit = () => {
-    message.info('演示环境，暂未开放。');
+    message.info('暂未开放。');
   };
 
   // 【批量删除信息】
