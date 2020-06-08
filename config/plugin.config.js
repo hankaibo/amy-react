@@ -34,14 +34,14 @@ const webpackPlugin = (config) => {
           test: (module) => {
             const packageName = getModulePackageName(module) || '';
             if (packageName) {
-              return ['@ant-design'].includes(packageName);
+              return ['echarts', 'd3', 'three'].includes(packageName);
             }
             return false;
           },
           name(module) {
             const packageName = getModulePackageName(module);
             if (packageName) {
-              if (['echarts', 'd3'].indexOf(packageName) >= 0) {
+              if (['echarts', 'd3', 'three'].indexOf(packageName) >= 0) {
                 return 'viz'; // visualization package
               }
             }
