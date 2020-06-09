@@ -118,9 +118,9 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
           rules={[
             {
               required: true,
-              message: '请将名称长度保持在1至20字符之间！',
+              message: '请将名称长度保持在1至255字符之间！',
               min: 1,
-              max: 20,
+              max: 255,
             },
           ]}
         >
@@ -144,7 +144,7 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
         <Form.Item
           label="描述"
           name="description"
-          rules={[{ message: '请将描述长度保持在1至50字符之间！', min: 1, max: 150 }]}
+          rules={[{ message: '描述长度最大至255字符！', min: 1, max: 255 }]}
         >
           <Input.TextArea placeholder="请输入部门描述。" autoSize={{ minRows: 3, maxRows: 6 }} />
         </Form.Item>
