@@ -116,9 +116,9 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
           rules={[
             {
               required: true,
-              message: '请将名称长度保持在1至20字符之间！',
+              message: '请将名称长度保持在1至255字符之间！',
               min: 1,
-              max: 20,
+              max: 255,
             },
           ]}
         >
@@ -142,9 +142,9 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
           rules={[
             {
               required: true,
-              message: '请将编码长度保持在1至20字符之间！',
+              message: '请将编码长度保持在1至255字符之间！',
               min: 1,
-              max: 20,
+              max: 255,
             },
           ]}
         >
@@ -156,9 +156,9 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
         <Form.Item
           label="描述"
           name="description"
-          rules={[{ message: '请将描述长度保持在1至50字符之间！', min: 1, max: 50 }]}
+          rules={[{ message: '描述长度最大至255字符！', min: 1, max: 255 }]}
         >
-          <Input.TextArea placeholder="请输入角色描述。" autoSize={{ minRows: 2, maxRows: 6 }} />
+          <Input.TextArea placeholder="请输入角色描述。" autoSize={{ minRows: 3, maxRows: 6 }} />
         </Form.Item>
         <Form.Item {...tailLayout}>
           <Button onClick={closeModal}>取消</Button>

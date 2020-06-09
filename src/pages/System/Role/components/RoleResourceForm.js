@@ -79,15 +79,15 @@ const RoleResourceForm = connect(
         closeModal();
       }
       const oldCheckedKeys = [...resCheckedKeys, ...resHalfCheckedKeys];
-      const plusResourceIdList = difference(ids, oldCheckedKeys);
-      const minusResourceIdList = difference(oldCheckedKeys, ids);
+      const plusResourceIds = difference(ids, oldCheckedKeys);
+      const minusResourceIds = difference(oldCheckedKeys, ids);
 
       dispatch({
         type: 'systemRole/grantRoleResource',
         payload: {
           id,
-          plusResourceIdList,
-          minusResourceIdList,
+          plusResourceIds,
+          minusResourceIds,
         },
         callback: () => {
           closeModal();
