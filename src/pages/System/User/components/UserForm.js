@@ -60,6 +60,15 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
     if (visible && isEdit) {
       if (!isEmpty(user)) {
         setFieldsValue(user);
+        // 回显图片
+        setFileList([
+          {
+            uid: user.id,
+            name: user.name,
+            status: 'done',
+            url: user.avatar,
+          },
+        ]);
       }
     }
   }, [visible, isEdit, user, setFieldsValue]);
@@ -132,7 +141,6 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
       Authorization: `Bearer ${localStorage.getItem('jwt')}`,
     },
     listType: 'picture-card',
-    showUploadList: true,
     fileList,
     beforeUpload,
     onChange,
@@ -177,7 +185,7 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
         onFinish={handleAddOrUpdate}
       >
         <Form.Item label="头像" name="avatar">
-          <ImgCrop rotate aspect={140 / 140}>
+          <ImgCrop rotate aspect={104 / 104}>
             <Upload {...fileProps}>{fileList.length < 1 && <UploadOutlined />}</Upload>
           </ImgCrop>
         </Form.Item>
@@ -187,9 +195,9 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
           rules={[
             {
               required: true,
-              message: '请将名称长度保持在1至20字符之间！',
+              message: '请将名称长度保持在1至255字符之间！',
               min: 1,
-              max: 20,
+              max: 255,
             },
           ]}
         >
@@ -234,14 +242,14 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
             <Form.Item
               label="昵称"
               name="nickname"
-              rules={[{ message: '请将昵称长度保持在1至20字符之间！', min: 1, max: 20 }]}
+              rules={[{ message: '请将昵称长度保持在1至32字符之间！', min: 1, max: 32 }]}
             >
               <Input />
             </Form.Item>
             <Form.Item
               label="真实姓名"
               name="realName"
-              rules={[{ message: '请将真实姓名长度保持在1至20字符之间！', min: 1, max: 20 }]}
+              rules={[{ message: '请将真实姓名长度保持在1至255字符之间！', min: 1, max: 255 }]}
             >
               <Input />
             </Form.Item>
@@ -255,14 +263,14 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
             <Form.Item
               label="座机号码"
               name="phone"
-              rules={[{ message: '请将座机号码长度保持在8至20字符之间！', min: 8, max: 20 }]}
+              rules={[{ message: '请将座机号码长度保持在1至32字符之间！', min: 1, max: 32 }]}
             >
               <Input />
             </Form.Item>
             <Form.Item
               label="手机号码"
               name="mobile"
-              rules={[{ message: '请将手机号码长度保持在8至20字符之间！', min: 8, max: 20 }]}
+              rules={[{ message: '请将手机号码长度保持在1至32字符之间！', min: 1, max: 32 }]}
             >
               <Input />
             </Form.Item>
@@ -270,7 +278,7 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
               <Radio.Group>
                 <Radio value={1}>男</Radio>
                 <Radio value={2}>女</Radio>
-                <Radio value={3}>保密</Radio>
+                <Radio value={0}>保密</Radio>
               </Radio.Group>
             </Form.Item>
           </div>
