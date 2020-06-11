@@ -86,11 +86,11 @@ export default [
                 ],
               },
               {
-                path: '/system/information',
-                name: 'information',
+                path: '/system/messages',
+                name: 'message',
                 icon: 'MessageOutlined',
-                component: './System/Information',
-                authority: ['system:information'],
+                component: './System/Msg',
+                authority: ['system:message'],
               },
               {
                 component: './404',

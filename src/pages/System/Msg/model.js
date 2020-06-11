@@ -1,27 +1,27 @@
 import {
-  pageInformation,
-  addInformation,
-  getInformationById,
-  updateInformation,
-  enableInformation,
-  deleteInformation,
-  deleteBatchInformation,
+  pageMessage,
+  addMessage,
+  getMessageById,
+  updateMessage,
+  enableMessage,
+  deleteMessage,
+  deleteBatchMessage,
 } from './service';
 
 export default {
-  namespace: 'systemInformation',
+  namespace: 'systemMessage',
 
   state: {
     // 列表及分页
     list: [],
     pagination: {},
     // 编辑
-    information: {},
+    msg: {},
   },
 
   effects: {
     *fetch({ payload, callback }, { call, put }) {
-      const response = yield call(pageInformation, payload);
+      const response = yield call(pageMessage, payload);
       const { apierror } = response;
       if (apierror) {
         return;
@@ -39,7 +39,7 @@ export default {
     *add({ payload, callback }, { call, put }) {
       const { values, searchParams } = payload;
       const params = { ...values, status: +values.status };
-      const response = yield call(addInformation, params);
+      const response = yield call(addMessage, params);
       const { apierror } = response;
       if (apierror) {
         return;
@@ -55,16 +55,16 @@ export default {
     },
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
-      const response = yield call(getInformationById, id);
+      const response = yield call(getMessageById, id);
       const { apierror } = response;
       if (apierror) {
         return;
       }
-      const information = { ...response, status: !!response.status };
+      const msg = { ...response, status: !!response.status };
       yield put({
-        type: 'saveInformation',
+        type: 'saveMessage',
         payload: {
-          information,
+          msg,
         },
       });
       if (callback) callback();
@@ -72,7 +72,7 @@ export default {
     *update({ payload, callback }, { call, put }) {
       const { values, searchParams } = payload;
       const params = { ...values, status: +values.status };
-      const response = yield call(updateInformation, params);
+      const response = yield call(updateMessage, params);
       const { apierror } = response;
       if (apierror) {
         return;
@@ -88,7 +88,7 @@ export default {
     *enable({ payload, callback }, { call, put }) {
       const { id, status, searchParams } = payload;
       const params = { id, status: +status };
-      const response = yield call(enableInformation, params);
+      const response = yield call(enableMessage, params);
       const { apierror } = response;
       if (apierror) {
         return;
@@ -103,7 +103,7 @@ export default {
     },
     *delete({ payload, callback }, { call, put }) {
       const { id, searchParams } = payload;
-      const response = yield call(deleteInformation, id);
+      const response = yield call(deleteMessage, id);
       const { apierror } = response;
       if (apierror) {
         return;
@@ -118,7 +118,7 @@ export default {
     },
     *deleteBatch({ payload, callback }, { call, put }) {
       const { ids, searchParams } = payload;
-      const response = yield call(deleteBatchInformation, ids);
+      const response = yield call(deleteBatchMessage, ids);
       const { apierror } = response;
       if (apierror) {
         return;
@@ -149,17 +149,17 @@ export default {
         pagination: {},
       };
     },
-    saveInformation(state, { payload }) {
-      const { information } = payload;
+    saveMessage(state, { payload }) {
+      const { msg } = payload;
       return {
         ...state,
-        information,
+        msg,
       };
     },
-    clearInformation(state) {
+    clearMessage(state) {
       return {
         ...state,
-        information: {},
+        msg: {},
       };
     },
   },

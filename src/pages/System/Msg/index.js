@@ -7,10 +7,10 @@ import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
 import withModal from '@/components/HOCModal';
 import { getValue } from '@/utils/utils';
-import InformationForm from './components/InformationForm';
+import MsgForm from './components/MsgForm';
 import styles from '../System.less';
 
-const InformationModal = withModal(InformationForm);
+const MsgModal = withModal(MsgForm);
 
 const getText = (value) => {
   switch (value) {
@@ -25,10 +25,10 @@ const getText = (value) => {
   }
 };
 
-const Information = connect(({ systemInformation: { list, pagination }, loading }) => ({
+const Message = connect(({ systemMessage: { list, pagination }, loading }) => ({
   list,
   pagination,
-  loading: loading.effects['systemInformation/fetch'],
+  loading: loading.effects['systemMessage/fetch'],
 }))(({ loading, list, pagination, dispatch }) => {
   // 【复选框状态属性与函数】
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -36,19 +36,21 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
   const [params, setParams] = useState({
     current: pagination.current || 1,
     pageSize: pagination.pageSize || 10,
+    sendId: null,
+    type: null,
   });
 
   // 【初始化后，加载列表数据】
   useEffect(() => {
     dispatch({
-      type: 'systemInformation/fetch',
+      type: 'systemMessage/fetch',
       payload: {
         ...params,
       },
     });
     return () => {
       dispatch({
-        type: 'systemInformation/clearList',
+        type: 'systemMessage/clearList',
       });
     };
   }, [params, dispatch]);
@@ -57,7 +59,7 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
   const toggleState = (checked, record) => {
     const { id } = record;
     dispatch({
-      type: 'systemInformation/enable',
+      type: 'systemMessage/enable',
       payload: {
         id,
         status: checked,
@@ -75,7 +77,7 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
   const handleBatchDelete = () => {
     if (selectedRowKeys.length === 0) return;
     dispatch({
-      type: 'systemInformation/deleteBatch',
+      type: 'systemMessage/deleteBatch',
       payload: {
         ids: selectedRowKeys,
         searchParams: params,
@@ -91,7 +93,7 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
   const handleDelete = (record) => {
     const { id } = record;
     dispatch({
-      type: 'systemInformation/delete',
+      type: 'systemMessage/delete',
       payload: {
         id,
         searchParams: params,
@@ -176,14 +178,14 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
       ],
       filterMultiple: false,
       render: (text, record) => (
-        <Authorized authority="system:information:status" noMatch={NoMatch(text)}>
+        <Authorized authority="system:message:status" noMatch={NoMatch(text)}>
           <Switch checked={text} onClick={(checked) => toggleState(checked, record)} />
         </Authorized>
       ),
     },
     {
       title: '是否发布',
-      dataIndex: 'publish',
+      dataIndex: 'isPublish',
       ellipsis: true,
     },
     {
@@ -196,13 +198,13 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
       fixed: 'right',
       render: (text, record) => (
         <>
-          <Authorized authority="system:information:update" noMatch={null}>
-            <InformationModal isEdit id={record.id} searchParams={params}>
+          <Authorized authority="system:message:update" noMatch={null}>
+            <MsgModal isEdit id={record.id} searchParams={params}>
               <EditOutlined title="编辑" className="icon" />
-            </InformationModal>
+            </MsgModal>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system:information:delete" noMatch={null}>
+          <Authorized authority="system:message:delete" noMatch={null}>
             <Popconfirm
               title="您确定要删除该信息吗？"
               onConfirm={() => handleDelete(record)}
@@ -213,7 +215,7 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
             </Popconfirm>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system:information:publish" noMatch={null}>
+          <Authorized authority="system:message:publish" noMatch={null}>
             <CalendarOutlined title="发布" className="icon" onClick={() => handleDelete(record)} />
           </Authorized>
         </>
@@ -226,14 +228,14 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
       <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
         <div className={styles.tableList}>
           <div className={styles.tableListOperator}>
-            <Authorized authority="system:information:add" noMatch={null}>
-              <InformationModal>
+            <Authorized authority="system:message:add" noMatch={null}>
+              <MsgModal>
                 <Button type="primary" title="新增">
                   <PlusOutlined />
                 </Button>
-              </InformationModal>
+              </MsgModal>
             </Authorized>
-            <Authorized authority="system:information:batchDelete" noMatch={null}>
+            <Authorized authority="system:message:batchDelete" noMatch={null}>
               <Popconfirm
                 title="您确定要删除这些信息吗？"
                 onConfirm={handleBatchDelete}
@@ -263,4 +265,4 @@ const Information = connect(({ systemInformation: { list, pagination }, loading 
   );
 });
 
-export default Information;
+export default Message;

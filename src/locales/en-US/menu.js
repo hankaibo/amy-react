@@ -9,7 +9,7 @@ export default {
   'menu.system.menu': 'Menu',
   'menu.system.api': 'API',
   'menu.system.dictionary': 'Dictionary',
-  'menu.system.information': 'Information',
+  'menu.system.message': 'Message',
   // exception
   'menu.exception': 'Exception',
   'menu.exception.not-permission': '403',

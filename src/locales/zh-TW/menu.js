@@ -9,7 +9,7 @@ export default {
   'menu.system.menu': '菜單管理',
   'menu.system.api': '接口保護',
   'menu.system.dictionary': '字典管理',
-  'menu.system.information': '信息管理',
+  'menu.system.message': '站內信管理',
   // exception
   'menu.exception': '異常頁',
   'menu.exception.not-permission': '403',

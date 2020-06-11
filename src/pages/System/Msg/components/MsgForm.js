@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
-import { Form, Input, Modal, message, Button, Radio } from 'antd';
+import { Modal, Form, Select, Input, Switch, Radio, Button, message } from 'antd';
 import { connect } from 'umi';
 import styles from '../../System.less';
 
-const InformationForm = connect(({ systemInformation: { information }, loading }) => ({
-  information,
+const MsgForm = connect(({ systemMessage: { msg }, loading }) => ({
+  msg,
   loading:
-    loading.effects['systemInformation/fetchById'] ||
-    loading.effects['systemInformation/add'] ||
-    loading.effects['systemInformation/update'],
-}))(({ loading, visible, isEdit, id, searchParams, information, closeModal, dispatch }) => {
+    loading.effects['systemMessage/fetchById'] ||
+    loading.effects['systemMessage/add'] ||
+    loading.effects['systemMessage/update'],
+}))(({ loading, visible, isEdit, id, searchParams, msg, closeModal, dispatch }) => {
   const [form] = Form.useForm();
   const { resetFields, setFieldsValue } = form;
 
@@ -17,7 +17,7 @@ const InformationForm = connect(({ systemInformation: { information }, loading }
   useEffect(() => {
     if (visible && isEdit) {
       dispatch({
-        type: 'systemInformation/fetchById',
+        type: 'systemMessage/fetchById',
         payload: {
           id,
         },
@@ -25,7 +25,7 @@ const InformationForm = connect(({ systemInformation: { information }, loading }
     }
     return () => {
       dispatch({
-        type: 'systemInformation/clearInformation',
+        type: 'systemMessage/clearMessage',
       });
     };
   }, [visible, isEdit, id, dispatch]);
@@ -34,18 +34,18 @@ const InformationForm = connect(({ systemInformation: { information }, loading }
   useEffect(() => {
     // 👍 将条件判断放置在 effect 中
     if (visible && isEdit) {
-      if (Object.keys(information).length > 0) {
-        setFieldsValue(information);
+      if (Object.keys(msg).length > 0) {
+        setFieldsValue(msg);
       }
     }
-  }, [visible, isEdit, information, setFieldsValue]);
+  }, [visible, isEdit, msg, setFieldsValue]);
 
   // 【添加与修改】
   const handleAddOrUpdate = (values) => {
     if (isEdit) {
       Object.assign(values, { id });
       dispatch({
-        type: 'systemInformation/update',
+        type: 'systemMessage/update',
         payload: {
           values,
           searchParams,
@@ -58,7 +58,7 @@ const InformationForm = connect(({ systemInformation: { information }, loading }
       });
     } else {
       dispatch({
-        type: 'systemInformation/add',
+        type: 'systemMessage/add',
         payload: {
           values,
           searchParams,
@@ -109,25 +109,41 @@ const InformationForm = connect(({ systemInformation: { information }, loading }
         onFinish={handleAddOrUpdate}
       >
         <Form.Item
+          label="收信人"
+          name="receiveIds"
+          rules={[
+            {
+              required: true,
+              message: '请选择收信人！',
+            },
+          ]}
+        >
+          <Select mode="multiple">
+            {[{ id: 1, username: 'admin' }].map((item) => (
+              <Select.Option key={item.id}>{item.username}</Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
           label="标题"
           name="title"
           rules={[
             {
               required: true,
-              message: '请将标题长度保持在1至20字符之间！',
+              message: '请将标题长度保持在1至128字符之间！',
               min: 1,
-              max: 20,
+              max: 128,
             },
           ]}
         >
           <Input />
         </Form.Item>
         <Form.Item
-          label="描述"
-          name="description"
-          rules={[{ message: '请将描述长度保持在1至150字符之间！', min: 1, max: 150 }]}
+          label="内容"
+          name="content"
+          rules={[{ message: '请将描述长度保持在1至150字符之间！', min: 1, max: 255 }]}
         >
-          <Input.TextArea placeholder="请输入信息描述。" autoSize={{ minRows: 2, maxRows: 6 }} />
+          <Input.TextArea placeholder="请输入信息描述。" autoSize={{ minRows: 3, maxRows: 6 }} />
         </Form.Item>
         <Form.Item label="类型" name="type" rules={[{ required: true, message: '请选择类型！' }]}>
           <Radio.Group>
@@ -136,15 +152,17 @@ const InformationForm = connect(({ systemInformation: { information }, loading }
             <Radio value={3}>事件</Radio>
           </Radio.Group>
         </Form.Item>
+        <Form.Item label="状态" name="status" rules={[{ required: true }]} valuePropName="checked">
+          <Switch checkedChildren="开" unCheckedChildren="关" />
+        </Form.Item>
         <Form.Item
-          label="发送范围"
-          name="range"
-          rules={[{ required: true, message: '请选择范围！' }]}
+          label="发布"
+          name="isPublish"
+          rules={[{ required: true, message: '请选择类型！' }]}
         >
           <Radio.Group>
-            <Radio value={1}>按部门</Radio>
-            <Radio value={2}>按用户</Radio>
-            <Radio value={3}>自定义</Radio>
+            <Radio value={1}>是</Radio>
+            <Radio value={0}>否</Radio>
           </Radio.Group>
         </Form.Item>
         <Form.Item {...tailLayout}>
@@ -158,4 +176,4 @@ const InformationForm = connect(({ systemInformation: { information }, loading }
   );
 });
 
-export default InformationForm;
+export default MsgForm;
