@@ -42,7 +42,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
     "@ant-design/pro-layout": "^5.0.14",
-    "antd": "4.3.1",
+    "antd": "4.3.3",
     "antd-img-crop": "^3.3.0",
     "classnames": "^2.2.6",
     "intro.js": "^2.9.3",
@@ -54,7 +54,6 @@
     "prop-types": "^15.7.2",
     "qs": "^6.9.4",
     "react": "^16.13.1",
-    "react-color": "^2.18.1",
     "react-dom": "^16.13.1",
     "react-helmet-async": "^1.0.6",
     "sockjs-client": "^1.4.0",
