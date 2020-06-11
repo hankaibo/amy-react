@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Form, Input, Button, message } from 'antd';
 import { connect } from 'umi';
-import styles from '@/pages/System/System.less';
+import styles from '@/pages/system/System.less';
 
 const UserPasswordForm = connect()(({ visible, id, username, closeModal, dispatch }) => {
   const [form] = Form.useForm();

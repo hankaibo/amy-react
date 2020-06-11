@@ -4,7 +4,7 @@ export default [
     component: '../layouts/UserLayout',
     routes: [
       { path: '/user', redirect: '/user/login' },
-      { path: '/user/login', name: 'login', component: './Login' },
+      { path: '/user/login', name: 'login', component: './login' },
       {
         component: './404',
       },
@@ -24,7 +24,7 @@ export default [
             path: '/home',
             name: 'home',
             icon: 'HomeOutlined',
-            component: './Home',
+            component: './home',
           },
           // system
           {
@@ -36,35 +36,35 @@ export default [
                 path: '/system/departments',
                 name: 'department',
                 icon: 'ApartmentOutlined',
-                component: './System/Department',
+                component: './system/department',
                 authority: ['system:department'],
               },
               {
                 path: '/system/users',
                 name: 'user',
                 icon: 'TeamOutlined',
-                component: './System/User',
+                component: './system/user',
                 authority: ['system:user'],
               },
               {
                 path: '/system/roles',
                 name: 'role',
                 icon: 'UsergroupAddOutlined',
-                component: './System/Role',
+                component: './system/role',
                 authority: ['system:role'],
               },
               {
                 path: '/system/menus',
                 name: 'menu',
                 icon: 'MenuOutlined',
-                component: './System/Menu',
+                component: './system/menu',
                 authority: ['system:menu'],
               },
               {
                 path: '/system/apis',
                 name: 'api',
                 icon: 'ApiOutlined',
-                component: './System/Api',
+                component: './system/api',
                 authority: ['system:api'],
               },
               {
@@ -76,12 +76,12 @@ export default [
                   {
                     path: '/system/dictionaries/',
                     hideInMenu: true,
-                    component: './System/Dictionary',
+                    component: './system/dictionary',
                   },
                   {
                     path: '/system/dictionaries/:id',
                     hideInMenu: true,
-                    component: './System/Dictionary',
+                    component: './system/dictionary',
                   },
                 ],
               },
@@ -89,7 +89,7 @@ export default [
                 path: '/system/messages',
                 name: 'message',
                 icon: 'MessageOutlined',
-                component: './System/Msg',
+                component: './system/msg',
                 authority: ['system:message'],
               },
               {
@@ -107,17 +107,17 @@ export default [
               {
                 path: '/exception/403',
                 name: 'not-permission',
-                component: './Exception/403',
+                component: './exception/403',
               },
               {
                 path: '/exception/404',
                 name: 'not-find',
-                component: './Exception/404',
+                component: './exception/404',
               },
               {
                 path: '/exception/500',
                 name: 'server-error',
-                component: './Exception/500',
+                component: './exception/500',
               },
               {
                 component: './404',
