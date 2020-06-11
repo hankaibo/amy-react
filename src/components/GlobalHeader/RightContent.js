@@ -62,7 +62,7 @@ const GlobalHeaderRight = (props) => {
           <QuestionCircleOutlined />
         </a>
       </Tooltip>
-      <Avatar />
+      <Avatar menu />
       {REACT_APP_ENV && (
         <span>
           <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>

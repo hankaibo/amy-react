@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { Modal, Form, Select, Input, Switch, Radio, Button, message } from 'antd';
 import { connect } from 'umi';
-import styles from '../../System.less';
+import styles from '../../../system/System.less';
 
-const MsgForm = connect(({ systemMessage: { msg }, loading }) => ({
+const MsgForm = connect(({ user: { msg }, loading }) => ({
   msg,
   loading:
-    loading.effects['systemMessage/fetchById'] ||
-    loading.effects['systemMessage/add'] ||
-    loading.effects['systemMessage/update'],
+    loading.effects['user/fetchById'] ||
+    loading.effects['user/add'] ||
+    loading.effects['user/update'],
 }))(({ loading, visible, isEdit, id, searchParams, msg, closeModal, dispatch }) => {
   const [form] = Form.useForm();
   const { resetFields, setFieldsValue } = form;
@@ -17,7 +17,7 @@ const MsgForm = connect(({ systemMessage: { msg }, loading }) => ({
   useEffect(() => {
     if (visible && isEdit) {
       dispatch({
-        type: 'systemMessage/fetchById',
+        type: 'user/fetchById',
         payload: {
           id,
         },
@@ -25,7 +25,7 @@ const MsgForm = connect(({ systemMessage: { msg }, loading }) => ({
     }
     return () => {
       dispatch({
-        type: 'systemMessage/clearMessage',
+        type: 'user/clearMessage',
       });
     };
   }, [visible, isEdit, id, dispatch]);
@@ -45,7 +45,7 @@ const MsgForm = connect(({ systemMessage: { msg }, loading }) => ({
     if (isEdit) {
       Object.assign(values, { id });
       dispatch({
-        type: 'systemMessage/update',
+        type: 'user/update',
         payload: {
           values,
           searchParams,
@@ -58,7 +58,7 @@ const MsgForm = connect(({ systemMessage: { msg }, loading }) => ({
       });
     } else {
       dispatch({
-        type: 'systemMessage/add',
+        type: 'user/add',
         payload: {
           values,
           searchParams,

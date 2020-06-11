@@ -26,6 +26,26 @@ export default [
             icon: 'HomeOutlined',
             component: './home',
           },
+          // account
+          {
+            name: 'account',
+            icon: 'user',
+            path: '/account',
+            routes: [
+              {
+                name: 'center',
+                icon: 'smile',
+                path: '/account/center',
+                component: './account/center',
+              },
+              {
+                name: 'settings',
+                icon: 'smile',
+                path: '/account/settings',
+                component: './account/settings',
+              },
+            ],
+          },
           // system
           {
             path: '/system',
@@ -84,13 +104,6 @@ export default [
                     component: './system/dictionary',
                   },
                 ],
-              },
-              {
-                path: '/system/messages',
-                name: 'message',
-                icon: 'MessageOutlined',
-                component: './system/msg',
-                authority: ['system:message'],
               },
               {
                 component: './404',

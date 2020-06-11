@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Input, Switch, Tag, Button, Popconfirm, Divider, message } from 'antd';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { Table, Tag, Button, Popconfirm, Divider, message } from 'antd';
 import { PlusOutlined, DeleteOutlined, EditOutlined, CalendarOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
-import NoMatch from '@/components/Authorized/NoMatch';
 import withModal from '@/components/HOCModal';
 import { getValue } from '@/utils/utils';
-import MsgForm from './components/MsgForm';
-import styles from '../System.less';
+import MsgForm from './MsgForm';
+import styles from '../../../system/System.less';
 
 const MsgModal = withModal(MsgForm);
 
@@ -25,10 +23,10 @@ const getText = (value) => {
   }
 };
 
-const Message = connect(({ systemMessage: { list, pagination }, loading }) => ({
+const Inbox = connect(({ user: { list, pagination }, loading }) => ({
   list,
   pagination,
-  loading: loading.effects['systemMessage/fetch'],
+  loading: loading.effects['user/fetch'],
 }))(({ loading, list, pagination, dispatch }) => {
   // 【复选框状态属性与函数】
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -43,41 +41,23 @@ const Message = connect(({ systemMessage: { list, pagination }, loading }) => ({
   // 【初始化后，加载列表数据】
   useEffect(() => {
     dispatch({
-      type: 'systemMessage/fetch',
+      type: 'user/fetch1',
       payload: {
         ...params,
       },
     });
     return () => {
       dispatch({
-        type: 'systemMessage/clearList',
+        type: 'user/clearList',
       });
     };
   }, [params, dispatch]);
-
-  // 【开启禁用 信息状态】
-  const toggleState = (checked, record) => {
-    const { id } = record;
-    dispatch({
-      type: 'systemMessage/enable',
-      payload: {
-        id,
-        status: checked,
-        searchParams: params,
-      },
-    });
-  };
-
-  // 【搜索】
-  const handleFormSubmit = () => {
-    message.info('暂未开放。');
-  };
 
   // 【批量删除信息】
   const handleBatchDelete = () => {
     if (selectedRowKeys.length === 0) return;
     dispatch({
-      type: 'systemMessage/deleteBatch',
+      type: 'user/deleteBatch',
       payload: {
         ids: selectedRowKeys,
         searchParams: params,
@@ -93,7 +73,7 @@ const Message = connect(({ systemMessage: { list, pagination }, loading }) => ({
   const handleDelete = (record) => {
     const { id } = record;
     dispatch({
-      type: 'systemMessage/delete',
+      type: 'user/delete',
       payload: {
         id,
         searchParams: params,
@@ -131,28 +111,11 @@ const Message = connect(({ systemMessage: { list, pagination }, loading }) => ({
     });
   };
 
-  // 【全页搜索框】
-  const mainSearch = (
-    <div style={{ textAlign: 'center' }}>
-      <Input.Search
-        placeholder="请输入信息标题"
-        enterButton
-        size="large"
-        onSearch={handleFormSubmit}
-        style={{ maxWidth: 522, width: '100%' }}
-      />
-    </div>
-  );
-
   // 【表格列】
   const columns = [
     {
       title: '发信人',
       dataIndex: 'sendName',
-    },
-    {
-      title: '收信人',
-      dataIndex: 'receiveName',
     },
     {
       title: '信息标题',
@@ -170,26 +133,7 @@ const Message = connect(({ systemMessage: { list, pagination }, loading }) => ({
       render: (text) => getText(text),
     },
     {
-      title: '状态',
-      dataIndex: 'status',
-      filters: [
-        { text: '禁用', value: 0 },
-        { text: '启用', value: 1 },
-      ],
-      filterMultiple: false,
-      render: (text, record) => (
-        <Authorized authority="system:message:status" noMatch={NoMatch(text)}>
-          <Switch checked={text} onClick={(checked) => toggleState(checked, record)} />
-        </Authorized>
-      ),
-    },
-    {
-      title: '是否发布',
-      dataIndex: 'isPublish',
-      ellipsis: true,
-    },
-    {
-      title: '发布时间',
+      title: '时间',
       dataIndex: 'publishTime',
     },
     {
@@ -224,45 +168,41 @@ const Message = connect(({ systemMessage: { list, pagination }, loading }) => ({
   ];
 
   return (
-    <PageHeaderWrapper title={false} content={mainSearch}>
-      <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
-        <div className={styles.tableList}>
-          <div className={styles.tableListOperator}>
-            <Authorized authority="system:message:add" noMatch={null}>
-              <MsgModal>
-                <Button type="primary" title="新增">
-                  <PlusOutlined />
-                </Button>
-              </MsgModal>
-            </Authorized>
-            <Authorized authority="system:message:batchDelete" noMatch={null}>
-              <Popconfirm
-                title="您确定要删除这些信息吗？"
-                onConfirm={handleBatchDelete}
-                okText="确定"
-                cancelText="取消"
-                disabled={selectedRowKeys.length <= 0}
-              >
-                <Button type="danger" disabled={selectedRowKeys.length <= 0} title="删除">
-                  <DeleteOutlined />
-                </Button>
-              </Popconfirm>
-            </Authorized>
-          </div>
-          <Table
-            rowKey="id"
-            bordered
-            loading={loading}
-            columns={columns}
-            dataSource={list}
-            pagination={pagination}
-            rowSelection={rowSelection}
-            onChange={handleTableChange}
-          />
-        </div>
-      </Card>
-    </PageHeaderWrapper>
+    <div className={styles.tableList}>
+      <div className={styles.tableListOperator}>
+        <Authorized authority="system:message:add" noMatch={null}>
+          <MsgModal>
+            <Button type="primary" title="新增">
+              <PlusOutlined />
+            </Button>
+          </MsgModal>
+        </Authorized>
+        <Authorized authority="system:message:batchDelete" noMatch={null}>
+          <Popconfirm
+            title="您确定要删除这些信息吗？"
+            onConfirm={handleBatchDelete}
+            okText="确定"
+            cancelText="取消"
+            disabled={selectedRowKeys.length <= 0}
+          >
+            <Button type="danger" disabled={selectedRowKeys.length <= 0} title="删除">
+              <DeleteOutlined />
+            </Button>
+          </Popconfirm>
+        </Authorized>
+      </div>
+      <Table
+        rowKey="id"
+        bordered
+        loading={loading}
+        columns={columns}
+        dataSource={list}
+        pagination={pagination}
+        rowSelection={rowSelection}
+        onChange={handleTableChange}
+      />
+    </div>
   );
 });
 
-export default Message;
+export default Inbox;
