@@ -14,7 +14,6 @@ import NoMatch from '@/components/Authorized/NoMatch';
 import withModal from '@/components/HOCModal';
 import { getValue, isArray, isEmpty } from '@/utils/utils';
 import MenuForm from './components/MenuForm';
-import styles from '../System.less';
 
 const { DirectoryTree } = Tree;
 const MENU_TYPE = 1;
@@ -245,8 +244,8 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
             bodyStyle={{ padding: '15px' }}
             style={{ marginTop: 10 }}
           >
-            <div className={styles.tableList}>
-              <div className={styles.tableListOperator}>
+            <div className="tableList">
+              <div className="tableListOperator">
                 <Authorized authority="system:menu:add" noMatch={null}>
                   <MenuModal id={currentMenu && currentMenu.id}>
                     <Button type="primary" title="新增">

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Modal, Form, Input, Button, message } from 'antd';
 import { connect } from 'umi';
-import styles from '@/pages/system/System.less';
 
 const UserPasswordForm = connect()(({ visible, id, username, closeModal, dispatch }) => {
   const [form] = Form.useForm();
@@ -53,7 +52,7 @@ const UserPasswordForm = connect()(({ visible, id, username, closeModal, dispatc
         {...layout}
         form={form}
         name="userPasswordForm"
-        className={styles.form}
+        className="form"
         initialValues={{
           password: '123456',
         }}

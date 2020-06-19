@@ -4,7 +4,6 @@ import ImgCrop from 'antd-img-crop';
 import { connect } from 'umi';
 import { difference, isEmpty } from '@/utils/utils';
 import { UpOutlined, DownOutlined, UploadOutlined } from '@ant-design/icons';
-import styles from '../../System.less';
 
 // 【上传前控制判断】
 const beforeUpload = (file) => {
@@ -177,7 +176,7 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
         {...layout}
         form={form}
         name="userForm"
-        className={styles.form}
+        className="form"
         initialValues={{
           departmentIdList: departmentId && [departmentId.toString()],
           status: true,

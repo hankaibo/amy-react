@@ -26,7 +26,6 @@ import withModal from '@/components/HOCModal';
 import NoMatch from '@/components/Authorized/NoMatch';
 import { getPlainNode, getParentKey, getValue, isArray, isEmpty } from '@/utils/utils';
 import DepartmentForm from './components/DepartmentForm';
-import styles from '../System.less';
 
 const DepartmentModal = withModal(DepartmentForm);
 
@@ -316,8 +315,8 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
             style={{ marginTop: 10 }}
             bodyStyle={{ padding: '15px' }}
           >
-            <div className={styles.tableList}>
-              <div className={styles.tableListOperator}>
+            <div className="tableList">
+              <div className="tableListOperator">
                 <Authorized authority="system:department:add" noMatch={null}>
                   <DepartmentModal id={currentDepartment && currentDepartment.id}>
                     <Button type="primary" title="新增">

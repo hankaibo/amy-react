@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Modal, Form, Select, Input, Switch, Radio, Button, message } from 'antd';
 import { connect } from 'umi';
-import styles from '../../../system/System.less';
 
 const MsgForm = connect(({ user: { msg }, loading }) => ({
   msg,
@@ -102,7 +101,7 @@ const MsgForm = connect(({ user: { msg }, loading }) => ({
         {...layout}
         form={form}
         name="userForm"
-        className={styles.form}
+        className="form"
         initialValues={{
           status: true,
         }}

@@ -2,7 +2,6 @@ import { Modal, Form, Tree, Button, message } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
 import { isEmpty } from '@/utils/utils';
-import styles from '@/pages/system/System.less';
 
 const { DirectoryTree } = Tree;
 
@@ -39,7 +38,7 @@ const ImportForm = connect(({ systemApi: { tree } }) => ({
 
   return (
     <Modal destroyOnClose title="导入接口" visible={visible} onCancel={closeModal} footer={null}>
-      <Form form={form} name="importForm" className={styles.form} onFinish={handleImport}>
+      <Form form={form} name="importForm" className="form" onFinish={handleImport}>
         <Form.Item
           label="请选择父菜单"
           name="id"

@@ -4,7 +4,7 @@ import { UploadOutlined, ImportOutlined, EditOutlined } from '@ant-design/icons'
 import { connect } from 'umi';
 import withModal from '@/components/HOCModal';
 import ImportForm from './ImportForm';
-import styles from '../../System.less';
+import styles from './UploadTable.less';
 
 const ImportModal = withModal(ImportForm);
 
@@ -163,8 +163,8 @@ const UploadTable = connect(({ systemApi: { apiList } }) => ({
       footer={null}
     >
       <Card bordered={false} bodyStyle={{ padding: 0 }}>
-        <div className={styles.tableList}>
-          <div className={styles.tableListOperator}>
+        <div className="tableList">
+          <div className="tableListOperator">
             <Upload {...props}>
               <Button title="上传">
                 <UploadOutlined />

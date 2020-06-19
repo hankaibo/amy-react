@@ -16,7 +16,6 @@ import withModal from '@/components/HOCModal';
 import { getValue, isArray, isEmpty } from '@/utils/utils';
 import RoleForm from './components/RoleForm';
 import RoleResourceForm from './components/RoleResourceForm';
-import styles from '../System.less';
 
 const RoleModal = withModal(RoleForm);
 const RoleResourceModal = withModal(RoleResourceForm);
@@ -248,8 +247,8 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
             style={{ marginTop: 10 }}
             bodyStyle={{ padding: '15px' }}
           >
-            <div className={styles.tableList}>
-              <div className={styles.tableListOperator}>
+            <div className="tableList">
+              <div className="tableListOperator">
                 <Authorized authority="system:role:add" noMatch={null}>
                   <RoleModal id={currentRole && currentRole.id}>
                     <Button type="primary" title="新增">

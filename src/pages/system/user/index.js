@@ -28,7 +28,6 @@ import { getValue, isArray, isEmpty } from '@/utils/utils';
 import UserForm from './components/UserForm';
 import UserRoleForm from './components/UserRoleForm';
 import UserPasswordForm from './components/UserPasswordForm';
-import styles from '../System.less';
 
 const sexText = {
   1: '男',
@@ -324,8 +323,8 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
             style={{ marginTop: 10 }}
             bodyStyle={{ padding: '15px' }}
           >
-            <div className={styles.tableList}>
-              <div className={styles.tableListOperator}>
+            <div className="tableList">
+              <div className="tableListOperator">
                 <Authorized authority="system:user:add" noMatch={null}>
                   <UserModal departmentId={currentDepartment ? currentDepartment.id : null}>
                     <Button type="primary" title="新增">

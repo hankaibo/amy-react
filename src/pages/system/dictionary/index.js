@@ -9,7 +9,6 @@ import NoMatch from '@/components/Authorized/NoMatch';
 import withModal from '@/components/HOCModal';
 import { getValue, isEmpty } from '@/utils/utils';
 import DictionaryForm from './components/DictionaryForm';
-import styles from '../System.less';
 
 const DictionaryModal = withModal(DictionaryForm);
 
@@ -213,8 +212,8 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
   return (
     <PageHeaderWrapper title={false} content={mainSearch}>
       <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
-        <div className={styles.tableList}>
-          <div className={styles.tableListOperator}>
+        <div className="tableList">
+          <div className="tableListOperator">
             <Authorized authority="system:dictionary:add" noMatch={null}>
               <DictionaryModal match={match} location={location}>
                 <Button type="primary" title="新增">

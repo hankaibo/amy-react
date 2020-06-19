@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Modal, Form, Input, Switch, TreeSelect, Button, message } from 'antd';
 import { connect } from 'umi';
 import { isEmpty } from '@/utils/utils';
-import styles from '../../System.less';
 
 const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
   tree,
@@ -103,7 +102,7 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
         {...layout}
         form={form}
         name="roleForm"
-        className={styles.form}
+        className="form"
         initialValues={{
           parentId: id.toString(),
           status: true,

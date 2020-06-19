@@ -3,7 +3,6 @@ import { Modal, Form, Input, Switch, TreeSelect, Tooltip, Button, message } from
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import { isEmpty } from '@/utils/utils';
-import styles from '../../System.less';
 
 const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
   tree,
@@ -105,7 +104,7 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
         {...layout}
         form={form}
         name="menuForm"
-        className={styles.form}
+        className="form"
         initialValues={{
           parentId: id.toString(),
           status: true,

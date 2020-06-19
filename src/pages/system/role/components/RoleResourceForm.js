@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Form, Tree, Button, message } from 'antd';
 import { connect } from 'umi';
 import { difference, isEmpty } from '@/utils/utils';
-import styles from '../../System.less';
 
 /**
  * 本实现，将选中的子节点与半包含的父节点都提交到后台。
@@ -98,7 +97,7 @@ const RoleResourceForm = connect(
 
     return (
       <Modal destroyOnClose title="权限配置" visible={visible} onCancel={closeModal} footer={null}>
-        <Form form={form} name="roleResourceForm" className={styles.form} onFinish={handleGrant}>
+        <Form form={form} name="roleResourceForm" className="form" onFinish={handleGrant}>
           <Form.Item name="ids">
             <Tree
               checkable

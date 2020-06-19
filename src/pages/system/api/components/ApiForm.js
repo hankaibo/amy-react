@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Modal, Form, Input, Switch, TreeSelect, Radio, Button, message } from 'antd';
 import { connect } from 'umi';
 import { isEmpty } from '@/utils/utils';
-import styles from '../../System.less';
 
 const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
   tree,
@@ -104,7 +103,7 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
         {...layout}
         form={form}
         name="apiForm"
-        className={styles.form}
+        className="form"
         initialValues={{
           parentId: id.toString(),
           status: true,

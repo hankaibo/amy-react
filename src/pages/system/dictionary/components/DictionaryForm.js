@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Modal, Form, Input, InputNumber, Switch, Button, message } from 'antd';
 import { connect } from 'umi';
 import { isEmpty } from '@/utils/utils';
-import styles from '../../System.less';
 
 const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) => ({
   dictionary,
@@ -110,7 +109,7 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
         {...layout}
         form={form}
         name="dictionaryForm"
-        className={styles.form}
+        className="form"
         initialValues={{
           status: true,
         }}

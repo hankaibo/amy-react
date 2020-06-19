@@ -16,7 +16,6 @@ import withModal from '@/components/HOCModal';
 import { getValue, isArray, isEmpty } from '@/utils/utils';
 import ApiForm from './components/ApiForm';
 import UploadForm from './components/UploadTable';
-import styles from '../System.less';
 
 const { DirectoryTree } = Tree;
 const API_TYPE = 2;
@@ -260,8 +259,8 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
             bodyStyle={{ padding: '15px' }}
             style={{ marginTop: 10 }}
           >
-            <div className={styles.tableList}>
-              <div className={styles.tableListOperator}>
+            <div className="tableList">
+              <div className="tableListOperator">
                 <Authorized authority="system:api:add" noMatch={null}>
                   <ApiModal id={currentMenu && currentMenu.id}>
                     <Button type="primary" title="新增">

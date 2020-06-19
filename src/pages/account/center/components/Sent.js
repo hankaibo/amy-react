@@ -6,7 +6,6 @@ import Authorized from '@/utils/Authorized';
 import withModal from '@/components/HOCModal';
 import { getValue } from '@/utils/utils';
 import MsgForm from './MsgForm';
-import styles from '../../../system/System.less';
 
 const MsgModal = withModal(MsgForm);
 
@@ -168,8 +167,8 @@ const Sent = connect(({ user: { list, pagination }, loading }) => ({
   ];
 
   return (
-    <div className={styles.tableList}>
-      <div className={styles.tableListOperator}>
+    <div className="tableList">
+      <div className="tableListOperator">
         <Authorized authority="system:message:add" noMatch={null}>
           <MsgModal>
             <Button type="primary" title="新增">

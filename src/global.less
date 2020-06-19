@@ -63,6 +63,37 @@ ol {
   color: @primary-color;
 }
 
+// ============ [ 一些页面公共样式 ] =============
+// 页面通用表格样式
+.tableList {
+  .tableListOperator {
+    position: relative;
+    margin-bottom: 16px;
+
+    .ant-btn {
+      margin-right: 8px;
+    }
+  }
+
+  :global {
+    .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td {
+      white-space: nowrap;
+    }
+
+    .ant-table-tbody > tr > td > .ant-divider-vertical:last-child {
+      display: none;
+    }
+  }
+}
+
+// 页面通用表单样式
+.form {
+  .ant-btn + .ant-btn {
+    margin-left: 8px;
+  }
+}
+
 .disabled {
   display: inline-block;
   cursor: not-allowed;
