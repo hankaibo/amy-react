@@ -60,7 +60,7 @@ const UserModel = {
       });
       if (callback) callback();
     },
-    *fetch({ payload, callback }, { call, put }) {
+    *fetch({ payload, callback }, { call, put, select }) {
       const response = yield call(pageMessage, payload);
       const { apierror } = response;
       if (apierror) {
@@ -72,6 +72,16 @@ const UserModel = {
         payload: {
           list: list.map((item) => ({ ...item, status: !!item.status })),
           pagination: { current, pageSize, total },
+        },
+      });
+      const unreadCount = yield select(
+        (state) => state.global.notices.filter((item) => !item.read).length,
+      );
+      yield put({
+        type: 'user/changeNotifyCount',
+        payload: {
+          totalCount: total,
+          unreadCount,
         },
       });
       if (callback) callback();
