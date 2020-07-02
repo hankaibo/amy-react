@@ -4,6 +4,7 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import { connect, useIntl } from 'umi';
 import classNames from 'classnames';
 import Avatar from './AvatarDropdown';
+import NoticeIconView from './NoticeIconView';
 import HeaderSearch from '../HeaderSearch';
 import SelectLang from '../SelectLang';
 import styles from './index.less';
@@ -38,10 +39,6 @@ const GlobalHeaderRight = (props) => {
             value: 'Ant Design',
           },
           {
-            label: <a href="https://protable.ant.design/">Pro Table</a>,
-            value: 'Pro Table',
-          },
-          {
             label: <a href="https://prolayout.ant.design/">Pro Layout</a>,
             value: 'Pro Layout',
           },
@@ -62,6 +59,7 @@ const GlobalHeaderRight = (props) => {
           <QuestionCircleOutlined />
         </a>
       </Tooltip>
+      <NoticeIconView />
       <Avatar menu />
       {REACT_APP_ENV && (
         <span>

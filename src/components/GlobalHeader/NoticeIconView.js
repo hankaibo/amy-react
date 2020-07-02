@@ -1,48 +1,43 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { Tag, message } from 'antd';
-import { connect, injectIntl, formatMessage } from 'umi';
+import { connect, useIntl } from 'umi';
 import moment from 'moment';
 import NoticeIcon from '../NoticeIcon';
 import styles from './index.less';
 
-class NoticeIconView extends Component {
-  componentDidMount() {
-    const { dispatch } = this.props;
+const NoticeIconView = ({
+  notices = [],
+  currentUser,
+  fetchingNotices,
+  onNoticeVisibleChange,
+  dispatch,
+}) => {
+  const { formatMessage } = useIntl();
 
-    if (dispatch) {
-      dispatch({
-        type: 'global/fetchNotices',
-      });
-    }
-  }
+  useEffect(() => {
+    dispatch({
+      type: 'global/fetchNotices',
+    });
+  });
 
-  changeReadState = (clickedItem) => {
+  const changeReadState = (clickedItem) => {
     const { id } = clickedItem;
-    const { dispatch } = this.props;
-
-    if (dispatch) {
-      dispatch({
-        type: 'global/changeNoticeReadState',
-        payload: id,
-      });
-    }
+    dispatch({
+      type: 'global/changeNoticeReadState',
+      payload: id,
+    });
   };
 
-  handleNoticeClear = (title, key) => {
-    const { dispatch } = this.props;
+  const handleNoticeClear = (title, key) => {
     message.success(`${formatMessage({ id: 'component.noticeIcon.cleared' })} ${title}`);
 
-    if (dispatch) {
-      dispatch({
-        type: 'global/clearNotices',
-        payload: key,
-      });
-    }
+    dispatch({
+      type: 'global/clearNotices',
+      payload: key,
+    });
   };
 
-  getNoticeData = () => {
-    const { notices = [] } = this.props;
-
+  const getNoticeData = () => {
     if (!notices || notices.length === 0 || !Array.isArray(notices)) {
       return {};
     }
@@ -80,7 +75,7 @@ class NoticeIconView extends Component {
     }, {});
   };
 
-  getUnreadData = (noticeData) => {
+  const getUnreadData = (noticeData) => {
     const unreadMsg = {};
     Object.keys(noticeData).forEach((key) => {
       const value = noticeData[key];
@@ -96,60 +91,55 @@ class NoticeIconView extends Component {
     return unreadMsg;
   };
 
-  render() {
-    const { currentUser, fetchingNotices, onNoticeVisibleChange } = this.props;
-    const noticeData = this.getNoticeData();
-    const unreadMsg = this.getUnreadData(noticeData);
-    return (
-      <NoticeIcon
-        className={styles.action}
-        count={currentUser && currentUser.unreadCount}
-        onItemClick={(item) => {
-          this.changeReadState(item);
-        }}
-        loading={fetchingNotices}
-        clearText={formatMessage({ id: 'component.noticeIcon.clear' })}
-        viewMoreText={formatMessage({ id: 'component.noticeIcon.view-more' })}
-        onClear={this.handleNoticeClear}
-        onPopupVisibleChange={onNoticeVisibleChange}
-        onViewMore={() => message.info('Click on view more')}
-        clearClose
-      >
-        <NoticeIcon.Tab
-          tabKey="notification"
-          count={unreadMsg.notification}
-          list={noticeData.notification}
-          title={formatMessage({ id: 'component.globalHeader.notification' })}
-          emptyText={formatMessage({ id: 'component.globalHeader.notification.empty' })}
-          showViewMore
-        />
-        <NoticeIcon.Tab
-          tabKey="message"
-          count={unreadMsg.message}
-          list={noticeData.message}
-          title={formatMessage({ id: 'component.globalHeader.message' })}
-          emptyText={formatMessage({ id: 'component.globalHeader.message.empty' })}
-          showViewMore
-        />
-        <NoticeIcon.Tab
-          tabKey="event"
-          title={formatMessage({ id: 'component.globalHeader.event' })}
-          emptyText={formatMessage({ id: 'component.globalHeader.event.empty' })}
-          count={unreadMsg.event}
-          list={noticeData.event}
-          showViewMore
-        />
-      </NoticeIcon>
-    );
-  }
-}
+  const noticeData = getNoticeData();
+  const unreadMsg = getUnreadData(noticeData);
+  return (
+    <NoticeIcon
+      className={styles.action}
+      count={currentUser && currentUser.unreadCount}
+      onItemClick={(item) => {
+        changeReadState(item);
+      }}
+      loading={fetchingNotices}
+      clearText={formatMessage({ id: 'component.noticeIcon.clear' })}
+      viewMoreText={formatMessage({ id: 'component.noticeIcon.view-more' })}
+      onClear={handleNoticeClear}
+      onPopupVisibleChange={onNoticeVisibleChange}
+      onViewMore={() => message.info('Click on view more')}
+      clearClose
+    >
+      <NoticeIcon.Tab
+        tabKey="notification"
+        count={unreadMsg.notification}
+        list={noticeData.notification}
+        title={formatMessage({ id: 'component.globalHeader.notification' })}
+        emptyText={formatMessage({ id: 'component.globalHeader.notification.empty' })}
+        showViewMore
+      />
+      <NoticeIcon.Tab
+        tabKey="message"
+        count={unreadMsg.message}
+        list={noticeData.message}
+        title={formatMessage({ id: 'component.globalHeader.message' })}
+        emptyText={formatMessage({ id: 'component.globalHeader.message.empty' })}
+        showViewMore
+      />
+      <NoticeIcon.Tab
+        tabKey="event"
+        title={formatMessage({ id: 'component.globalHeader.event' })}
+        emptyText={formatMessage({ id: 'component.globalHeader.event.empty' })}
+        count={unreadMsg.event}
+        list={noticeData.event}
+        showViewMore
+      />
+    </NoticeIcon>
+  );
+};
 
-export default injectIntl(
-  connect(({ user, global, loading }) => ({
-    currentUser: user.currentUser,
-    collapsed: global.collapsed,
-    fetchingMoreNotices: loading.effects['global/fetchMoreNotices'],
-    fetchingNotices: loading.effects['global/fetchNotices'],
-    notices: global.notices,
-  }))(NoticeIconView),
-);
+export default connect(({ user, global, loading }) => ({
+  currentUser: user.currentUser,
+  collapsed: global.collapsed,
+  fetchingMoreNotices: loading.effects['global/fetchMoreNotices'],
+  fetchingNotices: loading.effects['global/fetchNotices'],
+  notices: global.notices,
+}))(NoticeIconView);
