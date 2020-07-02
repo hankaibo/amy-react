@@ -1,2 +1,2 @@
-/config
-.history
+/src/components/ColorPicker/common/EditableInput.js
+/src/components/ColorPicker/common/ColorWrap.js
