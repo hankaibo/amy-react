@@ -1,0 +1,64 @@
+.fields {
+  position: relative;
+  width: 80px;
+  padding-top: 5px;
+  padding-bottom: 9px;
+}
+
+.divider {
+  height: 5px;
+}
+
+.fieldSymbols {
+  position: absolute;
+  top: 5px;
+  right: -7px;
+  font-size: 13px;
+
+  .symbol {
+    height: 25px;
+    padding-bottom: 7px;
+    line-height: 22px;
+  }
+}
+
+.wrap,
+.wrapHex {
+  position: relative;
+
+  :global {
+    .ant-input {
+      width: 47%;
+      height: 18px;
+      margin-right: 10px;
+      margin-bottom: 5px;
+      margin-left: 40%;
+      padding-left: 3px;
+      font-size: 13px;
+    }
+
+    .label {
+      position: absolute;
+      left: 0;
+      width: 20px;
+      height: 18px;
+      font-size: 13px;
+      line-height: 22px;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.wrapHex {
+  :global {
+    .ant-input {
+      width: 80%;
+      margin-left: 20%;
+      padding-left: 3px;
+    }
+
+    .label {
+      top: 0;
+    }
+  }
+}

@@ -1,0 +1,135 @@
+import React, { Component, PureComponent } from 'react';
+import { Input } from 'antd';
+import classNames from 'classnames';
+
+const DEFAULT_ARROW_OFFSET = 1;
+
+const UP_KEY_CODE = 38;
+const DOWN_KEY_CODE = 40;
+const VALID_KEY_CODES = [UP_KEY_CODE, DOWN_KEY_CODE];
+const isValidKeyCode = (keyCode) => VALID_KEY_CODES.indexOf(keyCode) > -1;
+const getNumberValue = (value) => Number(String(value).replace(/%/g, ''));
+
+class EditableInput extends (PureComponent || Component) {
+  constructor(props) {
+    super();
+
+    this.state = {
+      value: String(props.value).toUpperCase(),
+      blurValue: String(props.value).toUpperCase(),
+    };
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.props.value !== this.state.value &&
+      (prevProps.value !== this.props.value || prevState.value !== this.state.value)
+    ) {
+      if (this.input === document.activeElement) {
+        this.setState({ blurValue: String(this.props.value).toUpperCase() });
+      } else {
+        this.setState({
+          value: String(this.props.value).toUpperCase(),
+          blurValue: !this.state.blurValue && String(this.props.value).toUpperCase(),
+        });
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    this.unbindEventListeners();
+  }
+
+  getValueObjectWithLabel(value) {
+    return {
+      [this.props.label]: value,
+    };
+  }
+
+  handleBlur = () => {
+    if (this.state.blurValue) {
+      this.setState({ value: this.state.blurValue, blurValue: null });
+    }
+  };
+
+  handleChange = (e) => {
+    this.setUpdatedValue(e.target.value, e);
+  };
+
+  getArrowOffset() {
+    return this.props.arrowOffset || DEFAULT_ARROW_OFFSET;
+  }
+
+  handleKeyDown = (e) => {
+    // In case `e.target.value` is a percentage remove the `%` character
+    // and update accordingly with a percentage
+    // https://github.com/casesandberg/react-color/issues/383
+    const value = getNumberValue(e.target.value);
+    if (!Number.isNaN(value) && isValidKeyCode(e.keyCode)) {
+      const offset = this.getArrowOffset();
+      const updatedValue = e.keyCode === UP_KEY_CODE ? value + offset : value - offset;
+
+      this.setUpdatedValue(updatedValue, e);
+    }
+  };
+
+  setUpdatedValue(value, e) {
+    const onChangeValue = this.props.label ? this.getValueObjectWithLabel(value) : value;
+    this.props.onChange && this.props.onChange(onChangeValue, e);
+
+    this.setState({ value });
+  }
+
+  handleDrag = (e) => {
+    if (this.props.dragLabel) {
+      const newValue = Math.round(this.props.value + e.movementX);
+      if (newValue >= 0 && newValue <= this.props.dragMax) {
+        this.props.onChange && this.props.onChange(this.getValueObjectWithLabel(newValue), e);
+      }
+    }
+  };
+
+  handleMouseDown = (e) => {
+    if (this.props.dragLabel) {
+      e.preventDefault();
+      this.handleDrag(e);
+      window.addEventListener('mousemove', this.handleDrag);
+      window.addEventListener('mouseup', this.handleMouseUp);
+    }
+  };
+
+  handleMouseUp = () => {
+    this.unbindEventListeners();
+  };
+
+  unbindEventListeners = () => {
+    window.removeEventListener('mousemove', this.handleDrag);
+    window.removeEventListener('mouseup', this.handleMouseUp);
+  };
+
+  render() {
+    const { className = {} } = this.props;
+    const wrap = classNames(className);
+
+    return (
+      <div className={wrap}>
+        <Input
+          ref={(input) => (this.input = input)}
+          value={this.state.value}
+          onPressEnter={this.handleKeyDown}
+          onChange={this.handleChange}
+          onBlur={this.handleBlur}
+          placeholder={this.props.placeholder}
+          spellCheck="false"
+        />
+        {this.props.label && !this.props.hideLabel ? (
+          <span className="label" onMouseDown={this.handleMouseDown}>
+            {this.props.label}
+          </span>
+        ) : null}
+      </div>
+    );
+  }
+}
+
+export default EditableInput;
