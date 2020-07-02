@@ -41,8 +41,8 @@
   ],
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
-    "@ant-design/pro-layout": "^5.0.17",
-    "antd": "4.3.4",
+    "@ant-design/pro-layout": "^6.0.1",
+    "antd": "4.4.0",
     "antd-img-crop": "^3.9.0",
     "classnames": "^2.2.6",
     "intro.js": "^2.9.3",

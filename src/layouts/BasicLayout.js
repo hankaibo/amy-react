@@ -5,7 +5,7 @@
  */
 import ProLayout, { DefaultFooter, SettingDrawer } from '@ant-design/pro-layout';
 import React, { Suspense } from 'react';
-import { connect, Link, useIntl } from 'umi';
+import { connect, Link, useIntl, history } from 'umi';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
@@ -84,13 +84,8 @@ const BasicLayout = (props) => {
       <ProLayout
         logo={logo}
         formatMessage={formatMessage}
-        menuHeaderRender={(logoDom, titleDom) => (
-          <Link to="/">
-            {logoDom}
-            {titleDom}
-          </Link>
-        )}
         onCollapse={handleMenuCollapse}
+        onMenuHeaderClick={() => history.push('/')}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || !menuItemProps.path) {
             return defaultDom;
