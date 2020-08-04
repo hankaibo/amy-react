@@ -1,12 +1,11 @@
 import React from 'react';
 import { Tag, Tooltip } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { connect, useIntl } from 'umi';
+import { connect, useIntl, SelectLang } from 'umi';
 import classNames from 'classnames';
 import Avatar from './AvatarDropdown';
 import NoticeIconView from './NoticeIconView';
 import HeaderSearch from '../HeaderSearch';
-import SelectLang from '../SelectLang';
 import styles from './index.less';
 
 const ENVTagColor = {
@@ -51,6 +50,9 @@ const GlobalHeaderRight = (props) => {
         })}
       >
         <a
+          style={{
+            color: 'inherit',
+          }}
           target="_blank"
           href="https://hankaibo.github.io/myantdpro-docs/"
           rel="noopener noreferrer"

@@ -12,7 +12,7 @@ import {
   Divider,
   message,
 } from 'antd';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-layout';
 import {
   PlusOutlined,
   DeleteOutlined,
@@ -296,7 +296,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
   ];
 
   return (
-    <PageHeaderWrapper title={false} content={mainSearch}>
+    <PageContainer title={false} content={mainSearch}>
       <Row gutter={8}>
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
           <Card
@@ -361,7 +361,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
           </Card>
         </Col>
       </Row>
-    </PageHeaderWrapper>
+    </PageContainer>
   );
 });
 

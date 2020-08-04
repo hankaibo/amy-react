@@ -1,8 +1,7 @@
 ﻿import { DefaultFooter, getMenuData, getPageTitle } from '@ant-design/pro-layout';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-import { connect, Link, useIntl } from 'umi';
+import { SelectLang, connect, Link, useIntl } from 'umi';
 import React from 'react';
-import SelectLang from '@/components/SelectLang';
 import styles from './UserLayout.less';
 
 const UserLayout = (props) => {

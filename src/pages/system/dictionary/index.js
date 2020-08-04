@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Table, Input, Switch, Button, Popconfirm, Divider, message } from 'antd';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-layout';
 import { RollbackOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Link, history, connect } from 'umi';
 import moment from 'moment';
@@ -210,7 +210,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
   ];
 
   return (
-    <PageHeaderWrapper title={false} content={mainSearch}>
+    <PageContainer title={false} content={mainSearch}>
       <Card style={{ marginTop: 10 }} bordered={false} bodyStyle={{ padding: '15px' }}>
         <div className="tableList">
           <div className="tableListOperator">
@@ -252,7 +252,7 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
           />
         </div>
       </Card>
-    </PageHeaderWrapper>
+    </PageContainer>
   );
 });
 

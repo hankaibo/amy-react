@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Tree, Table, Switch, Button, Divider, Popconfirm, message } from 'antd';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-layout';
 import {
   ArrowUpOutlined,
   ArrowDownOutlined,
@@ -232,7 +232,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
   ];
 
   return (
-    <PageHeaderWrapper title={false}>
+    <PageContainer title={false}>
       <Row gutter={8}>
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
           <Card
@@ -289,7 +289,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
           </Card>
         </Col>
       </Row>
-    </PageHeaderWrapper>
+    </PageContainer>
   );
 });
 
