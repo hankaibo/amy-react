@@ -26,7 +26,7 @@ const GlobalHeaderRight = (props) => {
   return (
     <div className={className}>
       <HeaderSearch
-        className={classNames(`${styles.action} ${styles.search}`, 'steps-search')}
+        className={classNames(`${styles.action} ${styles.search}`)}
         placeholder={formatMessage({
           id: 'component.globalHeader.search',
         })}
@@ -56,7 +56,7 @@ const GlobalHeaderRight = (props) => {
           target="_blank"
           href="https://hankaibo.github.io/myantdpro-docs/"
           rel="noopener noreferrer"
-          className={classNames(styles.action, 'steps-reference')}
+          className={styles.action}
         >
           <QuestionCircleOutlined />
         </a>
@@ -68,7 +68,7 @@ const GlobalHeaderRight = (props) => {
           <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
         </span>
       )}
-      <SelectLang className={classNames(styles.action, 'steps-language')} />
+      <SelectLang className={styles.action} />
     </div>
   );
 };

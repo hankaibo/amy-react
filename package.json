@@ -45,8 +45,6 @@
     "antd": "^4.5.2",
     "antd-img-crop": "^3.9.0",
     "classnames": "^2.2.6",
-    "intro.js": "^2.9.3",
-    "intro.js-react": "^0.2.0",
     "lodash.debounce": "^4.0.8",
     "lodash.foreach": "^4.5.0",
     "lodash.isequal": "^4.5.0",

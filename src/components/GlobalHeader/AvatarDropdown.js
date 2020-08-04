@@ -44,7 +44,7 @@ const AvatarDropdown = ({ currentUser = { avatar: '', username: '' }, menu, disp
   );
   return currentUser && currentUser.username ? (
     <HeaderDropdown overlay={menuHeaderDropdown}>
-      <span className={classNames(`${styles.action} ${styles.account}`, 'steps-avatar')}>
+      <span className={classNames(`${styles.action} ${styles.account}`)}>
         <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
         <span className={`${styles.name} anticon`}>{currentUser.username}</span>
       </span>
