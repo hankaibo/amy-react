@@ -16,7 +16,7 @@ const Settings = ({ currentUser, dispatch }) => {
   const [menuMap] = useState({
     base: '基本设置',
     security: '安全设置',
-    notification: '新消停设置',
+    notification: '消息设置',
   });
   const [selectKey, setSelectKey] = useState('base');
 
@@ -41,8 +41,9 @@ const Settings = ({ currentUser, dispatch }) => {
   };
 
   useEffect(() => {
+    // 为了能及时查看效果
     dispatch({
-      type: 'user/fetchCurrent',
+      type: 'user/fetchCurrentUser',
     });
     window.addEventListener('resize', resize);
     resize();

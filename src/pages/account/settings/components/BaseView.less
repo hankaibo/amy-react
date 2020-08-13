@@ -14,28 +14,16 @@
     min-width: 224px;
     max-width: 448px;
   }
+
   .right {
     flex: 1;
     padding-left: 104px;
-    .avatar_title {
-      height: 22px;
-      margin-bottom: 8px;
-      color: @heading-color;
-      font-size: @font-size-base;
-      line-height: 22px;
-    }
-    .avatar {
-      width: 144px;
-      height: 144px;
-      margin-bottom: 12px;
-      overflow: hidden;
-      img {
-        width: 100%;
+
+    :global {
+      .ant-upload-list-picture-card .ant-upload-list-item {
+        width: 256px;
+        height: 256px;
       }
-    }
-    .button_view {
-      width: 144px;
-      text-align: center;
     }
   }
 }
@@ -49,9 +37,14 @@
       flex-direction: column;
       align-items: center;
       max-width: 448px;
-      padding: 20px;
-      .avatar_title {
-        display: none;
+      margin-bottom: 24px;
+      padding: 0 0 20px;
+
+      :global {
+        .ant-upload-list-picture-card .ant-upload-list-item {
+          width: 144px;
+          height: 144px;
+        }
       }
     }
   }

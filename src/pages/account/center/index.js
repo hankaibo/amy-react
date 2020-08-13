@@ -86,10 +86,10 @@ const Center = ({ currentUser = {}, currentUserLoading, dispatch }) => {
 
   const [tabKey, setTabKey] = useState('inbox');
 
-  // TODO 【获取当前用户信息，详细】
+  // 【获取当前用户信息】
   useEffect(() => {
     dispatch({
-      type: 'user/fetchCurrent',
+      type: 'user/fetchCurrentUser',
     });
   }, []);
 
@@ -118,11 +118,11 @@ const Center = ({ currentUser = {}, currentUserLoading, dispatch }) => {
       </p>
       <p>
         <ClusterOutlined style={{ marginRight: 8 }} />
-        {user.department || 'xx公司-测试部门-测试1部-xxx-bbb-xxx-cccc'}
+        {user.departmentIdList.map((item) => item)}
       </p>
       <p>
         <HomeOutlined style={{ marginRight: 8 }} />
-        {user.address || '一无所有，四海不为家'}
+        {user.address}
       </p>
     </div>
   );
@@ -135,13 +135,13 @@ const Center = ({ currentUser = {}, currentUserLoading, dispatch }) => {
             {!dataLoading && (
               <div>
                 <div className={styles.avatarHolder}>
-                  <img alt="" src={currentUser.avatar} />
+                  <img alt="用户头像" src={currentUser.avatar} />
                   <div className={styles.name}>{currentUser.username}</div>
-                  <div>{currentUser.signature || '胸无点墨，满腹牢骚'}</div>
+                  <div>{currentUser.signature}</div>
                 </div>
                 {renderUserInfo(currentUser)}
                 <Divider dashed />
-                <TagList tags={currentUser.tags || []} />
+                <TagList tags={currentUser.tags} />
                 <Divider style={{ marginTop: 16 }} dashed />
                 <div className={styles.team}>
                   <div className={styles.teamTitle}>团队</div>
@@ -179,5 +179,5 @@ const Center = ({ currentUser = {}, currentUserLoading, dispatch }) => {
 
 export default connect(({ loading, user }) => ({
   currentUser: user.currentUser,
-  currentUserLoading: loading.effects['user/fetchCurrent'],
+  currentUserLoading: loading.effects['user/fetchCurrentUser'],
 }))(Center);

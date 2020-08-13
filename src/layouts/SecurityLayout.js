@@ -6,7 +6,7 @@ import { getItem } from '@/utils/utils';
 
 const SecurityLayout = connect(({ user: { currentUser }, loading }) => ({
   currentUser,
-  loading: loading.models.user,
+  loading: loading.effects['user/fetchCurrentUser'],
 }))(({ loading, children, currentUser, dispatch }) => {
   const [isReady, setIsReady] = useState(false);
 
@@ -15,7 +15,7 @@ const SecurityLayout = connect(({ user: { currentUser }, loading }) => ({
     // 首先判断是否有token，有则尝试直接进入；否则进入登录页面。
     if (getItem('jwt')) {
       dispatch({
-        type: 'user/fetchCurrent',
+        type: 'user/fetchCurrentUser',
       });
     } else {
       history.push('/user/login');

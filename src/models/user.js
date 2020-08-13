@@ -1,4 +1,4 @@
-import queryCurrent from '@/services/user';
+import { getCurrentUser, updateCurrentUser, updateCurrentUserPassword } from '@/services/user';
 import {
   addMessage,
   deleteBatchMessage,
@@ -49,9 +49,14 @@ const UserModel = {
   },
 
   effects: {
-    *fetchCurrent({ callback }, { call, put }) {
-      const response = yield call(queryCurrent);
+    // 登录用户相关操作
+    *fetchCurrentUser({ callback }, { call, put }) {
+      const response = yield call(getCurrentUser);
       response.tags = mockTags;
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
       yield put({
         type: 'saveCurrentUser',
         payload: {
@@ -60,6 +65,24 @@ const UserModel = {
       });
       if (callback) callback();
     },
+    *updateCurrentUser({ payload, callback }, { call }) {
+      const values = { ...payload };
+      const response = yield call(updateCurrentUser, values);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
+      if (callback) callback();
+    },
+    *updateCurrentUserPassword({ payload, callback }, { call }) {
+      const response = yield call(updateCurrentUserPassword, payload);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
+      if (callback) callback();
+    },
+    // 登录用户的信息相关操作
     *fetch({ payload, callback }, { call, put, select }) {
       const response = yield call(pageMessage, payload);
       const { apierror } = response;
