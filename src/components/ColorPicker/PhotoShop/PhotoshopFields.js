@@ -63,14 +63,6 @@ const PhotoshopFields = ({ onChange, rgb, hsv, hex }) => {
       <EditableInput className={styles.wrap} label="r" value={rgb.r} onChange={handleChange} />
       <EditableInput className={styles.wrap} label="g" value={rgb.g} onChange={handleChange} />
       <EditableInput className={styles.wrap} label="b" value={rgb.b} onChange={handleChange} />
-      <EditableInput
-        className={styles.wrap}
-        label="a"
-        value={Math.round(rgb.a * 100)}
-        onChange={handleChange}
-        dragLabel="true"
-        dragMax="100"
-      />
       <div className={styles.divider} />
       <EditableInput
         className={styles.wrapHex}

@@ -7,7 +7,7 @@
   "scripts": {
     "postinstall": "umi g tmp",
     "analyze": "cross-env ANALYZE=1 umi build",
-    "build": "umi build",
+    "build": "node color.js && umi build",
     "lint": "umi g tmp && npm run lint:js && npm run lint:style && npm run lint:prettier",
     "lint:prettier": "prettier --check \"**/*\" --end-of-line auto",
     "lint-staged": "lint-staged",
@@ -19,8 +19,8 @@
     "start": "umi dev",
     "dev": "npm run start:dev",
     "pre": "npm run start:pre",
-    "start:dev": "cross-env PORT=9000 REACT_APP_ENV=dev MOCK=none UMI_UI=none umi dev",
-    "start:pre": "cross-env PORT=9000 REACT_APP_ENV=pre MOCK=none UMI_UI=none umi dev"
+    "start:dev": "node color.js && cross-env PORT=9000 REACT_APP_ENV=dev MOCK=none UMI_UI=none umi dev",
+    "start:pre": "node color.js && cross-env PORT=9000 REACT_APP_ENV=pre MOCK=none UMI_UI=none umi dev"
   },
   "husky": {
     "hooks": {
@@ -44,6 +44,7 @@
     "@ant-design/pro-layout": "^6.4.1",
     "antd": "^4.5.3",
     "antd-img-crop": "^3.9.0",
+    "antd-theme-generator": "^1.2.4",
     "classnames": "^2.2.6",
     "lodash.debounce": "^4.0.8",
     "lodash.foreach": "^4.5.0",

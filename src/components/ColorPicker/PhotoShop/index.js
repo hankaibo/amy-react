@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from 'antd';
 import classnames from 'classnames';
-import { ColorWrap, Saturation, Hue, Alpha } from '../common';
+import { ColorWrap, Saturation, Hue } from '../common';
 import PhotoshopFields from './PhotoshopFields';
 import PhotoshopPointerCircle from './PhotoshopPointerCircle';
 import PhotoshopPointer from './PhotoshopPointer';
@@ -36,10 +36,6 @@ const Photoshop = (props) => {
             onChange={onChange}
             render={() => <PhotoshopPointer />}
           />
-        </div>
-
-        <div className={styles.alpha}>
-          <Alpha direction="vertical" rgb={rgb} hsl={hsl} onChange={onChange} />
         </div>
 
         <div className={styles.controls}>
