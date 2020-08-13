@@ -40,9 +40,9 @@
     "not ie <= 10"
   ],
   "dependencies": {
-    "@ant-design/icons": "^4.2.1",
-    "@ant-design/pro-layout": "^6.3.0",
-    "antd": "^4.5.2",
+    "@ant-design/icons": "^4.2.2",
+    "@ant-design/pro-layout": "^6.4.1",
+    "antd": "^4.5.3",
     "antd-img-crop": "^3.9.0",
     "classnames": "^2.2.6",
     "lodash.debounce": "^4.0.8",
@@ -66,7 +66,7 @@
   },
   "devDependencies": {
     "@umijs/preset-ant-design-pro": "^1.2.2",
-    "@umijs/preset-react": "^1.5.19",
+    "@umijs/preset-react": "^1.5.20",
     "babel-eslint": "^10.1.0",
     "chalk": "^4.1.0",
     "cross-env": "^7.0.2",
