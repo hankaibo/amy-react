@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Avatar, Card, Col, Divider, Input, Row, Tag } from 'antd';
+import { Avatar, Card, Col, Divider, Input, Row, Tag, Image } from 'antd';
 import { PlusOutlined, HomeOutlined, ContactsOutlined, ClusterOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-layout';
 import { Link, connect } from 'umi';
 import Inbox from './components/Inbox';
 import Sent from './components/Sent';
+import defaultPic from '../../../assets/default.png';
 import styles from './Center.less';
 
 const operationTabList = [
@@ -135,7 +136,13 @@ const Center = ({ currentUser = {}, currentUserLoading, dispatch }) => {
             {!dataLoading && (
               <div>
                 <div className={styles.avatarHolder}>
-                  <img alt="用户头像" src={currentUser.avatar} />
+                  <Image
+                    alt="用户头像"
+                    width={104}
+                    height={104}
+                    src={currentUser.avatar}
+                    fallback={defaultPic}
+                  />
                   <div className={styles.name}>{currentUser.username}</div>
                   <div>{currentUser.signature}</div>
                 </div>
