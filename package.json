@@ -6,7 +6,7 @@
   "homepage": "http://58.87.121.239:9001",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
-    "build": "node color.js && umi build",
+    "build": "umi build",
     "lint": "umi g tmp && npm run lint:js && npm run lint:style && npm run lint:prettier",
     "lint-staged:js": "eslint --ext .js,.jsx",
     "lint-staged": "lint-staged",
@@ -19,8 +19,8 @@
     "start": "umi dev",
     "dev": "npm run start:dev",
     "pre": "npm run start:pre",
-    "start:dev": "node color.js && cross-env PORT=9000 REACT_APP_ENV=dev MOCK=none UMI_UI=none umi dev",
-    "start:pre": "node color.js && cross-env PORT=9000 REACT_APP_ENV=pre MOCK=none UMI_UI=none umi dev"
+    "start:dev": "cross-env PORT=9000 REACT_APP_ENV=dev MOCK=none UMI_UI=none umi dev",
+    "start:pre": "cross-env PORT=9000 REACT_APP_ENV=pre MOCK=none UMI_UI=none umi dev"
   },
   "husky": {
     "hooks": {
