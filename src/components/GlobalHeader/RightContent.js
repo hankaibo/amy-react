@@ -1,9 +1,8 @@
 import React from 'react';
-import { Tag, Tooltip, Popover } from 'antd';
+import { Tag, Tooltip } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { connect, useIntl, SelectLang } from 'umi';
 import classNames from 'classnames';
-import { PhotoShopPicker } from '@/components/ColorPicker';
 import Avatar from './AvatarDropdown';
 import NoticeIconView from './NoticeIconView';
 import HeaderSearch from '../HeaderSearch';
@@ -17,30 +16,12 @@ const ENVTagColor = {
 
 const GlobalHeaderRight = (props) => {
   const { formatMessage } = useIntl();
-  const { theme, layout, primaryColor, dispatch } = props;
+  const { theme, layout } = props;
   let className = styles.right;
 
   if (theme === 'dark' && layout === 'top') {
     className = `${styles.right}  ${styles.dark}`;
   }
-
-  const handleChangeComplete = (data) => {
-    if (data.hsl !== primaryColor) {
-      // 动态修改color.less文件
-      window.less.modifyVars({
-        '@primary-color': data.hex,
-      });
-      // 修改全局state中的primaryColor
-      dispatch({
-        type: 'settings/changeSetting',
-        payload: {
-          primaryColor: data.hex,
-        },
-      });
-    }
-    // 可以调用父组件事件
-    // props.onChange && props.onChange(data.hex);
-  };
 
   return (
     <div className={className}>
@@ -87,14 +68,6 @@ const GlobalHeaderRight = (props) => {
           <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
         </span>
       )}
-      <Popover
-        content={<PhotoShopPicker color={primaryColor} onChangeComplete={handleChangeComplete} />}
-        title="动态换肤"
-      >
-        <span>
-          <Tag color={primaryColor}>{primaryColor}</Tag>
-        </span>
-      </Popover>
       <SelectLang className={styles.action} />
     </div>
   );
@@ -103,5 +76,4 @@ const GlobalHeaderRight = (props) => {
 export default connect(({ settings }) => ({
   theme: settings.navTheme,
   layout: settings.layout,
-  primaryColor: settings.primaryColor,
 }))(GlobalHeaderRight);
