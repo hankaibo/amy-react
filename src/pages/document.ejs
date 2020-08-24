@@ -8,21 +8,9 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
     />
     <title>my antdpro</title>
-    <link rel="icon" href="<%= context.config.publicPath +'favicon.png'%>" type="image/x-icon" />
+    <link rel="icon" href="<%= context.config.publicPath +'favicon.ico'%>" type="image/x-icon" />
   </head>
   <body>
-    <!-- 保存动态生成的样式不被覆盖。 -->
-    <link rel="stylesheet/less" type="text/css" href="/color.less" />
-    <script>
-      window.less = {
-        async: true,
-        env: 'production',
-      };
-    </script>
-    <script
-      type="text/javascript"
-      src="https://cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"
-    ></script>
     <noscript>Sorry, we need js to run correctly!</noscript>
     <div id="root">
       <style>
