@@ -20,4 +20,5 @@ yarn-error.log
 .history
 CNAME
 /build
+/public
 .idea
