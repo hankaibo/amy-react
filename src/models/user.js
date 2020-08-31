@@ -3,7 +3,7 @@ import {
   addMessage,
   deleteBatchMessage,
   deleteMessage,
-  enableMessage,
+  publishMessage,
   getMessageById,
   pageMessage,
   updateMessage,
@@ -46,6 +46,8 @@ const UserModel = {
     pagination: {},
     // 编辑
     msg: {},
+    // 过滤参数
+    filter: {},
   },
 
   effects: {
@@ -83,7 +85,13 @@ const UserModel = {
       if (callback) callback();
     },
     // 登录用户的信息相关操作
-    *fetch({ payload, callback }, { call, put, select }) {
+    *fetchMessage({ payload, callback }, { call, put, select }) {
+      yield put({
+        type: 'saveFilter',
+        payload: {
+          ...payload,
+        },
+      });
       const response = yield call(pageMessage, payload);
       const { apierror } = response;
       if (apierror) {
@@ -91,7 +99,7 @@ const UserModel = {
       }
       const { list, pageNum: current, pageSize, total } = response;
       yield put({
-        type: 'saveList',
+        type: 'saveMessageList',
         payload: {
           list: list.map((item) => ({ ...item, status: !!item.status })),
           pagination: { current, pageSize, total },
@@ -101,7 +109,7 @@ const UserModel = {
         (state) => state.global.notices.filter((item) => !item.read).length,
       );
       yield put({
-        type: 'user/changeNotifyCount',
+        type: 'changeNotifyCount',
         payload: {
           totalCount: total,
           unreadCount,
@@ -109,24 +117,24 @@ const UserModel = {
       });
       if (callback) callback();
     },
-    *add({ payload, callback }, { call, put }) {
-      const { values, searchParams } = payload;
-      const params = { ...values, status: +values.status };
-      const response = yield call(addMessage, params);
+    *addMessage({ payload, callback }, { call, put, select }) {
+      const values = { ...payload, status: +payload.status };
+      const response = yield call(addMessage, values);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.user.filter);
       yield put({
-        type: 'fetch',
+        type: 'fetchMessage',
         payload: {
-          ...searchParams,
+          ...filter,
           current: 1,
         },
       });
       if (callback) callback();
     },
-    *fetchById({ payload, callback }, { call, put }) {
+    *fetchMessageById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getMessageById, id);
       const { apierror } = response;
@@ -142,64 +150,66 @@ const UserModel = {
       });
       if (callback) callback();
     },
-    *update({ payload, callback }, { call, put }) {
-      const { values, searchParams } = payload;
-      const params = { ...values, status: +values.status };
-      const response = yield call(updateMessage, params);
+    *updateMessage({ payload, callback }, { call, put, select }) {
+      const values = { ...payload, status: +payload.status };
+      const response = yield call(updateMessage, values);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.user.filter);
       yield put({
-        type: 'fetch',
+        type: 'fetchMessage',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       if (callback) callback();
     },
-    *enable({ payload, callback }, { call, put }) {
-      const { id, status, searchParams } = payload;
-      const params = { id, status: +status };
-      const response = yield call(enableMessage, params);
+    *publishMessage({ payload, callback }, { call, put, select }) {
+      const { id } = payload;
+      const response = yield call(publishMessage, id);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.user.filter);
       yield put({
-        type: 'fetch',
+        type: 'fetchMessage',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       if (callback) callback();
     },
-    *delete({ payload, callback }, { call, put }) {
-      const { id, searchParams } = payload;
+    *deleteMessage({ payload, callback }, { call, put, select }) {
+      const { id } = payload;
       const response = yield call(deleteMessage, id);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.user.filter);
       yield put({
-        type: 'fetch',
+        type: 'fetchMessage',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       if (callback) callback();
     },
-    *deleteBatch({ payload, callback }, { call, put }) {
-      const { ids, searchParams } = payload;
+    *deleteBatchMessage({ payload, callback }, { call, put, select }) {
+      const { ids } = payload;
       const response = yield call(deleteBatchMessage, ids);
       const { apierror } = response;
       if (apierror) {
         return;
       }
+      const filter = yield select((state) => state.user.filter);
       yield put({
-        type: 'fetch',
+        type: 'fetchMessage',
         payload: {
-          ...searchParams,
+          ...filter,
         },
       });
       if (callback) callback();
@@ -207,6 +217,14 @@ const UserModel = {
   },
 
   reducers: {
+    saveFilter(state, { payload }) {
+      return {
+        ...state,
+        filter: {
+          ...payload,
+        },
+      };
+    },
     saveCurrentUser(state, { payload }) {
       const { currentUser } = payload;
       return {
@@ -214,22 +232,17 @@ const UserModel = {
         currentUser,
       };
     },
-    changeNotifyCount(
-      state = {
-        currentUser: {},
-      },
-      action,
-    ) {
+    changeNotifyCount(state, { payload }) {
       return {
         ...state,
         currentUser: {
           ...state.currentUser,
-          notifyCount: action.payload.totalCount,
-          unreadCount: action.payload.unreadCount,
+          notifyCount: payload.totalCount,
+          unreadCount: payload.unreadCount,
         },
       };
     },
-    saveList(state, { payload }) {
+    saveMessageList(state, { payload }) {
       const { list, pagination } = payload;
       return {
         ...state,
@@ -237,7 +250,7 @@ const UserModel = {
         pagination,
       };
     },
-    clearList(state) {
+    clearMessageList(state) {
       return {
         ...state,
         list: [],

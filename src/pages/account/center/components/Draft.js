@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Tag, Popconfirm, Divider, message } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, SendOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
-import { getValue } from '@/utils/utils';
 import withModal from '@/components/HOCModal';
-import MsgDetail from './MsgDetail';
+import { getValue } from '@/utils/utils';
+import MsgForm from './MsgForm';
 
-const MsgDetailModal = withModal(MsgDetail);
+const MsgModal = withModal(MsgForm);
 
 const getText = (value) => {
   switch (value) {
@@ -22,7 +22,7 @@ const getText = (value) => {
   }
 };
 
-const Inbox = connect(({ user: { currentUser, list, pagination }, loading }) => ({
+const Draft = connect(({ user: { currentUser, list, pagination }, loading }) => ({
   currentUser,
   list,
   pagination,
@@ -41,8 +41,8 @@ const Inbox = connect(({ user: { currentUser, list, pagination }, loading }) => 
     const [params, setParams] = useState({
       current: pagination.current || 1,
       pageSize: pagination.pageSize || 10,
-      receiveId: currentUser.id,
-      isPublish: 1,
+      sendId: currentUser.id,
+      isPublish: 0,
       type: null,
     });
 
@@ -59,7 +59,7 @@ const Inbox = connect(({ user: { currentUser, list, pagination }, loading }) => 
           type: 'user/clearMessageList',
         });
       };
-    }, [params, dispatch]);
+    }, [params]);
 
     // 【删除信息】
     const handleDelete = (record) => {
@@ -72,6 +72,20 @@ const Inbox = connect(({ user: { currentUser, list, pagination }, loading }) => 
         callback: () => {
           setSelectedRowKeys([]);
           message.success('删除信息成功。');
+        },
+      });
+    };
+
+    // 【发布信息】
+    const handelPublish = (record) => {
+      const { id } = record;
+      dispatch({
+        type: 'user/publishMessage',
+        payload: {
+          id,
+        },
+        callback: () => {
+          message.success('发布信息成功。');
         },
       });
     };
@@ -105,15 +119,12 @@ const Inbox = connect(({ user: { currentUser, list, pagination }, loading }) => 
     // 【表格列】
     const columns = [
       {
-        title: '发信人',
+        title: '收信人',
         dataIndex: 'sendName',
       },
       {
         title: '信息标题',
         dataIndex: 'title',
-        render: (text, record) => {
-          return <MsgDetailModal id={record.id}>{text}</MsgDetailModal>;
-        },
       },
       {
         title: '信息类型',
@@ -127,13 +138,15 @@ const Inbox = connect(({ user: { currentUser, list, pagination }, loading }) => 
         render: (text) => getText(text),
       },
       {
-        title: '收信时间',
-        dataIndex: 'publishTime',
-      },
-      {
         title: '操作',
         render: (text, record) => (
           <>
+            <Authorized authority="system:message:update" noMatch={null}>
+              <MsgModal isEdit id={record.id}>
+                <EditOutlined title="编辑" className="icon" />
+              </MsgModal>
+              <Divider type="vertical" />
+            </Authorized>
             <Authorized authority="system:message:delete" noMatch={null}>
               <Popconfirm
                 title="您确定要删除该信息吗？"
@@ -144,6 +157,9 @@ const Inbox = connect(({ user: { currentUser, list, pagination }, loading }) => 
                 <DeleteOutlined title="删除" className="icon" />
               </Popconfirm>
               <Divider type="vertical" />
+            </Authorized>
+            <Authorized authority="system:message:publish" noMatch={null}>
+              <SendOutlined title="发布" className="icon" onClick={() => handelPublish(record)} />
             </Authorized>
           </>
         ),
@@ -167,4 +183,4 @@ const Inbox = connect(({ user: { currentUser, list, pagination }, loading }) => 
   },
 );
 
-export default Inbox;
+export default Draft;

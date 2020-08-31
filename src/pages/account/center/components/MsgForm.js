@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react';
 import { Modal, Form, Select, Input, Switch, Radio, Button, message } from 'antd';
 import { connect } from 'umi';
+import { difference, isEmpty } from '@/utils/utils';
 
 const MsgForm = connect(({ user: { msg }, loading }) => ({
   msg,
   loading:
-    loading.effects['user/fetchById'] ||
-    loading.effects['user/add'] ||
-    loading.effects['user/update'],
-}))(({ loading, visible, isEdit, id, searchParams, msg, closeModal, dispatch }) => {
+    loading.effects['user/fetchMessageById'] ||
+    loading.effects['user/addMessage'] ||
+    loading.effects['user/updateMessage'],
+}))(({ loading, visible, isEdit, id, msg, closeModal, dispatch }) => {
   const [form] = Form.useForm();
   const { resetFields, setFieldsValue } = form;
 
@@ -16,7 +17,7 @@ const MsgForm = connect(({ user: { msg }, loading }) => ({
   useEffect(() => {
     if (visible && isEdit) {
       dispatch({
-        type: 'user/fetchById',
+        type: 'user/fetchMessageById',
         payload: {
           id,
         },
@@ -33,7 +34,7 @@ const MsgForm = connect(({ user: { msg }, loading }) => ({
   useEffect(() => {
     // 👍 将条件判断放置在 effect 中
     if (visible && isEdit) {
-      if (Object.keys(msg).length > 0) {
+      if (!isEmpty(msg)) {
         setFieldsValue(msg);
       }
     }
@@ -42,12 +43,17 @@ const MsgForm = connect(({ user: { msg }, loading }) => ({
   // 【添加与修改】
   const handleAddOrUpdate = (values) => {
     if (isEdit) {
-      Object.assign(values, { id });
+      const { receiveIdList } = values;
+      const { receiveIdList: oldReceiveIdList } = msg;
+      const plusReceiveIds = difference(receiveIdList, oldReceiveIdList);
+      const minusReceiveIds = difference(oldReceiveIdList, receiveIdList);
       dispatch({
-        type: 'user/update',
+        type: 'user/updateMessage',
         payload: {
-          values,
-          searchParams,
+          ...values,
+          id,
+          plusReceiveIds,
+          minusReceiveIds,
         },
         callback: () => {
           resetFields();
@@ -57,10 +63,9 @@ const MsgForm = connect(({ user: { msg }, loading }) => ({
       });
     } else {
       dispatch({
-        type: 'user/add',
+        type: 'user/addMessage',
         payload: {
-          values,
-          searchParams,
+          ...values,
         },
         callback: () => {
           resetFields();
@@ -100,7 +105,7 @@ const MsgForm = connect(({ user: { msg }, loading }) => ({
       <Form
         {...layout}
         form={form}
-        name="userForm"
+        name="messageForm"
         className="form"
         initialValues={{
           status: true,
@@ -109,7 +114,7 @@ const MsgForm = connect(({ user: { msg }, loading }) => ({
       >
         <Form.Item
           label="收信人"
-          name="receiveIds"
+          name="receiveIdList"
           rules={[
             {
               required: true,
@@ -119,7 +124,9 @@ const MsgForm = connect(({ user: { msg }, loading }) => ({
         >
           <Select mode="multiple">
             {[{ id: 1, username: 'admin' }].map((item) => (
-              <Select.Option key={item.id}>{item.username}</Select.Option>
+              <Select.Option key={item.id} value={item.id}>
+                {item.username}
+              </Select.Option>
             ))}
           </Select>
         </Form.Item>
@@ -140,7 +147,7 @@ const MsgForm = connect(({ user: { msg }, loading }) => ({
         <Form.Item
           label="内容"
           name="content"
-          rules={[{ message: '请将描述长度保持在1至150字符之间！', min: 1, max: 255 }]}
+          rules={[{ message: '请将描述长度保持在1至255字符之间！', min: 1, max: 255 }]}
         >
           <Input.TextArea placeholder="请输入信息描述。" autoSize={{ minRows: 3, maxRows: 6 }} />
         </Form.Item>

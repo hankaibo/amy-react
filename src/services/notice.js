@@ -134,7 +134,7 @@ export async function listen(action) {
 }
 
 export async function listNotices() {
-  return null;
+  return request(`/messages`);
 }
 
 /**
@@ -210,23 +210,27 @@ export async function getMessageById(id) {
  * @returns {Promise<void>}
  */
 export async function updateMessage(params) {
-  const { id } = params;
+  const { id, plusReceiveIds, minusReceiveIds, ...rest } = params;
   return request.put(`/messages/${id}`, {
     data: {
-      ...params,
+      msg: {
+        id,
+        ...rest,
+      },
+      plusReceiveIds,
+      minusReceiveIds,
     },
   });
 }
 
 /**
- * 启用禁用站内信。
+ * 发布站内信。
  *
- * @param params
+ * @param id
  * @returns {Promise<void>}
  */
-export async function enableMessage(params) {
-  const { id, status } = params;
-  return request.patch(`/messages/${id}/status?${stringify({ status })}`);
+export async function publishMessage(id) {
+  return request.patch(`/messages/${id}/publication`);
 }
 
 /**
@@ -245,8 +249,6 @@ export async function deleteMessage(id) {
  */
 export async function deleteBatchMessage(ids) {
   return request.delete('/messages', {
-    data: {
-      ids,
-    },
+    data: [...ids],
   });
 }

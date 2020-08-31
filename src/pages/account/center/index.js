@@ -1,19 +1,53 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Avatar, Card, Col, Divider, Input, Row, Tag, Image } from 'antd';
-import { PlusOutlined, HomeOutlined, ContactsOutlined, ClusterOutlined } from '@ant-design/icons';
+import {
+  Avatar,
+  Card,
+  Col,
+  Divider,
+  Input,
+  Row,
+  Tag,
+  Image,
+  Button,
+  Popconfirm,
+  message,
+} from 'antd';
+import {
+  PlusOutlined,
+  HomeOutlined,
+  ContactsOutlined,
+  ClusterOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-layout';
 import { Link, connect } from 'umi';
+import Authorized from '@/utils/Authorized';
+import withModal from '@/components/HOCModal';
 import Inbox from './components/Inbox';
+import Draft from './components/Draft';
 import Sent from './components/Sent';
 import defaultPic from '../../../assets/default.png';
+import MsgForm from './components/MsgForm';
 import styles from './Center.less';
+
+const MsgModal = withModal(MsgForm);
 
 const operationTabList = [
   {
     key: 'inbox',
     tab: (
       <span>
-        收件箱 <span style={{ fontSize: 14 }}>(8)</span>
+        {' '}
+        收件箱 <span style={{ fontSize: 14 }}>(8)</span>{' '}
+      </span>
+    ),
+  },
+  {
+    key: 'draft',
+    tab: (
+      <span>
+        {' '}
+        草稿箱 <span style={{ fontSize: 14 }}>(8)</span>{' '}
       </span>
     ),
   },
@@ -85,6 +119,8 @@ const TagList = ({ tags }) => {
 const Center = ({ currentUser = {}, currentUserLoading, dispatch }) => {
   const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
 
+  // 【复选框状态属性与函数】
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [tabKey, setTabKey] = useState('inbox');
 
   // 【获取当前用户信息】
@@ -96,18 +132,71 @@ const Center = ({ currentUser = {}, currentUserLoading, dispatch }) => {
 
   // 【切换标签】
   const onTabChange = (key) => {
+    setSelectedRowKeys([]);
     setTabKey(key);
   };
 
   // 【渲染相应标签的具体内容】
   const renderChildrenByTabKey = (key) => {
-    if (key === 'inbox') {
-      return <Inbox />;
+    switch (key) {
+      case 'inbox':
+        return <Inbox selectedRowKeys={selectedRowKeys} onChange={setSelectedRowKeys} />;
+      case 'draft':
+        return <Draft />;
+      case 'sent':
+        return <Sent selectedRowKeys={selectedRowKeys} onChange={setSelectedRowKeys} />;
+      default:
+        return null;
     }
-    if (key === 'sent') {
-      return <Sent />;
+  };
+
+  // 【批量删除信息】
+  const handleBatchDelete = () => {
+    if (selectedRowKeys.length === 0) return;
+    dispatch({
+      type: 'user/deleteBatchMessage',
+      payload: {
+        ids: selectedRowKeys,
+      },
+      callback: () => {
+        setSelectedRowKeys([]);
+        message.success('批量删除信息成功。');
+      },
+    });
+  };
+
+  const renderExtraByTabKey = (key) => {
+    switch (key) {
+      case 'inbox':
+      case 'sent':
+      case 'draft':
+        return (
+          <>
+            <Authorized authority="system:message:add" noMatch={null}>
+              <MsgModal>
+                <Button type="primary" title="新增">
+                  <PlusOutlined />
+                </Button>
+              </MsgModal>
+            </Authorized>
+            <Authorized authority="system:message:batchDelete" noMatch={null}>
+              <Popconfirm
+                title="您确定要删除这些信息吗？"
+                onConfirm={handleBatchDelete}
+                okText="确定"
+                cancelText="取消"
+                disabled={selectedRowKeys.length <= 0}
+              >
+                <Button type="danger" disabled={selectedRowKeys.length <= 0} title="删除">
+                  <DeleteOutlined />
+                </Button>
+              </Popconfirm>
+            </Authorized>
+          </>
+        );
+      default:
+        return null;
     }
-    return null;
   };
 
   // 【渲染用户信息】
@@ -173,6 +262,7 @@ const Center = ({ currentUser = {}, currentUserLoading, dispatch }) => {
             className={styles.tabsCard}
             bordered={false}
             tabList={operationTabList}
+            tabBarExtraContent={renderExtraByTabKey(tabKey)}
             activeTabKey={tabKey}
             onTabChange={onTabChange}
           >

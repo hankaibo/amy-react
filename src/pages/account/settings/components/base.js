@@ -40,14 +40,17 @@ const BaseView = ({ currentUser, dispatch }) => {
   // 【回显头像】
   useEffect(() => {
     if (!isEmpty(currentUser)) {
-      setAvatar(currentUser.avatar);
+      const { id, name, avatar: url } = currentUser;
+      if (url) {
+        setAvatar(url);
+      }
       // 回显图片
       setFileList([
         {
-          uid: currentUser.id,
-          name: currentUser.name,
+          uid: id,
+          name,
           status: 'done',
-          url: currentUser.avatar,
+          url,
         },
       ]);
     }

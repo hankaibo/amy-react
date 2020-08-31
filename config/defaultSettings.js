@@ -13,5 +13,5 @@ export default {
   pwa: false,
   // Your custom iconfont Symbol script Url
   // eg：//at.alicdn.com/t/font_1039637_btcrd5co4w.js
-  iconfontUrl: '',
+  iconfontUrl: '//at.alicdn.com/t/font_1729367_uhzinxzk4md.js',
 };
