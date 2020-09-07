@@ -38,7 +38,7 @@ const operationTabList = [
     tab: (
       <span>
         {' '}
-        收件箱 <span style={{ fontSize: 14 }}>(8)</span>{' '}
+        收件箱 <span style={{ fontSize: 14 }} />
       </span>
     ),
   },
@@ -47,7 +47,7 @@ const operationTabList = [
     tab: (
       <span>
         {' '}
-        草稿箱 <span style={{ fontSize: 14 }}>(8)</span>{' '}
+        草稿箱 <span style={{ fontSize: 14 }} />
       </span>
     ),
   },
@@ -55,7 +55,7 @@ const operationTabList = [
     key: 'sent',
     tab: (
       <span>
-        发件箱 <span style={{ fontSize: 14 }}>(8)</span>
+        发件箱 <span style={{ fontSize: 14 }} />
       </span>
     ),
   },

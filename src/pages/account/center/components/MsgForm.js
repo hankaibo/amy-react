@@ -1,17 +1,33 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Select, Input, Switch, Radio, Button, message } from 'antd';
+import { Modal, Form, TreeSelect, Input, Switch, Radio, Button, message } from 'antd';
 import { connect } from 'umi';
 import { difference, isEmpty } from '@/utils/utils';
 
-const MsgForm = connect(({ user: { msg }, loading }) => ({
+const MsgForm = connect(({ user: { departmentTree, msg }, loading }) => ({
+  departmentTree,
   msg,
   loading:
     loading.effects['user/fetchMessageById'] ||
     loading.effects['user/addMessage'] ||
     loading.effects['user/updateMessage'],
-}))(({ loading, visible, isEdit, id, msg, closeModal, dispatch }) => {
+}))(({ loading, visible, isEdit, id, departmentTree, msg, closeModal, dispatch }) => {
   const [form] = Form.useForm();
   const { resetFields, setFieldsValue } = form;
+
+  // 初始化
+  useEffect(() => {
+    dispatch({
+      type: 'user/fetchDepartmentTree',
+      payload: {
+        status: 1,
+      },
+    });
+    return () => {
+      dispatch({
+        type: 'user/clearDepartmentTree',
+      });
+    };
+  }, [dispatch]);
 
   // 【修改时，获取信息表单数据】
   useEffect(() => {
@@ -20,6 +36,7 @@ const MsgForm = connect(({ user: { msg }, loading }) => ({
         type: 'user/fetchMessageById',
         payload: {
           id,
+          from: 'INBOX',
         },
       });
     }
@@ -40,10 +57,28 @@ const MsgForm = connect(({ user: { msg }, loading }) => ({
     }
   }, [visible, isEdit, msg, setFieldsValue]);
 
+  //
+  const handleLoadData = (node) => {
+    return new Promise((resolve) => {
+      const { id: departmentId } = node;
+      dispatch({
+        type: 'user/fetchDepartmentUser',
+        payload: {
+          current: 1,
+          pageSize: 1000,
+          departmentId,
+          status: 1,
+        },
+      });
+      resolve();
+    });
+  };
+
   // 【添加与修改】
   const handleAddOrUpdate = (values) => {
+    let { receiveIdList } = values;
+    receiveIdList = receiveIdList.map((item) => item.split('_')[1]);
     if (isEdit) {
-      const { receiveIdList } = values;
       const { receiveIdList: oldReceiveIdList } = msg;
       const plusReceiveIds = difference(receiveIdList, oldReceiveIdList);
       const minusReceiveIds = difference(oldReceiveIdList, receiveIdList);
@@ -51,6 +86,7 @@ const MsgForm = connect(({ user: { msg }, loading }) => ({
         type: 'user/updateMessage',
         payload: {
           ...values,
+          receiveIdList,
           id,
           plusReceiveIds,
           minusReceiveIds,
@@ -66,6 +102,7 @@ const MsgForm = connect(({ user: { msg }, loading }) => ({
         type: 'user/addMessage',
         payload: {
           ...values,
+          receiveIdList,
         },
         callback: () => {
           resetFields();
@@ -122,13 +159,17 @@ const MsgForm = connect(({ user: { msg }, loading }) => ({
             },
           ]}
         >
-          <Select mode="multiple">
-            {[{ id: 1, username: 'admin' }].map((item) => (
-              <Select.Option key={item.id} value={item.id}>
-                {item.username}
-              </Select.Option>
-            ))}
-          </Select>
+          <TreeSelect
+            style={{ width: '100%' }}
+            allowClear
+            maxTagCount={5}
+            maxTagPlaceholder="..."
+            treeCheckable
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            placeholder="请选择"
+            loadData={handleLoadData}
+            treeData={departmentTree}
+          />
         </Form.Item>
         <Form.Item
           label="标题"

@@ -4,6 +4,10 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
 import { getValue } from '@/utils/utils';
+import withModal from '@/components/HOCModal';
+import MsgDetail from './MsgDetail';
+
+const MsgDetailModal = withModal(MsgDetail);
 
 const getText = (value) => {
   switch (value) {
@@ -64,6 +68,7 @@ const Sent = connect(({ user: { currentUser, list, pagination }, loading }) => (
         type: 'user/deleteMessage',
         payload: {
           id,
+          from: 'SENT',
         },
         callback: () => {
           setSelectedRowKeys([]);
@@ -102,11 +107,19 @@ const Sent = connect(({ user: { currentUser, list, pagination }, loading }) => (
     const columns = [
       {
         title: '收信人',
-        dataIndex: 'receiveName',
+        dataIndex: 'receiveNameList',
+        render: (text) => text.toString(),
       },
       {
         title: '信息标题',
         dataIndex: 'title',
+        render: (text, record) => {
+          return (
+            <MsgDetailModal id={record.id} from="SENT">
+              <a>{text}</a>
+            </MsgDetailModal>
+          );
+        },
       },
       {
         title: '信息类型',

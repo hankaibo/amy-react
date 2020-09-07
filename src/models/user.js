@@ -1,4 +1,10 @@
-import { getCurrentUser, updateCurrentUser, updateCurrentUserPassword } from '@/services/user';
+import {
+  getCurrentUser,
+  updateCurrentUser,
+  updateCurrentUserPassword,
+  getDepartmentTree,
+  listUser,
+} from '@/services/user';
 import {
   addMessage,
   deleteBatchMessage,
@@ -36,6 +42,30 @@ const mockTags = [
   },
 ];
 
+// 禁用树数据可选状态及隐藏复选框
+const formatTree = (tree) => {
+  tree.forEach((item) => {
+    if (item.children) {
+      // eslint-disable-next-line no-unused-vars
+      formatTree(item.children);
+    }
+    // eslint-disable-next-line no-param-reassign
+    item.selectable = false;
+    // eslint-disable-next-line no-param-reassign
+    item.checkable = false;
+  });
+};
+
+const addToTree = (id, data, tree) => {
+  tree.forEach((item) => {
+    if (item.id === id) {
+      item.children.push(...data);
+    } else if (item.children) {
+      addToTree(id, data, item.children);
+    }
+  });
+};
+
 const UserModel = {
   namespace: 'user',
 
@@ -46,6 +76,8 @@ const UserModel = {
     pagination: {},
     // 编辑
     msg: {},
+    // 部门树
+    departmentTree: [],
     // 过滤参数
     filter: {},
   },
@@ -135,8 +167,7 @@ const UserModel = {
       if (callback) callback();
     },
     *fetchMessageById({ payload, callback }, { call, put }) {
-      const { id } = payload;
-      const response = yield call(getMessageById, id);
+      const response = yield call(getMessageById, payload);
       const { apierror } = response;
       if (apierror) {
         return;
@@ -183,8 +214,7 @@ const UserModel = {
       if (callback) callback();
     },
     *deleteMessage({ payload, callback }, { call, put, select }) {
-      const { id } = payload;
-      const response = yield call(deleteMessage, id);
+      const response = yield call(deleteMessage, payload);
       const { apierror } = response;
       if (apierror) {
         return;
@@ -199,8 +229,7 @@ const UserModel = {
       if (callback) callback();
     },
     *deleteBatchMessage({ payload, callback }, { call, put, select }) {
-      const { ids } = payload;
-      const response = yield call(deleteBatchMessage, ids);
+      const response = yield call(deleteBatchMessage, payload);
       const { apierror } = response;
       if (apierror) {
         return;
@@ -210,6 +239,52 @@ const UserModel = {
         type: 'fetchMessage',
         payload: {
           ...filter,
+        },
+      });
+      if (callback) callback();
+    },
+    *fetchDepartmentTree({ payload, callback }, { call, put }) {
+      const response = yield call(getDepartmentTree, payload);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
+      formatTree(response);
+      yield put({
+        type: 'saveDepartmentTree',
+        payload: {
+          departmentTree: response,
+        },
+      });
+      if (callback) callback();
+    },
+    *fetchDepartmentUser({ payload, callback }, { call, put, select }) {
+      const response = yield call(listUser, payload);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
+      const { list } = response;
+      const departmentUserList = [];
+      list.forEach((item) => {
+        const { id, username } = item;
+        const user = {
+          id,
+          key: `u_${id}`,
+          value: `u_${id}`,
+          title: username,
+          isLeaf: true,
+        };
+        departmentUserList.push(user);
+      });
+      const departmentTree = yield select((state) => state.user.departmentTree);
+      const newDepartmentTree = JSON.parse(JSON.stringify(departmentTree));
+
+      addToTree(payload.departmentId, departmentUserList, newDepartmentTree);
+      yield put({
+        type: 'saveDepartmentTree',
+        payload: {
+          departmentTree: newDepartmentTree,
         },
       });
       if (callback) callback();
@@ -268,6 +343,19 @@ const UserModel = {
       return {
         ...state,
         msg: {},
+      };
+    },
+    saveDepartmentTree(state, { payload }) {
+      const { departmentTree } = payload;
+      return {
+        ...state,
+        departmentTree,
+      };
+    },
+    clearDepartmentTree(state) {
+      return {
+        ...state,
+        departmentTree: [],
       };
     },
   },

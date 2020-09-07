@@ -197,11 +197,12 @@ export async function addMessage(params) {
 
 /**
  * 按主键查询一条站内信数据。
- * @param id
+ * @param params
  * @returns {Promise<void>}
  */
-export async function getMessageById(id) {
-  return request(`/messages/${id}`);
+export async function getMessageById(params) {
+  const { id, ...rest } = params;
+  return request(`/messages/${id}?${stringify(rest)}`);
 }
 
 /**
@@ -235,20 +236,22 @@ export async function publishMessage(id) {
 
 /**
  * 删除站内信。
- * @param id
+ * @param params
  * @returns {Promise<void>}
  */
-export async function deleteMessage(id) {
-  return request.delete(`/messages/${id}`);
+export async function deleteMessage(params) {
+  const { id, ...rest } = params;
+  return request.delete(`/messages/${id}?${stringify(rest)}`);
 }
 
 /**
  * 批量删除站内信。
- * @param ids
+ * @param params
  * @returns {Promise<void>}
  */
-export async function deleteBatchMessage(ids) {
-  return request.delete('/messages', {
+export async function deleteBatchMessage(params) {
+  const { ids, ...rest } = params;
+  return request.delete(`/messages${stringify(rest)}`, {
     data: [...ids],
   });
 }

@@ -68,6 +68,7 @@ const Inbox = connect(({ user: { currentUser, list, pagination }, loading }) => 
         type: 'user/deleteMessage',
         payload: {
           id,
+          from: 'INBOX',
         },
         callback: () => {
           setSelectedRowKeys([]);
@@ -112,7 +113,11 @@ const Inbox = connect(({ user: { currentUser, list, pagination }, loading }) => 
         title: '信息标题',
         dataIndex: 'title',
         render: (text, record) => {
-          return <MsgDetailModal id={record.id}>{text}</MsgDetailModal>;
+          return (
+            <MsgDetailModal id={record.id} from="INBOX">
+              <a>{text}</a>
+            </MsgDetailModal>
+          );
         },
       },
       {

@@ -5,7 +5,10 @@ import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
 import withModal from '@/components/HOCModal';
 import { getValue } from '@/utils/utils';
+import MsgDetail from './MsgDetail';
 import MsgForm from './MsgForm';
+
+const MsgDetailModal = withModal(MsgDetail);
 
 const MsgModal = withModal(MsgForm);
 
@@ -68,6 +71,7 @@ const Draft = connect(({ user: { currentUser, list, pagination }, loading }) => 
         type: 'user/deleteMessage',
         payload: {
           id,
+          from: 'DRAFT',
         },
         callback: () => {
           setSelectedRowKeys([]);
@@ -125,6 +129,13 @@ const Draft = connect(({ user: { currentUser, list, pagination }, loading }) => 
       {
         title: '信息标题',
         dataIndex: 'title',
+        render: (text, record) => {
+          return (
+            <MsgDetailModal id={record.id} from="INBOX">
+              <a>{text}</a>
+            </MsgDetailModal>
+          );
+        },
       },
       {
         title: '信息类型',

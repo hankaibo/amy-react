@@ -6,7 +6,7 @@ const { Title, Paragraph, Text } = Typography;
 
 const MsgDetail = connect(({ user: { msg } }) => ({
   msg,
-}))(({ visible, id, msg, closeModal, dispatch }) => {
+}))(({ visible, id, from, msg, closeModal, dispatch }) => {
   // 【修改时，获取信息表单数据】
   useEffect(() => {
     if (visible) {
@@ -14,6 +14,7 @@ const MsgDetail = connect(({ user: { msg } }) => ({
         type: 'user/fetchMessageById',
         payload: {
           id,
+          from,
         },
       });
     }
