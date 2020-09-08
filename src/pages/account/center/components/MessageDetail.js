@@ -4,9 +4,9 @@ import { connect } from 'umi';
 
 const { Title, Paragraph, Text } = Typography;
 
-const MsgDetail = connect(({ user: { msg } }) => ({
-  msg,
-}))(({ visible, id, from, msg, closeModal, dispatch }) => {
+const MessageDetail = connect(({ user: { message } }) => ({
+  message,
+}))(({ visible, id, from, message, closeModal, dispatch }) => {
   // 【修改时，获取信息表单数据】
   useEffect(() => {
     if (visible) {
@@ -28,31 +28,30 @@ const MsgDetail = connect(({ user: { msg } }) => ({
   return (
     <Modal destroyOnClose title="详情" visible={visible} onCancel={closeModal} footer={null}>
       <Typography>
-        <Title level={3}>{msg.title}</Title>
+        <Title level={3}>{message.title}</Title>
         <Paragraph>
           <ul>
             <li>
               <span>发件人：</span>
-              <a href="#">{msg.sendId}</a>
+              <a href="#">{message.sendId}</a>
             </li>
             <li>
               <span>时间：</span>
-              <a href="#">{msg.publishTime}</a>
+              <a href="#">{message.publishTime}</a>
             </li>
             <li>
               <span>收件人：</span>
-              <a href="#">{msg.receiveNameList}</a>
+              <a href="#">{message.receiveNameList}</a>
             </li>
           </ul>
         </Paragraph>
 
         <Paragraph>
-          <Text keyboard>{msg.content}</Text>
+          <Text keyboard>{message.content}</Text>
         </Paragraph>
       </Typography>
-      ,
     </Modal>
   );
 });
 
-export default MsgDetail;
+export default MessageDetail;

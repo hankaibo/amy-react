@@ -5,12 +5,11 @@ import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
 import withModal from '@/components/HOCModal';
 import { getValue } from '@/utils/utils';
-import MsgDetail from './MsgDetail';
-import MsgForm from './MsgForm';
+import MessageDetail from './MessageDetail';
+import MessageForm from './MessageForm';
 
-const MsgDetailModal = withModal(MsgDetail);
-
-const MsgModal = withModal(MsgForm);
+const MessageDetailModal = withModal(MessageDetail);
+const MessageFormModal = withModal(MessageForm);
 
 const getText = (value) => {
   switch (value) {
@@ -25,25 +24,25 @@ const getText = (value) => {
   }
 };
 
-const Draft = connect(({ user: { currentUser, list, pagination }, loading }) => ({
+const Draft = connect(({ user: { currentUser, messageList, messagePagination }, loading }) => ({
   currentUser,
-  list,
-  pagination,
+  messageList,
+  messagePagination,
   loading: loading.effects['user/fetchMessage'],
 }))(
   ({
     loading,
     currentUser,
-    list,
-    pagination,
+    messageList,
+    messagePagination,
     selectedRowKeys,
     onChange: setSelectedRowKeys,
     dispatch,
   }) => {
     // 列表参数
     const [params, setParams] = useState({
-      current: pagination.current || 1,
-      pageSize: pagination.pageSize || 10,
+      current: messagePagination.current || 1,
+      pageSize: messagePagination.pageSize || 10,
       sendId: currentUser.id,
       isPublish: 0,
       type: null,
@@ -71,7 +70,7 @@ const Draft = connect(({ user: { currentUser, list, pagination }, loading }) => 
         type: 'user/deleteMessage',
         payload: {
           id,
-          from: 'DRAFT',
+          source: 'DRAFT',
         },
         callback: () => {
           setSelectedRowKeys([]);
@@ -131,9 +130,9 @@ const Draft = connect(({ user: { currentUser, list, pagination }, loading }) => 
         dataIndex: 'title',
         render: (text, record) => {
           return (
-            <MsgDetailModal id={record.id} from="INBOX">
+            <MessageDetailModal id={record.id} from="INBOX">
               <a>{text}</a>
-            </MsgDetailModal>
+            </MessageDetailModal>
           );
         },
       },
@@ -153,9 +152,9 @@ const Draft = connect(({ user: { currentUser, list, pagination }, loading }) => 
         render: (text, record) => (
           <>
             <Authorized authority="system:message:update" noMatch={null}>
-              <MsgModal isEdit id={record.id}>
+              <MessageFormModal isEdit id={record.id}>
                 <EditOutlined title="编辑" className="icon" />
-              </MsgModal>
+              </MessageFormModal>
               <Divider type="vertical" />
             </Authorized>
             <Authorized authority="system:message:delete" noMatch={null}>
@@ -184,8 +183,8 @@ const Draft = connect(({ user: { currentUser, list, pagination }, loading }) => 
           bordered
           loading={loading}
           columns={columns}
-          dataSource={list}
-          pagination={pagination}
+          dataSource={messageList}
+          pagination={messagePagination}
           rowSelection={rowSelection}
           onChange={handleTableChange}
         />

@@ -4,8 +4,6 @@ import {
   updateCurrentUserPassword,
   getDepartmentTree,
   listUser,
-} from '@/services/user';
-import {
   addMessage,
   deleteBatchMessage,
   deleteMessage,
@@ -13,7 +11,9 @@ import {
   getMessageById,
   pageMessage,
   updateMessage,
-} from '@/services/notice';
+  updateMessageReadStatus,
+  updateAllMessageReadStatus,
+} from '@/services/user';
 
 const mockTags = [
   {
@@ -72,13 +72,13 @@ const UserModel = {
   state: {
     currentUser: {},
     // 信息列表及分页
-    list: [],
-    pagination: {},
+    messageList: [],
+    messagePagination: {},
     // 编辑
-    msg: {},
+    message: {},
     // 部门树
     departmentTree: [],
-    // 过滤参数
+    // 信息过滤参数
     filter: {},
   },
 
@@ -86,7 +86,9 @@ const UserModel = {
     // 登录用户相关操作
     *fetchCurrentUser({ callback }, { call, put }) {
       const response = yield call(getCurrentUser);
+      // TODO
       response.tags = mockTags;
+      response.unreadCount = 8;
       const { apierror } = response;
       if (apierror) {
         return;
@@ -117,7 +119,7 @@ const UserModel = {
       if (callback) callback();
     },
     // 登录用户的信息相关操作
-    *fetchMessage({ payload, callback }, { call, put, select }) {
+    *fetchMessage({ payload, callback }, { call, put }) {
       yield put({
         type: 'saveFilter',
         payload: {
@@ -133,18 +135,8 @@ const UserModel = {
       yield put({
         type: 'saveMessageList',
         payload: {
-          list: list.map((item) => ({ ...item, status: !!item.status })),
-          pagination: { current, pageSize, total },
-        },
-      });
-      const unreadCount = yield select(
-        (state) => state.global.notices.filter((item) => !item.read).length,
-      );
-      yield put({
-        type: 'changeNotifyCount',
-        payload: {
-          totalCount: total,
-          unreadCount,
+          messageList: list.map((item) => ({ ...item, status: !!item.status })),
+          messagePagination: { current, pageSize, total },
         },
       });
       if (callback) callback();
@@ -172,11 +164,11 @@ const UserModel = {
       if (apierror) {
         return;
       }
-      const msg = { ...response, status: !!response.status };
+      const message = { ...response, status: !!response.status };
       yield put({
         type: 'saveMessage',
         payload: {
-          msg,
+          message,
         },
       });
       if (callback) callback();
@@ -268,6 +260,7 @@ const UserModel = {
       const departmentUserList = [];
       list.forEach((item) => {
         const { id, username } = item;
+        // 添加前缀避免与部门主键id相同
         const user = {
           id,
           key: `u_${id}`,
@@ -289,6 +282,24 @@ const UserModel = {
       });
       if (callback) callback();
     },
+    *changeNoticeReadState({ payload, callback }, { call }) {
+      const { id } = payload;
+      const response = yield call(updateMessageReadStatus, id);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
+      if (callback) callback();
+    },
+    *clearNotices({ payload, callback }, { call }) {
+      const { ids } = payload;
+      const response = yield call(updateAllMessageReadStatus, ids);
+      const { apierror } = response;
+      if (apierror) {
+        return;
+      }
+      if (callback) callback();
+    },
   },
 
   reducers: {
@@ -307,42 +318,32 @@ const UserModel = {
         currentUser,
       };
     },
-    changeNotifyCount(state, { payload }) {
-      return {
-        ...state,
-        currentUser: {
-          ...state.currentUser,
-          notifyCount: payload.totalCount,
-          unreadCount: payload.unreadCount,
-        },
-      };
-    },
     saveMessageList(state, { payload }) {
-      const { list, pagination } = payload;
+      const { messageList, messagePagination } = payload;
       return {
         ...state,
-        list,
-        pagination,
+        messageList,
+        messagePagination,
       };
     },
     clearMessageList(state) {
       return {
         ...state,
-        list: [],
-        pagination: {},
+        messageList: [],
+        messagePagination: {},
       };
     },
     saveMessage(state, { payload }) {
-      const { msg } = payload;
+      const { message } = payload;
       return {
         ...state,
-        msg,
+        message,
       };
     },
     clearMessage(state) {
       return {
         ...state,
-        msg: {},
+        message: {},
       };
     },
     saveDepartmentTree(state, { payload }) {

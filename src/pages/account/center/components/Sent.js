@@ -5,9 +5,9 @@ import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
 import { getValue } from '@/utils/utils';
 import withModal from '@/components/HOCModal';
-import MsgDetail from './MsgDetail';
+import MessageDetail from './MessageDetail';
 
-const MsgDetailModal = withModal(MsgDetail);
+const MessageDetailModal = withModal(MessageDetail);
 
 const getText = (value) => {
   switch (value) {
@@ -22,25 +22,25 @@ const getText = (value) => {
   }
 };
 
-const Sent = connect(({ user: { currentUser, list, pagination }, loading }) => ({
+const Sent = connect(({ user: { currentUser, messageList, messagePagination }, loading }) => ({
   currentUser,
-  list,
-  pagination,
+  messageList,
+  messagePagination,
   loading: loading.effects['user/fetchMessage'],
 }))(
   ({
     loading,
     currentUser,
-    list,
-    pagination,
+    messageList,
+    messagePagination,
     selectedRowKeys,
     onChange: setSelectedRowKeys,
     dispatch,
   }) => {
     // 列表参数
     const [params, setParams] = useState({
-      current: pagination.current || 1,
-      pageSize: pagination.pageSize || 10,
+      current: messagePagination.current || 1,
+      pageSize: messagePagination.pageSize || 10,
       sendId: currentUser.id,
       isPublish: 1,
       type: null,
@@ -68,7 +68,7 @@ const Sent = connect(({ user: { currentUser, list, pagination }, loading }) => (
         type: 'user/deleteMessage',
         payload: {
           id,
-          from: 'SENT',
+          source: 'SENT',
         },
         callback: () => {
           setSelectedRowKeys([]);
@@ -115,9 +115,9 @@ const Sent = connect(({ user: { currentUser, list, pagination }, loading }) => (
         dataIndex: 'title',
         render: (text, record) => {
           return (
-            <MsgDetailModal id={record.id} from="SENT">
+            <MessageDetailModal id={record.id} from="SENT">
               <a>{text}</a>
-            </MsgDetailModal>
+            </MessageDetailModal>
           );
         },
       },
@@ -163,8 +163,8 @@ const Sent = connect(({ user: { currentUser, list, pagination }, loading }) => (
           bordered
           loading={loading}
           columns={columns}
-          dataSource={list}
-          pagination={pagination}
+          dataSource={messageList}
+          pagination={messagePagination}
           rowSelection={rowSelection}
           onChange={handleTableChange}
         />

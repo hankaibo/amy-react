@@ -16,14 +16,21 @@ const NoticeIconView = ({
 
   useEffect(() => {
     dispatch({
-      type: 'global/fetchNotices',
+      type: 'user/fetchMessage',
+      payload: {
+        current: 1,
+        pageSize: 5,
+        receiveId: currentUser.id,
+        isPublish: 1,
+        type: null,
+      },
     });
-  });
+  }, [dispatch]);
 
   const changeReadState = (clickedItem) => {
     const { id } = clickedItem;
     dispatch({
-      type: 'global/changeNoticeReadState',
+      type: 'user/changeNoticeReadState',
       payload: id,
     });
   };
@@ -32,7 +39,7 @@ const NoticeIconView = ({
     message.success(`${formatMessage({ id: 'component.noticeIcon.cleared' })} ${title}`);
 
     dispatch({
-      type: 'global/clearNotices',
+      type: 'user/clearNotices',
       payload: key,
     });
   };
@@ -126,10 +133,10 @@ const NoticeIconView = ({
       />
       <NoticeIcon.Tab
         tabKey="event"
-        title={formatMessage({ id: 'component.globalHeader.event' })}
-        emptyText={formatMessage({ id: 'component.globalHeader.event.empty' })}
         count={unreadMsg.event}
         list={noticeData.event}
+        title={formatMessage({ id: 'component.globalHeader.event' })}
+        emptyText={formatMessage({ id: 'component.globalHeader.event.empty' })}
         showViewMore
       />
     </NoticeIcon>
@@ -138,8 +145,7 @@ const NoticeIconView = ({
 
 export default connect(({ user, global, loading }) => ({
   currentUser: user.currentUser,
+  notices: user.messageList,
   collapsed: global.collapsed,
-  fetchingMoreNotices: loading.effects['global/fetchMoreNotices'],
-  fetchingNotices: loading.effects['global/fetchNotices'],
-  notices: global.notices,
+  fetchingNotices: loading.effects['user/fetchMessage'],
 }))(NoticeIconView);

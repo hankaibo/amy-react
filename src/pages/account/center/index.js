@@ -27,17 +27,16 @@ import Inbox from './components/Inbox';
 import Draft from './components/Draft';
 import Sent from './components/Sent';
 import defaultPic from '../../../assets/default.png';
-import MsgForm from './components/MsgForm';
+import MessageForm from './components/MessageForm';
 import styles from './Center.less';
 
-const MsgModal = withModal(MsgForm);
+const MessageModal = withModal(MessageForm);
 
 const operationTabList = [
   {
     key: 'inbox',
     tab: (
       <span>
-        {' '}
         收件箱 <span style={{ fontSize: 14 }} />
       </span>
     ),
@@ -46,7 +45,6 @@ const operationTabList = [
     key: 'draft',
     tab: (
       <span>
-        {' '}
         草稿箱 <span style={{ fontSize: 14 }} />
       </span>
     ),
@@ -173,11 +171,11 @@ const Center = ({ currentUser = {}, currentUserLoading, dispatch }) => {
         return (
           <>
             <Authorized authority="system:message:add" noMatch={null}>
-              <MsgModal>
+              <MessageModal>
                 <Button type="primary" title="新增">
                   <PlusOutlined />
                 </Button>
-              </MsgModal>
+              </MessageModal>
             </Authorized>
             <Authorized authority="system:message:batchDelete" noMatch={null}>
               <Popconfirm

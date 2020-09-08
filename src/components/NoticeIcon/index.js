@@ -1,10 +1,9 @@
-import { BellOutlined } from '@ant-design/icons';
-import { Badge, Spin, Tabs } from 'antd';
-import useMergeValue from 'use-merge-value';
 import React from 'react';
+import { Badge, Spin, Tabs } from 'antd';
+import { BellOutlined } from '@ant-design/icons';
+import useMergeValue from 'use-merge-value';
 import classNames from 'classnames';
 import NoticeList from './NoticeList';
-
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 

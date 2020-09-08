@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, TreeSelect, Input, Switch, Radio, Button, message } from 'antd';
+import { Modal, Form, TreeSelect, Input, Switch, Radio, Button, message as Message } from 'antd';
 import { connect } from 'umi';
 import { difference, isEmpty } from '@/utils/utils';
 
-const MsgForm = connect(({ user: { departmentTree, msg }, loading }) => ({
+const MessageForm = connect(({ user: { departmentTree, message }, loading }) => ({
   departmentTree,
-  msg,
+  message,
   loading:
     loading.effects['user/fetchMessageById'] ||
     loading.effects['user/addMessage'] ||
     loading.effects['user/updateMessage'],
-}))(({ loading, visible, isEdit, id, departmentTree, msg, closeModal, dispatch }) => {
+}))(({ loading, visible, isEdit, id, departmentTree, message, closeModal, dispatch }) => {
   const [form] = Form.useForm();
   const { resetFields, setFieldsValue } = form;
 
@@ -36,7 +36,7 @@ const MsgForm = connect(({ user: { departmentTree, msg }, loading }) => ({
         type: 'user/fetchMessageById',
         payload: {
           id,
-          from: 'INBOX',
+          source: 'INBOX',
         },
       });
     }
@@ -51,11 +51,11 @@ const MsgForm = connect(({ user: { departmentTree, msg }, loading }) => ({
   useEffect(() => {
     // 👍 将条件判断放置在 effect 中
     if (visible && isEdit) {
-      if (!isEmpty(msg)) {
-        setFieldsValue(msg);
+      if (!isEmpty(message)) {
+        setFieldsValue(message);
       }
     }
-  }, [visible, isEdit, msg, setFieldsValue]);
+  }, [visible, isEdit, message, setFieldsValue]);
 
   //
   const handleLoadData = (node) => {
@@ -77,9 +77,10 @@ const MsgForm = connect(({ user: { departmentTree, msg }, loading }) => ({
   // 【添加与修改】
   const handleAddOrUpdate = (values) => {
     let { receiveIdList } = values;
+    // 分离出前缀，还原数据
     receiveIdList = receiveIdList.map((item) => item.split('_')[1]);
     if (isEdit) {
-      const { receiveIdList: oldReceiveIdList } = msg;
+      const { receiveIdList: oldReceiveIdList } = message;
       const plusReceiveIds = difference(receiveIdList, oldReceiveIdList);
       const minusReceiveIds = difference(oldReceiveIdList, receiveIdList);
       dispatch({
@@ -94,7 +95,7 @@ const MsgForm = connect(({ user: { departmentTree, msg }, loading }) => ({
         callback: () => {
           resetFields();
           closeModal();
-          message.success('修改信息成功。');
+          Message.success('修改信息成功。');
         },
       });
     } else {
@@ -107,7 +108,7 @@ const MsgForm = connect(({ user: { departmentTree, msg }, loading }) => ({
         callback: () => {
           resetFields();
           closeModal();
-          message.success('添加信息成功。');
+          Message.success('添加信息成功。');
         },
       });
     }
@@ -223,4 +224,4 @@ const MsgForm = connect(({ user: { departmentTree, msg }, loading }) => ({
   );
 });
 
-export default MsgForm;
+export default MessageForm;

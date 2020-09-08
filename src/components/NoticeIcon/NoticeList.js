@@ -1,6 +1,5 @@
-import { Avatar, List } from 'antd';
-
 import React from 'react';
+import { Avatar, List } from 'antd';
 import classNames from 'classnames';
 import styles from './NoticeList.less';
 

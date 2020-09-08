@@ -1,7 +1,6 @@
-import { stringify } from 'qs';
-import request from '@/utils/request';
 import Sockjs from 'sockjs-client';
 import Stomp from 'stompjs';
+import request from '@/utils/request';
 
 let client;
 
@@ -153,105 +152,4 @@ export async function readNotices(payload) {
  */
 export async function clearNotices() {
   client.send('destination', {}, 'body');
-}
-
-/**
- * 根据主键删除一条信息。不分已读未读。
- * @param payload
- * @returns {Promise<string>}
- */
-export async function deleteNotices(payload) {
-  const { id = 'test' } = payload;
-  return id;
-}
-
-/**
- * 删除所有信息。不分已读未读。
- * @returns {Promise<void>}
- */
-export async function deleteBatchNotices() {
-  return null;
-}
-
-/**
- * 按条件查询站内信列表数据。
- * @param params
- * @returns {Promise<void>}
- */
-export async function pageMessage(params) {
-  return request(`/messages?${stringify(params)}`);
-}
-
-/**
- * 添加站内信。
- * @param params
- * @returns {Promise<void>}
- */
-export async function addMessage(params) {
-  return request.post('/messages', {
-    data: {
-      ...params,
-    },
-  });
-}
-
-/**
- * 按主键查询一条站内信数据。
- * @param params
- * @returns {Promise<void>}
- */
-export async function getMessageById(params) {
-  const { id, ...rest } = params;
-  return request(`/messages/${id}?${stringify(rest)}`);
-}
-
-/**
- * 更新站内信。
- * @param params
- * @returns {Promise<void>}
- */
-export async function updateMessage(params) {
-  const { id, plusReceiveIds, minusReceiveIds, ...rest } = params;
-  return request.put(`/messages/${id}`, {
-    data: {
-      msg: {
-        id,
-        ...rest,
-      },
-      plusReceiveIds,
-      minusReceiveIds,
-    },
-  });
-}
-
-/**
- * 发布站内信。
- *
- * @param id
- * @returns {Promise<void>}
- */
-export async function publishMessage(id) {
-  return request.patch(`/messages/${id}/publication`);
-}
-
-/**
- * 删除站内信。
- * @param params
- * @returns {Promise<void>}
- */
-export async function deleteMessage(params) {
-  const { id, ...rest } = params;
-  return request.delete(`/messages/${id}?${stringify(rest)}`);
-}
-
-/**
- * 批量删除站内信。
- * @param params
- * @returns {Promise<void>}
- */
-export async function deleteBatchMessage(params) {
-  const { ids, ...rest } = params;
-  return request.delete(`/messages${stringify(rest)}`, {
-    data: [...ids],
-  });
 }
