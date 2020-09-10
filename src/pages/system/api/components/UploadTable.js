@@ -108,20 +108,13 @@ const UploadTable = connect(({ systemApi: { apiList } }) => ({
         >
           确定
         </Button>
-        <Button
-          onClick={() => handleReset(clearFilters, dataIndex)}
-          size="small"
-          style={{ width: 90 }}
-        >
+        <Button onClick={() => handleReset(clearFilters, dataIndex)} size="small" style={{ width: 90 }}>
           重置
         </Button>
       </div>
     ),
-    onFilter: (value, record) =>
-      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-    filterIcon: (filtered) => (
-      <EditOutlined title="编辑" style={{ color: filtered ? '#1890ff' : undefined }} />
-    ),
+    onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    filterIcon: (filtered) => <EditOutlined title="编辑" style={{ color: filtered ? '#1890ff' : undefined }} />,
     onFilterDropdownVisibleChange: (filterVisible) => {
       if (filterVisible) {
         setTimeout(() => inputTextRef.current.select());
@@ -154,14 +147,7 @@ const UploadTable = connect(({ systemApi: { apiList } }) => ({
   ];
 
   return (
-    <Modal
-      width={800}
-      title="上传"
-      destroyOnClose
-      visible={visible}
-      onCancel={closeModal}
-      footer={null}
-    >
+    <Modal width={800} title="上传" destroyOnClose visible={visible} onCancel={closeModal} footer={null}>
       <Card bordered={false} bodyStyle={{ padding: 0 }}>
         <div className="tableList">
           <div className="tableListOperator">
@@ -170,11 +156,7 @@ const UploadTable = connect(({ systemApi: { apiList } }) => ({
                 <UploadOutlined />
               </Button>
             </Upload>
-            <ImportModal
-              ids={selectedRowKeys}
-              className={styles.import}
-              onClean={() => setSelectedRowKeys([])}
-            >
+            <ImportModal ids={selectedRowKeys} className={styles.import} onClean={() => setSelectedRowKeys([])}>
               <Button type="primary" disabled={selectedRowKeys.length <= 0} title="导入">
                 <ImportOutlined />
               </Button>

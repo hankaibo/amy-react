@@ -6,15 +6,13 @@ import { difference, isEmpty } from '@/utils/utils';
 /**
  * 本实现，将选中的子节点与半包含的父节点都提交到后台。
  */
-const RoleResourceForm = connect(
-  ({ systemRole: { treeData, checkedKeys, halfCheckedKeys }, loading }) => ({
-    resTreeData: treeData,
-    resCheckedKeys: checkedKeys,
-    resHalfCheckedKeys: halfCheckedKeys,
-    getLoading: loading.effects['systemRole/fetchResTree'],
-    grantLoading: loading.effects['systemRole/grantRoleResource'],
-  }),
-)(
+const RoleResourceForm = connect(({ systemRole: { treeData, checkedKeys, halfCheckedKeys }, loading }) => ({
+  resTreeData: treeData,
+  resCheckedKeys: checkedKeys,
+  resHalfCheckedKeys: halfCheckedKeys,
+  getLoading: loading.effects['systemRole/fetchResTree'],
+  grantLoading: loading.effects['systemRole/grantRoleResource'],
+}))(
   ({
     getLoading,
     grantLoading,

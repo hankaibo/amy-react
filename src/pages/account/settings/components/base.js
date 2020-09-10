@@ -112,12 +112,7 @@ const BaseView = ({ currentUser, dispatch }) => {
   return (
     <div className={styles.baseView}>
       <div className={styles.left}>
-        <Form
-          layout="vertical"
-          onFinish={handleFinish}
-          initialValues={currentUser}
-          hideRequiredMark
-        >
+        <Form layout="vertical" onFinish={handleFinish} initialValues={currentUser} hideRequiredMark>
           <Form.Item
             name="email"
             label="邮箱"

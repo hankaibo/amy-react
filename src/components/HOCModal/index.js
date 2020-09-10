@@ -22,14 +22,7 @@ const withModal = (WrapperComponent) =>
         <span className={spanClass} onClick={disabled ? null : showModalHandler}>
           {children}
         </span>
-        {visible && (
-          <WrapperComponent
-            visible={visible}
-            closeModal={hideModelHandler}
-            {...restProps}
-            ref={ref}
-          />
-        )}
+        {visible && <WrapperComponent visible={visible} closeModal={hideModelHandler} {...restProps} ref={ref} />}
       </>
     );
   });

@@ -30,12 +30,7 @@ const Photoshop = (props) => {
         </div>
 
         <div className={styles.hue}>
-          <Hue
-            direction="vertical"
-            hsl={hsl}
-            onChange={onChange}
-            render={() => <PhotoshopPointer />}
-          />
+          <Hue direction="vertical" hsl={hsl} onChange={onChange} render={() => <PhotoshopPointer />} />
         </div>
 
         <div className={styles.controls}>

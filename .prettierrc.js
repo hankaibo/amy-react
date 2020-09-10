@@ -1,7 +1,7 @@
 module.exports = {
   singleQuote: true,
   trailingComma: 'all',
-  printWidth: 100,
+  printWidth: 120,
   proseWrap: 'never',
   endOfLine: 'lf',
   overrides: [

@@ -1,25 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Row,
-  Col,
-  Card,
-  Tree,
-  Table,
-  Input,
-  Switch,
-  Button,
-  Popconfirm,
-  Divider,
-  message,
-} from 'antd';
+import { Row, Col, Card, Tree, Table, Input, Switch, Button, Popconfirm, Divider, message } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
-import {
-  PlusOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  UserSwitchOutlined,
-  ReloadOutlined,
-} from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, EditOutlined, UserSwitchOutlined, ReloadOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
@@ -299,12 +281,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
     <PageContainer title={false} content={mainSearch}>
       <Row gutter={8}>
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
-          <Card
-            title="组织"
-            bordered={false}
-            style={{ marginTop: 10 }}
-            bodyStyle={{ padding: '15px' }}
-          >
+          <Card title="组织" bordered={false} style={{ marginTop: 10 }} bodyStyle={{ padding: '15px' }}>
             {isArray(tree) && !isEmpty(tree) && (
               <Tree
                 showLine

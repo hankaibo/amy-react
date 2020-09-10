@@ -6,8 +6,7 @@ import { difference, getParentKey, getPlainNode, isEmpty } from '@/utils/utils';
 const UserRoleForm = connect(({ systemUser: { treeData, checkedKeys }, loading }) => ({
   roleTreeData: treeData,
   roleCheckedKeys: checkedKeys,
-  loading:
-    loading.effects['systemUser/fetchRoleTree'] || loading.effects['systemUser/grantUserRole'],
+  loading: loading.effects['systemUser/fetchRoleTree'] || loading.effects['systemUser/grantUserRole'],
 }))(({ loading, visible, id, roleTreeData, roleCheckedKeys, closeModal, dispatch }) => {
   const [form] = Form.useForm();
   const { setFieldsValue, resetFields } = form;

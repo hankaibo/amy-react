@@ -102,13 +102,7 @@ const GeographicView = ({ loading, value, province, city, onChange, dispatch }) 
 
   return (
     <Spin spinning={loading} wrapperClassName={styles.row}>
-      <Select
-        className={styles.item}
-        value={p}
-        labelInValue
-        showSearch
-        onSelect={selectProvinceItem}
-      >
+      <Select className={styles.item} value={p} labelInValue showSearch onSelect={selectProvinceItem}>
         {getProvinceOption()}
       </Select>
       <Select className={styles.item} value={c} labelInValue showSearch onSelect={selectCityItem}>

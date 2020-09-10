@@ -39,11 +39,7 @@ const ImportForm = connect(({ systemApi: { tree } }) => ({
   return (
     <Modal destroyOnClose title="导入接口" visible={visible} onCancel={closeModal} footer={null}>
       <Form form={form} name="importForm" className="form" onFinish={handleImport}>
-        <Form.Item
-          label="请选择父菜单"
-          name="id"
-          rules={[{ required: true, message: '请选择父菜单！' }]}
-        >
+        <Form.Item label="请选择父菜单" name="id" rules={[{ required: true, message: '请选择父菜单！' }]}>
           <DirectoryTree onSelect={handleCheck} treeData={tree} />
         </Form.Item>
         <Form.Item style={{ textAlign: 'right' }}>

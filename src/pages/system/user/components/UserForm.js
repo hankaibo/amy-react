@@ -165,13 +165,7 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
   };
 
   return (
-    <Modal
-      destroyOnClose
-      title={isEdit ? '修改' : '新增'}
-      visible={visible}
-      onCancel={closeModal}
-      footer={null}
-    >
+    <Modal destroyOnClose title={isEdit ? '修改' : '新增'} visible={visible} onCancel={closeModal} footer={null}>
       <Form
         {...layout}
         form={form}
@@ -218,11 +212,7 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
             <Input.Password />
           </Form.Item>
         )}
-        <Form.Item
-          label="所属部门"
-          name="departmentIdList"
-          rules={[{ required: true, message: '请选择一个部门！' }]}
-        >
+        <Form.Item label="所属部门" name="departmentIdList" rules={[{ required: true, message: '请选择一个部门！' }]}>
           <TreeSelect
             showSearch
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
@@ -252,11 +242,7 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
             >
               <Input />
             </Form.Item>
-            <Form.Item
-              label="邮箱"
-              name="email"
-              rules={[{ type: 'email', message: '请输入正确的邮箱。' }]}
-            >
+            <Form.Item label="邮箱" name="email" rules={[{ type: 'email', message: '请输入正确的邮箱。' }]}>
               <Input type="email" />
             </Form.Item>
             <Form.Item

@@ -1,24 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  Avatar,
-  Card,
-  Col,
-  Divider,
-  Input,
-  Row,
-  Tag,
-  Image,
-  Button,
-  Popconfirm,
-  message,
-} from 'antd';
-import {
-  PlusOutlined,
-  HomeOutlined,
-  ContactsOutlined,
-  ClusterOutlined,
-  DeleteOutlined,
-} from '@ant-design/icons';
+import { Avatar, Card, Col, Divider, Input, Row, Tag, Image, Button, Popconfirm, message } from 'antd';
+import { PlusOutlined, HomeOutlined, ContactsOutlined, ClusterOutlined, DeleteOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-layout';
 import { Link, connect } from 'umi';
 import Authorized from '@/utils/Authorized';
@@ -223,13 +205,7 @@ const Center = ({ currentUser = {}, currentUserLoading, dispatch }) => {
             {!dataLoading && (
               <div>
                 <div className={styles.avatarHolder}>
-                  <Image
-                    alt="用户头像"
-                    width={104}
-                    height={104}
-                    src={currentUser.avatar}
-                    fallback={defaultPic}
-                  />
+                  <Image alt="用户头像" width={104} height={104} src={currentUser.avatar} fallback={defaultPic} />
                   <div className={styles.name}>{currentUser.username}</div>
                   <div>{currentUser.signature}</div>
                 </div>

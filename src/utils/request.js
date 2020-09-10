@@ -31,9 +31,7 @@ const errorHandler = (error) => {
   const { response, data } = error;
   if (response && response.status) {
     const errorText =
-      (data && data.apierror && data.apierror.message) ||
-      codeMessage[response.status] ||
-      response.statusText;
+      (data && data.apierror && data.apierror.message) || codeMessage[response.status] || response.statusText;
     const { status, url } = response;
 
     notification.error({

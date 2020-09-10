@@ -7,9 +7,7 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
   tree,
   api,
   loading:
-    loading.effects['systemApi/fetchById'] ||
-    loading.effects['systemApi/add'] ||
-    loading.effects['systemApi/update'],
+    loading.effects['systemApi/fetchById'] || loading.effects['systemApi/add'] || loading.effects['systemApi/update'],
 }))(({ loading, visible, isEdit, id, api, tree, closeModal, dispatch }) => {
   const [form] = Form.useForm();
   const { resetFields, setFieldsValue } = form;
@@ -155,11 +153,7 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
         <Form.Item label="状态" name="status" rules={[{ required: true }]} valuePropName="checked">
           <Switch checkedChildren="开" unCheckedChildren="关" />
         </Form.Item>
-        <Form.Item
-          label="方法类型"
-          name="method"
-          rules={[{ required: true, message: '请选择方法类型。' }]}
-        >
+        <Form.Item label="方法类型" name="method" rules={[{ required: true, message: '请选择方法类型。' }]}>
           <Radio.Group>
             <Radio value="GET">GET</Radio>
             <Radio value="POST">POST</Radio>

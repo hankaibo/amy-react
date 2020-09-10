@@ -1,25 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Row,
-  Col,
-  Card,
-  Tree,
-  Table,
-  Input,
-  Button,
-  Switch,
-  Popconfirm,
-  Divider,
-  message,
-} from 'antd';
+import { Row, Col, Card, Tree, Table, Input, Button, Switch, Popconfirm, Divider, message } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
-import {
-  ArrowUpOutlined,
-  ArrowDownOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-  EditOutlined,
-} from '@ant-design/icons';
+import { ArrowUpOutlined, ArrowDownOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
 import withModal from '@/components/HOCModal';
@@ -235,17 +217,9 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       align: 'center',
       render: (text, record, index) => (
         <Authorized authority="system:department:move" noMatch={null}>
-          <ArrowUpOutlined
-            className="icon"
-            title="向上"
-            onClick={() => handleMove(record, index - 1)}
-          />
+          <ArrowUpOutlined className="icon" title="向上" onClick={() => handleMove(record, index - 1)} />
           <Divider type="vertical" />
-          <ArrowDownOutlined
-            className="icon"
-            title="向下"
-            onClick={() => handleMove(record, index + 1)}
-          />
+          <ArrowDownOutlined className="icon" title="向下" onClick={() => handleMove(record, index + 1)} />
         </Authorized>
       ),
     },
@@ -286,17 +260,8 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
     <PageContainer title={false}>
       <Row gutter={8}>
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
-          <Card
-            title="组织"
-            bordered={false}
-            style={{ marginTop: 10 }}
-            bodyStyle={{ padding: '15px' }}
-          >
-            <Input.Search
-              style={{ marginBottom: 8 }}
-              placeholder="Search"
-              onChange={handleChange}
-            />
+          <Card title="组织" bordered={false} style={{ marginTop: 10 }} bodyStyle={{ padding: '15px' }}>
+            <Input.Search style={{ marginBottom: 8 }} placeholder="Search" onChange={handleChange} />
             <Tree
               showLine
               autoExpandParent={autoExpandParent}

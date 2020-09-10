@@ -133,13 +133,7 @@ const MessageForm = connect(({ user: { departmentTree, message }, loading }) => 
   };
 
   return (
-    <Modal
-      destroyOnClose
-      title={isEdit ? '修改' : '新增'}
-      visible={visible}
-      onCancel={closeModal}
-      footer={null}
-    >
+    <Modal destroyOnClose title={isEdit ? '修改' : '新增'} visible={visible} onCancel={closeModal} footer={null}>
       <Form
         {...layout}
         form={form}
@@ -203,11 +197,7 @@ const MessageForm = connect(({ user: { departmentTree, message }, loading }) => 
         <Form.Item label="状态" name="status" rules={[{ required: true }]} valuePropName="checked">
           <Switch checkedChildren="开" unCheckedChildren="关" />
         </Form.Item>
-        <Form.Item
-          label="发布"
-          name="isPublish"
-          rules={[{ required: true, message: '请选择类型！' }]}
-        >
+        <Form.Item label="发布" name="isPublish" rules={[{ required: true, message: '请选择类型！' }]}>
           <Radio.Group>
             <Radio value={1}>是</Radio>
             <Radio value={0}>否</Radio>

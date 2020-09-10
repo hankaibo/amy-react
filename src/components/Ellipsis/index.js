@@ -187,15 +187,7 @@ export default class Ellipsis extends Component {
 
   render() {
     const { text, targetCount } = this.state;
-    const {
-      children,
-      lines,
-      length,
-      className,
-      tooltip,
-      fullWidthRecognition,
-      ...restProps
-    } = this.props;
+    const { children, lines, length, className, tooltip, fullWidthRecognition, ...restProps } = this.props;
 
     const cls = classNames(styles.ellipsis, className, {
       [styles.lines]: lines && !isSupportLineClamp,

@@ -41,35 +41,15 @@ const PhotoshopFields = ({ onChange, rgb, hsv, hex }) => {
 
   return (
     <div className={styles.fields}>
-      <EditableInput
-        className={styles.wrap}
-        label="h"
-        value={Math.round(hsv.h)}
-        onChange={handleChange}
-      />
-      <EditableInput
-        className={styles.wrap}
-        label="s"
-        value={Math.round(hsv.s * 100)}
-        onChange={handleChange}
-      />
-      <EditableInput
-        className={styles.wrap}
-        label="v"
-        value={Math.round(hsv.v * 100)}
-        onChange={handleChange}
-      />
+      <EditableInput className={styles.wrap} label="h" value={Math.round(hsv.h)} onChange={handleChange} />
+      <EditableInput className={styles.wrap} label="s" value={Math.round(hsv.s * 100)} onChange={handleChange} />
+      <EditableInput className={styles.wrap} label="v" value={Math.round(hsv.v * 100)} onChange={handleChange} />
       <div className={styles.divider} />
       <EditableInput className={styles.wrap} label="r" value={rgb.r} onChange={handleChange} />
       <EditableInput className={styles.wrap} label="g" value={rgb.g} onChange={handleChange} />
       <EditableInput className={styles.wrap} label="b" value={rgb.b} onChange={handleChange} />
       <div className={styles.divider} />
-      <EditableInput
-        className={styles.wrapHex}
-        label="#"
-        value={hex.replace('#', '')}
-        onChange={handleChange}
-      />
+      <EditableInput className={styles.wrapHex} label="#" value={hex.replace('#', '')} onChange={handleChange} />
       <div className={styles.fieldSymbols}>
         <div className={styles.symbol}>°</div>
         <div className={styles.symbol}>%</div>

@@ -6,15 +6,7 @@ import useMergeValue from 'use-merge-value';
 import styles from './index.less';
 
 const HeaderSearch = (props) => {
-  const {
-    className,
-    defaultValue,
-    onVisibleChange,
-    placeholder,
-    open,
-    defaultOpen,
-    ...restProps
-  } = props;
+  const { className, defaultValue, onVisibleChange, placeholder, open, defaultOpen, ...restProps } = props;
 
   const inputRef = useRef(null);
 

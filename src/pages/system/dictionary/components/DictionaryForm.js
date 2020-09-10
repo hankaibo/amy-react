@@ -98,13 +98,7 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
   };
 
   return (
-    <Modal
-      destroyOnClose
-      title={isEdit ? '修改' : '新增'}
-      visible={visible}
-      onCancel={closeModal}
-      footer={null}
-    >
+    <Modal destroyOnClose title={isEdit ? '修改' : '新增'} visible={visible} onCancel={closeModal} footer={null}>
       <Form
         {...layout}
         form={form}

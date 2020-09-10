@@ -89,8 +89,7 @@ export const difference = (a, b) => {
 
 // 仿lodash
 export const isArray = (obj) => Array.isArray(obj);
-export const isEmpty = (obj) =>
-  [Object, Array].includes((obj || {}).constructor) && !Object.entries(obj || {}).length;
+export const isEmpty = (obj) => [Object, Array].includes((obj || {}).constructor) && !Object.entries(obj || {}).length;
 
 // localstorage 简单封装
 export const getItem = (key, defaultValue) => {

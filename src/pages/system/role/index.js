@@ -166,11 +166,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       title: '排序',
       render: (text, record, index) => (
         <Authorized authority="system:role:move" noMatch="--">
-          <ArrowUpOutlined
-            className="icon"
-            title="向上"
-            onClick={() => handleMove(record, index - 1)}
-          />
+          <ArrowUpOutlined className="icon" title="向上" onClick={() => handleMove(record, index - 1)} />
           <Divider type="vertical" />
           <ArrowDownOutlined
             className="icon"
@@ -223,12 +219,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
     <PageContainer title={false}>
       <Row gutter={8}>
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
-          <Card
-            title="角色树"
-            bordered={false}
-            style={{ marginTop: 10 }}
-            bodyStyle={{ padding: '15px' }}
-          >
+          <Card title="角色树" bordered={false} style={{ marginTop: 10 }} bodyStyle={{ padding: '15px' }}>
             {isArray(tree) && !isEmpty(tree) && (
               <Tree
                 showLine

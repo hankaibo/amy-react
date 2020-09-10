@@ -38,9 +38,7 @@ const Login = (props) => {
           handleSubmit(values);
         }}
       >
-        {status === 'error' && !submitting && (
-          <LoginMessage content="账户或密码错误（admin/123456）" />
-        )}
+        {status === 'error' && !submitting && <LoginMessage content="账户或密码错误（admin/123456）" />}
         <FormItem
           name="username"
           rules={[
@@ -78,13 +76,7 @@ const Login = (props) => {
           <a style={{ float: 'right' }}> 忘记密码 </a>
         </div>
         <FormItem>
-          <Button
-            className={styles.submit}
-            size="large"
-            type="primary"
-            htmlType="submit"
-            loading={submitting}
-          >
+          <Button className={styles.submit} size="large" type="primary" htmlType="submit" loading={submitting}>
             登录
           </Button>
         </FormItem>

@@ -189,11 +189,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
       width: 90,
       render: (text, record, index) => (
         <Authorized authority="system:api:move" noMatch={null}>
-          <ArrowUpOutlined
-            className="icon"
-            title="向上"
-            onClick={() => handleMove(record, index - 1)}
-          />
+          <ArrowUpOutlined className="icon" title="向上" onClick={() => handleMove(record, index - 1)} />
           <Divider type="vertical" />
           <ArrowDownOutlined
             className="icon"
@@ -235,12 +231,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
     <PageContainer title={false}>
       <Row gutter={8}>
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
-          <Card
-            title="菜单树"
-            bordered={false}
-            style={{ marginTop: 10 }}
-            bodyStyle={{ padding: '15px' }}
-          >
+          <Card title="菜单树" bordered={false} style={{ marginTop: 10 }} bodyStyle={{ padding: '15px' }}>
             {isArray(tree) && tree.length > 0 && (
               <DirectoryTree
                 expandAction="doubleClick"

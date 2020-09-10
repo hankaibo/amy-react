@@ -91,13 +91,7 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
   };
 
   return (
-    <Modal
-      destroyOnClose
-      title={isEdit ? '修改' : '新增'}
-      visible={visible}
-      onCancel={closeModal}
-      footer={null}
-    >
+    <Modal destroyOnClose title={isEdit ? '修改' : '新增'} visible={visible} onCancel={closeModal} footer={null}>
       <Form
         {...layout}
         form={form}
@@ -123,11 +117,7 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
         >
           <Input />
         </Form.Item>
-        <Form.Item
-          label="父角色"
-          name="parentId"
-          rules={[{ required: false, message: '请选择一个父角色！' }]}
-        >
+        <Form.Item label="父角色" name="parentId" rules={[{ required: false, message: '请选择一个父角色！' }]}>
           <TreeSelect
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
             treeData={tree}
@@ -152,11 +142,7 @@ const RoleForm = connect(({ systemRole: { tree, role }, loading }) => ({
         <Form.Item label="状态" name="status" rules={[{ required: true }]} valuePropName="checked">
           <Switch checkedChildren="开" unCheckedChildren="关" />
         </Form.Item>
-        <Form.Item
-          label="描述"
-          name="description"
-          rules={[{ message: '描述长度最大至255字符！', min: 1, max: 255 }]}
-        >
+        <Form.Item label="描述" name="description" rules={[{ message: '描述长度最大至255字符！', min: 1, max: 255 }]}>
           <Input.TextArea placeholder="请输入角色描述。" autoSize={{ minRows: 3, maxRows: 6 }} />
         </Form.Item>
         <Form.Item {...tailLayout}>

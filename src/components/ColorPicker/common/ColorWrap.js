@@ -46,9 +46,7 @@ const ColorWrap = (Picker) => {
         optionalEvents.onSwatchHover = this.handleSwatchHover;
       }
 
-      return (
-        <Picker {...this.props} {...this.state} onChange={this.handleChange} {...optionalEvents} />
-      );
+      return <Picker {...this.props} {...this.state} onChange={this.handleChange} {...optionalEvents} />;
     }
   }
 

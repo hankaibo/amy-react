@@ -1,12 +1,4 @@
-import {
-  pageDict,
-  addDict,
-  getDictById,
-  updateDict,
-  enableDict,
-  deleteDict,
-  deleteBatchDict,
-} from './service';
+import { pageDict, addDict, getDictById, updateDict, enableDict, deleteDict, deleteBatchDict } from './service';
 
 export default {
   namespace: 'systemDictionary',
