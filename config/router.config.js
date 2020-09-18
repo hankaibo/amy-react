@@ -23,7 +23,7 @@ export default [
           {
             path: '/home',
             name: 'home',
-            icon: 'HomeOutlined',
+            icon: 'home',
             component: './home',
           },
           // account
@@ -50,47 +50,47 @@ export default [
           {
             path: '/system',
             name: 'system',
-            icon: 'SettingOutlined',
+            icon: 'setting',
             routes: [
               {
                 path: '/system/departments',
                 name: 'department',
-                icon: 'ApartmentOutlined',
+                icon: 'apartment',
                 component: './system/department',
                 authority: ['system:department'],
               },
               {
                 path: '/system/users',
                 name: 'user',
-                icon: 'TeamOutlined',
+                icon: 'Team',
                 component: './system/user',
                 authority: ['system:user'],
               },
               {
                 path: '/system/roles',
                 name: 'role',
-                icon: 'UsergroupAddOutlined',
+                icon: 'usergroupadd',
                 component: './system/role',
                 authority: ['system:role'],
               },
               {
                 path: '/system/menus',
                 name: 'menu',
-                icon: 'MenuOutlined',
+                icon: 'menu',
                 component: './system/menu',
                 authority: ['system:menu'],
               },
               {
                 path: '/system/apis',
                 name: 'api',
-                icon: 'ApiOutlined',
+                icon: 'api',
                 component: './system/api',
                 authority: ['system:api'],
               },
               {
                 path: '/system/dictionaries',
                 name: 'dictionary',
-                icon: 'BookOutlined',
+                icon: 'book',
                 authority: ['system:dictionary'],
                 routes: [
                   {
