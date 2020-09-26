@@ -1,3 +1,5 @@
+import { disconnect } from '../services/message';
+
 const GlobalModel = {
   namespace: 'global',
 
@@ -16,7 +18,15 @@ const GlobalModel = {
     },
   },
 
-  subscriptions: {},
+  subscriptions: {
+    destroy({ history }) {
+      return history.listen(({ pathname }) => {
+        if (pathname === '/user/login') {
+          disconnect();
+        }
+      });
+    },
+  },
 };
 
 export default GlobalModel;

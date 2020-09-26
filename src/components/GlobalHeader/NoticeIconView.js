@@ -5,13 +5,7 @@ import moment from 'moment';
 import NoticeIcon from '../NoticeIcon';
 import styles from './index.less';
 
-const NoticeIconView = ({
-  notices = [],
-  currentUser,
-  fetchingNotices,
-  onNoticeVisibleChange,
-  dispatch,
-}) => {
+const NoticeIconView = ({ notices = [], currentUser, fetchingNotices, onNoticeVisibleChange, dispatch }) => {
   const { formatMessage } = useIntl();
 
   useEffect(() => {
@@ -52,8 +46,8 @@ const NoticeIconView = ({
     const newNotices = notices.map((notice) => {
       const newNotice = { ...notice };
 
-      if (newNotice.datetime) {
-        newNotice.datetime = moment(notice.datetime).fromNow();
+      if (newNotice.createTime) {
+        newNotice.createTime = moment(notice.createTime).fromNow();
       }
 
       if (newNotice.id) {
@@ -118,7 +112,7 @@ const NoticeIconView = ({
       <NoticeIcon.Tab
         tabKey="notification"
         count={unreadMsg.notification}
-        list={noticeData.notification}
+        list={noticeData[1]}
         title={formatMessage({ id: 'component.globalHeader.notification' })}
         emptyText={formatMessage({ id: 'component.globalHeader.notification.empty' })}
         showViewMore
@@ -126,7 +120,7 @@ const NoticeIconView = ({
       <NoticeIcon.Tab
         tabKey="message"
         count={unreadMsg.message}
-        list={noticeData.message}
+        list={noticeData[2]}
         title={formatMessage({ id: 'component.globalHeader.message' })}
         emptyText={formatMessage({ id: 'component.globalHeader.message.empty' })}
         showViewMore
@@ -134,7 +128,7 @@ const NoticeIconView = ({
       <NoticeIcon.Tab
         tabKey="event"
         count={unreadMsg.event}
-        list={noticeData.event}
+        list={noticeData[3]}
         title={formatMessage({ id: 'component.globalHeader.event' })}
         emptyText={formatMessage({ id: 'component.globalHeader.event.empty' })}
         showViewMore

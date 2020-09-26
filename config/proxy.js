@@ -12,11 +12,21 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
+    '/ws/': {
+      target: 'http://localhost:8080/',
+      ws: true,
+      pathRewrite: { '^': '' },
+    },
   },
   pre: {
     '/api/': {
       target: 'http://58.87.121.239:9001/',
       changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/ws/': {
+      target: 'http://58.87.121.239:9001/',
+      ws: true,
       pathRewrite: { '^': '' },
     },
   },

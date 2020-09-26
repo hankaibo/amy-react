@@ -1,10 +1,10 @@
 import { history } from 'umi';
 import { stringify } from 'qs';
 import { login, logout } from '@/services/login';
-
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
 import { setAuthority } from '@/utils/authority';
+import { connect } from '../services/message';
 
 const Model = {
   namespace: 'login',
@@ -32,6 +32,8 @@ const Model = {
       const { token, resources } = response;
       localStorage.setItem('jwt', token);
       reloadAuthorized(resources);
+      // 初始化websocket
+      connect();
       const urlParams = new URL(window.location.href);
       const params = getPageQuery();
       let { redirect } = params;
