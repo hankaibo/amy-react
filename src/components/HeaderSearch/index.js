@@ -2,20 +2,16 @@ import React, { useState, useRef } from 'react';
 import { AutoComplete, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
-import useMergeValue from 'use-merge-value';
 import styles from './index.less';
 
 const HeaderSearch = (props) => {
-  const { className, defaultValue, onVisibleChange, placeholder, open, defaultOpen, ...restProps } = props;
+  const { className, defaultValue, placeholder, ...restProps } = props;
 
   const inputRef = useRef(null);
 
   const [value, setValue] = useState(defaultValue);
 
-  const [searchMode, setSearchMode] = useMergeValue(defaultOpen || false, {
-    value: props.open,
-    onChange: onVisibleChange,
-  });
+  const [searchMode, setSearchMode] = useState(false);
 
   const inputClass = classNames(styles.input, {
     [styles.show]: searchMode,
@@ -28,13 +24,6 @@ const HeaderSearch = (props) => {
         setSearchMode(true);
         if (searchMode && inputRef.current) {
           inputRef.current.focus();
-        }
-      }}
-      onTransitionEnd={({ propertyName }) => {
-        if (propertyName === 'width' && !searchMode) {
-          if (onVisibleChange) {
-            onVisibleChange(searchMode);
-          }
         }
       }}
     >

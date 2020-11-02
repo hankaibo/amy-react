@@ -5,7 +5,7 @@ import moment from 'moment';
 import NoticeIcon from '../NoticeIcon';
 import styles from './index.less';
 
-const NoticeIconView = ({ notices = [], currentUser, fetchingNotices, onNoticeVisibleChange, dispatch }) => {
+const NoticeIconView = ({ notices = [], currentUser, fetchingNotices, dispatch }) => {
   const { formatMessage } = useIntl();
 
   useEffect(() => {
@@ -105,7 +105,6 @@ const NoticeIconView = ({ notices = [], currentUser, fetchingNotices, onNoticeVi
       clearText={formatMessage({ id: 'component.noticeIcon.clear' })}
       viewMoreText={formatMessage({ id: 'component.noticeIcon.view-more' })}
       onClear={handleNoticeClear}
-      onPopupVisibleChange={onNoticeVisibleChange}
       onViewMore={() => message.info('Click on view more')}
       clearClose
     >

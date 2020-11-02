@@ -1,3 +1,8 @@
 /config
+.history
+public
+dist
+.umi
+mock
 /src/components/ColorPicker/common/EditableInput.js
 /src/components/ColorPicker/common/ColorWrap.js

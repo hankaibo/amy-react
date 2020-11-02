@@ -51,7 +51,6 @@
     "lodash.throttle": "^4.1.1",
     "moment": "^2.29.1",
     "path-to-regexp": "^6.2.0",
-    "prop-types": "^15.7.2",
     "qs": "^6.9.4",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
@@ -60,8 +59,7 @@
     "stompjs": "^2.3.3",
     "tinycolor2": "^1.4.2",
     "umi": "^3.2.23",
-    "umi-request": "^1.3.5",
-    "use-merge-value": "^1.0.2"
+    "umi-request": "^1.3.5"
   },
   "devDependencies": {
     "@umijs/preset-ant-design-pro": "^1.3.0",

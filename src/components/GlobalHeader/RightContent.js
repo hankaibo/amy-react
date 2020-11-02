@@ -32,7 +32,10 @@ const GlobalHeaderRight = (props) => {
         })}
         defaultValue="umi ui"
         options={[
-          { label: <a href="https://umijs.org/zh/guide/umi-ui.html">umi ui</a>, value: 'umi ui' },
+          {
+            label: <a href="https://umijs.org/zh/guide/umi-ui.html">umi ui</a>,
+            value: 'umi ui',
+          },
           {
             label: <a href="https://ant.design/">Ant Design</a>,
             value: 'Ant Design',
@@ -42,7 +45,6 @@ const GlobalHeaderRight = (props) => {
             value: 'Pro Layout',
           },
         ]}
-        // onSearch={() => {}}
       />
       <Tooltip
         title={formatMessage({

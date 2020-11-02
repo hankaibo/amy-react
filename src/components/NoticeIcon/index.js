@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Badge, Spin, Tabs } from 'antd';
 import { BellOutlined } from '@ant-design/icons';
-import useMergeValue from 'use-merge-value';
 import classNames from 'classnames';
 import NoticeList from './NoticeList';
 import HeaderDropdown from '../HeaderDropdown';
@@ -52,10 +51,7 @@ const NoticeIcon = (props) => {
 
   const { className, count, bell } = props;
 
-  const [visible, setVisible] = useMergeValue(false, {
-    value: props.popupVisible,
-    onChange: props.onPopupVisibleChange,
-  });
+  const [visible, setVisible] = useState(false);
   const noticeButtonClass = classNames(className, styles.noticeButton);
   const notificationBox = getNotificationBox();
   const NoticeBellIcon = bell || <BellOutlined className={styles.icon} />;

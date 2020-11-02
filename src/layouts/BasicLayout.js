@@ -84,6 +84,8 @@ const BasicLayout = (props) => {
       <ProLayout
         logo={logo}
         formatMessage={formatMessage}
+        {...props}
+        {...settings}
         onCollapse={handleMenuCollapse}
         onMenuHeaderClick={() => history.push('/')}
         menuItemRender={(menuItemProps, defaultDom) => {
@@ -109,8 +111,6 @@ const BasicLayout = (props) => {
         footerRender={() => <DefaultFooter links={[]} copyright={<span>copyright</span>} />}
         menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
-        {...props}
-        {...settings}
       >
         <Authorized authority={authorized.authority} noMatch={noMatch}>
           {children}
