@@ -1,8 +1,8 @@
 // https://umijs.org/config/
 import { defineConfig, utils } from 'umi';
 import defaultSettings from './defaultSettings';
-import pageRoutes from './router.config';
 import proxy from './proxy';
+import routes from './routes';
 import webpackPlugin from './plugin.config';
 
 const { winPath } = utils;
@@ -13,6 +13,9 @@ export default defineConfig({
   antd: {},
   dva: {
     hmr: true,
+  },
+  history: {
+    type: 'browser',
   },
   locale: {
     // default zh-CN
@@ -28,7 +31,7 @@ export default defineConfig({
     ie: 11,
   },
   // umi routes: https://umijs.org/docs/routing
-  routes: pageRoutes,
+  routes,
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
     // ...darkTheme,
