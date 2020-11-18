@@ -39,7 +39,7 @@ const UploadTable = connect(({ systemApi: { apiList } }) => ({
         type: 'systemApi/clearFile',
       });
     };
-  }, [column]);
+  }, [column, dispatch]);
 
   // 【上传】
   const props = {

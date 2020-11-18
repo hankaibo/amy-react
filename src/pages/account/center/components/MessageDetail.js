@@ -23,7 +23,7 @@ const MessageDetail = connect(({ user: { message } }) => ({
         type: 'user/clearMessage',
       });
     };
-  }, [visible, id, dispatch]);
+  }, [visible, id, from, dispatch]);
 
   return (
     <Modal destroyOnClose title="详情" visible={visible} onCancel={closeModal} footer={null}>

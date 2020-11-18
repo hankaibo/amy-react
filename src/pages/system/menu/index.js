@@ -52,7 +52,7 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
       setCurrentMenu({ ...tree[0] });
       setFirst(false);
     }
-  }, [first, tree]);
+  }, [first, tree, params]);
 
   // 【查询菜单列表】
   useEffect(() => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect, connect, history } from 'umi';
-import { stringify } from 'querystring';
+import { stringify } from 'qs';
 import { PageLoading } from '@ant-design/pro-layout';
 import { getItem } from '@/utils/utils';
 
@@ -20,7 +20,7 @@ const SecurityLayout = connect(({ user: { currentUser }, loading }) => ({
     } else {
       history.push('/user/login');
     }
-  }, []);
+  }, [dispatch]);
 
   // You can replace it to your authentication rule (such as check token exists)
   // 你可以把它替换成你自己的登录认证规则（比如判断 token 是否存在）

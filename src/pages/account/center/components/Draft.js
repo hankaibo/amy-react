@@ -61,7 +61,7 @@ const Draft = connect(({ user: { currentUser, messageList, messagePagination }, 
           type: 'user/clearMessageList',
         });
       };
-    }, [params]);
+    }, [params, dispatch]);
 
     // 【删除信息】
     const handleDelete = (record) => {

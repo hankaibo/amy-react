@@ -50,7 +50,7 @@ const Settings = ({ currentUser, dispatch }) => {
     return () => {
       window.removeEventListener('resize', resize);
     };
-  }, []);
+  }, [dispatch]);
 
   const getMenu = () => {
     return Object.keys(menuMap).map((item) => <Item key={item}>{menuMap[item]}</Item>);

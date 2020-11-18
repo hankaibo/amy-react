@@ -55,7 +55,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       // 只有首次加载后设置如上状态。
       setFirst(false);
     }
-  }, [first, tree]);
+  }, [first, tree, params]);
 
   // 【查询部门列表】
   useEffect(() => {

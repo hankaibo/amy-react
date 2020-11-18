@@ -64,7 +64,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       setCurrentDepartment({ ...tree[0] });
       setFirst(false);
     }
-  }, [first, tree]);
+  }, [first, tree, params]);
 
   // 【查询用户列表】
   useEffect(() => {

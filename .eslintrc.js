@@ -72,6 +72,7 @@ module.exports = {
     'import/no-cycle': 0,
     'react/no-array-index-key': 'warn',
     'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
+    'react-hooks/exhaustive-deps': 'warn',
     'react/require-default-props': 0,
     'react/jsx-fragments': 0,
     // Conflict with prettier

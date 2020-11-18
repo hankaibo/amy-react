@@ -51,7 +51,7 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       setCurrentRole({ ...tree[0] });
       setFirst(false);
     }
-  }, [first, tree]);
+  }, [first, tree, params]);
 
   // 【查询角色列表】
   useEffect(() => {

@@ -108,7 +108,7 @@ const Center = ({ currentUser = {}, currentUserLoading, dispatch }) => {
     dispatch({
       type: 'user/fetchCurrentUser',
     });
-  }, []);
+  }, [dispatch]);
 
   // 【切换标签】
   const onTabChange = (key) => {

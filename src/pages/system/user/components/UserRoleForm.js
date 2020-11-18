@@ -50,7 +50,7 @@ const UserRoleForm = connect(({ systemUser: { treeData, checkedKeys }, loading }
       // 同步到表单
       setFieldsValue({ ids: roleCheckedKeys });
     }
-  }, [roleCheckedKeys, setFieldsValue]);
+  }, [roleCheckedKeys, setFieldsValue, roleTreeData]);
 
   // 【树操作】
   const onExpand = (values) => {
