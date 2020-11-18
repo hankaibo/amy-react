@@ -38,7 +38,7 @@ const Login = (props) => {
           handleSubmit(values);
         }}
       >
-        {status === 'error' && !submitting && <LoginMessage content="账户或密码错误（admin/123456）" />}
+        {status === 'error' && !submitting && <LoginMessage content="账户或密码错误（user/123456）" />}
         <FormItem
           name="username"
           rules={[

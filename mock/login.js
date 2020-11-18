@@ -23,9 +23,12 @@ export default {
       });
       return;
     }
-    res.send({
-      status: 'error',
-      data: {},
+    // 为了保证错误请求也可以被登录页面单独处理，这里状态码要设为200.
+    res.status(200).send({
+      apierror: {
+        status: 'error',
+        message: '用户名密码错误。',
+      },
     });
   },
   'POst /api/v1/logout': (req, res) => {

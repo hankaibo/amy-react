@@ -2,9 +2,8 @@ import { history } from 'umi';
 import { stringify } from 'qs';
 import { login, logout } from '@/services/login';
 import { getPageQuery } from '@/utils/utils';
-import { reloadAuthorized } from '@/utils/Authorized';
 import { setAuthority } from '@/utils/authority';
-import { connect } from '../services/message';
+import { connect } from '@/services/message';
 
 const Model = {
   namespace: 'login',
@@ -16,10 +15,6 @@ const Model = {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(login, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      });
       // Login successfully
       // 判断请求成功的方法有很多，请结合后台接口判断。
       // 比如，后台数据统一封装成{code:200, message:'OK', data:Object|Array }，那你的判断就是response.code===200;
@@ -27,11 +22,23 @@ const Model = {
       // 在这里，我的接口，请求成功时直接返回一堆数据；请求失败时统一封装错误信息返回。
       const { apierror } = response;
       if (apierror) {
+        const { status } = apierror;
+        yield put({
+          type: 'changeLoginStatus',
+          payload: {
+            status,
+          },
+        });
         return;
       }
       const { token, resources } = response;
+      yield put({
+        type: 'changeLoginStatus',
+        payload: {
+          resources,
+        },
+      });
       localStorage.setItem('jwt', token);
-      reloadAuthorized(resources);
       // 初始化websocket
       connect();
       const urlParams = new URL(window.location.href);
@@ -52,10 +59,15 @@ const Model = {
       history.replace(redirect || '/');
     },
 
-    *logout(_, { call }) {
+    *logout(_, { call, put }) {
       yield call(logout);
-      reloadAuthorized();
       localStorage.clear();
+      yield put({
+        type: 'changeLoginStatus',
+        payload: {
+          status: '',
+        },
+      });
       const { redirect } = getPageQuery();
       // redirect
       if (window.location.pathname !== '/user/login' && !redirect) {
@@ -71,10 +83,11 @@ const Model = {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.resources || []);
+      const { status = 'ok', resources = [] } = payload;
+      setAuthority(resources);
       return {
         ...state,
-        status: payload.status,
+        status,
       };
     },
   },
