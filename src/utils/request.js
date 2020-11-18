@@ -27,11 +27,17 @@ const codeMessage = {
  * 异常处理程序
  */
 const errorHandler = (error) => {
-  // data为后台接口包含的错误信息。
+  let apierror = {};
+  // data为后台接口包含的错误信息。如果后台返回的数据格式不符合要求将自己格式化一下。
   const { response, data } = error;
   if (response && response.status) {
-    const errorText =
-      (data && data.apierror && data.apierror.message) || codeMessage[response.status] || response.statusText;
+    if (Object.prototype.toString.call(data) === '[object Object]') {
+      apierror = data;
+    }
+    if (!apierror.message) {
+      apierror.message = codeMessage[response.status] || response.statusText;
+    }
+    const errorText = apierror.message;
     const { status, url } = response;
 
     notification.error({
@@ -46,10 +52,11 @@ const errorHandler = (error) => {
   }
   // 方式一，直接抛出异常信息，中断请求流程；
   // 优点是简单，models里不需要再处理错误逻辑了；缺点是太糙，对每个请求不能进行精细化处理。
+  // 这样的话，登录页面的单独错误信息将不再生效。为了使用登录页面生效，后台请求状态码应该为200。
   // throw error;
   // 方式二，返回整个错误信息或者回后台接口自定义错误信息，我使用了后者；
   // 优缺点与方式一相反。
-  return data;
+  return apierror;
 };
 
 /**
