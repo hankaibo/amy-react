@@ -18,7 +18,9 @@ export function connect(action) {
       client.subscribe(
         '/topic/message',
         (data) => {
-          action(data);
+          if (action) {
+            action(data);
+          }
         },
         { ack: 'client' },
       );
