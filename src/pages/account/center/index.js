@@ -200,7 +200,7 @@ const Center = ({ currentUser = {}, currentUserLoading, dispatch }) => {
   return (
     <GridContent>
       <Row gutter={24}>
-        <Col lg={7} md={24}>
+        <Col lg={7} md={24} sm={24} xs={24}>
           <Card bordered={false} style={{ marginBottom: 24 }} loading={dataLoading}>
             {!dataLoading && (
               <div>
@@ -231,7 +231,7 @@ const Center = ({ currentUser = {}, currentUserLoading, dispatch }) => {
             )}
           </Card>
         </Col>
-        <Col lg={17} md={24}>
+        <Col lg={17} md={24} sm={24} xs={24}>
           <Card
             className={styles.tabsCard}
             bordered={false}
