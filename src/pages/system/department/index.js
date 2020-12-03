@@ -4,12 +4,10 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { ArrowUpOutlined, ArrowDownOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
-import withModal from '@/components/HOCModal';
+import RenderPropsModal from '@/components/RenderModal';
 import NoMatch from '@/components/Authorized/NoMatch';
 import { getPlainNode, getParentKey, getValue, isArray, isEmpty } from '@/utils/utils';
 import DepartmentForm from './components/DepartmentForm';
-
-const DepartmentModal = withModal(DepartmentForm);
 
 const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   tree,
@@ -236,9 +234,16 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       render: (text, record) => (
         <>
           <Authorized authority="system:department:update" noMatch={null}>
-            <DepartmentModal isEdit id={record.id}>
-              <EditOutlined title="编辑" className="icon" />
-            </DepartmentModal>
+            <RenderPropsModal>
+              {({ showModalHandler, hideModelHandler, Modal }) => (
+                <>
+                  <EditOutlined title="编辑" className="icon" onClick={showModalHandler} />
+                  <Modal title="编辑">
+                    <DepartmentForm isEdit id={record.id} closeModal={hideModelHandler} />
+                  </Modal>
+                </>
+              )}
+            </RenderPropsModal>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:department:delete" noMatch={null}>
@@ -283,11 +288,21 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
             <div className="tableList">
               <div className="tableListOperator">
                 <Authorized authority="system:department:add" noMatch={null}>
-                  <DepartmentModal id={currentDepartment && currentDepartment.id}>
-                    <Button type="primary" title="新增">
-                      <PlusOutlined />
-                    </Button>
-                  </DepartmentModal>
+                  <RenderPropsModal>
+                    {({ showModalHandler, hideModelHandler, Modal }) => (
+                      <>
+                        <Button type="primary" title="新增" onClick={showModalHandler}>
+                          <PlusOutlined />
+                        </Button>
+                        <Modal title="新增">
+                          <DepartmentForm
+                            id={currentDepartment && currentDepartment.id}
+                            closeModal={hideModelHandler}
+                          />
+                        </Modal>
+                      </>
+                    )}
+                  </RenderPropsModal>
                 </Authorized>
               </div>
               <Table

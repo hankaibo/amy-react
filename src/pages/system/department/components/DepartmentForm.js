@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Input, Switch, TreeSelect, Button, message } from 'antd';
+import { Form, Input, Switch, TreeSelect, Button, message } from 'antd';
 import { connect } from 'umi';
 import { isEmpty } from '@/utils/utils';
 
@@ -93,54 +93,52 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
   };
 
   return (
-    <Modal destroyOnClose title={isEdit ? '修改' : '新增'} visible={visible} onCancel={closeModal} footer={null}>
-      <Form
-        {...layout}
-        form={form}
-        name="departmentForm"
-        className="form"
-        initialValues={{
-          parentId: id && id.toString(),
-          status: true,
-        }}
-        onFinish={handleAddOrUpdate}
+    <Form
+      {...layout}
+      form={form}
+      name="departmentForm"
+      className="form"
+      initialValues={{
+        parentId: id && id.toString(),
+        status: true,
+      }}
+      onFinish={handleAddOrUpdate}
+    >
+      <Form.Item
+        label="名称"
+        name="name"
+        rules={[
+          {
+            required: true,
+            message: '请将名称长度保持在1至255字符之间！',
+            min: 1,
+            max: 255,
+          },
+        ]}
       >
-        <Form.Item
-          label="名称"
-          name="name"
-          rules={[
-            {
-              required: true,
-              message: '请将名称长度保持在1至255字符之间！',
-              min: 1,
-              max: 255,
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item label="父部门" name="parentId" rules={[{ required: true, message: '请选择一个父部门！' }]}>
-          <TreeSelect
-            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            treeData={tree}
-            placeholder="请选择部门。"
-            treeDefaultExpandAll
-          />
-        </Form.Item>
-        <Form.Item label="状态" name="status" rules={[{ required: true }]} valuePropName="checked">
-          <Switch checkedChildren="开" unCheckedChildren="关" />
-        </Form.Item>
-        <Form.Item label="描述" name="description" rules={[{ message: '描述长度最大至255字符！', min: 1, max: 255 }]}>
-          <Input.TextArea placeholder="请输入部门描述。" autoSize={{ minRows: 3, maxRows: 6 }} />
-        </Form.Item>
-        <Form.Item {...tailLayout}>
-          <Button onClick={closeModal}>取消</Button>
-          <Button type="primary" loading={loading} htmlType="submit">
-            确定
-          </Button>
-        </Form.Item>
-      </Form>
-    </Modal>
+        <Input />
+      </Form.Item>
+      <Form.Item label="父部门" name="parentId" rules={[{ required: true, message: '请选择一个父部门！' }]}>
+        <TreeSelect
+          dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+          treeData={tree}
+          placeholder="请选择部门。"
+          treeDefaultExpandAll
+        />
+      </Form.Item>
+      <Form.Item label="状态" name="status" rules={[{ required: true }]} valuePropName="checked">
+        <Switch checkedChildren="开" unCheckedChildren="关" />
+      </Form.Item>
+      <Form.Item label="描述" name="description" rules={[{ message: '描述长度最大至255字符！', min: 1, max: 255 }]}>
+        <Input.TextArea placeholder="请输入部门描述。" autoSize={{ minRows: 3, maxRows: 6 }} />
+      </Form.Item>
+      <Form.Item {...tailLayout}>
+        <Button onClick={closeModal}>取消</Button>
+        <Button type="primary" loading={loading} htmlType="submit">
+          确定
+        </Button>
+      </Form.Item>
+    </Form>
   );
 });
 
