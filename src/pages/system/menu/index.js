@@ -5,14 +5,12 @@ import { ArrowUpOutlined, ArrowDownOutlined, PlusOutlined, DeleteOutlined, EditO
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
-import withModal from '@/components/HOCModal';
+import RenderPropsModal from '@/components/RenderModal';
 import { getValue, isArray, isEmpty } from '@/utils/utils';
 import MenuForm from './components/MenuForm';
 
 const { DirectoryTree } = Tree;
 const MENU_TYPE = 1;
-
-const MenuModal = withModal(MenuForm);
 
 const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
   tree,
@@ -185,9 +183,16 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
       render: (text, record) => (
         <>
           <Authorized authority="system:menu:update" noMatch={null}>
-            <MenuModal isEdit id={record.id}>
-              <EditOutlined title="编辑" className="icon" />
-            </MenuModal>
+            <RenderPropsModal>
+              {({ showModalHandler, hideModelHandler, Modal }) => (
+                <>
+                  <EditOutlined title="编辑" className="icon" onClick={showModalHandler} />
+                  <Modal title="编辑">
+                    <MenuForm isEdit id={record.id} closeModal={hideModelHandler} />
+                  </Modal>
+                </>
+              )}
+            </RenderPropsModal>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:menu:delete" noMatch={null}>
@@ -232,11 +237,18 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
             <div className="tableList">
               <div className="tableListOperator">
                 <Authorized authority="system:menu:add" noMatch={null}>
-                  <MenuModal id={currentMenu && currentMenu.id}>
-                    <Button type="primary" title="新增">
-                      <PlusOutlined />
-                    </Button>
-                  </MenuModal>
+                  <RenderPropsModal>
+                    {({ showModalHandler, hideModelHandler, Modal }) => (
+                      <>
+                        <Button type="primary" title="新增" onClick={showModalHandler}>
+                          <PlusOutlined />
+                        </Button>
+                        <Modal title="新增">
+                          <MenuForm id={currentMenu && currentMenu.id} closeModal={hideModelHandler} />
+                        </Modal>
+                      </>
+                    )}
+                  </RenderPropsModal>
                 </Authorized>
               </div>
               <Table
