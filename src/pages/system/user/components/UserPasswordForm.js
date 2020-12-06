@@ -1,8 +1,8 @@
 import React from 'react';
-import { Modal, Form, Input, Button, message } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import { connect } from 'umi';
 
-const UserPasswordForm = connect()(({ visible, id, username, closeModal, dispatch }) => {
+const UserPasswordForm = connect()(({ id, closeModal, dispatch }) => {
   const [form] = Form.useForm();
   const { resetFields } = form;
 
@@ -41,45 +41,37 @@ const UserPasswordForm = connect()(({ visible, id, username, closeModal, dispatc
   };
 
   return (
-    <Modal
-      destroyOnClose
-      title={`您确定要重置 ${username} 的密码吗？`}
-      visible={visible}
-      onCancel={closeModal}
-      footer={null}
+    <Form
+      {...layout}
+      form={form}
+      name="userPasswordForm"
+      className="form"
+      initialValues={{
+        password: '123456',
+      }}
+      onFinish={handleReset}
     >
-      <Form
-        {...layout}
-        form={form}
-        name="userPasswordForm"
-        className="form"
-        initialValues={{
-          password: '123456',
-        }}
-        onFinish={handleReset}
+      <Form.Item
+        label="新密码"
+        name="newPassword"
+        rules={[
+          {
+            required: true,
+            message: '请将密码长度保持在6至32字符之间！',
+            min: 6,
+            max: 32,
+          },
+        ]}
       >
-        <Form.Item
-          label="新密码"
-          name="newPassword"
-          rules={[
-            {
-              required: true,
-              message: '请将密码长度保持在6至32字符之间！',
-              min: 6,
-              max: 32,
-            },
-          ]}
-        >
-          <Input.Password />
-        </Form.Item>
-        <Form.Item {...tailLayout}>
-          <Button onClick={closeModal}>取消</Button>
-          <Button type="primary" htmlType="submit">
-            确定
-          </Button>
-        </Form.Item>
-      </Form>
-    </Modal>
+        <Input.Password />
+      </Form.Item>
+      <Form.Item {...tailLayout}>
+        <Button onClick={closeModal}>取消</Button>
+        <Button type="primary" htmlType="submit">
+          确定
+        </Button>
+      </Form.Item>
+    </Form>
   );
 });
 

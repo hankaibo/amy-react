@@ -5,7 +5,7 @@ import { PlusOutlined, DeleteOutlined, EditOutlined, UserSwitchOutlined, ReloadO
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
-import withModal from '@/components/HOCModal';
+import RenderPropsModal from '@/components/RenderModal';
 import { getValue, isArray, isEmpty } from '@/utils/utils';
 import UserForm from './components/UserForm';
 import UserRoleForm from './components/UserRoleForm';
@@ -16,9 +16,6 @@ const sexText = {
   2: '女',
   3: '保密',
 };
-const UserModal = withModal(UserForm);
-const UserRoleModal = withModal(UserRoleForm);
-const UserPasswordModal = withModal(UserPasswordForm);
 
 const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
   tree,
@@ -245,9 +242,16 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
         <>
           {/* Note: system:user:xxx为【资源保护】菜单中用户管理修改接口(system:user:update)的编码名称。必须两者一致才能动态隐藏显示按钮。 */}
           <Authorized authority="system:user:update" noMatch={null}>
-            <UserModal isEdit id={record.id}>
-              <EditOutlined title="编辑" className="icon" />
-            </UserModal>
+            <RenderPropsModal>
+              {({ showModalHandler, hideModelHandler, Modal }) => (
+                <>
+                  <EditOutlined title="编辑" className="icon" onClick={showModalHandler} />
+                  <Modal title="编辑">
+                    <UserForm isEdit id={record.id} closeModal={hideModelHandler} />
+                  </Modal>
+                </>
+              )}
+            </RenderPropsModal>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:user:delete" noMatch={null}>
@@ -262,15 +266,34 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:user:grant" noMatch={null}>
-            <UserRoleModal id={record.id} disabled={!record.status}>
-              <UserSwitchOutlined title="分配角色" className="icon" />
-            </UserRoleModal>
+            <RenderPropsModal>
+              {({ showModalHandler, hideModelHandler, Modal }) => (
+                <>
+                  <UserSwitchOutlined
+                    title="分配角色"
+                    className="icon"
+                    disabled={!record.status}
+                    onClick={showModalHandler}
+                  />
+                  <Modal title="分配角色">
+                    <UserRoleForm id={record.id} closeModal={hideModelHandler} />
+                  </Modal>
+                </>
+              )}
+            </RenderPropsModal>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:user:pwd:reset" noMatch={null}>
-            <UserPasswordModal id={record.id} username={record.username}>
-              <ReloadOutlined title="重置密码" className="icon" />
-            </UserPasswordModal>
+            <RenderPropsModal>
+              {({ showModalHandler, hideModelHandler, Modal }) => (
+                <>
+                  <ReloadOutlined title="重置密码" className="icon" onClick={showModalHandler} />
+                  <Modal title={`您确定要重置 ${record.username} 的密码吗？`}>
+                    <UserPasswordForm id={record.id} closeModal={hideModelHandler} />
+                  </Modal>
+                </>
+              )}
+            </RenderPropsModal>
           </Authorized>
         </>
       ),
@@ -303,11 +326,21 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
             <div className="tableList">
               <div className="tableListOperator">
                 <Authorized authority="system:user:add" noMatch={null}>
-                  <UserModal departmentId={currentDepartment ? currentDepartment.id : null}>
-                    <Button type="primary" title="新增">
-                      <PlusOutlined />
-                    </Button>
-                  </UserModal>
+                  <RenderPropsModal>
+                    {({ showModalHandler, hideModelHandler, Modal }) => (
+                      <>
+                        <Button type="primary" title="新增" onClick={showModalHandler}>
+                          <PlusOutlined />
+                        </Button>
+                        <Modal title="新增">
+                          <UserForm
+                            departmentId={currentDepartment ? currentDepartment.id : null}
+                            closeModal={hideModelHandler}
+                          />
+                        </Modal>
+                      </>
+                    )}
+                  </RenderPropsModal>
                 </Authorized>
                 <Authorized authority="system:user:batchDelete" noMatch={null}>
                   <Popconfirm
