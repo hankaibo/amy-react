@@ -12,16 +12,13 @@ import {
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
-import withModal from '@/components/HOCModal';
+import RenderPropsModal from '@/components/RenderModal';
 import { getValue, isArray, isEmpty } from '@/utils/utils';
 import ApiForm from './components/ApiForm';
 import UploadForm from './components/UploadTable';
 
 const { DirectoryTree } = Tree;
 const API_TYPE = 2;
-
-const ApiModal = withModal(ApiForm);
-const UploadModal = withModal(UploadForm);
 
 const Api = connect(({ systemApi: { tree, list }, loading }) => ({
   tree,
@@ -207,9 +204,16 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
       render: (text, record) => (
         <>
           <Authorized authority="system:api:update" noMatch={null}>
-            <ApiModal isEdit id={record.id}>
-              <EditOutlined title="编辑" className="icon" />
-            </ApiModal>
+            <RenderPropsModal>
+              {({ showModalHandler, hideModelHandler, Modal }) => (
+                <>
+                  <EditOutlined title="编辑" className="icon" onClick={showModalHandler} />
+                  <Modal title="编辑">
+                    <ApiForm isEdit id={record.id} closeModal={hideModelHandler} />
+                  </Modal>
+                </>
+              )}
+            </RenderPropsModal>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:api:delete" noMatch={null}>
@@ -253,18 +257,32 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
             <div className="tableList">
               <div className="tableListOperator">
                 <Authorized authority="system:api:add" noMatch={null}>
-                  <ApiModal id={currentMenu && currentMenu.id}>
-                    <Button type="primary" title="新增">
-                      <PlusOutlined />
-                    </Button>
-                  </ApiModal>
+                  <RenderPropsModal>
+                    {({ showModalHandler, hideModelHandler, Modal }) => (
+                      <>
+                        <Button type="primary" title="新增" onClick={showModalHandler}>
+                          <PlusOutlined />
+                        </Button>
+                        <Modal title="新增">
+                          <ApiForm id={currentMenu && currentMenu.id} closeModal={hideModelHandler} />
+                        </Modal>
+                      </>
+                    )}
+                  </RenderPropsModal>
                 </Authorized>
                 <Authorized authority="system:api:importBatch" noMatch={null}>
-                  <UploadModal>
-                    <Button title="上传">
-                      <UploadOutlined />
-                    </Button>
-                  </UploadModal>
+                  <RenderPropsModal>
+                    {({ showModalHandler, Modal }) => (
+                      <>
+                        <Button title="上传" onClick={showModalHandler}>
+                          <UploadOutlined />
+                        </Button>
+                        <Modal title="上传" width={800}>
+                          <UploadForm />
+                        </Modal>
+                      </>
+                    )}
+                  </RenderPropsModal>
                 </Authorized>
               </div>
               <Table

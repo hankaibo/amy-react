@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Modal, Card, Table, Input, Upload, Button, message } from 'antd';
+import { Card, Table, Input, Upload, Button, message } from 'antd';
 import { UploadOutlined, ImportOutlined, EditOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
-import withModal from '@/components/HOCModal';
+import RenderPropsModal from '@/components/RenderModal';
 import ImportForm from './ImportForm';
 import styles from './UploadTable.less';
-
-const ImportModal = withModal(ImportForm);
 
 const addOrUpdate = (arr, obj) => {
   const newArr = [...arr];
@@ -22,7 +20,7 @@ const addOrUpdate = (arr, obj) => {
 
 const UploadTable = connect(({ systemApi: { apiList } }) => ({
   apiList,
-}))(({ visible, apiList, closeModal, dispatch }) => {
+}))(({ apiList, dispatch }) => {
   // 【自定义列属性】
   const inputTextRef = useRef(null);
   const [column, setColumn] = useState([]);
@@ -147,33 +145,43 @@ const UploadTable = connect(({ systemApi: { apiList } }) => ({
   ];
 
   return (
-    <Modal width={800} title="上传" destroyOnClose visible={visible} onCancel={closeModal} footer={null}>
-      <Card bordered={false} bodyStyle={{ padding: 0 }}>
-        <div className="tableList">
-          <div className="tableListOperator">
-            <Upload {...props}>
-              <Button title="上传">
-                <UploadOutlined />
-              </Button>
-            </Upload>
-            <ImportModal ids={selectedRowKeys} className={styles.import} onClean={() => setSelectedRowKeys([])}>
-              <Button type="primary" disabled={selectedRowKeys.length <= 0} title="导入">
-                <ImportOutlined />
-              </Button>
-            </ImportModal>
-          </div>
-          <Table
-            key="key"
-            bordered
-            size="small"
-            columns={columns}
-            dataSource={apiList}
-            pagination={false}
-            rowSelection={rowSelection}
-          />
+    <Card bordered={false} bodyStyle={{ padding: 0 }}>
+      <div className="tableList">
+        <div className="tableListOperator">
+          <Upload {...props}>
+            <Button title="上传">
+              <UploadOutlined />
+            </Button>
+          </Upload>
+          <RenderPropsModal>
+            {({ showModalHandler, hideModelHandler, Modal }) => (
+              <>
+                <Button type="primary" disabled={selectedRowKeys.length <= 0} title="导入" onClick={showModalHandler}>
+                  <ImportOutlined />
+                </Button>
+                <Modal title="新增">
+                  <ImportForm
+                    ids={selectedRowKeys}
+                    className={styles.import}
+                    onClean={() => setSelectedRowKeys([])}
+                    closeModal={hideModelHandler}
+                  />
+                </Modal>
+              </>
+            )}
+          </RenderPropsModal>
         </div>
-      </Card>
-    </Modal>
+        <Table
+          key="key"
+          bordered
+          size="small"
+          columns={columns}
+          dataSource={apiList}
+          pagination={false}
+          rowSelection={rowSelection}
+        />
+      </div>
+    </Card>
   );
 });
 
