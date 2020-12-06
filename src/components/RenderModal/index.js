@@ -14,11 +14,16 @@ const RenderPropsModal = ({ children }) => {
     setVisible(false);
   };
 
-  const Modal = ({ children: child, ...resProps }) => (
-    <AntModal destroyOnClose visible={visible} onCancel={hideModelHandler} footer={null} {...resProps}>
-      {child}
-    </AntModal>
-  );
+  const Modal = ({ children: child, ...resProps }) => {
+    if (visible) {
+      return (
+        <AntModal destroyOnClose visible={visible} onCancel={hideModelHandler} footer={null} {...resProps}>
+          {child}
+        </AntModal>
+      );
+    }
+    return null;
+  };
 
   return children({
     showModalHandler,
