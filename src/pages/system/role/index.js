@@ -12,13 +12,10 @@ import {
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
-import withModal from '@/components/HOCModal';
+import RenderPropsModal from '@/components/RenderModal';
 import { getValue, isArray, isEmpty } from '@/utils/utils';
 import RoleForm from './components/RoleForm';
 import RoleResourceForm from './components/RoleResourceForm';
-
-const RoleModal = withModal(RoleForm);
-const RoleResourceModal = withModal(RoleResourceForm);
 
 const Role = connect(({ systemRole: { tree, list }, loading }) => ({
   tree,
@@ -189,9 +186,16 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       render: (text, record) => (
         <>
           <Authorized authority="system:role:update" noMatch={null}>
-            <RoleModal isEdit id={record.id}>
-              <EditOutlined title="编辑" className="icon" />
-            </RoleModal>
+            <RenderPropsModal>
+              {({ showModalHandler, hideModelHandler, Modal }) => (
+                <>
+                  <EditOutlined title="编辑" className="icon" onClick={showModalHandler} />
+                  <Modal title="编辑">
+                    <RoleForm isEdit id={record.id} closeModal={hideModelHandler} />
+                  </Modal>
+                </>
+              )}
+            </RenderPropsModal>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:role:delete" noMatch={null}>
@@ -206,9 +210,16 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:role:grant" noMatch={null}>
-            <RoleResourceModal id={record.id} disabled={!record.status}>
-              <KeyOutlined title="分配资源" className="icon" />
-            </RoleResourceModal>
+            <RenderPropsModal>
+              {({ showModalHandler, hideModelHandler, Modal }) => (
+                <>
+                  <KeyOutlined title="分配资源" className="icon" disabled={!record.status} onClick={showModalHandler} />
+                  <Modal title="分配资源">
+                    <RoleResourceForm id={record.id} closeModal={hideModelHandler} />
+                  </Modal>
+                </>
+              )}
+            </RenderPropsModal>
           </Authorized>
         </>
       ),
@@ -241,11 +252,18 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
             <div className="tableList">
               <div className="tableListOperator">
                 <Authorized authority="system:role:add" noMatch={null}>
-                  <RoleModal id={currentRole && currentRole.id}>
-                    <Button type="primary" title="新增">
-                      <PlusOutlined />
-                    </Button>
-                  </RoleModal>
+                  <RenderPropsModal>
+                    {({ showModalHandler, hideModelHandler, Modal }) => (
+                      <>
+                        <Button type="primary" title="新增" onClick={showModalHandler}>
+                          <PlusOutlined />
+                        </Button>
+                        <Modal title="新增">
+                          <RoleForm id={currentRole && currentRole.id} closeModal={hideModelHandler} />
+                        </Modal>
+                      </>
+                    )}
+                  </RenderPropsModal>
                 </Authorized>
               </div>
               <Table
