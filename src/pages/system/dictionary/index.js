@@ -6,11 +6,9 @@ import { Link, history, connect } from 'umi';
 import moment from 'moment';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
-import withModal from '@/components/HOCModal';
+import RenderPropsModal from '@/components/RenderModal';
 import { getValue, isEmpty } from '@/utils/utils';
 import DictionaryForm from './components/DictionaryForm';
-
-const DictionaryModal = withModal(DictionaryForm);
 
 const Dictionary = connect(({ systemDictionary: { list, pagination }, loading }) => ({
   list,
@@ -189,9 +187,22 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
       render: (text, record) => (
         <>
           <Authorized authority="system:dictionary:update" noMatch={null}>
-            <DictionaryModal isEdit id={record.id} match={match} location={location}>
-              <EditOutlined title="编辑" className="icon" />
-            </DictionaryModal>
+            <RenderPropsModal>
+              {({ showModalHandler, hideModelHandler, Modal }) => (
+                <>
+                  <EditOutlined title="编辑" className="icon" onClick={showModalHandler} />
+                  <Modal title="编辑">
+                    <DictionaryForm
+                      isEdit
+                      id={record.id}
+                      match={match}
+                      location={location}
+                      closeModal={hideModelHandler}
+                    />
+                  </Modal>
+                </>
+              )}
+            </RenderPropsModal>
             <Divider type="vertical" />
           </Authorized>
           <Authorized authority="system:dictionary:delete" noMatch={null}>
@@ -215,11 +226,18 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
         <div className="tableList">
           <div className="tableListOperator">
             <Authorized authority="system:dictionary:add" noMatch={null}>
-              <DictionaryModal match={match} location={location}>
-                <Button type="primary" title="新增">
-                  <PlusOutlined />
-                </Button>
-              </DictionaryModal>
+              <RenderPropsModal>
+                {({ showModalHandler, hideModelHandler, Modal }) => (
+                  <>
+                    <Button type="primary" title="新增" onClick={showModalHandler}>
+                      <PlusOutlined />
+                    </Button>
+                    <Modal title="新增">
+                      <DictionaryForm match={match} location={location} closeModal={hideModelHandler} />
+                    </Modal>
+                  </>
+                )}
+              </RenderPropsModal>
             </Authorized>
             <Authorized authority="system:dictionary:batchDelete" noMatch={null}>
               <Popconfirm
