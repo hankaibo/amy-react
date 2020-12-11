@@ -4,10 +4,8 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
 import { getValue } from '@/utils/utils';
-import withModal from '@/components/HOCModal';
+import RenderPropsModal from '@/components/RenderModal';
 import MessageDetail from './MessageDetail';
-
-const MessageDetailModal = withModal(MessageDetail);
 
 const getText = (value) => {
   switch (value) {
@@ -115,9 +113,16 @@ const Sent = connect(({ user: { currentUser, messageList, messagePagination }, l
         dataIndex: 'title',
         render: (text, record) => {
           return (
-            <MessageDetailModal id={record.id} from="SENT">
-              <a>{text}</a>
-            </MessageDetailModal>
+            <RenderPropsModal>
+              {({ showModalHandler, Modal }) => (
+                <>
+                  <a onClick={showModalHandler}>{text}</a>
+                  <Modal>
+                    <MessageDetail id={record.id} from="SENT" />
+                  </Modal>
+                </>
+              )}
+            </RenderPropsModal>
           );
         },
       },

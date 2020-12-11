@@ -3,13 +3,10 @@ import { Table, Tag, Popconfirm, Divider, message } from 'antd';
 import { DeleteOutlined, EditOutlined, SendOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
-import withModal from '@/components/HOCModal';
 import { getValue } from '@/utils/utils';
+import RenderPropsModal from '@/components/RenderModal';
 import MessageDetail from './MessageDetail';
 import MessageForm from './MessageForm';
-
-const MessageDetailModal = withModal(MessageDetail);
-const MessageFormModal = withModal(MessageForm);
 
 const getText = (value) => {
   switch (value) {
@@ -130,9 +127,16 @@ const Draft = connect(({ user: { currentUser, messageList, messagePagination }, 
         dataIndex: 'title',
         render: (text, record) => {
           return (
-            <MessageDetailModal id={record.id} from="INBOX">
-              <a>{text}</a>
-            </MessageDetailModal>
+            <RenderPropsModal>
+              {({ showModalHandler, Modal }) => (
+                <>
+                  <a onClick={showModalHandler}>{text}</a>
+                  <Modal>
+                    <MessageDetail id={record.id} from="INBOX" />
+                  </Modal>
+                </>
+              )}
+            </RenderPropsModal>
           );
         },
       },
@@ -152,9 +156,16 @@ const Draft = connect(({ user: { currentUser, messageList, messagePagination }, 
         render: (text, record) => (
           <>
             <Authorized authority="system:message:update" noMatch={null}>
-              <MessageFormModal isEdit id={record.id}>
-                <EditOutlined title="编辑" className="icon" />
-              </MessageFormModal>
+              <RenderPropsModal>
+                {({ showModalHandler, Modal }) => (
+                  <>
+                    <EditOutlined title="编辑" className="icon" onClick={showModalHandler} />
+                    <Modal title="编辑">
+                      <MessageForm isEdit id={record.id} />
+                    </Modal>
+                  </>
+                )}
+              </RenderPropsModal>
               <Divider type="vertical" />
             </Authorized>
             <Authorized authority="system:message:delete" noMatch={null}>

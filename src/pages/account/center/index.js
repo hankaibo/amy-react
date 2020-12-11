@@ -4,15 +4,13 @@ import { PlusOutlined, HomeOutlined, ContactsOutlined, ClusterOutlined, DeleteOu
 import { GridContent } from '@ant-design/pro-layout';
 import { Link, connect } from 'umi';
 import Authorized from '@/utils/Authorized';
-import withModal from '@/components/HOCModal';
+import RenderPropsModal from '@/components/RenderModal';
 import Inbox from './components/Inbox';
 import Draft from './components/Draft';
 import Sent from './components/Sent';
 import defaultPic from '../../../assets/default.png';
 import MessageForm from './components/MessageForm';
 import styles from './Center.less';
-
-const MessageModal = withModal(MessageForm);
 
 const operationTabList = [
   {
@@ -153,11 +151,18 @@ const Center = ({ currentUser = {}, currentUserLoading, dispatch }) => {
         return (
           <>
             <Authorized authority="system:message:add" noMatch={null}>
-              <MessageModal>
-                <Button type="primary" title="新增">
-                  <PlusOutlined />
-                </Button>
-              </MessageModal>
+              <RenderPropsModal>
+                {({ showModalHandler, Modal }) => (
+                  <>
+                    <Button type="primary" title="新增" onClick={showModalHandler}>
+                      <PlusOutlined />
+                    </Button>
+                    <Modal title="新增">
+                      <MessageForm />
+                    </Modal>
+                  </>
+                )}
+              </RenderPropsModal>
             </Authorized>
             <Authorized authority="system:message:batchDelete" noMatch={null}>
               <Popconfirm
