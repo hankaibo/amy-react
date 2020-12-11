@@ -205,11 +205,11 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
         <>
           <Authorized authority="system:api:update" noMatch={null}>
             <RenderPropsModal>
-              {({ showModalHandler, hideModelHandler, Modal }) => (
+              {({ showModalHandler, Modal }) => (
                 <>
                   <EditOutlined title="编辑" className="icon" onClick={showModalHandler} />
                   <Modal title="编辑">
-                    <ApiForm isEdit id={record.id} closeModal={hideModelHandler} />
+                    <ApiForm isEdit id={record.id} />
                   </Modal>
                 </>
               )}
@@ -258,13 +258,13 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
               <div className="tableListOperator">
                 <Authorized authority="system:api:add" noMatch={null}>
                   <RenderPropsModal>
-                    {({ showModalHandler, hideModelHandler, Modal }) => (
+                    {({ showModalHandler, Modal }) => (
                       <>
                         <Button type="primary" title="新增" onClick={showModalHandler}>
                           <PlusOutlined />
                         </Button>
                         <Modal title="新增">
-                          <ApiForm id={currentMenu && currentMenu.id} closeModal={hideModelHandler} />
+                          <ApiForm id={currentMenu && currentMenu.id} />
                         </Modal>
                       </>
                     )}

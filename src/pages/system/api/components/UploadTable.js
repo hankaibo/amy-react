@@ -154,18 +154,13 @@ const UploadTable = connect(({ systemApi: { apiList } }) => ({
             </Button>
           </Upload>
           <RenderPropsModal>
-            {({ showModalHandler, hideModelHandler, Modal }) => (
+            {({ showModalHandler, Modal }) => (
               <>
                 <Button type="primary" disabled={selectedRowKeys.length <= 0} title="导入" onClick={showModalHandler}>
                   <ImportOutlined />
                 </Button>
                 <Modal title="新增">
-                  <ImportForm
-                    ids={selectedRowKeys}
-                    className={styles.import}
-                    onClean={() => setSelectedRowKeys([])}
-                    closeModal={hideModelHandler}
-                  />
+                  <ImportForm ids={selectedRowKeys} className={styles.import} onClean={() => setSelectedRowKeys([])} />
                 </Modal>
               </>
             )}

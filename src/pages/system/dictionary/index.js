@@ -188,17 +188,11 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
         <>
           <Authorized authority="system:dictionary:update" noMatch={null}>
             <RenderPropsModal>
-              {({ showModalHandler, hideModelHandler, Modal }) => (
+              {({ showModalHandler, Modal }) => (
                 <>
                   <EditOutlined title="编辑" className="icon" onClick={showModalHandler} />
                   <Modal title="编辑">
-                    <DictionaryForm
-                      isEdit
-                      id={record.id}
-                      match={match}
-                      location={location}
-                      closeModal={hideModelHandler}
-                    />
+                    <DictionaryForm isEdit id={record.id} match={match} location={location} />
                   </Modal>
                 </>
               )}
@@ -227,13 +221,13 @@ const Dictionary = connect(({ systemDictionary: { list, pagination }, loading })
           <div className="tableListOperator">
             <Authorized authority="system:dictionary:add" noMatch={null}>
               <RenderPropsModal>
-                {({ showModalHandler, hideModelHandler, Modal }) => (
+                {({ showModalHandler, Modal }) => (
                   <>
                     <Button type="primary" title="新增" onClick={showModalHandler}>
                       <PlusOutlined />
                     </Button>
                     <Modal title="新增">
-                      <DictionaryForm match={match} location={location} closeModal={hideModelHandler} />
+                      <DictionaryForm match={match} location={location} />
                     </Modal>
                   </>
                 )}

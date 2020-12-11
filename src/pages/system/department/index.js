@@ -235,11 +235,11 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
         <>
           <Authorized authority="system:department:update" noMatch={null}>
             <RenderPropsModal>
-              {({ showModalHandler, hideModelHandler, Modal }) => (
+              {({ showModalHandler, Modal }) => (
                 <>
                   <EditOutlined title="编辑" className="icon" onClick={showModalHandler} />
                   <Modal title="编辑">
-                    <DepartmentForm isEdit id={record.id} closeModal={hideModelHandler} />
+                    <DepartmentForm isEdit id={record.id} />
                   </Modal>
                 </>
               )}
@@ -289,16 +289,13 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
               <div className="tableListOperator">
                 <Authorized authority="system:department:add" noMatch={null}>
                   <RenderPropsModal>
-                    {({ showModalHandler, hideModelHandler, Modal }) => (
+                    {({ showModalHandler, Modal }) => (
                       <>
                         <Button type="primary" title="新增" onClick={showModalHandler}>
                           <PlusOutlined />
                         </Button>
                         <Modal title="新增">
-                          <DepartmentForm
-                            id={currentDepartment && currentDepartment.id}
-                            closeModal={hideModelHandler}
-                          />
+                          <DepartmentForm id={currentDepartment && currentDepartment.id} />
                         </Modal>
                       </>
                     )}

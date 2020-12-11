@@ -187,11 +187,11 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
         <>
           <Authorized authority="system:role:update" noMatch={null}>
             <RenderPropsModal>
-              {({ showModalHandler, hideModelHandler, Modal }) => (
+              {({ showModalHandler, Modal }) => (
                 <>
                   <EditOutlined title="编辑" className="icon" onClick={showModalHandler} />
                   <Modal title="编辑">
-                    <RoleForm isEdit id={record.id} closeModal={hideModelHandler} />
+                    <RoleForm isEdit id={record.id} />
                   </Modal>
                 </>
               )}
@@ -211,11 +211,11 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
           </Authorized>
           <Authorized authority="system:role:grant" noMatch={null}>
             <RenderPropsModal>
-              {({ showModalHandler, hideModelHandler, Modal }) => (
+              {({ showModalHandler, Modal }) => (
                 <>
                   <KeyOutlined title="分配资源" className="icon" disabled={!record.status} onClick={showModalHandler} />
                   <Modal title="分配资源">
-                    <RoleResourceForm id={record.id} closeModal={hideModelHandler} />
+                    <RoleResourceForm id={record.id} />
                   </Modal>
                 </>
               )}
@@ -253,13 +253,13 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
               <div className="tableListOperator">
                 <Authorized authority="system:role:add" noMatch={null}>
                   <RenderPropsModal>
-                    {({ showModalHandler, hideModelHandler, Modal }) => (
+                    {({ showModalHandler, Modal }) => (
                       <>
                         <Button type="primary" title="新增" onClick={showModalHandler}>
                           <PlusOutlined />
                         </Button>
                         <Modal title="新增">
-                          <RoleForm id={currentRole && currentRole.id} closeModal={hideModelHandler} />
+                          <RoleForm id={currentRole && currentRole.id} />
                         </Modal>
                       </>
                     )}

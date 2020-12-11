@@ -184,11 +184,11 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
         <>
           <Authorized authority="system:menu:update" noMatch={null}>
             <RenderPropsModal>
-              {({ showModalHandler, hideModelHandler, Modal }) => (
+              {({ showModalHandler, Modal }) => (
                 <>
                   <EditOutlined title="编辑" className="icon" onClick={showModalHandler} />
                   <Modal title="编辑">
-                    <MenuForm isEdit id={record.id} closeModal={hideModelHandler} />
+                    <MenuForm isEdit id={record.id} />
                   </Modal>
                 </>
               )}
@@ -238,13 +238,13 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
               <div className="tableListOperator">
                 <Authorized authority="system:menu:add" noMatch={null}>
                   <RenderPropsModal>
-                    {({ showModalHandler, hideModelHandler, Modal }) => (
+                    {({ showModalHandler, Modal }) => (
                       <>
                         <Button type="primary" title="新增" onClick={showModalHandler}>
                           <PlusOutlined />
                         </Button>
                         <Modal title="新增">
-                          <MenuForm id={currentMenu && currentMenu.id} closeModal={hideModelHandler} />
+                          <MenuForm id={currentMenu && currentMenu.id} />
                         </Modal>
                       </>
                     )}

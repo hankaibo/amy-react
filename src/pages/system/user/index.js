@@ -243,11 +243,11 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
           {/* Note: system:user:xxx为【资源保护】菜单中用户管理修改接口(system:user:update)的编码名称。必须两者一致才能动态隐藏显示按钮。 */}
           <Authorized authority="system:user:update" noMatch={null}>
             <RenderPropsModal>
-              {({ showModalHandler, hideModelHandler, Modal }) => (
+              {({ showModalHandler, Modal }) => (
                 <>
                   <EditOutlined title="编辑" className="icon" onClick={showModalHandler} />
                   <Modal title="编辑">
-                    <UserForm isEdit id={record.id} closeModal={hideModelHandler} />
+                    <UserForm isEdit id={record.id} />
                   </Modal>
                 </>
               )}
@@ -267,7 +267,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
           </Authorized>
           <Authorized authority="system:user:grant" noMatch={null}>
             <RenderPropsModal>
-              {({ showModalHandler, hideModelHandler, Modal }) => (
+              {({ showModalHandler, Modal }) => (
                 <>
                   <UserSwitchOutlined
                     title="分配角色"
@@ -276,7 +276,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
                     onClick={showModalHandler}
                   />
                   <Modal title="分配角色">
-                    <UserRoleForm id={record.id} closeModal={hideModelHandler} />
+                    <UserRoleForm id={record.id} />
                   </Modal>
                 </>
               )}
@@ -285,11 +285,11 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
           </Authorized>
           <Authorized authority="system:user:pwd:reset" noMatch={null}>
             <RenderPropsModal>
-              {({ showModalHandler, hideModelHandler, Modal }) => (
+              {({ showModalHandler, Modal }) => (
                 <>
                   <ReloadOutlined title="重置密码" className="icon" onClick={showModalHandler} />
                   <Modal title={`您确定要重置 ${record.username} 的密码吗？`}>
-                    <UserPasswordForm id={record.id} closeModal={hideModelHandler} />
+                    <UserPasswordForm id={record.id} />
                   </Modal>
                 </>
               )}
@@ -327,16 +327,13 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
               <div className="tableListOperator">
                 <Authorized authority="system:user:add" noMatch={null}>
                   <RenderPropsModal>
-                    {({ showModalHandler, hideModelHandler, Modal }) => (
+                    {({ showModalHandler, Modal }) => (
                       <>
                         <Button type="primary" title="新增" onClick={showModalHandler}>
                           <PlusOutlined />
                         </Button>
                         <Modal title="新增">
-                          <UserForm
-                            departmentId={currentDepartment ? currentDepartment.id : null}
-                            closeModal={hideModelHandler}
-                          />
+                          <UserForm departmentId={currentDepartment ? currentDepartment.id : null} />
                         </Modal>
                       </>
                     )}

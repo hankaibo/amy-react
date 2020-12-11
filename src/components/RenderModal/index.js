@@ -18,7 +18,11 @@ const RenderPropsModal = ({ children }) => {
     if (visible) {
       return (
         <AntModal destroyOnClose visible={visible} onCancel={hideModelHandler} footer={null} {...resProps}>
-          {child}
+          {React.Children.map(child, (item) => {
+            return React.cloneElement(item, {
+              closeModal: hideModelHandler,
+            });
+          })}
         </AntModal>
       );
     }
@@ -27,7 +31,6 @@ const RenderPropsModal = ({ children }) => {
 
   return children({
     showModalHandler,
-    hideModelHandler,
     Modal,
   });
 };
