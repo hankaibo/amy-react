@@ -132,7 +132,7 @@ const Draft = connect(({ user: { currentUser, messageList, messagePagination }, 
                 <>
                   <a onClick={showModalHandler}>{text}</a>
                   <Modal>
-                    <MessageDetail id={record.id} from="INBOX" />
+                    <MessageDetail title="详情" id={record.id} from="INBOX" />
                   </Modal>
                 </>
               )}

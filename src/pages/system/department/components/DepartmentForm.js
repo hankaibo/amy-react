@@ -11,13 +11,13 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
     loading.effects['systemDepartment/fetchById'] ||
     loading.effects['systemDepartment/add'] ||
     loading.effects['systemDepartment/update'],
-}))(({ loading, visible, isEdit, id, department, tree, closeModal, dispatch }) => {
+}))(({ loading, isEdit, id, department, tree, closeModal, dispatch }) => {
   const [form] = Form.useForm();
   const { resetFields, setFieldsValue } = form;
 
   // 【修改时，获取部门表单数据】
   useEffect(() => {
-    if (visible && isEdit) {
+    if (isEdit) {
       dispatch({
         type: 'systemDepartment/fetchById',
         payload: {
@@ -32,17 +32,17 @@ const DepartmentForm = connect(({ systemDepartment: { tree, department }, loadin
         });
       }
     };
-  }, [visible, isEdit, id, dispatch]);
+  }, [isEdit, id, dispatch]);
 
   // 【修改时，回显部门表单】
   useEffect(() => {
     // 👍 将条件判断放置在 effect 中
-    if (visible && isEdit) {
+    if (isEdit) {
       if (!isEmpty(department)) {
         setFieldsValue(department);
       }
     }
-  }, [visible, isEdit, department, setFieldsValue]);
+  }, [isEdit, department, setFieldsValue]);
 
   // 【添加与修改】
   const handleAddOrUpdate = (values) => {
