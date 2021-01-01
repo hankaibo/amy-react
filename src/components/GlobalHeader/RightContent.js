@@ -2,7 +2,6 @@ import React from 'react';
 import { Tag, Tooltip } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { connect, useIntl, SelectLang } from 'umi';
-import classNames from 'classnames';
 import Avatar from './AvatarDropdown';
 import NoticeIconView from './NoticeIconView';
 import HeaderSearch from '../HeaderSearch';
@@ -26,7 +25,7 @@ const GlobalHeaderRight = (props) => {
   return (
     <div className={className}>
       <HeaderSearch
-        className={classNames(`${styles.action} ${styles.search}`)}
+        className={`${styles.action} ${styles.search}`}
         placeholder={formatMessage({
           id: 'component.globalHeader.search',
         })}

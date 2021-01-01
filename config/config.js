@@ -6,8 +6,8 @@ import routes from './routes';
 import webpackPlugin from './plugin.config';
 
 const { winPath } = utils;
-
 const { REACT_APP_ENV } = process.env;
+
 export default defineConfig({
   hash: true,
   antd: {},
@@ -34,7 +34,6 @@ export default defineConfig({
   routes,
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
-    // ...darkTheme,
     'primary-color': defaultSettings.primaryColor,
   },
   title: false,
@@ -42,6 +41,7 @@ export default defineConfig({
     REACT_APP_ENV: REACT_APP_ENV || false,
   },
   ignoreMomentLocale: true,
+  proxy: proxy[REACT_APP_ENV || 'dev'],
   lessLoader: {
     javascriptEnabled: true,
   },
@@ -74,6 +74,13 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
-  proxy: proxy[REACT_APP_ENV || 'dev'],
+  // https://github.com/zthxxx/react-dev-inspector
+  plugins: ['react-dev-inspector/plugins/umi/react-inspector'],
+  inspectorConfig: {
+    // loader options type and docs see below
+    exclude: [],
+    babelPlugins: [],
+    babelOptions: {},
+  },
   chainWebpack: webpackPlugin,
 });

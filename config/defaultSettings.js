@@ -1,4 +1,4 @@
-export default {
+const proSettings = {
   navTheme: 'dark', // theme for nav menu
   primaryColor: '#0078d4', // primary color of ant design
   layout: 'side', // nav menu position: side or top
@@ -14,3 +14,5 @@ export default {
   // Usage: https://github.com/ant-design/ant-design-pro/pull/3517
   iconfontUrl: '//at.alicdn.com/t/font_1729367_orciim1m93o.js',
 };
+
+export default proSettings;

@@ -4,7 +4,7 @@
  * https://github.com/ant-design/ant-design-pro-layout
  */
 import ProLayout, { DefaultFooter, SettingDrawer } from '@ant-design/pro-layout';
-import React, { Suspense } from 'react';
+import React, { useRef, Suspense } from 'react';
 import { connect, Link, useIntl, history } from 'umi';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
@@ -49,6 +49,8 @@ const BasicLayout = (props) => {
     },
   } = props;
 
+  const menuDataRef = useRef([]);
+
   const handleMenuCollapse = (payload) => {
     if (dispatch) {
       dispatch({
@@ -89,7 +91,7 @@ const BasicLayout = (props) => {
         onCollapse={handleMenuCollapse}
         onMenuHeaderClick={() => history.push('/')}
         menuItemRender={(menuItemProps, defaultDom) => {
-          if (menuItemProps.isUrl || !menuItemProps.path) {
+          if (menuItemProps.isUrl || !menuItemProps.path || location.pathname === menuItemProps.path) {
             return defaultDom;
           }
           return <Link to={menuItemProps.path}>{defaultDom}</Link>;
@@ -111,6 +113,10 @@ const BasicLayout = (props) => {
         footerRender={() => <DefaultFooter links={[]} copyright={<span>copyright</span>} />}
         menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
+        postMenuData={(menuData) => {
+          menuDataRef.current = menuData || [];
+          return menuData || [];
+        }}
       >
         <Authorized authority={authorized.authority} noMatch={noMatch}>
           {children}

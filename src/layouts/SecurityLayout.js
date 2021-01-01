@@ -4,10 +4,7 @@ import { stringify } from 'qs';
 import { PageLoading } from '@ant-design/pro-layout';
 import { getItem } from '@/utils/utils';
 
-const SecurityLayout = connect(({ user: { currentUser }, loading }) => ({
-  currentUser,
-  loading: loading.effects['user/fetchCurrentUser'],
-}))(({ loading, children, currentUser, dispatch }) => {
+const SecurityLayout = ({ loading, children, currentUser, dispatch }) => {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -36,6 +33,9 @@ const SecurityLayout = connect(({ user: { currentUser }, loading }) => ({
     return <Redirect to={`/user/login?${queryString}`} />;
   }
   return children;
-});
+};
 
-export default SecurityLayout;
+export default connect(({ user: { currentUser }, loading }) => ({
+  currentUser,
+  loading: loading.effects['user/fetchCurrentUser'],
+}))(SecurityLayout);
