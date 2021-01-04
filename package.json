@@ -16,11 +16,11 @@
     "lint:style": "stylelint --fix \"src/**/*.less\" --syntax less",
     "prettier": "prettier -c --write \"src/**/*\"",
     "postinstall": "umi g tmp",
-    "start": "umi dev",
+    "start": "cross-env UMI_ENV=dev umi dev",
     "dev": "npm run start:dev",
     "pre": "npm run start:pre",
-    "start:dev": "cross-env PORT=9000 REACT_APP_ENV=dev MOCK=none UMI_UI=none umi dev",
-    "start:pre": "cross-env PORT=9000 REACT_APP_ENV=pre MOCK=none UMI_UI=none umi dev"
+    "start:dev": "cross-env PORT=9000 REACT_APP_ENV=dev MOCK=none UMI_ENV=dev UMI_UI=none umi dev",
+    "start:pre": "cross-env PORT=9000 REACT_APP_ENV=pre MOCK=none UMI_ENV=dev UMI_UI=none umi dev"
   },
   "husky": {
     "hooks": {
