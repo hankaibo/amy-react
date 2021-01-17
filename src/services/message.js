@@ -35,7 +35,7 @@ export function connect(action) {
 }
 
 export function disconnect() {
-  if (client) {
+  if (client && client.connected) {
     client.disconnect(() => {
       // eslint-disable-next-line no-console
       console.log('关闭websocket连接。');
