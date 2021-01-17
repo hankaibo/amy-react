@@ -270,7 +270,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
                     )}
                   </RenderPropsModal>
                 </Authorized>
-                <Authorized authority="system:api:importBatch" noMatch={null}>
+                <Authorized authority="system:api:import" noMatch={null}>
                   <RenderPropsModal>
                     {({ showModalHandler, Modal }) => (
                       <>
