@@ -3,7 +3,7 @@ export default {
   // 支持值为 Object 和 Array
   'GET /api/v1/users/info': {
     address: '东城区1号',
-    avatar: 'http://58.87.121.239:9001/images/ffb4ea61-eaaf-48fe-8984-2ef2f1bfdffb.jpeg',
+    avatar: 'http://58.87.121.239:9000/images/ffb4ea61-eaaf-48fe-8984-2ef2f1bfdffb.jpeg',
     createTime: '2019-10-04 00:43:06',
     departmentIdList: [1],
     email: 'hankaibo@mail.com',
