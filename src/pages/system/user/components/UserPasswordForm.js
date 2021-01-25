@@ -46,23 +46,10 @@ const UserPasswordForm = connect()(({ id, closeModal, dispatch }) => {
       form={form}
       name="userPasswordForm"
       className="form"
-      initialValues={{
-        password: '123456',
-      }}
+      initialValues={{ password: '123456' }}
       onFinish={handleReset}
     >
-      <Form.Item
-        label="新密码"
-        name="newPassword"
-        rules={[
-          {
-            required: true,
-            message: '请将密码长度保持在6至32字符之间！',
-            min: 6,
-            max: 32,
-          },
-        ]}
-      >
+      <Form.Item label="新密码" name="newPassword" rules={[{ required: true }, { min: 6, max: 32 }]}>
         <Input.Password />
       </Form.Item>
       <Form.Item {...tailLayout}>

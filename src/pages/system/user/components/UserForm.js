@@ -181,37 +181,15 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
           <Upload {...fileProps}>{fileList.length < 1 && <UploadOutlined />}</Upload>
         </ImgCrop>
       </Form.Item>
-      <Form.Item
-        label="名称"
-        name="username"
-        rules={[
-          {
-            required: true,
-            message: '请将名称长度保持在1至255字符之间！',
-            min: 1,
-            max: 255,
-          },
-        ]}
-      >
+      <Form.Item label="名称" name="username" rules={[{ required: true }, { max: 255 }]}>
         <Input />
       </Form.Item>
       {!isEdit && (
-        <Form.Item
-          label="密码"
-          name="password"
-          rules={[
-            {
-              required: true,
-              message: '请将密码长度保持在6至32字符之间！',
-              min: 6,
-              max: 32,
-            },
-          ]}
-        >
+        <Form.Item label="密码" name="password" rules={[{ required: true }, { min: 6, max: 32 }]}>
           <Input.Password />
         </Form.Item>
       )}
-      <Form.Item label="所属部门" name="departmentIdList" rules={[{ required: true, message: '请选择一个部门！' }]}>
+      <Form.Item label="所属部门" name="departmentIdList" rules={[{ required: true }]}>
         <TreeSelect
           showSearch
           dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
@@ -227,35 +205,19 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
       </Form.Item>
       <>
         <div style={{ display: expand ? 'block' : 'none' }}>
-          <Form.Item
-            label="昵称"
-            name="nickname"
-            rules={[{ message: '请将昵称长度保持在1至32字符之间！', min: 1, max: 32 }]}
-          >
+          <Form.Item label="昵称" name="nickname" rules={[{ max: 32 }]}>
             <Input />
           </Form.Item>
-          <Form.Item
-            label="真实姓名"
-            name="realName"
-            rules={[{ message: '请将真实姓名长度保持在1至255字符之间！', min: 1, max: 255 }]}
-          >
+          <Form.Item label="真实姓名" name="realName" rules={[{ max: 255 }]}>
             <Input />
           </Form.Item>
-          <Form.Item label="邮箱" name="email" rules={[{ type: 'email', message: '请输入正确的邮箱。' }]}>
+          <Form.Item label="邮箱" name="email" rules={[{ type: 'email' }]}>
             <Input type="email" />
           </Form.Item>
-          <Form.Item
-            label="座机号码"
-            name="phone"
-            rules={[{ message: '请将座机号码长度保持在1至32字符之间！', min: 1, max: 32 }]}
-          >
+          <Form.Item label="座机号码" name="phone" rules={[{ max: 32 }]}>
             <Input />
           </Form.Item>
-          <Form.Item
-            label="手机号码"
-            name="mobile"
-            rules={[{ message: '请将手机号码长度保持在1至32字符之间！', min: 1, max: 32 }]}
-          >
+          <Form.Item label="手机号码" name="mobile" rules={[{ max: 32 }]}>
             <Input />
           </Form.Item>
           <Form.Item label="性别" name="sex">

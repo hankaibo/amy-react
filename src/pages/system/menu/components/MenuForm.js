@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { Form, Input, Switch, TreeSelect, Tooltip, Button, message } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { Form, Input, Switch, TreeSelect, Button, message } from 'antd';
 import { connect } from 'umi';
 import { isEmpty } from '@/utils/utils';
 
@@ -104,38 +103,14 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
       }}
       onFinish={handleAddOrUpdate}
     >
-      <Form.Item
-        label="名称"
-        name="name"
-        rules={[
-          {
-            required: true,
-            message: '请将名称长度保持在1至20字符之间！',
-            min: 1,
-            max: 20,
-          },
-        ]}
-      >
+      <Form.Item label="名称" name="name" rules={[{ required: true }, { max: 20 }]}>
         <Input />
       </Form.Item>
       <Form.Item
-        label={
-          <span>
-            <span>编码</span>
-            <Tooltip title="请保证与前台路由组织的name一致，以实现动态菜单功能。">
-              <QuestionCircleOutlined />
-            </Tooltip>
-          </span>
-        }
+        label="编码"
         name="code"
-        rules={[
-          {
-            required: true,
-            message: '请将编码长度保持在1至20字符之间！',
-            min: 1,
-            max: 20,
-          },
-        ]}
+        tooltip="请保证与前台路由组织的name一致，以实现动态菜单功能"
+        rules={[{ required: true }, { max: 20 }]}
       >
         <Input />
       </Form.Item>

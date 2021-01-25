@@ -1,16 +1,20 @@
+// https://prettier.io/docs/en/options.html
+
 module.exports = {
-  singleQuote: true,
-  trailingComma: 'all',
-  printWidth: 120,
-  proseWrap: 'never',
+  printWidth: 120, // 80
+  tabWidth: 2,
+  useTabs: false,
+  semi: true,
+  singleQuote: true, // false
+  quoteProps: 'as-needed',
+  jsxSingleQuote: false,
+  trailingComma: 'all', // es5
+  bracketSpacing: true,
+  jsxBracketSameLine: false,
+  arrowParens: 'always',
+  proseWrap: 'never', // preserve
   endOfLine: 'lf',
   overrides: [
-    {
-      files: '.prettierrc',
-      options: {
-        parser: 'json',
-      },
-    },
     {
       files: 'document.ejs',
       options: {

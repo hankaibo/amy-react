@@ -103,9 +103,7 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
       form={form}
       name="dictionaryForm"
       className="form"
-      initialValues={{
-        status: true,
-      }}
+      initialValues={{ status: true }}
       onFinish={handleAddOrUpdate}
     >
       {parentName && (
@@ -113,39 +111,13 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
           <Input value={parentName} disabled />
         </Form.Item>
       )}
-      <Form.Item
-        label="名称"
-        name="name"
-        rules={[
-          {
-            required: true,
-            message: '请将名称长度保持在1至20字符之间！',
-            min: 1,
-            max: 20,
-          },
-        ]}
-      >
+      <Form.Item label="名称" name="name" rules={[{ required: true }, { max: 20 }]}>
         <Input placeholder="请输入字典名称" />
       </Form.Item>
-      <Form.Item
-        label="编码"
-        name="code"
-        rules={[
-          {
-            required: true,
-            message: '请将编码长度保持在1至20字符之间！',
-            min: 1,
-            max: 20,
-          },
-        ]}
-      >
+      <Form.Item label="编码" name="code" rules={[{ required: true }, { max: 20 }]}>
         <Input placeholder="请输入字典编码" />
       </Form.Item>
-      <Form.Item
-        label="值"
-        name="value"
-        rules={[{ required: true, message: '请将值长度保持在1至20字符之间！', min: 1, max: 20 }]}
-      >
+      <Form.Item label="值" name="value" rules={[{ required: true }, { max: 20 }]}>
         <Input placeholder="请输入字典值" />
       </Form.Item>
       <Form.Item label="状态" name="status" rules={[{ required: true }]} valuePropName="checked">
@@ -154,11 +126,7 @@ const DictionaryForm = connect(({ systemDictionary: { dictionary }, loading }) =
       <Form.Item label="排序" name="sort">
         <InputNumber placeholder="请输入字典排序" min={0} max={999} style={{ width: '100%' }} />
       </Form.Item>
-      <Form.Item
-        label="描述"
-        name="description"
-        rules={[{ message: '请将描述长度保持在1至50字符之间！', min: 1, max: 50 }]}
-      >
+      <Form.Item label="描述" name="description" rules={[{ max: 50 }]}>
         <Input.TextArea placeholder="请输入字典描述。" autoSize={{ minRows: 2, maxRows: 6 }} />
       </Form.Item>
       <Form.Item {...tailLayout}>

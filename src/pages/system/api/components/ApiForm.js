@@ -101,46 +101,13 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
       }}
       onFinish={handleAddOrUpdate}
     >
-      <Form.Item
-        label="名称"
-        name="name"
-        rules={[
-          {
-            required: true,
-            message: '请将名称长度保持在1至20字符之间！',
-            min: 1,
-            max: 20,
-          },
-        ]}
-      >
+      <Form.Item label="名称" name="name" rules={[{ required: true }, { max: 20 }]}>
         <Input />
       </Form.Item>
-      <Form.Item
-        label="编码"
-        name="code"
-        rules={[
-          {
-            required: true,
-            message: '请将编码长度保持在1至50字符之间！',
-            min: 1,
-            max: 50,
-          },
-        ]}
-      >
+      <Form.Item label="编码" name="code" rules={[{ required: true }, { max: 50 }]}>
         <Input />
       </Form.Item>
-      <Form.Item
-        label="URL"
-        name="uri"
-        rules={[
-          {
-            required: true,
-            message: '请将URL长度保持在3至100字符之间！',
-            min: 3,
-            max: 100,
-          },
-        ]}
-      >
+      <Form.Item label="URL" name="uri" rules={[{ required: true }, { min: 3, max: 100 }]}>
         <Input />
       </Form.Item>
       <Form.Item label="状态" name="status" rules={[{ required: true }]} valuePropName="checked">
@@ -157,7 +124,10 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
       </Form.Item>
       <Form.Item label="父菜单" name="parentId">
         <TreeSelect
-          dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+          dropdownStyle={{
+            maxHeight: 400,
+            overflow: 'auto',
+          }}
           treeData={tree}
           placeholder="请选择菜单。"
           treeDefaultExpandAll

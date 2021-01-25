@@ -113,90 +113,25 @@ const BaseView = ({ currentUser, dispatch }) => {
     <div className={styles.baseView}>
       <div className={styles.left}>
         <Form layout="vertical" onFinish={handleFinish} initialValues={currentUser} hideRequiredMark>
-          <Form.Item
-            name="email"
-            label="邮箱"
-            rules={[
-              {
-                required: true,
-                message: '请输入您的邮箱!',
-              },
-            ]}
-          >
+          <Form.Item name="email" label="邮箱" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-          <Form.Item
-            name="nickname"
-            label="昵称"
-            rules={[
-              {
-                required: true,
-                message: '请输入您的昵称!',
-              },
-            ]}
-          >
+          <Form.Item name="nickname" label="昵称" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-          <Form.Item
-            name="signature"
-            label="个性签名"
-            rules={[
-              {
-                required: true,
-                message: '请输入个性签名!',
-              },
-            ]}
-          >
+          <Form.Item name="signature" label="个性签名" rules={[{ required: true }]}>
             <Input placeholder="个性签名" />
           </Form.Item>
-          <Form.Item
-            name="profile"
-            label="个人简介"
-            rules={[
-              {
-                required: true,
-                message: '请输入个人简介!',
-              },
-            ]}
-          >
+          <Form.Item name="profile" label="个人简介" rules={[{ required: true }]}>
             <Input.TextArea placeholder="个人简介" rows={4} />
           </Form.Item>
-          <Form.Item
-            name="phone"
-            label="固定电话"
-            rules={[
-              {
-                required: true,
-                message: '请输入您的联系电话!',
-              },
-              { validator: validatorPhone },
-            ]}
-          >
+          <Form.Item name="phone" label="固定电话" rules={[{ required: true }, { validator: validatorPhone }]}>
             <PhoneView />
           </Form.Item>
-          <Form.Item
-            name="mobile"
-            label="移动电话"
-            rules={[
-              {
-                required: true,
-                message: '请输入您的联系电话!',
-              },
-              { validator: validatorPhone },
-            ]}
-          >
+          <Form.Item name="mobile" label="移动电话" rules={[{ required: true }, { validator: validatorPhone }]}>
             <PhoneView />
           </Form.Item>
-          <Form.Item
-            name="address"
-            label="街道地址"
-            rules={[
-              {
-                required: true,
-                message: '请输入您的街道地址!',
-              },
-            ]}
-          >
+          <Form.Item name="address" label="街道地址" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
           <Form.Item>

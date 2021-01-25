@@ -143,16 +143,7 @@ const MessageForm = connect(({ user: { departmentTree, message }, loading }) => 
       }}
       onFinish={handleAddOrUpdate}
     >
-      <Form.Item
-        label="收信人"
-        name="receiveIdList"
-        rules={[
-          {
-            required: true,
-            message: '请选择收信人！',
-          },
-        ]}
-      >
+      <Form.Item label="收信人" name="receiveIdList" rules={[{ required: true }]}>
         <TreeSelect
           style={{ width: '100%' }}
           allowClear
@@ -165,28 +156,13 @@ const MessageForm = connect(({ user: { departmentTree, message }, loading }) => 
           treeData={departmentTree}
         />
       </Form.Item>
-      <Form.Item
-        label="标题"
-        name="title"
-        rules={[
-          {
-            required: true,
-            message: '请将标题长度保持在1至128字符之间！',
-            min: 1,
-            max: 128,
-          },
-        ]}
-      >
+      <Form.Item label="标题" name="title" rules={[{ required: true }, { max: 128 }]}>
         <Input />
       </Form.Item>
-      <Form.Item
-        label="内容"
-        name="content"
-        rules={[{ message: '请将描述长度保持在1至255字符之间！', min: 1, max: 255 }]}
-      >
+      <Form.Item label="内容" name="content" rules={[{ max: 255 }]}>
         <Input.TextArea placeholder="请输入信息描述。" autoSize={{ minRows: 3, maxRows: 6 }} />
       </Form.Item>
-      <Form.Item label="类型" name="type" rules={[{ required: true, message: '请选择类型！' }]}>
+      <Form.Item label="类型" name="type" rules={[{ required: true, message: '请选择类型' }]}>
         <Radio.Group>
           <Radio value={1}>通知</Radio>
           <Radio value={2}>消息</Radio>
@@ -196,7 +172,7 @@ const MessageForm = connect(({ user: { departmentTree, message }, loading }) => 
       <Form.Item label="状态" name="status" rules={[{ required: true }]} valuePropName="checked">
         <Switch checkedChildren="开" unCheckedChildren="关" />
       </Form.Item>
-      <Form.Item label="发布" name="isPublish" rules={[{ required: true, message: '请选择类型！' }]}>
+      <Form.Item label="发布" name="isPublish" rules={[{ required: true, message: '请选择类型' }]}>
         <Radio.Group>
           <Radio value={1}>是</Radio>
           <Radio value={0}>否</Radio>
