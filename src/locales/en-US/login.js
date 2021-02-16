@@ -4,7 +4,7 @@ export default {
   'layout.user.link.privacy': 'Privacy',
   'layout.user.link.terms': 'Terms',
   'app.logo.name': 'my antdpro',
-  'app.copyright': '2020 hankaibo',
+  'app.copyright': '2021 hankaibo',
   'app.login.username': 'username',
   'app.login.password': 'password',
   'app.login.message-invalid-credentials': 'Invalid username or password（admin|user/123456）',
