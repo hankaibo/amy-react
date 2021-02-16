@@ -21,6 +21,8 @@ jobs:
       # 第一步及执行动作，调用官方的 actions/checkout
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
 
       # 第二步及执行动作，调用官方的 actions/setup-node ，并指定了 node 的版本
       - name: Setup Node
