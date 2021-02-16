@@ -27,16 +27,23 @@ const codeMessage = {
  * 异常处理程序
  */
 const errorHandler = (error) => {
-  let apierror = {};
+  const apierror = {
+    status: '',
+    message: '',
+  };
   // data为后台接口包含的错误信息。如果后台返回的数据格式不符合要求将自己格式化一下。
   const { response, data } = error;
   if (response && response.status) {
+    // 如果后台接口定义了错误信息，则使用接口定义的；否则使用默认的错误信息。
     if (Object.prototype.toString.call(data) === '[object Object]') {
-      apierror = data;
-    }
-    if (!apierror.message) {
+      const { status, message } = data;
+      apierror.status = status;
+      apierror.message = message;
+    } else {
+      apierror.status = response.status;
       apierror.message = codeMessage[response.status] || response.statusText;
     }
+
     const errorText = apierror.message;
     const { status, url } = response;
 
@@ -56,7 +63,7 @@ const errorHandler = (error) => {
   // throw error;
   // 方式二，返回整个错误信息或者回后台接口自定义错误信息，我使用了后者；
   // 优缺点与方式一相反。
-  return apierror;
+  return { apierror };
 };
 
 /**
