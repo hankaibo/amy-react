@@ -110,7 +110,12 @@ const BasicLayout = (props) => {
           const first = routes.indexOf(route) === 0;
           return first ? <Link to={paths.join('/')}>{route.breadcrumbName}</Link> : <span>{route.breadcrumbName}</span>;
         }}
-        footerRender={() => <DefaultFooter links={[]} copyright={<span>copyright</span>} />}
+        footerRender={() => {
+          if (settings.footerRender || settings.footerRender === undefined) {
+            return <DefaultFooter links={[]} copyright={<span>copyright</span>} />;
+          }
+          return null;
+        }}
         menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
         postMenuData={(menuData) => {
