@@ -4,7 +4,7 @@ module.exports = {
     node: true,
     es6: true,
   },
-  extends: ['airbnb', 'prettier', 'prettier/react'],
+  extends: ['airbnb', 'prettier'],
   globals: {
     REACT_APP_ENV: true,
   },
