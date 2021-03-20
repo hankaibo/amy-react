@@ -21,7 +21,7 @@ const UserRoleForm = connect(({ systemUser: { treeData, checkedKeys }, loading }
       type: 'systemUser/fetchRoleTree',
       payload: {
         id,
-        status: 1,
+        status: 'ENABLED',
       },
     });
     return () => {
@@ -58,7 +58,7 @@ const UserRoleForm = connect(({ systemUser: { treeData, checkedKeys }, loading }
   const handleCheck = (values) => {
     const { checked } = values;
     setCheckedKeys(checked);
-    // 同步到form表单，因为tree组件不是表单组件的一部分，我无法自动同步，需要手动设置一下。
+    // 同步到form表单，因为tree组件不是表单组件的一部分，无法自动同步，需要手动设置一下。
     setFieldsValue({ ids: [...checked] });
   };
 

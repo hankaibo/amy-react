@@ -55,7 +55,7 @@ export default {
       if (apierror) {
         return;
       }
-      const list = response.map((item) => ({ ...item, status: !!item.status }));
+      const list = response.map((item) => ({ ...item, status: item.status === 'ENABLED' }));
       yield put({
         type: 'saveList',
         payload: {
@@ -65,7 +65,7 @@ export default {
       if (callback) callback();
     },
     *add({ payload, callback }, { call, put, select }) {
-      const values = { ...payload, status: +payload.status };
+      const values = { ...payload, status: payload.status ? 'ENABLED' : 'DISABLED' };
       const response = yield call(addApi, values);
       const { apierror } = response;
       if (apierror) {
@@ -88,7 +88,7 @@ export default {
       if (apierror) {
         return;
       }
-      const api = { ...response, status: !!response.status };
+      const api = { ...response, status: response.status === 'ENABLED' };
       yield put({
         type: 'save',
         payload: {
@@ -98,7 +98,7 @@ export default {
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put, select }) {
-      const values = { ...payload, status: +payload.status };
+      const values = { ...payload, status: payload.status ? 'ENABLED' : 'DISABLED' };
       const response = yield call(updateApi, values);
       const { apierror } = response;
       if (apierror) {
@@ -115,7 +115,7 @@ export default {
     },
     *enable({ payload, callback }, { call, put, select }) {
       const { id, status } = payload;
-      const values = { id, status: +status };
+      const values = { id, status: status ? 'ENABLED' : 'DISABLED' };
       const response = yield call(enableApi, values);
       const { apierror } = response;
       if (apierror) {

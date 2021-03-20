@@ -149,8 +149,8 @@ const Role = connect(({ systemRole: { tree, list }, loading }) => ({
       title: '角色状态',
       dataIndex: 'status',
       filters: [
-        { text: '禁用', value: 0 },
-        { text: '启用', value: 1 },
+        { text: '禁用', value: 'DISABLED' },
+        { text: '启用', value: 'ENABLED' },
       ],
       filterMultiple: false,
       render: (text, record) => (

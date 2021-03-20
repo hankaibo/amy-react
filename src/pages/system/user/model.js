@@ -57,7 +57,7 @@ export default {
         return;
       }
       const { list, pageNum: current, pageSize, total } = response;
-      const newList = list.map((item) => ({ ...item, status: !!item.status }));
+      const newList = list.map((item) => ({ ...item, status: item.status === 'ENABLED' }));
       yield put({
         type: 'saveList',
         payload: {
@@ -68,7 +68,7 @@ export default {
       if (callback) callback();
     },
     *add({ payload, callback }, { call, put, select }) {
-      const values = { ...payload, status: +payload.status };
+      const values = { ...payload, status: payload.status ? 'ENABLED' : 'DISABLED' };
       const response = yield call(addUser, values);
       const { apierror } = response;
       if (apierror) {
@@ -93,7 +93,7 @@ export default {
       }
       const user = {
         ...response,
-        status: !!response.status,
+        status: response.status === 'ENABLED',
         departmentIdList: response.departmentIdList.map((item) => item.toString()),
       };
       yield put({
@@ -105,7 +105,7 @@ export default {
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put, select }) {
-      const values = { ...payload, status: +payload.status };
+      const values = { ...payload, status: payload.status ? 'ENABLED' : 'DISABLED' };
       const response = yield call(updateUser, values);
       const { apierror } = response;
       if (apierror) {
@@ -122,7 +122,7 @@ export default {
     },
     *enable({ payload, callback }, { call, put, select }) {
       const { id, status } = payload;
-      const params = { id, status: +status };
+      const params = { id, status: status ? 'ENABLED' : 'DISABLED' };
       const response = yield call(enableUser, params);
       const { apierror } = response;
       if (apierror) {

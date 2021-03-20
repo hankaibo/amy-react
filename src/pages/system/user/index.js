@@ -44,7 +44,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
     dispatch({
       type: 'systemUser/fetchTree',
       payload: {
-        status: 1,
+        status: 'ENABLED',
       },
     });
     return () => {
@@ -213,8 +213,8 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       title: '用户状态',
       dataIndex: 'status',
       filters: [
-        { text: '禁用', value: 0 },
-        { text: '启用', value: 1 },
+        { text: '禁用', value: 'DISABLED' },
+        { text: '启用', value: 'ENABLED' },
       ],
       filterMultiple: false,
       width: 110,

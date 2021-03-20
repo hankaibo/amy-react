@@ -49,7 +49,7 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
         payload: {
           ...values,
           id,
-          type: 1,
+          type: 'MENU',
         },
         callback: () => {
           resetFields();
@@ -62,7 +62,7 @@ const MenuForm = connect(({ systemMenu: { tree, menu }, loading }) => ({
         type: 'systemMenu/add',
         payload: {
           ...values,
-          type: 1,
+          type: 'MENU',
         },
         callback: () => {
           resetFields();

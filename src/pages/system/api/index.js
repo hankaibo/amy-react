@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Card, Tree, Table, Switch, Button, Divider, Popconfirm, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Button, Card, Col, Divider, message, Popconfirm, Row, Switch, Table, Tree } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import {
-  ArrowUpOutlined,
   ArrowDownOutlined,
-  PlusOutlined,
+  ArrowUpOutlined,
   DeleteOutlined,
   EditOutlined,
+  PlusOutlined,
   UploadOutlined,
 } from '@ant-design/icons';
 import { connect } from 'umi';
@@ -18,7 +18,6 @@ import ApiForm from './components/ApiForm';
 import UploadForm from './components/UploadTable';
 
 const { DirectoryTree } = Tree;
-const API_TYPE = 2;
 
 const Api = connect(({ systemApi: { tree, list }, loading }) => ({
   tree,
@@ -29,7 +28,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
   const [currentMenu, setCurrentMenu] = useState(null);
   // 【查询参数】
   const [params, setParams] = useState({
-    type: API_TYPE, // 固定值，数据初始化后不可更改。
+    type: 'API', // 固定值，数据初始化后不可更改。
     id: 0,
     status: null,
   });
@@ -41,7 +40,7 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
     dispatch({
       type: 'systemApi/fetch',
       payload: {
-        type: 1, // 在这里默认菜单类型为1，接口类型为2。
+        type: 'MENU',
       },
     });
     return () => {
@@ -170,8 +169,8 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
       title: '接口状态',
       dataIndex: 'status',
       filters: [
-        { text: '禁用', value: 0 },
-        { text: '启用', value: 1 },
+        { text: '禁用', value: 'DISABLED' },
+        { text: '启用', value: 'ENABLED' },
       ],
       filterMultiple: false,
       width: 120,

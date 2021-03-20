@@ -50,7 +50,7 @@ export default {
       if (apierror) {
         return;
       }
-      const list = response.map((item) => ({ ...item, status: !!item.status }));
+      const list = response.map((item) => ({ ...item, status: item.status === 'ENABLED' }));
       yield put({
         type: 'saveList',
         payload: {
@@ -60,7 +60,7 @@ export default {
       if (callback) callback();
     },
     *add({ payload, callback }, { call, put, select }) {
-      const values = { ...payload, status: +payload.status };
+      const values = { ...payload, status: payload.status ? 'ENABLED' : 'DISABLED' };
       const response = yield call(addMenu, values);
       const { apierror } = response;
       if (apierror) {
@@ -88,7 +88,7 @@ export default {
       if (apierror) {
         return;
       }
-      const menu = { ...response, status: !!response.status };
+      const menu = { ...response, status: response.status === 'ENABLED' };
       yield put({
         type: 'save',
         payload: {
@@ -98,7 +98,7 @@ export default {
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put, select }) {
-      const values = { ...payload, status: +payload.status };
+      const values = { ...payload, status: payload.status ? 'ENABLED' : 'DISABLED' };
       const response = yield call(updateMenu, values);
       const { apierror } = response;
       if (apierror) {
@@ -121,7 +121,7 @@ export default {
     },
     *enable({ payload, callback }, { call, put, select }) {
       const { id, status } = payload;
-      const values = { id, status: +status };
+      const values = { id, status: status ? 'ENABLED' : 'DISABLED' };
       const response = yield call(enableMenu, values);
       const { apierror } = response;
       if (apierror) {

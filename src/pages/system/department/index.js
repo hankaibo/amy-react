@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Card, Tree, Table, Input, Button, Switch, Popconfirm, Divider, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Button, Card, Col, Divider, Input, message, Popconfirm, Row, Switch, Table, Tree } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
-import { ArrowUpOutlined, ArrowDownOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { ArrowDownOutlined, ArrowUpOutlined, DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
 import RenderPropsModal from '@/components/RenderModal';
 import NoMatch from '@/components/Authorized/NoMatch';
-import { getPlainNode, getParentKey, getValue, isArray, isEmpty } from '@/utils/utils';
+import { getParentKey, getPlainNode, getValue, isArray, isEmpty } from '@/utils/utils';
 import DepartmentForm from './components/DepartmentForm';
 
 const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
@@ -197,8 +197,8 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       title: '部门状态',
       dataIndex: 'status',
       filters: [
-        { text: '禁用', value: 0 },
-        { text: '启用', value: 1 },
+        { text: '禁用', value: 'DISABLED' },
+        { text: '启用', value: 'ENABLED' },
       ],
       filterMultiple: false,
       width: 110,

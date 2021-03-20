@@ -1,4 +1,4 @@
-import { pageDict, addDict, getDictById, updateDict, enableDict, deleteDict, deleteBatchDict } from './service';
+import { addDict, deleteBatchDict, deleteDict, enableDict, getDictById, pageDict, updateDict } from './service';
 
 export default {
   namespace: 'systemDictionary',
@@ -30,14 +30,14 @@ export default {
       yield put({
         type: 'saveList',
         payload: {
-          list: list.map((item) => ({ ...item, status: !!item.status })),
+          list: list.map((item) => ({ ...item, status: item.status === 'ENABLED' })),
           pagination: { current, pageSize, total },
         },
       });
       if (callback) callback();
     },
     *add({ payload, callback }, { call, put, select }) {
-      const values = { ...payload, status: +payload.status };
+      const values = { ...payload, status: payload.status ? 'ENABLED' : 'DISABLED' };
       const response = yield call(addDict, values);
       const { apierror } = response;
       if (apierror) {
@@ -60,7 +60,7 @@ export default {
       if (apierror) {
         return;
       }
-      const dictionary = { ...response, status: !!response.status };
+      const dictionary = { ...response, status: response.status === 'ENABLED' };
       yield put({
         type: 'save',
         payload: {
@@ -70,7 +70,7 @@ export default {
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put, select }) {
-      const values = { ...payload, status: +payload.status };
+      const values = { ...payload, status: payload.status ? 'ENABLED' : 'DISABLED' };
       const response = yield call(updateDict, values);
       const { apierror } = response;
       if (apierror) {
@@ -87,7 +87,7 @@ export default {
     },
     *enable({ payload, callback }, { call, put, select }) {
       const { id, status } = payload;
-      const params = { id, status: +status };
+      const params = { id, status: status ? 'ENABLED' : 'DISABLED' };
       const response = yield call(enableDict, params);
       const { apierror } = response;
       if (apierror) {

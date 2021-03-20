@@ -10,7 +10,6 @@ import { getValue, isArray, isEmpty } from '@/utils/utils';
 import MenuForm from './components/MenuForm';
 
 const { DirectoryTree } = Tree;
-const MENU_TYPE = 1;
 
 const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
   tree,
@@ -21,7 +20,7 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
   const [currentMenu, setCurrentMenu] = useState(null);
   // 【查询参数】
   const [params, setParams] = useState({
-    type: MENU_TYPE, // 固定值，数据初始化后不可更改。
+    type: 'MENU', // 固定值，数据初始化后不可更改。
     id: 0,
     status: null,
   });
@@ -33,7 +32,7 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
     dispatch({
       type: 'systemMenu/fetch',
       payload: {
-        type: MENU_TYPE, // 在这里默认菜单类型为1，接口类型为2。
+        type: 'MENU',
       },
     });
     return () => {
@@ -151,8 +150,8 @@ const Menu = connect(({ systemMenu: { tree, list }, loading }) => ({
       title: '菜单状态',
       dataIndex: 'status',
       filters: [
-        { text: '禁用', value: 0 },
-        { text: '启用', value: 1 },
+        { text: '禁用', value: 'DISABLED' },
+        { text: '启用', value: 'ENABLED' },
       ],
       filterMultiple: false,
       render: (text, record) => (

@@ -47,7 +47,7 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
         payload: {
           ...values,
           id,
-          type: 2,
+          type: 'API',
         },
         callback: () => {
           resetFields();
@@ -60,7 +60,7 @@ const ApiForm = connect(({ systemApi: { tree, api }, loading }) => ({
         type: 'systemApi/add',
         payload: {
           ...values,
-          type: 2,
+          type: 'API',
         },
         callback: () => {
           resetFields();
