@@ -5,7 +5,7 @@ import request from '@/utils/request';
  * 查询菜单树数据。
  * @returns {Promise<void>}
  */
-export async function getMenuTree(params = { type: 1 }) {
+export async function getMenuTree(params = { type: 'MENU' }) {
   return request(`/resources?${stringify(params)}`);
 }
 

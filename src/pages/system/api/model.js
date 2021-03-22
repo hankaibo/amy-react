@@ -175,8 +175,8 @@ export default {
         .map((it) => {
           const { name, uri, code, method } = it;
           return {
-            type: 2,
-            status: 1,
+            type: 'API',
+            status: 'ENABLED',
             parentId,
             name,
             uri,
@@ -192,7 +192,7 @@ export default {
       yield put({
         type: 'fetchChildrenById',
         payload: {
-          type: 2,
+          type: 'API',
           id: parentId,
         },
       });
@@ -251,12 +251,8 @@ export default {
     },
     uploadFile(state, { payload }) {
       const { fileContent } = payload;
-      const { basePath, paths } = fileContent;
+      const { paths } = fileContent;
 
-      const safeBasePath = `/${basePath
-        .split('/')
-        .filter((item) => item)
-        .join('/')}`;
       // 所有接口
       const apiList = [];
       Object.keys(paths).forEach((key, index) => {
@@ -264,13 +260,13 @@ export default {
         const starKey = key.replace(/{\w+}/g, '*');
         Object.keys(item).forEach((k, i) => {
           const it = item[k];
-          const uri = starKey.startsWith('/') ? starKey : `${safeBasePath}${starKey}`;
+          const uri = starKey.startsWith('/') ? starKey : `${starKey}`;
           const o = {
             id: `${index}_${i}`,
             key: `${index}_${i}`,
             name: it.summary,
             uri,
-            code: `${safeBasePath.split('/')[1]}:${starKey
+            code: `${starKey
               .split('/')
               .filter((f) => f && f !== '*')
               .join('')}:${k}`,
