@@ -74,5 +74,6 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
+  esbuild: {},
   chainWebpack: webpackPlugin,
 });

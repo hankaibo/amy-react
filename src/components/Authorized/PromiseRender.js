@@ -60,6 +60,7 @@ export default class PromiseRender extends React.Component {
   render() {
     const { component: Component } = this.state;
     const { ok, error, promise, ...rest } = this.props;
+
     return Component ? (
       <Component {...rest} />
     ) : (

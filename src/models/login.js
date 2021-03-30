@@ -48,6 +48,9 @@ const Model = {
         const redirectUrlParams = new URL(redirect);
         if (redirectUrlParams.origin === urlParams.origin) {
           redirect = redirect.substr(urlParams.origin.length);
+          if (window.routerBase !== '/') {
+            redirect = redirect.replace(window.routerBase, '/');
+          }
           if (redirect.match(/^\/.*#/)) {
             redirect = redirect.substr(redirect.indexOf('#') + 1);
           }
@@ -69,7 +72,7 @@ const Model = {
         },
       });
       const { redirect } = getPageQuery();
-      // redirect
+      // Note: There may be security issues, please note
       if (window.location.pathname !== '/user/login' && !redirect) {
         history.replace({
           pathname: '/user/login',

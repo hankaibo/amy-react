@@ -26,7 +26,7 @@ const noMatch = (
 );
 
 /**
- * use Authorized check all menu item
+ * Use Authorized check all menu item
  */
 const menuDataRender = (menuList) =>
   menuList.map((item) => {
@@ -121,6 +121,10 @@ const BasicLayout = (props) => {
         postMenuData={(menuData) => {
           menuDataRef.current = menuData || [];
           return menuData || [];
+        }}
+        waterMarkProps={{
+          content: 'My Ant Design Pro',
+          fontColor: 'rgba(24,144,255,0.15)',
         }}
       >
         <Authorized authority={authorized.authority} noMatch={noMatch}>
