@@ -3,7 +3,7 @@ export default {
   'layout.user.link.help': 'Help',
   'layout.user.link.privacy': 'Privacy',
   'layout.user.link.terms': 'Terms',
-  'app.logo.name': 'my antdpro',
+  'app.logo.name': 'Amy',
   'app.copyright': '2021 hankaibo',
   'app.login.username': 'username',
   'app.login.password': 'password',

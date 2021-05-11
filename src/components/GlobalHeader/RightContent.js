@@ -55,7 +55,7 @@ const GlobalHeaderRight = (props) => {
             color: 'inherit',
           }}
           target="_blank"
-          href="https://hankaibo.github.io/myantdpro-docs/"
+          href="https://hankaibo.github.io/amy-docs/"
           rel="noopener noreferrer"
           className={styles.action}
         >

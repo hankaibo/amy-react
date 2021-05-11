@@ -216,7 +216,7 @@ export default class Ellipsis extends Component {
       );
     }
 
-    const id = `antd-pro-ellipsis-${`${new Date().getTime()}${Math.floor(Math.random() * 100)}`}`;
+    const id = `amy-ellipsis-${`${new Date().getTime()}${Math.floor(Math.random() * 100)}`}`;
 
     // support document.body.style.webkitLineClamp
     if (isSupportLineClamp) {

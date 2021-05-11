@@ -1,6 +1,6 @@
 [English](./README.md) | 简体中文
 
-<h1 align="center">My Ant Design Pro</h1>
+<h1 align="center">Amy</h1>
 
 <div align="center">
 
@@ -25,8 +25,8 @@
 ## 使用
 
 ```bash
-$ git clone https://github.com/hankaibo/myantdpro.git myantdpro
-$ cd myantdpro
+$ git clone https://github.com/hankaibo/amy.git amy
+$ cd amy
 $ npm install (npm --registry https://registry.npm.taobao.org install)
 $ npm start             # 访问 http://localhost:8000（项目本地mock模拟接口）
   or

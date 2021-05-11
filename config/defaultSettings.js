@@ -6,7 +6,7 @@ const proSettings = {
   fixedHeader: false, // sticky header
   fixSiderbar: true, // sticky siderbar
   colorWeak: false,
-  title: 'my antdpro',
+  title: 'Amy',
   pwa: false,
   // Your custom iconfont Symbol script Url
   // eg：//at.alicdn.com/t/font_1039637_btcrd5co4w.js

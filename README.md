@@ -1,6 +1,6 @@
 English | [简体中文](./README.zh-CN.md)
 
-<h1 align="center">My Ant Design Pro</h1>
+<h1 align="center">Amy</h1>
 
 <div align="center">
 
@@ -25,8 +25,8 @@ Based on Ant Design Pro, it is meticulously extended, developed with JavaScript,
 ## Usage
 
 ```bash
-$ git clone https://github.com/hankaibo/myantdpro.git myantdpro
-$ cd myantdpro
+$ git clone https://github.com/hankaibo/amy.git amy
+$ cd amy
 $ npm install (or npm --registry https://registry.npm.taobao.org install)
 $ npm start             # visit http://localhost:8000(local mock api)
   or
