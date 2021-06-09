@@ -1,5 +1,5 @@
 # 工作流程的名字。
-name: Deploy to Tencent Cloud ECS
+name: Deploy to Aliyun Cloud ECS
 
 # 类似事件监听机制，表示什么动作触发工作流程。
 # 当 master 分支有 push 时，即自动执行工作流程。
@@ -42,9 +42,9 @@ jobs:
       - name: Deploy
         uses: easingthemes/ssh-deploy@v2.1.2
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.TENCENT_CLOUD_KEY }}
-          REMOTE_HOST: ${{ secrets.TENCENT_CLOUD_IP }}
-          REMOTE_USER: ${{ secrets.TENCENT_CLOUD_USERNAME }}
+          SSH_PRIVATE_KEY: ${{ secrets.CLOUD_KEY }}
+          REMOTE_HOST: ${{ secrets.CLOUD_HOST }}
+          REMOTE_USER: ${{ secrets.CLOUD_USER }}
           ARGS: '-avz'
           SOURCE: 'dist/'
-          TARGET: ${{ secrets.TENCENT_CLOUD_WD }}
+          TARGET: ${{ secrets.CLOUD_TARGET }}
