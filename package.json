@@ -8,12 +8,11 @@
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "umi build",
     "lint": "umi g tmp && npm run lint:js && npm run lint:style && npm run lint:prettier",
-    "lint-staged:js": "eslint --ext .js,.jsx",
     "lint-staged": "lint-staged",
     "lint:fix": "eslint --fix --cache --ext .js,.jsx --format=pretty ./src && npm run lint:style",
     "lint:js": "eslint --cache --ext .js,.jsx --format=pretty ./src",
-    "lint:prettier": "prettier --check \"src/**/*\" --end-of-line auto",
     "lint:style": "stylelint --fix \"src/**/*.less\" --syntax less",
+    "lint:prettier": "prettier --check \"src/**/*\" --end-of-line auto",
     "prettier": "prettier -c --write \"src/**/*\"",
     "postinstall": "umi g tmp & husky install",
     "start": "cross-env UMI_ENV=dev umi dev",
@@ -24,7 +23,7 @@
   },
   "lint-staged": {
     "**/*.less": "stylelint --syntax less",
-    "**/*.{js,jsx}": "npm run lint-staged:js",
+    "**/*.{js,jsx}": "eslint --ext .js,.jsx",
     "**/*.{js,jsx,less,md,json}": [
       "prettier --write"
     ]
