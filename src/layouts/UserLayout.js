@@ -5,7 +5,6 @@ import React from 'react';
 import styles from './UserLayout.less';
 
 const UserLayout = (props) => {
-  const { formatMessage } = useIntl();
   const {
     route = {
       routes: [],
@@ -18,6 +17,7 @@ const UserLayout = (props) => {
       pathname: '',
     },
   } = props;
+  const { formatMessage } = useIntl();
   const { breadcrumb } = getMenuData(routes);
   const title = getPageTitle({
     pathname: location.pathname,

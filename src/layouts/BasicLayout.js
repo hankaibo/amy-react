@@ -38,8 +38,6 @@ const menuDataRender = (menuList) =>
   });
 
 const BasicLayout = (props) => {
-  const { formatMessage } = useIntl();
-
   const {
     dispatch,
     children,
@@ -81,6 +79,9 @@ const BasicLayout = (props) => {
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
   };
+
+  const { formatMessage } = useIntl();
+
   return (
     <>
       <ProLayout
