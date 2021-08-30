@@ -21,7 +21,7 @@ const Home = () => {
   return (
     <div className={styles.container}>
       <Row gutter={16}>
-        <Col xs={24} sm={16} md={16} lg={16} xl={16}>
+        <Col xs={24} sm={24} md={24} lg={16} xl={16}>
           <Card title={<Title level={3}>Amy后台管理框架</Title>}>
             <Typography>
               <Paragraph>
@@ -57,7 +57,7 @@ const Home = () => {
             </Typography>
           </Card>
         </Col>
-        <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+        <Col xs={24} sm={24} md={24} lg={8} xl={8}>
           <Card title={<Title level={3}>技术选型</Title>}>
             <Space>
               <List
@@ -77,7 +77,7 @@ const Home = () => {
         </Col>
       </Row>
       <Row gutter={16}>
-        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+        <Col xs={24} sm={24} md={24} lg={12} xl={8}>
           <Card title="联系信息">
             <Descriptions column={1} size="small">
               <Descriptions.Item
@@ -107,7 +107,7 @@ const Home = () => {
             </Descriptions>
           </Card>
         </Col>
-        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+        <Col xs={24} sm={24} md={24} lg={12} xl={8}>
           <Card title="更新日志">
             <Collapse ghost>
               {logList.map((item) => (
@@ -133,7 +133,7 @@ const Home = () => {
             </Collapse>
           </Card>
         </Col>
-        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+        <Col xs={24} sm={24} md={24} lg={12} xl={8}>
           <Card title="捐赠支持">
             <Space>
               {/* eslint-disable-next-line global-require */}
