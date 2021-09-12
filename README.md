@@ -25,7 +25,7 @@ Based on Ant Design Pro, it is meticulously extended, developed with JavaScript,
 ## Usage
 
 ```bash
-$ git clone https://github.com/hankaibo/amy.git amy
+$ git clone https://github.com/hankaibo/amy-react.git amy
 $ cd amy
 $ npm install (or npm --registry https://registry.npm.taobao.org install)
 $ npm start             # visit http://localhost:8000(local mock api)

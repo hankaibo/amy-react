@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Tree, Table, Input, Switch, Button, Popconfirm, Divider, message } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
-import { PlusOutlined, DeleteOutlined, EditOutlined, UserSwitchOutlined, ReloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, EditOutlined, UserSwitchOutlined, KeyOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
@@ -283,7 +283,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
             <RenderPropsModal>
               {({ showModalHandler, Modal }) => (
                 <>
-                  <ReloadOutlined title="重置密码" className="icon" onClick={showModalHandler} />
+                  <KeyOutlined title="重置密码" rotate={135} className="icon" onClick={showModalHandler} />
                   <Modal title={`您确定要重置 ${record.username} 的密码吗？`}>
                     <UserPasswordForm id={record.id} />
                   </Modal>

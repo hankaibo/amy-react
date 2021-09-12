@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "前端脚手架",
-  "homepage": "http://58.87.121.239:9000",
+  "homepage": "http://47.95.120.23:9000",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "umi build",
