@@ -11,9 +11,14 @@ const { Text, Link, Title, Paragraph } = Typography;
 const Home = () => {
   const [logList] = useState([
     {
+      version: 'v1.1.0',
+      datetime: '2021-]9-12',
+      content: ['添加区域管理功能；', '修复一些bug。'],
+    },
+    {
       version: 'v1.0.0',
       datetime: '2021-01-01',
-      content: ['Amy系统正式发布'],
+      content: ['Amy系统正式发布。'],
     },
   ]);
   const [backendList] = useState(['SpringBoot', 'Apache Shire', 'JWT', 'MyBatis']);
@@ -30,7 +35,7 @@ const Home = () => {
                 这便有了它。
               </Paragraph>
               <Paragraph>
-                <Text strong>当前版本：{logList[logList.length - 1].version}</Text>
+                <Text strong>当前版本：{logList[0].version}</Text>
               </Paragraph>
               <Paragraph>
                 <Button danger>
@@ -120,6 +125,7 @@ const Home = () => {
                   key={item.datetime}
                 >
                   <List
+                    style={{ paddingLeft: '24px' }}
                     size="small"
                     dataSource={item.content}
                     renderItem={(it, idx) => (
