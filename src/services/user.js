@@ -50,6 +50,14 @@ export async function getDepartmentTree(params) {
 }
 
 /**
+ * 获取字典数据。
+ * @returns {Promise<void>}
+ */
+export async function listDictionaryByCode(params) {
+  return request(`/dictionaries/codes?${stringify(params)}`);
+}
+
+/**
  * 按部门查询用户列表数据。
  * @param params
  * @returns {Promise<void>}

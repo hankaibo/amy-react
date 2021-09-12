@@ -191,10 +191,6 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
       dataIndex: 'nickname',
     },
     {
-      title: '真实姓名',
-      dataIndex: 'realName',
-    },
-    {
       title: '邮箱',
       dataIndex: 'email',
     },
@@ -304,7 +300,7 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
     <PageContainer title={false} content={mainSearch}>
       <Row gutter={8}>
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
-          <Card title="组织" bordered={false} style={{ marginTop: 10 }} bodyStyle={{ padding: '15px' }}>
+          <Card title="部门" bordered={false} style={{ marginTop: 10 }} bodyStyle={{ padding: '15px' }}>
             {isArray(tree) && !isEmpty(tree) && (
               <Tree
                 showLine

@@ -13,7 +13,7 @@ export default {
   'menu.system.role': 'Role',
   'menu.system.menu': 'Menu',
   'menu.system.api': 'API',
-  'menu.system.dictionary': 'Dictionary',
+  'menu.system.region': 'Region',
   // exception
   'menu.exception': 'Exception',
   'menu.exception.not-permission': '403',

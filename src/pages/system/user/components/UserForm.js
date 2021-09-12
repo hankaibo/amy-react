@@ -208,9 +208,6 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
           <Form.Item label="昵称" name="nickname" rules={[{ max: 32 }]}>
             <Input />
           </Form.Item>
-          <Form.Item label="真实姓名" name="realName" rules={[{ max: 255 }]}>
-            <Input />
-          </Form.Item>
           <Form.Item label="邮箱" name="email" rules={[{ type: 'email' }]}>
             <Input type="email" />
           </Form.Item>

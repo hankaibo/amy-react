@@ -78,5 +78,5 @@ export default defineConfig({
   fastRefresh: {},
   esbuild: {},
   webpack5: {},
-  chainWebpack: webpackPlugin,
+  // chainWebpack: webpackPlugin,
 });

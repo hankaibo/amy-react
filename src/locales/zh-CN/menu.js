@@ -13,7 +13,7 @@ export default {
   'menu.system.role': '角色管理',
   'menu.system.menu': '菜单管理',
   'menu.system.api': '接口保护',
-  'menu.system.dictionary': '字典管理',
+  'menu.system.region': '区域管理',
   // exception
   'menu.exception': '异常页',
   'menu.exception.not-permission': '403',

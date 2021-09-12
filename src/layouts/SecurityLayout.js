@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Redirect, connect, history } from 'umi';
+import React, { useEffect, useState } from 'react';
+import { connect, history, Redirect } from 'umi';
 import { stringify } from 'qs';
 import { PageLoading } from '@ant-design/pro-layout';
 import { getItem } from '@/utils/utils';
@@ -17,6 +17,15 @@ const SecurityLayout = ({ loading, children, currentUser, dispatch }) => {
     } else {
       history.push('/user/login');
     }
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'global/listDictionary',
+      payload: {
+        codeList: ['system_sex'],
+      },
+    });
   }, [dispatch]);
 
   // You can replace it to your authentication rule (such as check token exists)

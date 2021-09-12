@@ -7,60 +7,60 @@ import Authorized from '@/utils/Authorized';
 import RenderPropsModal from '@/components/RenderModal';
 import NoMatch from '@/components/Authorized/NoMatch';
 import { getParentKey, getPlainNode, getValue, isArray, isEmpty } from '@/utils/utils';
-import DepartmentForm from './components/DepartmentForm';
+import RegionForm from './components/RegionForm';
 
-const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
+const Region = connect(({ systemRegion: { tree, list }, loading }) => ({
   tree,
   list,
-  loading: loading.effects['systemDepartment/fetchChildrenById'],
+  loading: loading.effects['systemRegion/fetchChildrenById'],
 }))(({ loading, tree, list, dispatch }) => {
-  // 【当前点击的部门】
-  const [currentDepartment, setCurrentDepartment] = useState(null);
-  // 【部门树相关配置】
+  // 【当前点击的地区】
+  const [currentRegion, setCurrentRegion] = useState(null);
+  // 【地区树相关配置】
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [autoExpandParent, setAutoExpandParent] = useState(true);
-  // 【部门树搜索参数】
+  // 【地区树搜索参数】
   const [searchValue, setSearchValue] = useState('');
-  // 【查询参数，获取本部门的所有子部门列表的参数】
+  // 【查询参数，获取本地区的所有子地区列表的参数】
   const [params, setParams] = useState({
-    id: null, // 父部门id
-    status: null, // 部门状态
+    id: null, // 父地区id
+    status: null, // 地区状态
   });
   // 【首次】
   const [first, setFirst] = useState(true);
 
-  // 【初始化后，加载左侧部门树数据】
+  // 【初始化后，加载左侧地区树数据】
   useEffect(() => {
     dispatch({
-      type: 'systemDepartment/fetch',
+      type: 'systemRegion/fetch',
     });
     return () => {
       dispatch({
-        type: 'systemDepartment/clearTree',
+        type: 'systemRegion/clearTree',
       });
     };
   }, [dispatch]);
 
-  // 【默认选中、展开、子部门数据、当前部门】
+  // 【默认选中、展开、子地区数据、当前地区】
   useEffect(() => {
     if (first && isArray(tree) && !isEmpty(tree)) {
       setSelectedKeys([tree[0].key]);
       setExpandedKeys([tree[0].key]);
       setParams({ ...params, id: tree[0].id });
       // 适配下面取titleValue值。
-      setCurrentDepartment({ ...tree[0], titleValue: tree[0].title });
+      setCurrentRegion({ ...tree[0], titleValue: tree[0].title });
       // 只有首次加载后设置如上状态。
       setFirst(false);
     }
   }, [first, tree, params]);
 
-  // 【查询部门列表】
+  // 【查询地区列表】
   useEffect(() => {
     const { id } = params;
     if (id) {
       dispatch({
-        type: 'systemDepartment/fetchChildrenById',
+        type: 'systemRegion/fetchChildrenById',
         payload: {
           ...params,
         },
@@ -68,28 +68,28 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
     }
     return () => {
       dispatch({
-        type: 'systemDepartment/clearList',
+        type: 'systemRegion/clearList',
       });
     };
   }, [params, dispatch]);
 
-  // 【展开收起部门】
+  // 【展开收起地区】
   const handleExpand = (keys) => {
     setExpandedKeys(keys);
     setAutoExpandParent(false);
   };
 
-  // 【选择部门并获取其子部门数据】
+  // 【选择地区并获取其子地区数据】
   const handleSelect = (keys, { selectedNodes }) => {
     if (keys.length === 1) {
       const id = keys[0];
       setSelectedKeys(keys);
-      setCurrentDepartment(selectedNodes[0]);
+      setCurrentRegion(selectedNodes[0]);
       setParams({ ...params, id });
     }
   };
 
-  // 【搜索部门并高亮其搜索项】
+  // 【搜索地区并高亮其搜索项】
   const handleChange = (e) => {
     const { value } = e.target;
     const keys = getPlainNode(tree)
@@ -105,29 +105,29 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
     setAutoExpandParent(true);
   };
 
-  // 【移动部门】
+  // 【移动地区】
   const handleMove = (record, index) => {
     if (list.length <= index || index < 0) {
       return;
     }
     const targetId = list[index].id;
     dispatch({
-      type: 'systemDepartment/move',
+      type: 'systemRegion/move',
       payload: {
         sourceId: record.id,
         targetId,
       },
       callback: () => {
-        message.success('移动部门成功。');
+        message.success('移动地区成功。');
       },
     });
   };
 
-  // 【启用禁用部门】
+  // 【启用禁用地区】
   const toggleState = (checked, record) => {
     const { id } = record;
     dispatch({
-      type: 'systemDepartment/enable',
+      type: 'systemRegion/enable',
       payload: {
         id,
         status: checked,
@@ -135,21 +135,21 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
     });
   };
 
-  // 【删除部门】
+  // 【删除地区】
   const handleDelete = (record) => {
     const { id } = record;
     dispatch({
-      type: 'systemDepartment/delete',
+      type: 'systemRegion/delete',
       payload: {
         id,
       },
       callback: () => {
-        message.success('删除部门成功。');
+        message.success('删除地区成功。');
       },
     });
   };
 
-  // 【过滤部门】
+  // 【过滤地区】
   const handleTableChange = (_, filtersArg) => {
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -189,12 +189,20 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   // 【表格列】
   const columns = [
     {
-      title: '部门名称',
+      title: '地区名称',
       dataIndex: 'name',
       ellipsis: true,
     },
     {
-      title: '部门状态',
+      title: '地区编码',
+      dataIndex: 'code',
+    },
+    {
+      title: '地区值',
+      dataIndex: 'value',
+    },
+    {
+      title: '地区状态',
       dataIndex: 'status',
       filters: [
         { text: '禁用', value: 'DISABLED' },
@@ -204,7 +212,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       width: 110,
       align: 'center',
       render: (text, record) => (
-        <Authorized authority="system:department:status" noMatch={NoMatch(text)}>
+        <Authorized authority="system:region:status" noMatch={NoMatch(text)}>
           <Switch checked={text} onClick={(checked) => toggleState(checked, record)} />
         </Authorized>
       ),
@@ -214,7 +222,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       width: 90,
       align: 'center',
       render: (text, record, index) => (
-        <Authorized authority="system:department:move" noMatch={null}>
+        <Authorized authority="system:region:move" noMatch={null}>
           <ArrowUpOutlined className="icon" title="向上" onClick={() => handleMove(record, index - 1)} />
           <Divider type="vertical" />
           <ArrowDownOutlined className="icon" title="向下" onClick={() => handleMove(record, index + 1)} />
@@ -222,7 +230,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       ),
     },
     {
-      title: '部门备注',
+      title: '地区备注',
       dataIndex: 'description',
       ellipsis: true,
     },
@@ -233,22 +241,22 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
       fixed: 'right',
       render: (text, record) => (
         <>
-          <Authorized authority="system:department:update" noMatch={null}>
+          <Authorized authority="system:region:update" noMatch={null}>
             <RenderPropsModal>
               {({ showModalHandler, Modal }) => (
                 <>
                   <EditOutlined title="编辑" className="icon" onClick={showModalHandler} />
                   <Modal title="编辑">
-                    <DepartmentForm isEdit id={record.id} />
+                    <RegionForm isEdit id={record.id} />
                   </Modal>
                 </>
               )}
             </RenderPropsModal>
             <Divider type="vertical" />
           </Authorized>
-          <Authorized authority="system:department:delete" noMatch={null}>
+          <Authorized authority="system:region:delete" noMatch={null}>
             <Popconfirm
-              title="您确定要删除该部门吗？"
+              title="您确定要删除该地区吗？"
               onConfirm={() => handleDelete(record)}
               okText="确定"
               cancelText="取消"
@@ -265,7 +273,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
     <PageContainer title={false}>
       <Row gutter={8}>
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
-          <Card title="部门" bordered={false} style={{ marginTop: 10 }} bodyStyle={{ padding: '15px' }}>
+          <Card title="地区" bordered={false} style={{ marginTop: 10 }} bodyStyle={{ padding: '15px' }}>
             <Input.Search style={{ marginBottom: 8 }} placeholder="Search" onChange={handleChange} />
             <Tree
               showLine
@@ -280,14 +288,14 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
         </Col>
         <Col xs={24} sm={24} md={24} lg={18} xl={18}>
           <Card
-            title={currentDepartment && `【${currentDepartment.titleValue}】的子部门`}
+            title={currentRegion && `【${currentRegion.titleValue}】的子地区`}
             bordered={false}
             style={{ marginTop: 10 }}
             bodyStyle={{ padding: '15px' }}
           >
             <div className="tableList">
               <div className="tableListOperator">
-                <Authorized authority="system:department:add" noMatch={null}>
+                <Authorized authority="system:region:add" noMatch={null}>
                   <RenderPropsModal>
                     {({ showModalHandler, Modal }) => (
                       <>
@@ -295,7 +303,7 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
                           <PlusOutlined />
                         </Button>
                         <Modal title="新增">
-                          <DepartmentForm id={currentDepartment && currentDepartment.id} />
+                          <RegionForm id={currentRegion && currentRegion.id} />
                         </Modal>
                       </>
                     )}
@@ -320,4 +328,4 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
   );
 });
 
-export default Department;
+export default Region;

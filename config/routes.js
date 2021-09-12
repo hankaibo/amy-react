@@ -90,21 +90,10 @@ export default [
                     authority: ['system:api:children'],
                   },
                   {
-                    path: '/system/dictionaries',
-                    name: 'dictionary',
-                    authority: ['system:dictionary:list'],
-                    routes: [
-                      {
-                        path: '/system/dictionaries/',
-                        hideInMenu: true,
-                        component: './system/dictionary',
-                      },
-                      {
-                        path: '/system/dictionaries/:id',
-                        hideInMenu: true,
-                        component: './system/dictionary',
-                      },
-                    ],
+                    path: '/system/regions',
+                    name: 'region',
+                    component: './system/region',
+                    authority: ['system:region:tree'],
                   },
                   {
                     component: './404',
