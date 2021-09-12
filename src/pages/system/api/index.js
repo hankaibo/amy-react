@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Col, Divider, message, Popconfirm, Row, Switch, Table, Tree } from 'antd';
+import { Button, Card, Col, Divider, message, Popconfirm, Row, Switch, Table, Tag, Tree } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import {
   ArrowDownOutlined,
@@ -164,6 +164,29 @@ const Api = connect(({ systemApi: { tree, list }, loading }) => ({
     {
       title: '方法类型',
       dataIndex: 'method',
+      render: (text) => {
+        let tag;
+        switch (text.toLowerCase()) {
+          case 'get':
+            tag = <Tag color="#61affe">{text}</Tag>;
+            break;
+          case 'post':
+            tag = <Tag color="#49cc90">{text}</Tag>;
+            break;
+          case 'delete':
+            tag = <Tag color="#f93e3e">{text}</Tag>;
+            break;
+          case 'put':
+            tag = <Tag color="#fca130">{text}</Tag>;
+            break;
+          case 'patch':
+            tag = <Tag color="#50e3c2">{text}</Tag>;
+            break;
+          default:
+            tag = <Tag color="#61affe">{text}</Tag>;
+        }
+        return tag;
+      },
     },
     {
       title: '接口状态',

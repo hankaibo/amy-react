@@ -53,8 +53,8 @@ export async function getDepartmentTree(params) {
  * 获取字典数据。
  * @returns {Promise<void>}
  */
-export async function listDictionaryByCode(params) {
-  return request(`/dictionaries/codes?${stringify(params)}`);
+export async function listDictionaryItemByCode(params) {
+  return request(`/dictionaryItems?code=${params}`);
 }
 
 /**

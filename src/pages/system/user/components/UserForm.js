@@ -18,14 +18,15 @@ const beforeUpload = (file) => {
   return isJpgOrPng && isLt2M;
 };
 
-const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
+const UserForm = connect(({ global: { SYSTEM_SEX }, systemUser: { tree, user }, loading }) => ({
+  SYSTEM_SEX,
   tree,
   user,
   loading:
     loading.effects['systemUser/fetchById'] ||
     loading.effects['systemUser/add'] ||
     loading.effects['systemUser/update'],
-}))(({ loading, departmentId, isEdit, id, user, tree, closeModal, dispatch }) => {
+}))(({ loading, SYSTEM_SEX, departmentId, isEdit, id, user, tree, closeModal, dispatch }) => {
   const [form] = Form.useForm();
   const { setFieldsValue, resetFields } = form;
 
@@ -219,9 +220,11 @@ const UserForm = connect(({ systemUser: { tree, user }, loading }) => ({
           </Form.Item>
           <Form.Item label="性别" name="sex">
             <Radio.Group>
-              <Radio value={1}>男</Radio>
-              <Radio value={2}>女</Radio>
-              <Radio value={0}>保密</Radio>
+              {SYSTEM_SEX.map((item) => (
+                <Radio value={Number(item.value)} key={item.id}>
+                  {item.name}
+                </Radio>
+              ))}
             </Radio.Group>
           </Form.Item>
         </div>

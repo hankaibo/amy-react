@@ -21,9 +21,9 @@ const SecurityLayout = ({ loading, children, currentUser, dispatch }) => {
 
   useEffect(() => {
     dispatch({
-      type: 'global/listDictionary',
+      type: 'global/listDictionaryItem',
       payload: {
-        codeList: ['system_sex'],
+        code: ['SYSTEM_SEX'],
       },
     });
   }, [dispatch]);

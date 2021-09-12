@@ -1,25 +1,25 @@
-import { disconnect } from '../services/message';
-import { listDictionaryByCode } from '../services/user';
+import { disconnect } from '@/services/message';
+import { listDictionaryItemByCode } from '@/services/user';
 
 const GlobalModel = {
   namespace: 'global',
 
   state: {
     collapsed: false,
-    sexList: [],
   },
 
   effects: {
-    *listDictionary({ payload, callback }, { call, put }) {
-      const response = yield call(listDictionaryByCode, payload);
+    *listDictionaryItem({ payload, callback }, { call, put }) {
+      const { code } = payload;
+      const response = yield call(listDictionaryItemByCode, code);
       const { apierror } = response;
       if (apierror) {
         return;
       }
       yield put({
-        type: 'saveDictionary',
+        type: 'saveDictionaryItem',
         payload: {
-          tree: response,
+          [code]: response.list,
         },
       });
       if (callback) callback();
@@ -33,11 +33,10 @@ const GlobalModel = {
         collapsed: payload,
       };
     },
-    saveDictionary(state, { payload }) {
-      const { tree } = payload;
+    saveDictionaryItem(state, { payload }) {
       return {
         ...state,
-        tree,
+        ...payload,
       };
     },
   },

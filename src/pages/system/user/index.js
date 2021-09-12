@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Card, Tree, Table, Input, Switch, Button, Popconfirm, Divider, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Button, Card, Col, Divider, Input, message, Popconfirm, Row, Switch, Table, Tree } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
-import { PlusOutlined, DeleteOutlined, EditOutlined, UserSwitchOutlined, KeyOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, KeyOutlined, PlusOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import Authorized from '@/utils/Authorized';
 import NoMatch from '@/components/Authorized/NoMatch';
@@ -11,18 +11,13 @@ import UserForm from './components/UserForm';
 import UserRoleForm from './components/UserRoleForm';
 import UserPasswordForm from './components/UserPasswordForm';
 
-const sexText = {
-  1: '男',
-  2: '女',
-  3: '保密',
-};
-
-const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
+const User = connect(({ global: { SYSTEM_SEX }, systemUser: { tree, list, pagination }, loading }) => ({
+  SYSTEM_SEX,
   tree,
   list,
   pagination,
   loading: loading.effects['systemUser/fetch'],
-}))(({ loading, tree, list, pagination, dispatch }) => {
+}))(({ loading, SYSTEM_SEX, tree, list, pagination, dispatch }) => {
   // 【当前点击的部门】
   const [currentDepartment, setCurrentDepartment] = useState(null);
   // 【复选框状态属性与函数】
@@ -180,6 +175,15 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
     </div>
   );
 
+  // 从字典表中获取性别数据
+  const sexText = (value) => {
+    const sex = SYSTEM_SEX.filter((item) => Number(item.value) === value)[0];
+    if (sex) {
+      return sex.name;
+    }
+    return '--';
+  };
+
   // 【表格列】
   const columns = [
     {
@@ -197,13 +201,9 @@ const User = connect(({ systemUser: { tree, list, pagination }, loading }) => ({
     {
       title: '性别',
       dataIndex: 'sex',
-      filters: [
-        { text: '男', value: 1 },
-        { text: '女', value: 2 },
-        { text: '保密', value: 3 },
-      ],
+      filters: SYSTEM_SEX.map((item) => ({ text: item.name, value: Number(item.value) })),
       filterMultiple: false,
-      render: (text) => sexText[text],
+      render: (text) => sexText(text),
     },
     {
       title: '用户状态',

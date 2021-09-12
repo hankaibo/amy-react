@@ -96,6 +96,19 @@ export default [
                     authority: ['system:region:tree'],
                   },
                   {
+                    path: '/system/dictionaries',
+                    name: 'dictionary',
+                    component: './system/dictionary',
+                    authority: ['system:dictionary:list'],
+                  },
+                  {
+                    path: '/system/dictionaries/item',
+                    name: 'dictionaryItem',
+                    component: './system/dictionary/dictionaryItem',
+                    hideInMenu: true,
+                    hideInBreadcrumb: false,
+                  },
+                  {
                     component: './404',
                   },
                 ],
