@@ -79,4 +79,5 @@ export default defineConfig({
   esbuild: {},
   webpack5: {},
   // chainWebpack: webpackPlugin,
+  mfsu: {},
 });

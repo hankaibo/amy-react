@@ -12,7 +12,7 @@ const Home = () => {
   const [logList] = useState([
     {
       version: 'v1.1.0',
-      datetime: '2021-]9-12',
+      datetime: '2021-09-12',
       content: ['添加区域管理功能；', '修复一些bug。'],
     },
     {
