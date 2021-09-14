@@ -1,7 +1,6 @@
 import {
   addApi,
   deleteApi,
-  deleteBatchApi,
   enableApi,
   getApiById,
   getMenuTree,
@@ -145,10 +144,6 @@ export default {
           ...filter,
         },
       });
-      if (callback) callback();
-    },
-    *deleteBatch({ ids, callback }, { call }) {
-      yield call(deleteBatchApi, ids);
       if (callback) callback();
     },
     *move({ payload, callback }, { call, put, select }) {

@@ -86,19 +86,6 @@ export async function deleteApi(id) {
 }
 
 /**
- * 批量删除接口。
- * @param ids
- * @returns {Promise<void>}
- */
-export async function deleteBatchApi(ids) {
-  return request.delete('/resources', {
-    data: {
-      ids,
-    },
-  });
-}
-
-/**
  * 批量导入接口。
  * @param params
  * @returns {Promise<*>}

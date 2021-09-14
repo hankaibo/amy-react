@@ -72,9 +72,8 @@ export async function deleteDictionary(id) {
  * @returns {Promise<void>}
  */
 export async function deleteBatchDictionary(params) {
+  const { ids } = params;
   return request.delete('/dictionaries', {
-    data: {
-      ...params,
-    },
+    data: [...ids],
   });
 }
