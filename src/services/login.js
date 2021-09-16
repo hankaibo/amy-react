@@ -9,6 +9,9 @@ export async function login(params) {
   return request('/login', {
     method: 'POST',
     data: params,
+    headers: {
+      isToken: false,
+    },
   });
 }
 

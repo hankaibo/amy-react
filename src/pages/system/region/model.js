@@ -26,10 +26,7 @@ export default {
   effects: {
     *fetch({ payload, callback }, { call, put }) {
       const response = yield call(getRegionTree, payload);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+
       yield put({
         type: 'saveTree',
         payload: {
@@ -46,10 +43,7 @@ export default {
         },
       });
       const response = yield call(listSubRegionById, payload);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+
       const list = response.map((item) => ({ ...item, status: item.status === 'ENABLED' }));
       yield put({
         type: 'saveList',
@@ -61,11 +55,7 @@ export default {
     },
     *add({ payload, callback }, { call, put, select }) {
       const values = { ...payload, status: payload.status ? 'ENABLED' : 'DISABLED' };
-      const response = yield call(addRegion, values);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(addRegion, values);
       const filter = yield select((state) => state.systemRegion.filter);
       yield put({
         type: 'fetchChildrenById',
@@ -81,10 +71,7 @@ export default {
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getRegionById, id);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+
       const region = { ...response, status: response.status === 'ENABLED', parentId: `${response.parentId}` };
       yield put({
         type: 'save',
@@ -96,11 +83,7 @@ export default {
     },
     *update({ payload, callback }, { call, put, select }) {
       const values = { ...payload, status: payload.status ? 'ENABLED' : 'DISABLED' };
-      const response = yield call(updateRegion, values);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(updateRegion, values);
       const filter = yield select((state) => state.systemRegion.filter);
       yield put({
         type: 'fetchChildrenById',
@@ -116,11 +99,7 @@ export default {
     *enable({ payload, callback }, { call, put, select }) {
       const { id, status } = payload;
       const params = { id, status: status ? 'ENABLED' : 'DISABLED' };
-      const response = yield call(enableRegion, params);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(enableRegion, params);
       const filter = yield select((state) => state.systemRegion.filter);
       yield put({
         type: 'fetchChildrenById',
@@ -135,11 +114,7 @@ export default {
     },
     *delete({ payload, callback }, { call, put, select }) {
       const { id } = payload;
-      const response = yield call(deleteRegion, id);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(deleteRegion, id);
       const filter = yield select((state) => state.systemRegion.filter);
       yield put({
         type: 'fetchChildrenById',
@@ -153,11 +128,7 @@ export default {
       if (callback) callback();
     },
     *move({ payload, callback }, { call, put, select }) {
-      const response = yield call(moveRegion, payload);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(moveRegion, payload);
       const filter = yield select((state) => state.systemRegion.filter);
       yield put({
         type: 'fetchChildrenById',

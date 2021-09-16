@@ -89,10 +89,7 @@ const UserModel = {
       // TODO
       response.tags = mockTags;
       response.unreadCount = 8;
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+
       yield put({
         type: 'saveCurrentUser',
         payload: {
@@ -103,19 +100,11 @@ const UserModel = {
     },
     *updateCurrentUser({ payload, callback }, { call }) {
       const values = { ...payload };
-      const response = yield call(updateCurrentUser, values);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(updateCurrentUser, values);
       if (callback) callback();
     },
     *updateCurrentUserPassword({ payload, callback }, { call }) {
-      const response = yield call(updateCurrentUserPassword, payload);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(updateCurrentUserPassword, payload);
       if (callback) callback();
     },
     // 登录用户的信息相关操作
@@ -127,10 +116,6 @@ const UserModel = {
         },
       });
       const response = yield call(pageMessage, payload);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
       const { list, pageNum: current, pageSize, total } = response;
       yield put({
         type: 'saveMessageList',
@@ -143,11 +128,7 @@ const UserModel = {
     },
     *addMessage({ payload, callback }, { call, put, select }) {
       const values = { ...payload, status: +payload.status };
-      const response = yield call(addMessage, values);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(addMessage, values);
       const filter = yield select((state) => state.user.filter);
       yield put({
         type: 'fetchMessage',
@@ -160,10 +141,6 @@ const UserModel = {
     },
     *fetchMessageById({ payload, callback }, { call, put }) {
       const response = yield call(getMessageById, payload);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
       const message = { ...response, status: !!response.status };
       yield put({
         type: 'saveMessage',
@@ -175,11 +152,7 @@ const UserModel = {
     },
     *updateMessage({ payload, callback }, { call, put, select }) {
       const values = { ...payload, status: +payload.status };
-      const response = yield call(updateMessage, values);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(updateMessage, values);
       const filter = yield select((state) => state.user.filter);
       yield put({
         type: 'fetchMessage',
@@ -191,11 +164,7 @@ const UserModel = {
     },
     *publishMessage({ payload, callback }, { call, put, select }) {
       const { id } = payload;
-      const response = yield call(publishMessage, id);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(publishMessage, id);
       const filter = yield select((state) => state.user.filter);
       yield put({
         type: 'fetchMessage',
@@ -206,11 +175,7 @@ const UserModel = {
       if (callback) callback();
     },
     *deleteMessage({ payload, callback }, { call, put, select }) {
-      const response = yield call(deleteMessage, payload);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(deleteMessage, payload);
       const filter = yield select((state) => state.user.filter);
       yield put({
         type: 'fetchMessage',
@@ -221,11 +186,7 @@ const UserModel = {
       if (callback) callback();
     },
     *deleteBatchMessage({ payload, callback }, { call, put, select }) {
-      const response = yield call(deleteBatchMessage, payload);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(deleteBatchMessage, payload);
       const filter = yield select((state) => state.user.filter);
       yield put({
         type: 'fetchMessage',
@@ -237,10 +198,6 @@ const UserModel = {
     },
     *fetchDepartmentTree({ payload, callback }, { call, put }) {
       const response = yield call(getDepartmentTree, payload);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
       formatTree(response);
       yield put({
         type: 'saveDepartmentTree',
@@ -252,10 +209,6 @@ const UserModel = {
     },
     *fetchDepartmentUser({ payload, callback }, { call, put, select }) {
       const response = yield call(listUser, payload);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
       const { list } = response;
       const departmentUserList = [];
       list.forEach((item) => {
@@ -284,20 +237,12 @@ const UserModel = {
     },
     *changeNoticeReadState({ payload, callback }, { call }) {
       const { id } = payload;
-      const response = yield call(updateMessageReadStatus, id);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(updateMessageReadStatus, id);
       if (callback) callback();
     },
     *clearNotices({ payload, callback }, { call }) {
       const { ids } = payload;
-      const response = yield call(updateAllMessageReadStatus, ids);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(updateAllMessageReadStatus, ids);
       if (callback) callback();
     },
   },

@@ -30,10 +30,6 @@ export default {
         },
       });
       const response = yield call(pageDictionary, payload);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
       const { list, pageNum: current, pageSize, total } = response;
       const newList = list.map((item) => ({ ...item, status: item.status === 'ENABLED' }));
       yield put({
@@ -47,11 +43,7 @@ export default {
     },
     *add({ payload, callback }, { call, put, select }) {
       const values = { ...payload, status: payload.status ? 'ENABLED' : 'DISABLED' };
-      const response = yield call(addDictionary, values);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(addDictionary, values);
       const filter = yield select((state) => state.systemDictionary.filter);
       yield put({
         type: 'fetch',
@@ -65,10 +57,6 @@ export default {
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getDictionaryById, id);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
       const dictionary = {
         ...response,
         status: response.status === 'ENABLED',
@@ -83,11 +71,7 @@ export default {
     },
     *update({ payload, callback }, { call, put, select }) {
       const values = { ...payload, status: payload.status ? 'ENABLED' : 'DISABLED' };
-      const response = yield call(updateDictionary, values);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(updateDictionary, values);
       const filter = yield select((state) => state.systemDictionary.filter);
       yield put({
         type: 'fetch',
@@ -100,11 +84,7 @@ export default {
     *enable({ payload, callback }, { call, put, select }) {
       const { id, status } = payload;
       const params = { id, status: status ? 'ENABLED' : 'DISABLED' };
-      const response = yield call(enableDictionary, params);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(enableDictionary, params);
       const filter = yield select((state) => state.systemDictionary.filter);
       yield put({
         type: 'fetch',
@@ -116,11 +96,7 @@ export default {
     },
     *delete({ payload, callback }, { call, put, select }) {
       const { id } = payload;
-      const response = yield call(deleteDictionary, id);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(deleteDictionary, id);
       const filter = yield select((state) => state.systemDictionary.filter);
       yield put({
         type: 'fetch',
@@ -131,11 +107,7 @@ export default {
       if (callback) callback();
     },
     *deleteBatch({ payload, callback }, { call, put, select }) {
-      const response = yield call(deleteBatchDictionary, payload);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(deleteBatchDictionary, payload);
       const filter = yield select((state) => state.systemDictionary.filter);
       yield put({
         type: 'fetch',

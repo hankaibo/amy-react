@@ -12,10 +12,7 @@ const GlobalModel = {
     *listDictionaryItem({ payload, callback }, { call, put }) {
       const { code } = payload;
       const response = yield call(listDictionaryItemByCode, code);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+
       yield put({
         type: 'saveDictionaryItem',
         payload: {

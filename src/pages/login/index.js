@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Alert, Checkbox } from 'antd';
+import { Alert, Button, Checkbox, Form, Input } from 'antd';
 import { LockTwoTone, UserOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -25,6 +25,13 @@ const Login = (props) => {
     dispatch({
       type: 'login/login',
       payload: { ...values },
+    }).catch((err) => {
+      dispatch({
+        type: 'login/changeLoginStatus',
+        payload: {
+          status: err,
+        },
+      });
     });
   };
 

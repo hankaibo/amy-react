@@ -3,7 +3,7 @@
  * 更详细的api文档: https://github.com/umijs/umi-request/blob/master/README_zh-CN.md
  */
 import { extend } from 'umi-request';
-import { notification } from 'antd';
+import { message as Message, Modal, notification } from 'antd';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -21,76 +21,71 @@ const codeMessage = {
   502: '网关错误。',
   503: '服务不可用，服务器暂时过载或维护。',
   504: '网关超时。',
+  default: '系统未知错误，请反馈给管理员',
 };
 
 /**
  * 异常处理程序
  */
 const errorHandler = (error) => {
-  const apierror = {
-    status: '',
-    message: '',
-  };
   // data为后台接口包含的错误信息。如果后台返回的数据格式不符合要求将自己格式化一下。
   const { response, data } = error;
-  if (response && response.status) {
-    // 如果后台接口定义了错误信息，则使用接口定义的；否则使用默认的错误信息。
-    if (Object.prototype.toString.call(data) === '[object Object]') {
-      const { status, message } = data;
-      apierror.status = status;
-      apierror.message = message;
-    } else {
-      apierror.status = response.status;
-      apierror.message = codeMessage[response.status] || response.statusText;
-    }
-
-    const errorText = apierror.message;
-    const { status, url } = response;
-
-    notification.error({
-      message: `请求错误 ${status}: ${url}`,
-      description: errorText,
+  // 未设置状态码则默认为成功状态
+  const code = response.status;
+  // 获取错误信息
+  const msg =
+    (data && data.apierror && data.apierror.message) || codeMessage[code] || response.statusText || codeMessage.default;
+  if (code === 401) {
+    Modal.confirm({
+      centered: true,
+      title: '系统提示',
+      content: msg,
+      okText: '重新登录',
+      onOk() {
+        return new Promise((resolve) => {
+          resolve('test');
+        });
+      },
     });
-  } else if (!response) {
-    notification.error({
-      description: '您的网络发生异常，无法连接服务器',
-      message: '网络异常',
-    });
+    return Promise.reject(new Error(msg));
   }
-  // 方式一，直接抛出异常信息，中断请求流程；
-  // 优点是简单，models里不需要再处理错误逻辑了；缺点是太糙，对每个请求不能进行精细化处理。
-  // 这样的话，登录页面的单独错误信息将不再生效。为了使用登录页面生效，后台请求状态码应该为200。
-  // throw error;
-  // 方式二，返回整个错误信息或者回后台接口自定义错误信息，我使用了后者；
-  // 优缺点与方式一相反。
-  return { apierror };
+  if (code === 500) {
+    Message.error({ content: msg });
+    return Promise.reject(new Error(msg));
+  }
+  notification.error({
+    message: msg,
+    description: msg,
+  });
+  return Promise.reject(new Error(msg));
 };
 
 /**
  * 配置request请求时的默认参数
  */
 const request = extend({
-  maxCache: 10, // 最大缓存个数, 超出后会自动清掉按时间最开始的一个.
   prefix: '/api/v1', // 默认前缀
+  timeout: 10000,
   errorHandler, // 默认错误处理
-  credentials: 'omit', // 默认请求是否带上cookie
 });
 
 /**
  * 请求拦截器。
  */
 request.interceptors.request.use(async (url, options) => {
+  const optionsCopy = { ...options };
+  optionsCopy.headers['Content-Type'] = 'application/json;charset=utf-8';
+  // 是否需要设置 token
+  const isToken = (options.headers || {}).isToken === false;
   const token = localStorage.getItem('jwt');
-  const defaultOptions = { ...options };
-  if (token && token !== 'undefined' && !url.startsWith('/api/v1/login')) {
-    defaultOptions.headers = {
+  if (token && !isToken) {
+    optionsCopy.headers = {
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
     };
   }
   return {
     url,
-    options: { ...defaultOptions },
+    options: optionsCopy,
   };
 });
 

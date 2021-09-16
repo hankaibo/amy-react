@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Switch, Radio, Upload, TreeSelect, Button, message } from 'antd';
 import ImgCrop from 'antd-img-crop';
 import { connect } from 'umi';
-import { difference, isEmpty } from '@/utils/utils';
 import { UpOutlined, DownOutlined, UploadOutlined } from '@ant-design/icons';
+import { difference, isEmpty } from '@/utils/utils';
 
 // 【上传前控制判断】
 const beforeUpload = (file) => {

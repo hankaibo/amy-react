@@ -132,6 +132,8 @@ const Department = connect(({ systemDepartment: { tree, list }, loading }) => ({
         id,
         status: checked,
       },
+    }).catch((err) => {
+      console.error(err);
     });
   };
 

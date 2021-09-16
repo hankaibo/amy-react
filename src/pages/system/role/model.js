@@ -32,10 +32,6 @@ export default {
   effects: {
     *fetch({ callback }, { call, put }) {
       const response = yield call(getRoleTree);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
       yield put({
         type: 'saveTree',
         payload: {
@@ -52,10 +48,6 @@ export default {
         },
       });
       const response = yield call(listSubRoleById, payload);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
       const list = response.map((item) => ({ ...item, status: item.status === 'ENABLED' }));
       yield put({
         type: 'saveList',
@@ -67,11 +59,7 @@ export default {
     },
     *add({ payload, callback }, { call, put, select }) {
       const values = { ...payload, status: payload.status ? 'ENABLED' : 'DISABLED' };
-      const response = yield call(addRole, values);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(addRole, values);
       const filter = yield select((state) => state.systemRole.filter);
       yield put({
         type: 'fetchChildrenById',
@@ -87,10 +75,6 @@ export default {
     *fetchById({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getRoleById, id);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
       const role = { ...response, status: response.status === 'ENABLED' };
       yield put({
         type: 'save',
@@ -102,11 +86,7 @@ export default {
     },
     *update({ payload, callback }, { call, put, select }) {
       const values = { ...payload, status: payload.status ? 'ENABLED' : 'DISABLED' };
-      const response = yield call(updateRole, values);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(updateRole, values);
       const filter = yield select((state) => state.systemRole.filter);
       yield put({
         type: 'fetchChildrenById',
@@ -122,11 +102,7 @@ export default {
     *enable({ payload, callback }, { call, put, select }) {
       const { id, status } = payload;
       const params = { id, status: status ? 'ENABLED' : 'DISABLED' };
-      const response = yield call(enableRole, params);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(enableRole, params);
       const filter = yield select((state) => state.systemRole.filter);
       yield put({
         type: 'fetchChildrenById',
@@ -141,11 +117,7 @@ export default {
     },
     *delete({ payload, callback }, { call, put, select }) {
       const { id } = payload;
-      const response = yield call(deleteRole, id);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(deleteRole, id);
       const filter = yield select((state) => state.systemRole.filter);
       yield put({
         type: 'fetchChildrenById',
@@ -159,11 +131,7 @@ export default {
       if (callback) callback();
     },
     *move({ payload, callback }, { call, put, select }) {
-      const response = yield call(moveRole, payload);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(moveRole, payload);
       const filter = yield select((state) => state.systemRole.filter);
       yield put({
         type: 'fetchChildrenById',
@@ -179,10 +147,6 @@ export default {
     *fetchResTree({ payload, callback }, { call, put }) {
       const { id } = payload;
       const response = yield call(getResourceByRole, id);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
       const { resTree, resSelected } = response;
       const selected = [];
       const halfSelected = [];
@@ -205,11 +169,7 @@ export default {
       if (callback) callback();
     },
     *grantRoleResource({ payload, callback }, { call }) {
-      const response = yield call(grantRoleResource, payload);
-      const { apierror } = response;
-      if (apierror) {
-        return;
-      }
+      yield call(grantRoleResource, payload);
       if (callback) callback();
     },
   },
